@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<!-- $Id: build.xml shyam $ -->
+<project name="Joomla Setup" default="j_setup" description="IJoomla Installation">
+
+	<!-- ============================================  -->
+	<!-- (DEFAULT)Target: Joomla Setup                 -->
+	<!-- ============================================  -->
+	<target name="j_setup" depends="copy_files, files_permission, token_replace, create_database, clean_stuff">
+	    <echo msg="Setup done.(${joomla.rootpath}/${joomla.folder}/)" />
+	</target>
+	
+	<!-- ============================================  -->
+	<!-- Target: copy_files                            -->
+	<!-- ============================================  -->
+	<target name="copy_files">
+		<echo msg="Installing Joomla Files..." />
+		<!-- Copy Joomla Folder to ROOT // FOLDERNAME  -->
+		<mkdir dir="${joomla.rootpath}/${joomla.folder}" />
+		<!-- Extract Joomla kit-->
+		<untar todir="${joomla.rootpath}/${joomla.folder}">
+			<fileset dir="${pkg.location}/${pkg.version}">
+				<include name="Joomla.tar.gz"/>
+			</fileset>
+		</untar>
+		<!-- Copy Joomla Databse and configuration file to ROOT/FOLDERNAME  -->
+		<copy file="${pkg.location}/${pkg.version}/database.sql" tofile="${joomla.rootpath}/${joomla.folder}/database.sql" overwrite="true"/>
+		<copy file="${pkg.location}/${pkg.version}/configuration.php" tofile="${joomla.rootpath}/${joomla.folder}/configuration.php" overwrite="true"/>
+
+	</target>
+	
+	<!-- ============================================  -->
+	<!-- Target: Joomla File permission                -->
+	<!-- ============================================  -->
+	<target name="files_permission" description="Change Joomla files permission as per os">
+	
+		<!--  for Ubuntu	 only change owner of files to www-data -->
+		<php expression="(PHP_OS == 'WINNT') ? 'win' :'unix'" returnProperty="os_name"/>
+		<if>
+			<equals arg1="${os_name}" arg2="unix" />
+			<then>
+				<!-- Change ownership to Apache group		-->
+				<exec command="sudo chown -R www-data ." dir="${joomla.rootpath}/${joomla.folder}" />
+				
+				<!-- Recommended file/dir permissions		-->
+				<exec command="sudo find . -type f -exec chmod 644 {} \;" dir="${joomla.rootpath}/${joomla.folder}" />
+				<exec command="sudo find . -type d -exec chmod 755 {} \;" dir="${joomla.rootpath}/${joomla.folder}" />
+			</then>
+		</if>
+	</target>
+
+	<!-- ============================================  -->
+	<!-- Target: Token Replace                		   -->
+	<!-- ============================================  -->
+	<target name="token_replace">
+		<!-- replace configuration-->
+		<reflexive>
+			<fileset dir="${joomla.rootpath}/${joomla.folder}">
+			    <include name="configuration.php" />
+			    <include name="database.sql" />
+                <include name="test/system/jdefines.php" />
+			</fileset>
+			 <filterchain>
+				<replacetokens>
+				    <token key="joomla.sitename" 		value="${joomla.sitename}/"/>
+				    <token key="joomla.dbuser"   		value="${joomla.dbuser}"/>
+				    <token key="joomla.dbpassword"   	value="${joomla.dbpassword}"/>
+				    <token key="joomla.dbname"   		value="${joomla.dbname}"/>
+				    <token key="joomla.dbprefix"   		value="${joomla.dbprefix}"/>
+				    <token key="joomla.rootpath"   		value="${joomla.rootpath}"/>
+				    <token key="joomla.folder"   		value="${joomla.folder}"/>
+				</replacetokens>
+			</filterchain>
+		</reflexive>
+	</target>
+
+
+	<!-- ============================================  -->
+	<!-- Target: Database Creation            		   -->
+	<!-- ============================================  -->
+	<target name="create_database">
+		<!-- fill data base -->
+		<echo msg="Creating database and dumping sql into it." />
+		<exec command="${joomla.mysqlpath} -uroot -ppassword --execute=${joomla.createDBQuery}" passthru="true" />
+		<exec command="${joomla.mysqlpath} -uroot -ppassword --execute=${joomla.createUserQuery}" passthru="true" />
+		<exec command="${joomla.mysqlpath} -uroot -ppassword --execute=${joomla.createAcessQuery}"  passthru="true" />
+		<exec command="${joomla.mysqlpath} -uroot -ppassword --database=${joomla.dbname} --execute=${joomla.importDBQuery} "  passthru="true" />
+		<echo msg="Database work done." />
+	</target>
+	
+	<!-- ============================================  -->
+	<!-- Target: Clean un-used stuff          		   -->
+	<!-- ============================================  -->
+	<target name="clean_stuff">
+		<!-- delete database file -->
+		<delete file="${joomla.dbdump}" />
+	</target>
+</project>
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="2.5" method="upgrade">
+	<!-- General description-->
+	<name>PayCart</name>
+	<creationDate>Jun2013</creationDate>
+	<author>Team Readybytes</author>
+	<authorEmail>team@readybytes.in</authorEmail>
+	<authorUrl>readybytes.in</authorUrl>
+	<copyright>Team ReadyBytes</copyright>
+	<license>GNU GPL 3</license>
+	<version>@global.version@.@global.build.number@</version>
+	<description>Try to focus on: Simplicity, Product Based and Easy to Customized.</description>
+	
+	<!-- Public front end files -->
+	<files folder="site">
+		<filename>index.html</filename>
+		<filename>paycart.php</filename>
+		<folder>controllers</folder>
+		<folder>views</folder>
+		<folder>templates</folder>
+		<folder>paycart</folder>
+	</files>
+	
+	<!-- Media files -->
+	<media destination="com_paycart" folder="media">
+		<folder>css</folder>
+		<folder>js</folder>
+		<folder>images</folder>
+		<filename>index.html</filename>
+	</media>
+	
+	<scriptfile>script.php</scriptfile>
+	
+	<languages>
+		<language tag="en-GB">languages/site/en-GB.com_paycart.ini</language>
+	</languages>
+	
+	<!-- Runs on install -->
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">install/sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	
+	<!-- Administrator back-end section -->
+	<administration>
+		
+		<!-- Administration menu -->
+		<!-- <menu view="dashboard">COM_PAYCART</menu>-->
+		
+	
+		<!-- Back-end files -->
+		<files folder="admin">
+			<filename>index.html</filename>
+			<filename>paycart.php</filename>
+			<folder>controllers</folder>
+			<folder>views</folder>
+			<folder>install</folder>
+			<folder>templates</folder>
+		</files>
+		
+		<languages>
+			<language tag="en-GB">languages/admin/en-GB.com_paycart.ini</language>
+			<language tag="en-GB">languages/admin/en-GB.com_paycart.sys.ini</language>
+		</languages>
+	</administration>
+</extension>

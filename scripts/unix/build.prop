@@ -8,7 +8,7 @@ dir.src		=${dir.root}/source
 dir.report	=${dir.root}/data/report
 
 # where to pick source code
-code.source	=wc
+# code.source	= wc
 
 #change project code names
 project.shortform		= Paycart

@@ -2,9 +2,9 @@
 
 <project name="PayCart" default="main" description="A build script to build PayCart kit." >    
 
-<!-- ============================================  -->
-<!-- Target: main                           -->
-<!-- ============================================  -->
+	<!-- ============================================  -->
+	<!-- (DEFAULT)Target: main                           -->
+	<!-- ============================================  -->
     <target name="main"  depends="pre_config,get_build_number">
     <!-- Main Menu -->
     <echo>============================================</echo>
@@ -19,7 +19,7 @@
 			
     	<echo msg="Deleteing: Packeage and tmp directory "/>
     		<delete dir="${dir.packages}" includeemptydirs="true" />
-			<delete dir="${dir.tmp}" includeemptydirs="true" />
+<!--			<delete dir="${dir.tmp}" includeemptydirs="true" />-->
 		
 		<echo msg="Make Dir: Packeage"/>
 			<mkdir dir="${dir.packages}" />
@@ -35,29 +35,47 @@
     <echo>BUILD END	</echo>	
     <echo>============================================</echo>
     </target>
-    
-    
-<!-- ============================================  -->
-<!-- Target: Pre-config                            -->
-<!-- ============================================  -->
+	
+	<!-- ============================================  -->
+	<!-- Target: Pre-config                            -->
+	<!-- ============================================  -->
     <target name="pre_config">
-    <!-- Load Config -->
-    	<php expression="(PHP_OS == 'WINNT') ? '_win' :'_unix'" returnProperty="IF_OS"/>
-		<property file="global${IF_OS}.prop"  	override="false" />
+    	<!-- Get os type	-->
+		<php expression="(PHP_OS == 'WINNT') ? 'win' :'unix'" returnProperty="os_name"/>
+		
+		<if>
+			<equals arg1="${os_name}" arg2="unix" />
+			<then>
+				<property name='build.prop.file' value="unix/build.prop"  override="true" />		
+			</then>
+			<elseif>
+				<equals arg1="${os_name}" arg2="win" />
+				<then>
+					<property name='build.prop.file' value="win/build.prop"  override="true" />
+				</then>
+			</elseif>
+			<else>
+		   		<echo message="Fail in OS idetification" />
+		   		<php expression="exit();"/>
+		 	</else>
+		</if>
+		<!-- Load Prop files		-->	
+		<property file="${build.prop.file}"	override="true" />	
 	</target>
-<!-- ============================================  -->
-<!-- Target: Get Build Bumber                      -->
-<!-- ============================================  -->
+	
+	<!-- ============================================  -->
+	<!-- Target: Get Build Bumber                      -->
+	<!-- ============================================  -->
     <target name="get_build_number">
     	<exec command="git rev-list --all | wc -l" dir="${dir.root}" outputProperty="build.number"  />
 		<property name='build.number' value="${build.number}"  override="true" />
 		<echo msg=" 'build.number' Property set to ${build.number}" />
 	</target>
-<!-- ============================================  -->
-<!-- Target: Copy Source to tem dir                -->
-<!-- ============================================  -->
+	
+	<!-- ============================================  -->
+	<!-- Target: Copy Source to tem dir                -->
+	<!-- ============================================  -->
 	<target name="copy_source_to_tmp" description="Export files from a local working copy" >		
-		
 		<!-- Copy: Source folder to tmp dir		-->
 		<copy todir="${dir.tmp}" >
 		  <fileset dir="${dir.src}" />
@@ -80,6 +98,5 @@
 <!--		<foreach list="${jsdirs}" param="jsdir" target="minifyjs" />-->
 
 	</target>
-	
 	
 </project>
