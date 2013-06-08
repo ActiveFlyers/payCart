@@ -1,0 +1,11 @@
+<phpunit bootstrap="../core/system/bootstrap.php" colors="true">
+	<testsuite name="Install">
+		<file>InstallTest.php</file>
+	</testsuite>
+
+<!--
+	<logging>
+		<log type="junit" target="suite/logs/junit.xml" logIncompleteSkipped="false" />
+	</logging>
+-->
+</phpunit>

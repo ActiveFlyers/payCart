@@ -23,8 +23,8 @@ define('PAYCART_COMPONENT_NAME','paycart');
 
 
 // define versions
-define('PAYCART_VERSION', '0.0.1');
-define('PAYCART_REVISION','v0.9.0-4-ga3793b7');
+define('PAYCART_VERSION', '@global.version@.@global.build.number@');
+define('PAYCART_REVISION','@global.build.number@');
 
 //shared paths
 define('PAYCART_PATH_CORE',				JPATH_SITE.'/components/com_paycart/paycart');
