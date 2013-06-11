@@ -1,41 +1,41 @@
 <?php
 
-// Load Basic define constant
-require_once realpath(dirname(__DIR__)).'/defines.php';
-//Load Selenium configuration
-require_once RBTEST_CORE_PATH.'/system/servers/config.php';
+require_once 'defines.php';
+require_once RBTEST_SYSTEM_SERVER_CONFIG;
 require_once 'RbWebdriverTestCase.php';
 
-//require_once 'SeleniumClient/DesiredCapabilities.php';
 
 class SeleniumClientAutoLoader {
 
 	// Array of page class files
 	private $pageClassFiles = array();
 
-	public function __construct() {
+	public function __construct()
+	{
 		spl_autoload_register(array($this, 'seleniumClientLoader'));
+		$iterator = new RecursiveIteratorIterator(
+				new RecursiveDirectoryIterator(RBTEST_SYSTEM_PAGES),
+				RecursiveIteratorIterator::SELF_FIRST
+		);
+		foreach ($iterator as $file)
+		{
+			if ($file->isFile())
+			{
+				$this->pageClassFiles[substr($file->getFileName(), 0, (strlen($file->getFileName()) - 4))] = (string) $file;
+			}
+		}
 	}
 
 	private function seleniumClientLoader($className)
 	{
-		// path where it will test
-		$availble_path = Array(
-								RBTEST_CORE_PATH.'/system/'
-							);
-					
 		$fileName = str_replace("\\", "/", $className) . '.php';
-		$is_exist = false;
-		foreach($availble_path as $path) {
-			$file_path = $path.$fileName ;
-			if(file_exists($file_path)) {
-				include_once str_replace("\\", "/", $className) . '.php';
-				$is_exist = true;
-				break;
-			}
+		if (file_exists(RBTEST_SYSTEM_BASE.$fileName))
+		{
+			include_once RBTEST_SYSTEM_BASE.$fileName;
 		}
-		if (!$is_exist) {
-			die("\nSOMTHING IS GOING WRONG.............. :( need to fix \n CLASS NAME : $className \n FILE PATH : $file_path \n\n");
+		elseif (isset($this->pageClassFiles[$className]) && file_exists($this->pageClassFiles[$className]))
+		{
+			include_once $this->pageClassFiles[$className];
 		}
 	}
 }
