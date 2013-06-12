@@ -79,7 +79,7 @@
 		<!-- replace configuration-->
 		<reflexive>
 			<fileset dir="${joomla.rootpath}/${joomla.folder}/test">
-			    <include name="system/jdefines.php" />
+			    <include name="*.php"	/>
 			</fileset>
 			 <filterchain>
 				<replacetokens>

@@ -1,6 +1,62 @@
+
 --
 -- Database: `com_paycart`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_configuration`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_configuration` (
+  `configuration_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_log`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_log` (
+  `log_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_product_review`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_review` (
+  `review_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `publish` bit(1) NOT NULL,
+  `parent_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `email` varchar(250) NOT NULL,
+  `ip` varchar(15) NOT NULL,
+  `created_date` datetime NOT NULL,
+  `text` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_rating`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_rating` (
+  `rating_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `value` tinyint(4) NOT NULL,
+  `ip` varchar(15) NOT NULL,
+  `created_date` datetime NOT NULL,
+  PRIMARY KEY (`rating_id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Product rating will store here' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -10,14 +66,15 @@
 
 CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
   `attribute_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` int(11) NOT NULL,
-  `searchable` tinyint(1) NOT NULL,
-  `publish` tinyint(1) NOT NULL,
-  `visible` tinyint(1) NOT NULL,
-  `order` int(11) NOT NULL,
-  `params` text COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `type` varchar(11) NOT NULL COMMENT 'predefine types like text, numeric etc',
+  `searchable` bit(1) DEFAULT '0',
+  `publish` bit(1) DEFAULT '0',
+  `visible` bit(1) DEFAULT '0',
+  `ordering` int(11) DEFAULT '0',
+  `params` text ,
   PRIMARY KEY (`attribute_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='All attributes and their configuration param will store here.' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All attributes and their configuration param will store here.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -27,11 +84,11 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_attribute_value` (
   `attribute_value_id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
   `attribute_id` int(11) NOT NULL,
-  `attribute_value` text COLLATE utf8_bin NOT NULL,
+  `attribute_value` text ,
   PRIMARY KEY (`attribute_value_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Values of item''s attribute will be store here' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -41,58 +98,48 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute_value` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_category` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(250) COLLATE utf8_bin NOT NULL,
-  `alias` varchar(250) COLLATE utf8_bin NOT NULL,
-  `description` text COLLATE utf8_bin NOT NULL,
-  `cover_image` varchar(250) COLLATE utf8_bin NOT NULL,
-  `parent` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `alias` varchar(255) NOT NULL,
+  `description` text,
+  `cover_image` varchar(255),
+  `parent` int(11) DEFAULT '0',
   `ordering` int(11) NOT NULL,
-  `publish` tinyint(1) NOT NULL,
-  `params` text COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='All item''s category will be store here ' AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `#__paycart_item`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_item` (
-  `item_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique identification of item',
-  `name` varchar(200) COLLATE utf8_bin NOT NULL COMMENT 'Item name',
-  `alias` varchar(200) COLLATE utf8_bin NOT NULL COMMENT 'usful for sef urls',
-  `price` float NOT NULL,
-  `sku` int(10) NOT NULL COMMENT 'Stock keeping unit, Quantity of items',
-  `parent` int(11) NOT NULL DEFAULT '0' COMMENT 'define group of items',
-  `params` text COLLATE utf8_bin NOT NULL,
-  `cover_image` varchar(250) COLLATE utf8_bin NOT NULL,
-  `teaser` varchar(250) COLLATE utf8_bin NOT NULL,
-  `publish_up` datetime NOT NULL,
-  `publish_down` datetime NOT NULL,
-  `created` datetime NOT NULL,
-  `modified` datetime NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NOT NULL,
-  `order` int(11) NOT NULL,
-  `featured` tinyint(1) NOT NULL,
-  `description` text COLLATE utf8_bin NOT NULL,
-  `hits` int(22) NOT NULL,
-  `meta_data` text COLLATE utf8_bin NOT NULL COMMENT 'Here you can store meta title, tag and description.',
-  PRIMARY KEY (`item_id`),
+  `publish` bit(1) DEFAULT '0',
+  `params` text,
+  PRIMARY KEY (`category_id`),
   UNIQUE KEY `alias` (`alias`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Table have all PayCart items and thier core element.' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All item''s category will be store here ' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_item_category`
+-- Table structure for table `#__paycart_product`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_item_category` (
-  `item_category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  PRIMARY KEY (`item_category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Tbale contain item and actegory relation.' AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `#__paycart_product` (
+  `product_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique identification of product',
+  `name` varchar(255) NOT NULL COMMENT 'Item name',
+  `alias` varchar(255) NOT NULL COMMENT 'usful for sef urls',
+  `type` int(4) COMMENT 'Store pre-defined constant valuestypes like digital,physical etc',
+  `price` float  DEFAULT '0.00' NOT NULL,
+  `quantity` int(10) NOT NULL DEFAULT '0' COMMENT 'Quantity of item',
+  `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
+  `variation_of` int(11) NOT NULL COMMENT 'This product is variation of another product. ',
+  `category_id` int(11),
+  `params` text,
+  `cover_image` varchar(250) ,
+  `teaser` varchar(250),
+  `publish_up` datetime NOT NULL,
+  `publish_down` datetime DEFAULT '0000-00-00 00:00:00',
+  `created_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL,
+  `ordering` int(11) NOT NULL,
+  `featured` bit(1) NOT NULL,
+  `description` text ,
+  `hits` int(11) NOT NULL,
+  `meta_data` text COMMENT 'Here you can store meta title, tag and description.',
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `sku` (`sku`),
+  KEY `alias` (`alias`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Table have all PayCart items and thier core element.' AUTO_INCREMENT=1 ;
 
