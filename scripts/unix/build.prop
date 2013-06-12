@@ -14,9 +14,19 @@ dir.report	=${dir.root}/data/report
 project.shortform		= Paycart
 project.shortform.small = paycart
 project.codename		= Maharana
+project.name		= com_paycart
 
 # Output settings
 file.version		= 0.0
 file.package		= ${project.shortform}
 file.compression	= gzip
-file.extension		= .zip
+file.extension		= zip
+
+# RbFramework
+rbframework.build.version 	= 1.0.0
+rbframework.name	  		= RBSL
+rbframework.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
+
+# RB Commerce Pakages
+build.package.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
+build.package.name	  		= pkg_paycart

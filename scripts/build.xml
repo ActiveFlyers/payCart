@@ -28,7 +28,7 @@
 			<phingcall target="copy_source_to_tmp" />
 		
 		<echo msg="Zip: Package creating"/>
-		<zip destfile="${dir.packages}/${project.shortform}-${file.version}.${build.number}.zip" 
+		<zip destfile="${dir.packages}/${project.shortform}-${file.version}.${build.number}.${file.extension}" 
 			 basedir="${dir.tmp}" />
         
     <echo>============================================</echo>
@@ -73,7 +73,7 @@
 	</target>
 	
 	<!-- ============================================  -->
-	<!-- Target: Copy Source to tem dir                -->
+	<!-- Target: Copy Source to tmp dir                -->
 	<!-- ============================================  -->
 	<target name="copy_source_to_tmp" description="Export files from a local working copy" >		
 		<!-- Copy: Source folder to tmp dir		-->

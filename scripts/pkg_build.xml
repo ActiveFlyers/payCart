@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="PayCart_Package" default="main" description="A build script to build Package of PayCart component and RBFramework." >    
+
+	<!-- ============================================  -->
+	<!-- (DEFAULT)Target: main                           -->
+	<!-- ============================================  -->
+    <target name="main"  depends="pre_config,get_build_number">
+    <!-- Main Menu -->
+    <echo>============================================</echo>
+    <echo>BUILD PACKAGE BEGIN</echo>	
+    <echo>============================================</echo>
+
+    	<phing phingfile="build.xml" inheritAll="true"/>
+		
+		<echo msg="Fetch RB Framework: Fetch rbframework and do copy"/>
+			<phingcall target="fetch_rbframework" />
+	
+		<echo msg="Delete: Delete tmp folder"/>
+		<delete dir="${dir.tmp}" includeemptydirs="true" />
+
+		<echo msg="Copy: pkg xml file. " />
+			<phingcall target="copy_pkg_xml" />
+
+		<echo msg="Create: create pkg of rbframewok and payCart. " />
+			<phingcall target="create_pkg" />
+        
+    <echo>============================================</echo>
+    <echo>BUILD PACKAGE END	</echo>	
+    <echo>============================================</echo>
+    </target>
+
+	<!-- ============================================  -->
+	<!-- Target: Pre-config                            -->
+	<!-- ============================================  -->
+    <target name="pre_config">
+    	<!-- Get os type	-->
+		<php expression="(PHP_OS == 'WINNT') ? 'win' :'unix'" returnProperty="os_name"/>
+		
+		<if>
+			<equals arg1="${os_name}" arg2="unix" />
+			<then>
+				<property name='build.prop.file' value="unix/build.prop"  override="true" />		
+			</then>
+			<elseif>
+				<equals arg1="${os_name}" arg2="win" />
+				<then>
+					<property name='build.prop.file' value="win/build.prop"  override="true" />
+				</then>
+			</elseif>
+			<else>
+		   		<echo message="Fail in OS idetification" />
+		   		<php expression="exit();"/>
+		 	</else>
+		</if>
+		<!-- Load Prop files		-->	
+		<property file="${build.prop.file}"	override="true" />	
+	</target>
+	
+	<!-- ============================================  -->
+	<!-- Target: Get Build Bumber                      -->
+	<!-- ============================================  -->
+    <target name="get_build_number">
+    	<exec command="git rev-list --all | wc -l" dir="${dir.root}" outputProperty="build.number"  />
+		<property name='build.number' value="${build.number}"  override="true" />
+		<echo msg=" 'build.number' Property set to ${build.number}" />
+	</target>
+
+
+	<!-- ===========================================================  -->
+	<!-- Target: Fetch RbFramework and copy it into packages folder   -->
+	<!-- ===========================================================  -->
+
+	<target name="fetch_rbframework">
+		<copy todir="${dir.packages}">
+			<fileset dir="${rbframework.location}">
+				<include name="${rbframework.name}.${rbframework.build.version}.${file.extension}" />				
+			</fileset>
+		</copy>
+
+	</target>
+
+	<!-- ====================================================== -->
+	<!-- Target: Copy pkg.xml into packages folder   			-->
+	<!-- ====================================================== -->
+
+	<target name="copy_pkg_xml">
+		<copy file="${build.package.location}/pkg.xml" tofile="${dir.packages}/${build.package.name}.xml" overwrite="true"/>
+		
+		<!-- Apply the version change to all files. -->
+		<reflexive>
+			<fileset dir="${dir.packages}">
+			     <include name="${build.package.name}.xml" />
+			</fileset>
+			 <filterchain>
+				<replacetokens>
+				    <token key="build.number"   		value="${build.number}" />
+				    <token key="rbframework.name"   		value="${rbframework.name}" />
+				    <token key="rbframework.build.version"   	value="${rbframework.build.version}" />
+				    <token key="project.shortform"   		value="${project.shortform}" />	
+				    <token key="file.version" 			value="${file.version}" />
+				    <token key="project.name" 			value="${project.name}" />
+				</replacetokens>
+			</filterchain>
+		</reflexive>
+	</target>
+
+	<!-- ====================================================== -->
+	<!-- Target: Create pkg_PayCart			   					-->
+	<!-- ====================================================== -->
+	<target name="create_pkg">
+		<zip destfile="${dir.packages}/${build.package.name}-${file.version}.${build.number}.${file.extension}" basedir="${dir.packages}">
+			<fileset dir="${dir.packages}">
+				<include name="**/*.*"></include>
+			</fileset>
+		</zip>
+
+		<delete>
+			<fileset dir="${dir.packages}">
+				<include name="*.xml" />
+			</fileset>
+		</delete>
+	</target>
+	
+</project>
