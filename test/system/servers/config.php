@@ -12,6 +12,7 @@
  * using a batch file or shell script.
  */
 // @FIXME :: all availeble variables
+// @FIXME :: Use constant variables
 class SeleniumConfig
 {
 
@@ -42,6 +43,10 @@ class SeleniumConfig
 	var $db_type = 'MySQLi';
 	var $db_prefix = 'xxx_';
 	
+	
+	// Installable kit
+	var $extension = 'Paycart-0.0.8.zip'; 	
+	
 	// optional setting to install sample data
 	// If not set or true, sample data is installed. Set to false to not install sample data
 	// Note: This must be true for the standard tests to work!
@@ -57,7 +62,7 @@ class SeleniumConfig
 
 	// set the admin login, admin password, and admin email address
 	var $username = 'admin';
-	var $password = 'password';
+	var $password = 'ssv445';
 	var $admin_email = 'you@yourdomain.com';
 
 	// this setting will use the default browser for your system

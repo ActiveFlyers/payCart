@@ -1,0 +1,16 @@
+<phpunit bootstrap="../../bootstrap.php" colors="true">
+	<testsuite name="Installation">
+		<file>Installation.php</file>
+	</testsuite>
+	
+	<listeners>
+		<listener class="RbTestListener" file="../../../core/listener.php">
+		</listener>
+	</listeners>
+
+<!--
+	<logging>
+		<log type="junit" target="suite/logs/junit.xml" logIncompleteSkipped="false" />
+	</logging>
+-->
+</phpunit>
