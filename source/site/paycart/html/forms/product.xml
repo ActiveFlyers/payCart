@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+		<fieldset name="basic-attributes" label="COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL">
+			<field name="product_id" type="text"
+				default="0"
+				label="COM_PAYCART_PRODUCT_ID_LABEL"
+				description="COM_PAYCART_PRODUCT_ID_DESC"
+				readonly="true"
+				size="10"
+			/>
+			<field name="name" type="text"
+				label="COM_PAYCART_PRODUCT_NAME_LABEL"
+				description="COM_PAYCART_PRODUCT_NAME_DESC"
+				required="true"
+			/>
+			<field name="alias" type="text"
+				label="COM_PAYCART_PRODUCT_ALIAS_LABEL"
+				description="COM_PAYCART_PRODUCT_ALIAS_DESC"
+			/>
+			
+			<field name="price" type="text"
+				label="COM_PAYCART_PRODUCT_PRICE_LABEL"
+				description="COM_PAYCART_PRODUCT_PRICE_DESC"
+			/>
+			<field name="quantity" type="text"
+				label="COM_PAYCART_PRODUCT_PRICE_QUANTITY_LABEL"
+				description="COM_PAYCART_PRODUCT_PRICE_QUANTITY_DESC"
+			/>
+			<field name="sku" type="text"
+				label="COM_PAYCART_PRODUCT_SKU_LABEL" 
+				description="COM_PAYCART_PRODUCT_SKU_DESC"
+				required="true"
+			/>
+			
+			<field name="type" type="paycart.product_type"
+				label="COM_PAYCART_PRODUCT_TYPE"
+				description="COM_PAYCART_PRODUCT_TYPE_DESC"				
+			/>
+			
+			<field name="featured" type="radio"
+				default="0"
+				description="COM_PAYCART_PRODUCT_FEATURED_DESC"
+				label="COM_PAYCART_PRODUCT_FEATURED_LABEL" 
+			>
+				<option value='0'>COM_PAYCART_NO</option>
+				<option value='1'>COM_PAYCART_YES</option>
+			</field>
+			
+			<field name="description" type="textarea"
+				rows="2" cols="40"
+				default=""
+				description="COM_PAYCART_PRODUCT_DESCRIPTION_DESC"
+				label="COM_PAYCART_PRODUCT_DESCRIPTION_LABEL" 
+			/>
+			<field name="category_id" type="text"
+				default=""
+				description="COM_PAYCART_PRODUCT_CATEGORY_ID_DESC"
+				label="COM_PAYCART_PRODUCT_CATEGORY_ID_LABEL" 
+			/>
+			<field name="cover_image" type="text"
+				description="COM_PAYCART_PRODUCT_COVER_IMAGE_DESC"
+				label="COM_PAYCART_PRODUCT_COVER_IMAGE_LABEL" 
+			/>
+			<field name="teaser" type="text"
+				description="COM_PAYCART_PRODUCT_TEASER_DESC"
+				label="COM_PAYCART_PRODUCT_TEASER_LABEL" 
+			/>
+			<field name="publish_up" type="calendar"
+				default=""
+				description="COM_PAYCART_PRODUCT_PUBLISH_UP_DESC"
+				label="COM_PAYCART_PRODUCT_PUBLISH_UP_LABEL"
+			/>
+			<field name="publish_down" type="calendar"
+				default=""
+				description="COM_PAYCART_PRODUCT_PUBLISH_DOWN_DESC"
+				label="COM_PAYCART_PRODUCT_PUBLISH_DOWN_LABEL"				
+			/>
+<!--			<field name="created_date" type="calendar"-->
+<!--				rows="2" cols="40"-->
+<!--				default=""-->
+<!--				description="COM_PAYCART_PRODUCT_CREATED_DATE_DESC"-->
+<!--				label="COM_PAYCART_PRODUCT_CREATED_DATE_LABEL" -->
+<!--				format="%d-%m-%Y"-->
+<!--				readonly="true"-->
+<!--			/>-->
+<!--			-->
+<!--			<field name="modified_date" type="calendar"-->
+<!--				rows="2" cols="40"-->
+<!--				default=""-->
+<!--				description="COM_PAYCART_PRODUCT_MODIFIED_DATE_DESC"-->
+<!--				label="COM_PAYCART_PRODUCT_MODIFIED_DATE_LABEL" -->
+<!--				format="%d-%m-%Y"-->
+<!--				readonly="true"-->
+<!--			/>		-->
+			
+			<field name="hits" type="text"
+				default=""
+				description="COM_PAYCART_PRODUCT_HITS_DESC"
+				label="COM_PAYCART_PRODUCT_HITS_LABEL"
+				readonly="true" 
+			/>
+				
+		</fieldset>
+	
+		<fields name="meta_data">
+			<fieldset name='meta_data'>
+				<field	name="title" type="text"
+						label="COM_PAYCART_PRODUCT_META_DATA_TITLE_DESC" 
+						description="COM_PAYCART_PRODUCT_META_DATA_TITLE_LABEL"
+				/>
+				
+				<field 	name="descriprion" type="text"
+						label="COM_PAYCART_PRODUCT_META_DATA_DESCRIPRION_DESC" 
+						description="COM_PAYCART_PRODUCT_META_DATA_DESCRIPRION_LABEL"
+				/>
+				
+				<field	name="keyword" type="text"
+						label="COM_PAYCART_PRODUCT_META_DATA_KEYWORD_DESC" 
+						description="COM_PAYCART_PRODUCT_META_DATA_KEYWORD_LABEL"
+				/>
+			</fieldset>
+		</fields>
+<!--		<fieldset name="advance-attributes" label="COM_PAYCART_PRODUCT_ADVANCE_ATTRIBUTES_FIELDSET_LABEL">-->
+<!--		</fieldset>-->
+			
+</form>

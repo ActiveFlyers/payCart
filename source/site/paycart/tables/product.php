@@ -1,7 +1,7 @@
 <?php
 
 /**
-* @copyright	Copyright (C) 2009 - 2012 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
+* @copyright	Copyright (C) 2009 - 2013 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
@@ -17,7 +17,7 @@ if(!defined( '_JEXEC' )){
  * Item Table
  * @author Team Readybytes
  */
-class PaycartTableItem extends PaycartTable
+class PaycartTableProduct extends PaycartTable
 {
 	
 }

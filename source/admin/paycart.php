@@ -10,6 +10,7 @@
 // no direct access
 defined('_JEXEC') or die( 'Restricted access' );
 
+// RBTODO:: handle by exception 
 if(!defined('RB_FRAMEWORK_LOADED')){
 	JLog::add('RB Frameowork not loaded',JLog::ERROR);
 }
@@ -18,14 +19,13 @@ require_once JPATH_SITE.'/components/com_paycart/paycart/includes.php';
 
 // find the controller to handle the request
 $option	= 'com_paycart';
-$view	= 'dashboard';
+$view	= 'product';
 $task	= null;
 $format	= 'html';
 
 $controllerClass = PaycartHelper::findController($option,$view, $task,$format);
 
-
-$controller = PaycartFactory::getInstance($controllerClass, 'controller', 'Paycartadmin');
+$controller = PaycartFactory::getInstance($controllerClass, 'controller', 'PaycartAdmin');
 
 // execute task
 try{

@@ -9,7 +9,7 @@
 */
 
 /**
- * List of Populate Variables
+ * List of Populated Variables
  * $heading = COM_PAYCART_ADMIN_BLANK_PRODUCT
  * $msg 	= COM_PAYCART_ADMIN_BLANK_PRODUCT_MSG
  * $model	= Instance of PaycartModelProduct
@@ -17,10 +17,10 @@
  * $uri		= Current URL (SITE_NAME/administrator/index.php?option=com_paycart&view=product&task=display)
  * 
  */
-
 defined('_JEXEC') or die();
 
 ?>
+
 <form action="<?php echo $uri; ?>" method="post" name="adminForm">
 	<div class="row-fluid">
 		<div class="span12">

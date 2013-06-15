@@ -27,19 +27,19 @@ define('PAYCART_VERSION', '@global.version@.@global.build.number@');
 define('PAYCART_REVISION','@global.build.number@');
 
 //shared paths
-define('PAYCART_PATH_CORE',				JPATH_SITE.'/components/com_paycart/paycart');
+define('PAYCART_PATH_CORE',					JPATH_SITE.'/components/com_paycart/paycart');
 define('PAYCART_PATH_CORE_MEDIA',			JPATH_ROOT.'/media/com_paycart');
 define('PAYCART_PATH_CORE_FORM',			PAYCART_PATH_CORE.'/form');
 
 // front-end
 define('PAYCART_PATH_SITE', 				JPATH_SITE.'/components/com_paycart');
-define('PAYCART_PATH_SITE_CONTROLLER',	PAYCART_PATH_SITE.'/controllers');
+define('PAYCART_PATH_SITE_CONTROLLER',		PAYCART_PATH_SITE.'/controllers');
 define('PAYCART_PATH_SITE_VIEW',			PAYCART_PATH_SITE.'/views');
 define('PAYCART_PATH_SITE_TEMPLATE',		PAYCART_PATH_SITE.'/templates');
 
 // back-end
 define('PAYCART_PATH_ADMIN', 				JPATH_ADMINISTRATOR.'/components/com_paycart');
-define('PAYCART_PATH_ADMIN_CONTROLLER',	PAYCART_PATH_ADMIN.'/controllers');
+define('PAYCART_PATH_ADMIN_CONTROLLER',		PAYCART_PATH_ADMIN.'/controllers');
 define('PAYCART_PATH_ADMIN_VIEW',			PAYCART_PATH_ADMIN.'/views');
 define('PAYCART_PATH_ADMIN_TEMPLATE',		PAYCART_PATH_ADMIN.'/templates');
 
