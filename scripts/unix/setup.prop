@@ -23,6 +23,11 @@ joomla.dbdump		=	${joomla.rootpath}/${joomla.folder}/database.sql
 
 dropbox.package.folder	=	${pkg.location}
 
+## Site config
+joomla.error.reporting = maximum
+joomla.dbtype		   = mysql
+
 ## default admin account should be
-joomla.admin=admin
-joomla.password=ssv445
+joomla.admin.username	= admin
+joomla.admin.password	= ssv445
+joomla.admin.email		= team@readybytes.in

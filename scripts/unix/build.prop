@@ -29,4 +29,4 @@ rbframework.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
 
 # RB Commerce Pakages
 build.package.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
-build.package.name	  		= pkg_paycart
+build.package.name	  		= Pakage_Paycart

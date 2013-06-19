@@ -18,34 +18,34 @@ class SeleniumConfig
 
 	// $folder is the path to the apache root folder
 //	var $folder = 'c:/xampp/htdocs'; // typical windows example with XAMPP
-	var $folder = '@joomla.rootpath@'; 		// typical linux example
+	var $folder = RBTEST_SITE_ROOT; 		// typical linux example
 
 	// $host is normally 'http://localhost'
-	var $host = 'http://localhost';
+	var $host = RBTEST_HOST ;
 
 	// $path is the rest of the URL to the Joomla! home page
 	// Example: Your full URL to Joomla! is http://localhost/joomla_16/index.php
 	// then $path would be '/joomla_16/'
-	var $path = '/@joomla.folder@/';
+	var $path = RBTEST_SITE_FOLDER;
 	
 	// $baseURI set in contructor to the full path
 	var $baseURI;
 
 	// Set to true if you want to capture screenshots on failure (only for Firefox)
 	var $captureScreenshotOnFailure = false;
-	var $screenShotPath = 'tests/system/screenshots';
+	var $screenShotPath = RBTEST_SCREENSHOTS;
 
 	// set the database host, database username, database pasword, and database name
-	var $db_host = 'localhost';
-	var $db_user = '@joomla.dbuser@';
-	var $db_pass = 'password';
-	var $db_name = '@joomla.dbname@';
-	var $db_type = 'MySQLi';
-	var $db_prefix = 'xxx_';
+	var $db_host = RBTEST_DB_HOST;
+	var $db_user = RBTEST_DB_USER;
+	var $db_pass = RBTEST_DB_PASSWORD;
+	var $db_name = RBTEST_DB_NAME;
+	var $db_type = RBTEST_DB_TYPE;
+	var $db_prefix = RBTEST_DB_PREFIX;
 	
 	
 	// Installable kit
-	var $extension = 'Paycart-0.0.8.zip'; 	
+	var $extension = RBTEST_EXTENSION_NAME; 	
 	
 	// optional setting to install sample data
 	// If not set or true, sample data is installed. Set to false to not install sample data
@@ -58,12 +58,12 @@ class SeleniumConfig
 	var $sample_data_file = 'Learn Joomla';
 
 	// set the site name (keep to less than 14 characters)
-	var $site_name = 'Joomla';
+	var $site_name = RBTEST_SITE_NAME;
 
 	// set the admin login, admin password, and admin email address
-	var $username = 'admin';
-	var $password = 'ssv445';
-	var $admin_email = 'you@yourdomain.com';
+	var $username = RBTEST_ADMIN_USERNAME;
+	var $password = RBTEST_ADMIN_PASSWORD;
+	var $admin_email = RBTEST_ADMIN_EMAIL;
 
 	// this setting will use the default browser for your system
 	var $browser = '*chrome'; // for firefox (weird name!)
@@ -78,7 +78,7 @@ class SeleniumConfig
 	// var $adminTemplate = 'hathor';  
 
 	// optional setting to set error reporting level
-	var $errorReporting = 'maximum';
+	var $errorReporting = RBTEST_ERROR_REPORTING;
 
 	// optional setting to set the initial window dimensions (Webdriver only)
 	var $windowSize = array(1280, 1024);

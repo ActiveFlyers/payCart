@@ -61,8 +61,11 @@
 	<!-- ============================================  -->
 	<target name="copy_package">
 		<!-- Copy PayCart Zip	-->
-		<copy 	file="${dir.packages}/${project.shortform}-${file.version}.${build.number}.zip" 
-				tofile="${joomla.rootpath}/${joomla.folder}/${project.shortform}-${file.version}.${build.number}.zip" />
+		<copy 	file="${dir.packages}/${project.shortform}-${file.version}.${build.number}.${file.extension}" 
+				tofile="${joomla.rootpath}/${joomla.folder}/${project.shortform}-${file.version}.${build.number}.${file.extension}" />
+		<!--	Copy paycart Package		-->
+		<copy 	file="${dir.packages}/${build.package.name}-${file.version}.${build.number}.${file.extension}" 
+				tofile="${joomla.rootpath}/${joomla.folder}/${build.package.name}-${file.version}.${build.number}.${file.extension}" />
 	</target>
 
 	<!-- ============================================  -->
@@ -79,7 +82,7 @@
 		<!-- replace configuration-->
 		<reflexive>
 			<fileset dir="${joomla.rootpath}/${joomla.folder}/test">
-			    <include name="*.php"	/>
+			    <include name="core/defines.php"	/>
 			</fileset>
 			 <filterchain>
 				<replacetokens>
@@ -96,6 +99,15 @@
 				    <token key="joomla.mysqlpath"   		value="${joomla.mysqlpath}"		/>
 					<token key="global.version" 			value="${file.version}" 		/>
 				    <token key="global.build.number"   		value="${build.number}" 		/>
+				    
+				    <token key="joomla.error.reporting"   	value="${joomla.error.reporting}" 		/>
+				    <token key="joomla.dbtype"   			value="${joomla.dbtype}" 		/>
+				    <token key="joomla.admin.username"   	value="${joomla.admin.username}" 		/>
+				    <token key="joomla.admin.password"   	value="${joomla.admin.password}" 		/>
+				    <token key="joomla.admin.email"   		value="${joomla.admin.email}" 		/>
+				    <token key="joomla.site.name"   		value="${joomla.folder}" 		/>
+				    <token key="joomla.package.name"   		value="${build.package.name}-${file.version}.${build.number}.${file.extension}" 		/>
+				    <token key="joomla.extension.name"   	value="${project.shortform}-${file.version}.${build.number}.zip" 		/>
 				</replacetokens>
 			</filterchain>
 		</reflexive>
