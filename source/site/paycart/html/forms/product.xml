@@ -18,13 +18,13 @@
 				description="COM_PAYCART_PRODUCT_ALIAS_DESC"
 			/>
 			
-			<field name="price" type="text"
-				label="COM_PAYCART_PRODUCT_PRICE_LABEL"
-				description="COM_PAYCART_PRODUCT_PRICE_DESC"
+			<field name="amount" type="paycart.amount"
+				label="COM_PAYCART_PRODUCT_AMOUNT_LABEL"
+				description="COM_PAYCART_PRODUCT_AMOUNT_DESC"
 			/>
 			<field name="quantity" type="text"
-				label="COM_PAYCART_PRODUCT_PRICE_QUANTITY_LABEL"
-				description="COM_PAYCART_PRODUCT_PRICE_QUANTITY_DESC"
+				label="COM_PAYCART_PRODUCT_QUANTITY_LABEL"
+				description="COM_PAYCART_PRODUCT_QUANTITY_DESC"
 			/>
 			<field name="sku" type="text"
 				label="COM_PAYCART_PRODUCT_SKU_LABEL" 
@@ -32,7 +32,7 @@
 				required="true"
 			/>
 			
-			<field name="type" type="paycart.product_type"
+			<field name="type" type="paycart.producttype"
 				label="COM_PAYCART_PRODUCT_TYPE"
 				description="COM_PAYCART_PRODUCT_TYPE_DESC"				
 			/>
@@ -41,14 +41,23 @@
 				default="0"
 				description="COM_PAYCART_PRODUCT_FEATURED_DESC"
 				label="COM_PAYCART_PRODUCT_FEATURED_LABEL" 
+				class="btn-group"
 			>
 				<option value='0'>COM_PAYCART_NO</option>
 				<option value='1'>COM_PAYCART_YES</option>
 			</field>
 			
-			<field name="description" type="textarea"
-				rows="2" cols="40"
-				default=""
+			<field 	name="published" type="radio"
+					default="1"
+					description="COM_PAYCART_PRODUCT_PUBLISHED_DESC"
+					label="COM_PAYCART_PRODUCT_PUBLISHED_LABEL" 
+					class="btn-group"
+			>
+				<option value='0'>COM_PAYCART_NO</option>
+				<option value='1'>COM_PAYCART_YES</option>
+			</field>
+			
+			<field name="description" type="editor"
 				description="COM_PAYCART_PRODUCT_DESCRIPTION_DESC"
 				label="COM_PAYCART_PRODUCT_DESCRIPTION_LABEL" 
 			/>
@@ -69,29 +78,28 @@
 				default=""
 				description="COM_PAYCART_PRODUCT_PUBLISH_UP_DESC"
 				label="COM_PAYCART_PRODUCT_PUBLISH_UP_LABEL"
+				format="%Y-%m-%d %H:%M:%S"
 			/>
 			<field name="publish_down" type="calendar"
 				default=""
 				description="COM_PAYCART_PRODUCT_PUBLISH_DOWN_DESC"
-				label="COM_PAYCART_PRODUCT_PUBLISH_DOWN_LABEL"				
+				label="COM_PAYCART_PRODUCT_PUBLISH_DOWN_LABEL"		
+				format="%Y-%m-%d %H:%M:%S"		
 			/>
-<!--			<field name="created_date" type="calendar"-->
-<!--				rows="2" cols="40"-->
-<!--				default=""-->
-<!--				description="COM_PAYCART_PRODUCT_CREATED_DATE_DESC"-->
-<!--				label="COM_PAYCART_PRODUCT_CREATED_DATE_LABEL" -->
-<!--				format="%d-%m-%Y"-->
-<!--				readonly="true"-->
-<!--			/>-->
-<!--			-->
-<!--			<field name="modified_date" type="calendar"-->
-<!--				rows="2" cols="40"-->
-<!--				default=""-->
-<!--				description="COM_PAYCART_PRODUCT_MODIFIED_DATE_DESC"-->
-<!--				label="COM_PAYCART_PRODUCT_MODIFIED_DATE_LABEL" -->
-<!--				format="%d-%m-%Y"-->
-<!--				readonly="true"-->
-<!--			/>		-->
+			<field name="created_date" type="calendar"
+				default=""
+				description="COM_PAYCART_PRODUCT_CREATED_DATE_DESC"
+				label="COM_PAYCART_PRODUCT_CREATED_DATE_LABEL" 
+				format="%Y-%m-%d %H:%M:%S"
+				readonly="true"
+			/>
+			
+			<field name="modified_date" type="calendar"
+				description="COM_PAYCART_PRODUCT_MODIFIED_DATE_DESC"
+				label="COM_PAYCART_PRODUCT_MODIFIED_DATE_LABEL" 
+				format="%Y-%m-%d %H:%M:%S"
+				readonly="true"
+			/>		
 			
 			<field name="hits" type="text"
 				default=""
@@ -105,19 +113,19 @@
 		<fields name="meta_data">
 			<fieldset name='meta_data'>
 				<field	name="title" type="text"
-						label="COM_PAYCART_PRODUCT_META_DATA_TITLE_DESC" 
-						description="COM_PAYCART_PRODUCT_META_DATA_TITLE_LABEL"
+						label="COM_PAYCART_PRODUCT_META_DATA_TITLE_LABEL" 
+						description="COM_PAYCART_PRODUCT_META_DATA_TITLE_DESC"
 				/>
 				
 				<field 	name="descriprion" type="text"
-						label="COM_PAYCART_PRODUCT_META_DATA_DESCRIPRION_DESC" 
-						description="COM_PAYCART_PRODUCT_META_DATA_DESCRIPRION_LABEL"
+						description="COM_PAYCART_PRODUCT_META_DATA_DESCRIPRION_DESC" 
+						label="COM_PAYCART_PRODUCT_META_DATA_DESCRIPRION_LABEL"
 				/>
 				
 				<field	name="keyword" type="text"
-						label="COM_PAYCART_PRODUCT_META_DATA_KEYWORD_DESC" 
-						description="COM_PAYCART_PRODUCT_META_DATA_KEYWORD_LABEL"
-				/>
+						description="COM_PAYCART_PRODUCT_META_DATA_KEYWORD_DESC" 
+						label="COM_PAYCART_PRODUCT_META_DATA_KEYWORD_LABEL"
+				/>		
 			</fieldset>
 		</fields>
 <!--		<fieldset name="advance-attributes" label="COM_PAYCART_PRODUCT_ADVANCE_ATTRIBUTES_FIELDSET_LABEL">-->

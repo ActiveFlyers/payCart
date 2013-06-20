@@ -7,21 +7,18 @@
 * @author 		mManishTrivedi 
 */
 
-if(defined('_JEXEC')===false) die();
+// no direct access
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 
 JFormHelper::loadFieldClass('list');
 jimport('joomla.form.formfield');
 
-class PaycartFormFieldProduct_Type extends JFormFieldList
-{
-	
-	//protected $type = 'product_type';
-		
+class PaycartFormFieldProductType extends JFormFieldList
+{	
 	public function getOptions()
 	{
-		//$product = PaycartProduct::getInstance();
-		$product_type = PaycartProduct::getProductType();
+		$product_type = PaycartHelperProduct::getProductType();
 		return PaycartHtml::buildOptions($product_type);		
 	}
 	

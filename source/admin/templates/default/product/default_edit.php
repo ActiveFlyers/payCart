@@ -27,41 +27,149 @@ JHtml::_('behavior.formvalidation');
 </script>
 
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
+	<div class="row-fluid">
+		<div class="span10 form-horizontal">
+			<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>
+<!--========	Product Basic Attributes	========-->
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
+				<?php $field = $form->getField('name') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				<?php $field = $form->getField('description') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+			<?php echo JHtml::_('bootstrap.endTab'); ?>
+			
+<!--========	Product Core Attributes	========-->			
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'core', JText::_('COM_PAYCART_PRODUCT_CORE_ATTRIBUTES_FIELDSET_LABEL', true)); ?>				
+				
+				<?php $field = $form->getField('product_id') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+				<?php $field = $form->getField('category_id') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				<?php $field = $form->getField('quantity') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				<?php $field = $form->getField('featured') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				<?php $field = $form->getField('cover_image') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+			<?php echo JHtml::_('bootstrap.endTab'); ?>
 
-	<!--========	Product Basic Attributes	========-->
-	<div class="span5">
-		<fieldset class="form-horizontal">	
-			<legend> <?php echo Rb_Text::_('COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL' ); ?> </legend>
-			<?php $fieldSets = $form->getFieldsets();?>
-				<?php foreach ($fieldSets as $name => $fieldSet) :?>
-					<?php foreach ($form->getFieldset($name) as $field):?>
-						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
-						</div>
+<!--========	Product Custom Attributes	========-->			
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'custom', JText::_('COM_PAYCART_PRODUCT_CUSTOM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
+				
+				<?php $field = $form->getField('published') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+				<?php echo JHtml::_('bootstrap.endTab'); ?>	
+				
+<!--========	Product Custom Attributes	========-->			
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'system', JText::_('COM_PAYCART_PRODUCT_SYSTEM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
+				<?php $field = $form->getField('publish_up') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				<?php $field = $form->getField('publish_down') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				<?php $field = $form->getField('created_date') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				<?php $field = $form->getField('modified_date') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>	
+				
+				<fieldset class="form-horizontal">	
+				<legend> <?php echo Rb_Text::_('COM_PAYCART_PRODUCT_META_DATA_ATTRIBUTES_FIELDSET_LABEL' ); ?> </legend>
+				<?php $fieldSets = $form->getFieldsets('meta_data');?>
+					<?php foreach ($fieldSets as $name => $fieldSet) :?>
+						<?php foreach ($form->getFieldset($name) as $field):?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						<?php endforeach;?>
 					<?php endforeach;?>
-				<?php endforeach;?>
-		</fieldset>
+				</fieldset>
+				<?php echo JHtml::_('bootstrap.endTab'); ?>
+				
+			<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+		</div>
+		
+
+<!--========	Product System Attributes	========-->
+		<div class="span2">
+		<h4><?php echo Rb_Text::_('COM_PAYCART_PRODUCT_DETAIL' ); ?> </h4>
+			<hr>
+			<fieldset class="form-vertical">	
+				
+				<?php $field = $form->getField('type') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+				<?php $field = $form->getField('amount') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+				<?php $field = $form->getField('alias') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+				<?php $field = $form->getField('sku') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+				<?php $field = $form->getField('published') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>	
+			</fieldset>
+		</div>		
+
 	</div>
-
-	<!--========	Product Meta Data Attributes	========-->
-	<div class="span5">
-		<fieldset class="form-horizontal">	
-			<legend> <?php echo Rb_Text::_('COM_PAYCART_PRODUCT_META_DATA_ATTRIBUTES_FIELDSET_LABEL' ); ?> </legend>
-			<?php $fieldSets = $form->getFieldsets('meta_data');?>
-				<?php foreach ($fieldSets as $name => $fieldSet) :?>
-					<?php foreach ($form->getFieldset($name) as $field):?>
-						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
-						</div>
-					<?php endforeach;?>
-				<?php endforeach;?>
-		</fieldset>
-	</div>
-
-
-	<!--========	Hiddens variables	========-->	
+	
+<!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="save" />
-	<input type='hidden' name='id' value='<?php echo $record_id;?>' />				
+	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
 </form>

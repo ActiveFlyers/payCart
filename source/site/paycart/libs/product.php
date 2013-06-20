@@ -23,8 +23,9 @@ class PaycartProduct extends PaycartLib
 	protected $product_id	 =	0; 
 	protected $name 		 =	null;
 	protected $alias 		 =	'';
+	protected $published		 =	1;
 	protected $type			 =	'';
-	protected $price		 = 	0.00;
+	protected $amount		 = 	0.00;
 	protected $quantity		 =	0;
 	protected $sku	;	
 	protected $variation_of	 =	0;  		// This product is variation of another product. 	
@@ -48,8 +49,9 @@ class PaycartProduct extends PaycartLib
 		$this->product_id	 =	0; 
 		$this->name 		 =	'';
 		$this->alias 		 =	'';
+		$this->published 	 =	1;
 		$this->type			 =	self::TYPE_PHYSICAL;
-		$this->price		 = 	0;
+		$this->amount		 = 	0;
 		$this->quantity		 =	0;
 		$this->sku;	
 		$this->variation_of	 =	0;  		// This product is variation of another product. 	
@@ -75,23 +77,4 @@ class PaycartProduct extends PaycartLib
 		return parent::getInstance('Product', $id, $data);
 	}
 	
-	/**
-	 * @return array of availble product types.
-	 */
-	public static function getProductType() {
-		return 
-			Array(
-					self::TYPE_PHYSICAL		=>	'COM_PAYCART_PRODUCT_TYPE_PHYSICAL',
-					self::TYPE_DIGITAL		=>	'COM_PAYCART_PRODUCT_TYPE_DIGITAL'	
-				  );
-	}
-	
-	public function X_bind($data, $ignore=array()) {
-		
-		if(is_array($data) && is_array($data['meta_data'])) {
-			$data['meta_data'] = json_encode($data['meta_data']);
-		}
-		
-		return parent::bind($data, $ignore);
-	}
 }

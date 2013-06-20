@@ -25,12 +25,12 @@ defined('_JEXEC') OR die();
 					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" />
 				</th>
 				<th >
-					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_GRID_PRODUCT_ID", 'product_id', $filter_order_Dir, $filter_order);?>
+					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_ID", 'product_id', $filter_order_Dir, $filter_order);?>
 				</th>
 			    				
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_GRID_PRODUCT_NAME", 'name', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_GRID_USER_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_GRID_PRODUCT_PRICE", 'price', $filter_order_Dir, $filter_order);?></th>			
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_NAME", 'name', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_AMOUNT", 'amount', $filter_order_Dir, $filter_order);?></th>			
 			</tr>
 		<!-- TABLE HEADER END -->
 		</thead>
@@ -49,7 +49,7 @@ defined('_JEXEC') OR die();
 						<br /> <?php echo $record->alias; ?>
 					</td>
 					<td><?php echo $record->sku;?></td>
-					<td><?php echo $record->price;?></td>
+					<td><?php echo $record->amount;?></td>
 				</tr>
 			<?php $count++;?>
 			<?php endforeach;?>
