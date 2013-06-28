@@ -16,15 +16,5 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * Product Helper
  */
 class PaycartHelperProduct extends PaycartHelper
-{
-	/**
-	 * @return array of availble product types.
-	 */
-	public static function getProductType() {
-		return 
-			Array(
-					PaycartProduct::TYPE_PHYSICAL		=>	'COM_PAYCART_PRODUCT_TYPE_PHYSICAL',
-					PaycartProduct::TYPE_DIGITAL		=>	'COM_PAYCART_PRODUCT_TYPE_DIGITAL'	
-				  );
-	}		
+{	
 }

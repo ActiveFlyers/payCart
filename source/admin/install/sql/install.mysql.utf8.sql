@@ -99,16 +99,18 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute_value` (
 CREATE TABLE IF NOT EXISTS `#__paycart_category` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `alias` varchar(255) NOT NULL,
+  `alias` varchar(255) DEFAULT NULL,
   `description` text,
-  `cover_image` varchar(255),
-  `parent` int(11) DEFAULT 0,
-  `ordering` int(11) NOT NULL,
-  `publish` bit(1) DEFAULT 0,
+  `cover_image` varchar(255) DEFAULT NULL,
+  `parent` int(11) DEFAULT '0',
+  `ordering` int(11) NOT NULL DEFAULT '0',
+  `published` tinyint(1) DEFAULT '0',
   `params` text,
-  PRIMARY KEY (`category_id`),
-  UNIQUE KEY `alias` (`alias`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All item''s category will be store here ' AUTO_INCREMENT=1 ;
+  `created_by` int(11) NOT NULL DEFAULT '0',
+  `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`category_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='All products''s category will be store here ' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 

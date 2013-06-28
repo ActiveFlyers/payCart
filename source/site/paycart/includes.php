@@ -22,6 +22,8 @@ define('PAYCART_CORE_LOADED', true);
 // include defines
 include_once dirname(__FILE__).'/defines.php';
 
+//load global stuff 
+Rb_HelperLoader::addAutoLoadFile(PAYCART_PATH_CORE.'/base/paycart.php',	'Paycart');
 //load core
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/base',		     '',		 'Paycart');
 

@@ -91,7 +91,22 @@ paycart.admin.grid = {
 		}
 };
 
-
+/** ===================================================
+ *  Admin Javascript For Paycart
+ *  ===================================================
+ */
+paycart.admin = 
+	{
+		category :
+		{
+			add : function(categoryName, CallbackOnSuccess, CallbackOnError)
+			{
+				var link  = 'index.php?option=com_paycart&task=save&view=category';
+				var data  = {'category_name': categoryName };
+				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
+			}
+		}
+	};
 
 /*--------------------------------------------------------------
   on Document ready 

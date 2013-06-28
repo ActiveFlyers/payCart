@@ -12,9 +12,7 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
-//JHtml::_('behavior.tooltip');
-//JHtml::_('behavior.keepalive');
-JHtml::_('behavior.formvalidation');
+PaycartHtml::_('behavior.formvalidation');
 ?>
 
 <script type="text/javascript">
@@ -29,9 +27,9 @@ JHtml::_('behavior.formvalidation');
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
 	<div class="row-fluid">
 		<div class="span10 form-horizontal">
-			<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>
+			<?php echo PaycartHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>
 <!--========	Product Basic Attributes	========-->
-			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
+			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
 				<?php $field = $form->getField('name') ?>
 				<div class="control-group">
 					<div class="control-label"><?php echo $field->label; ?> </div>
@@ -43,10 +41,10 @@ JHtml::_('behavior.formvalidation');
 					<div class="controls"><?php echo $field->input; ?></div>								
 				</div>
 				
-			<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 			
 <!--========	Product Core Attributes	========-->			
-			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'core', JText::_('COM_PAYCART_PRODUCT_CORE_ATTRIBUTES_FIELDSET_LABEL', true)); ?>				
+			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'core', Rb_Text::_('COM_PAYCART_PRODUCT_CORE_ATTRIBUTES_FIELDSET_LABEL', true)); ?>				
 				
 				<?php $field = $form->getField('product_id') ?>
 				<div class="control-group">
@@ -75,10 +73,10 @@ JHtml::_('behavior.formvalidation');
 					<div class="controls"><?php echo $field->input; ?></div>								
 				</div>
 				
-			<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 
 <!--========	Product Custom Attributes	========-->			
-			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'custom', JText::_('COM_PAYCART_PRODUCT_CUSTOM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
+			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'custom', Rb_Text::_('COM_PAYCART_PRODUCT_CUSTOM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
 				
 				<?php $field = $form->getField('published') ?>
 				<div class="control-group">
@@ -86,10 +84,10 @@ JHtml::_('behavior.formvalidation');
 					<div class="controls"><?php echo $field->input; ?></div>								
 				</div>
 				
-				<?php echo JHtml::_('bootstrap.endTab'); ?>	
+				<?php echo PaycartHtml::_('bootstrap.endTab'); ?>	
 				
 <!--========	Product Custom Attributes	========-->			
-			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'system', JText::_('COM_PAYCART_PRODUCT_SYSTEM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
+			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'system', Rb_Text::_('COM_PAYCART_PRODUCT_SYSTEM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
 				<?php $field = $form->getField('publish_up') ?>
 				<div class="control-group">
 					<div class="control-label"><?php echo $field->label; ?> </div>
@@ -123,9 +121,9 @@ JHtml::_('behavior.formvalidation');
 						<?php endforeach;?>
 					<?php endforeach;?>
 				</fieldset>
-				<?php echo JHtml::_('bootstrap.endTab'); ?>
+				<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 				
-			<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+			<?php echo PaycartHtml::_('bootstrap.endTabSet'); ?>
 		</div>
 		
 

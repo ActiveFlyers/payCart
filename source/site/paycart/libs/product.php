@@ -17,9 +17,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartProduct extends PaycartLib
 {
-	const TYPE_PHYSICAL	=	10;
-	const TYPE_DIGITAL	=	20;
-	
 	protected $product_id	 =	0; 
 	protected $name 		 =	null;
 	protected $alias 		 =	'';
@@ -50,7 +47,7 @@ class PaycartProduct extends PaycartLib
 		$this->name 		 =	'';
 		$this->alias 		 =	'';
 		$this->published 	 =	1;
-		$this->type			 =	self::TYPE_PHYSICAL;
+		$this->type			 =	Paycart::PRODUCT_TYPE_PHYSICAL;
 		$this->amount		 = 	0;
 		$this->quantity		 =	0;
 		$this->sku;	

@@ -61,10 +61,11 @@
 				description="COM_PAYCART_PRODUCT_DESCRIPTION_DESC"
 				label="COM_PAYCART_PRODUCT_DESCRIPTION_LABEL" 
 			/>
-			<field name="category_id" type="text"
+			<field name="category_id" type="paycart.productcategory"
 				default=""
 				description="COM_PAYCART_PRODUCT_CATEGORY_ID_DESC"
-				label="COM_PAYCART_PRODUCT_CATEGORY_ID_LABEL" 
+				label="COM_PAYCART_PRODUCT_CATEGORY_ID_LABEL"
+				addnew="true" 
 			/>
 			<field name="cover_image" type="text"
 				description="COM_PAYCART_PRODUCT_COVER_IMAGE_DESC"

@@ -19,4 +19,14 @@ if(!defined( '_JEXEC' )){
  */
 class PaycartHelper extends Rb_Helper
 {
+	/**
+	 * @return array of availble product types.
+	 */
+	public static function getProductTypes() {
+		return 
+			Array(
+					Paycart::PRODUCT_TYPE_PHYSICAL		=>	'COM_PAYCART_PRODUCT_TYPE_PHYSICAL',
+					Paycart::PRODUCT_TYPE_DIGITAL		=>	'COM_PAYCART_PRODUCT_TYPE_DIGITAL'	
+				  );
+	}	
 }
