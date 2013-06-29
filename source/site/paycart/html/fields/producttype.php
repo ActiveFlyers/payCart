@@ -17,7 +17,7 @@ class PaycartFormFieldProductType extends JFormFieldList
 {	
 	public function getOptions()
 	{
-		$product_type = PaycartHelperProduct::getProductType();
+		$product_type = PaycartHelperProduct::getTypes();
 		return PaycartHtml::buildOptions($product_type);		
 	}
 	

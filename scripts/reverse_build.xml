@@ -54,6 +54,14 @@
 				<exclude  name="**/*-min.js" />
 			</fileset>			
 		</copy>
+		
+		<!-- Copy Media source code		-->
+		<copy todir="${target}/source/site/media">
+			<fileset dir="${source}/media/com_paycart">
+				<include name="**/*.*" />
+				<exclude  name="**/*-min.js" />
+			</fileset>			
+		</copy>
 	</target>
 	
 	<!-- ============================================  -->

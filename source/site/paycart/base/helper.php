@@ -19,14 +19,29 @@ if(!defined( '_JEXEC' )){
  */
 class PaycartHelper extends Rb_Helper
 {
+
 	/**
-	 * @return array of availble product types.
+	 * Sluggifies the input string.
+	 *
+	 * @param string $string 		input string
+	 * @param bool   $force_safe 	Do we have to enforce ASCII instead of UTF8 (default: false). 
+	 * 
+	 * @return string sluggified string
+	 * PCTODO:: $forceSafe should be handle by configuration setting
+	 * $forceSafe => {yes, no, global}
 	 */
-	public static function getProductTypes() {
-		return 
-			Array(
-					Paycart::PRODUCT_TYPE_PHYSICAL		=>	'COM_PAYCART_PRODUCT_TYPE_PHYSICAL',
-					Paycart::PRODUCT_TYPE_DIGITAL		=>	'COM_PAYCART_PRODUCT_TYPE_DIGITAL'	
-				  );
-	}	
+	public function sluggify($string, $forceSafe = false)
+	{
+		$string = JString::strtolower($string);
+        $string = JString::str_ireplace(array('$',','), '', $string);
+
+		if ($forceSafe) {
+			$string = JFilterOutput::stringURLSafe($string);
+		} else {
+			// Handle by Joomla global configuration varible 'unicodeslugs'
+			$string = Rb_Factory::getApplication()->stringURLSafe($string);
+		}
+
+		return JString::trim($string);
+	}
 }

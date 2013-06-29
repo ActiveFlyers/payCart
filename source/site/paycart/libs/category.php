@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartCategory extends PaycartLib
 {
 	protected $category_id	 =	0; 
-	protected $name 		 =	null;
+	protected $title 		 =	null;
 	protected $alias 		 =	'';
 	protected $description	 =	null;
 	protected $published	 =	1;
@@ -32,7 +32,7 @@ class PaycartCategory extends PaycartLib
 	public function reset() 
 	{		
 		$this->category_id	 =	0; 
-		$this->name 		 =	null;
+		$this->title 		 =	null;
 		$this->alias 		 =	'';
 		$this->description	 =	null;
 		$this->published	 =	1;
@@ -50,4 +50,72 @@ class PaycartCategory extends PaycartLib
 	{
 		return parent::getInstance('category', $id, $data);
 	}	
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
+	 * Formating here before save content
+	 */
+	public function save()
+	{
+		if(!$this->created_by) {
+			$this->created_by = Rb_Factory::getUser()->get('id');
+		}
+		
+		// generate unique alias if not exist
+		$this->alias = $this->getUniqueAlias();
+		
+		return parent::save();
+	}
+	
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+	
+	/**
+	 * Get unique object alias string.
+	 *
+	 * @param string $id The object id
+	 * @param string $alias The object alias
+	 *
+	 * @return string The unique object alias string
+	 */
+	public function getUniqueAlias() 
+	{
+		// alias replace with title if alias name is empty
+		if (empty($this->alias)) {
+			$this->alias = $this->getTitle(); 
+		}
+
+		//Sluggify the input string
+		$this->alias = PaycartHelper::sluggify($this->alias);
+		
+		// @IMP :: Here category_id is mandatory params  
+		while ($this->isAliasExists($this->alias, $this->category_id)) {
+			$this->alias = JString::increment($this->alias, 'dash');
+		}
+		
+		return $this->alias;
+	}
+	
+	/**
+	 * Method to check if an alias already exists.
+	 *
+	 * @param string $alias The object alias
+	 * @param string $id The category id, When you re-save existing alias then should not be generated new alais. 
+	 *   
+	 * @return string The object id if found, or 0
+	 */
+	public function isAliasExists($alias, $id = 0) 
+	{
+		$xid = intval($this->getModel()->translateAliasToID($alias));
+		if ($xid && $xid != intval($id)) {
+			return true;
+		}
+		return false;
+	}
+	
+	
 }

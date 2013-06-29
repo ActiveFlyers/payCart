@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute_value` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_category` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
   `alias` varchar(255) DEFAULT NULL,
   `description` text,
   `cover_image` varchar(255) DEFAULT NULL,
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `ordering` int(11) NOT NULL DEFAULT '0',
-  `featured` tinyint(1) NOT NULL DEFAULT '0'
+  `featured` tinyint(1) NOT NULL DEFAULT '0',
   `description` text,
   `hits` int(11) NOT NULL DEFAULT '0',
   `meta_data` text COMMENT 'Here you can store meta title, tag and description.',

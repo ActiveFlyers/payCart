@@ -21,7 +21,7 @@ JFormHelper::loadFieldClass('list');
  *
  */
 
-class PaycartFormFieldProductCategory extends JFormFieldList
+class PaycartFormFieldCategory extends JFormFieldList
 {	
 	public function getInput()
 	{
@@ -50,17 +50,25 @@ class PaycartFormFieldProductCategory extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$category = PaycartHelperProduct::getTypes();
-		$listLabel = $this->element['listlabel'] ? (string) $this->element['listlabel'] : 'COM_PAYCART_SELECT_PRODUCT_CATEGORY';
-		array_unshift($category, Rb_Text::_($listLabel));
+		$category = PaycartHelperCategory::getCategory();
+
+		$listLabel = parent::getOptions();
+		if($listLabel) {
+			$listLabel[0]->title = $listLabel[0]->text;
+			$category = array_merge($listLabel, $category);
+		}
+		
 		return PaycartHtml::buildOptions($category);		
 	}
 	
 	private function _addScript()
 	{
-		$category = PaycartHelperProduct::getTypes();
+		$result = PaycartHelperCategory::getCategory();
 		
-		array_walk($category, function(&$name) { $name = "'".$name."'"; });
+		$category 	= Array();
+		foreach ($result as $categoryId => $value) {
+			$category[$categoryId] = "'$value->title'";
+		}
 		
 		ob_start();
 		?>
@@ -97,7 +105,7 @@ class PaycartFormFieldProductCategory extends JFormFieldList
 							$('#add_new_category').focus();
 							return false;
 						}
-						paycart.admin.category.add(value, callbackOnSuccess, callbackOnError);
+						paycart.category.add(value, callbackOnSuccess, callbackOnError);
 					}
 				);		
 	

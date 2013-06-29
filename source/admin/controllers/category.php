@@ -21,9 +21,9 @@ class PaycartAdminControllerCategory extends PaycartController {
 	
 	function save()
 	{
-		// Handle 		
+		// PCTODO:: should be move into front end controller with new ajaxTask  		
 		if(RB_REQUEST_DOCUMENT_FORMAT == 'ajax') {
-			$post['name'] = $this->input->get('category_name');
+			$post['title'] = $this->input->get('category_name');
 			// PCTODO:: move into view
 			$ajax = Rb_Factory::getAjaxResponse();
 			$entity = $this->_save($post); 
