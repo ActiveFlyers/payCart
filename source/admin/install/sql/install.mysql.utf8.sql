@@ -146,3 +146,57 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   KEY `alias` (`alias`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Table have all PayCart Products and thier core element.' AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_cart`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
+  `cart_id` 		int(11)		NOT NULL	AUTO_INCREMENT,
+  `buyer_id` 		int(11) 				DEFAULT '0',
+  `subtotal` 		decimal(15,5)	 		DEFAULT '0.00000',
+  `total` 			decimal(15,5) 			DEFAULT '0.00000', 
+  `modifiers` 		text,
+  `currency` 		char(3) 				DEFAULT NULL,
+  `status` 			int(5) 					DEFAULT '0',
+  `created_date` 	datetime 	NOT NULL,
+  `modified_date` 	datetime 	NOT NULL,
+  `checkout_date` 	datetime 				DEFAULT '0000-00-00 00:00:00',
+  `paid_date` 		datetime 				DEFAULT '0000-00-00 00:00:00',
+  `complete_date` 		datetime 			DEFAULT '0000-00-00 00:00:00',
+  `cancellation_date` 	datetime 			DEFAULT '0000-00-00 00:00:00',
+  `refund_date` 	datetime 				DEFAULT '0000-00-00 00:00:00',
+  `params` 			text,
+  PRIMARY KEY (`cart_id`),
+  INDEX `idx_buyer_id` (`buyer_id`),
+  INDEX `idx_status` (`status`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_cart_particulars`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_cart_particulars` (
+  `cart_particulars_id` int(11) 	NOT NULL 	AUTO_INCREMENT,
+  `cart_id` 		int(11) 					DEFAULT '0',
+  `buyer_id` 		int(11) 					DEFAULT '0',
+  `product_id` 		int(11) 					DEFAULT '0',
+  `title` 			varchar(255) 				DEFAULT NULL,
+  `quantity` 		int(11) 					DEFAULT '0',
+  `unit_cost` 		decimal(15,5) 				DEFAULT '0.00000',
+  `tax` 			decimal(15,5) 				DEFAULT '0.00000',
+  `discount` 		decimal(15,5) 				DEFAULT '0.00000',
+  `price` 			decimal(15,5) 				DEFAULT '0.00000',
+  `shipment_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
+  `reversal_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
+  `delivery_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
+  `params` 			text 			COMMENT 'Include extra stuff like, Notes.',
+  PRIMARY KEY (`cart_particulars_id`),
+  INDEX `idx_buyer_id` (`buyer_id`),
+  INDEX `idx_product_id` (`product_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
