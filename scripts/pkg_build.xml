@@ -85,21 +85,27 @@
 	<!-- ====================================================== -->
 
 	<target name="copy_pkg_xml">
-		<copy file="${build.package.location}/pkg.xml" tofile="${dir.packages}/${build.package.name}.xml" overwrite="true"/>
+		<copy file="${build.package.location}/pkg.xml" tofile="${dir.packages}/pkg_${project.shortform}.xml" overwrite="true"/>
 		
 		<!-- Apply the version change to all files. -->
 		<reflexive>
 			<fileset dir="${dir.packages}">
-			     <include name="${build.package.name}.xml" />
+			     <include name="pkg_${project.shortform}.xml" />
 			</fileset>
 			 <filterchain>
 				<replacetokens>
-				    <token key="build.number"   		value="${build.number}" />
-				    <token key="rbframework.name"   		value="${rbframework.name}" />
+				    <token key="build.number"   				value="${build.number}" />
+				    <token key="build.version"   				value="${file.version}.${build.number}" />
+				    <token key="rbframework.name"   			value="${rbframework.name}" />
 				    <token key="rbframework.build.version"   	value="${rbframework.build.version}" />
-				    <token key="project.shortform"   		value="${project.shortform}" />	
-				    <token key="file.version" 			value="${file.version}" />
-				    <token key="project.name" 			value="${project.name}" />
+				    <token key="project.shortform"   			value="${project.shortform}" />	
+				    <token key="file.version" 					value="${file.version}" />
+				    <token key="project.name" 					value="${project.name}" />
+				    <token key="build.package.name" 			value="${build.package.name}" />
+				    <token key="team.name"   					value="${team.name}" />
+				    <token key="site.url"   					value="${site.url}" />	
+				    <token key="creation.date" 					value="${creation.date}" />
+				    <token key="script.tag" 					value="${script.tag}" />
 				</replacetokens>
 			</filterchain>
 		</reflexive>

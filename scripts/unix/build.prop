@@ -15,6 +15,9 @@ project.shortform		= Paycart
 project.shortform.small = paycart
 project.codename		= Maharana
 project.name		= com_paycart
+team.name		= payplans@readybytes.in
+site.url		= http://www.jpayplans.com
+creation.date		= June 2013
 
 # Output settings
 file.version		= 0.0
@@ -29,4 +32,5 @@ rbframework.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
 
 # RB Commerce Pakages
 build.package.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
-build.package.name	  		= Pakage_Paycart
+build.package.name	  	= Pakage_Paycart
+script.tag			= 
