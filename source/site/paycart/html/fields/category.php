@@ -50,7 +50,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$category = PaycartHelperCategory::getCategory();
+		$category = self::getCategory();
 
 		$listLabel = parent::getOptions();
 		if($listLabel) {
@@ -63,7 +63,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 	
 	private function _addScript()
 	{
-		$result = PaycartHelperCategory::getCategory();
+		$result = self::getCategory();
 		
 		$category 	= Array();
 		foreach ($result as $categoryId => $value) {
@@ -75,10 +75,15 @@ class PaycartFormFieldCategory extends JFormFieldList
 		paycart.jQuery(document).ready(function($)
 		{
 			<!-- Callback function when category successfully added				-->
-			var callbackOnSuccess = function(response)
+			var callbackOnSuccess = function(data)
 			{
-				// PCTODO :: add new added list into category list
-				alert('added successfully.// PCTODO :: add new added list into category list');
+				var response = data[0][1];
+				var option = $('<option/>');
+				option.attr({ 'value': response.category_id }).text(response.title);
+				//append new oprion to select list
+				$('.paycart_category_class').append(option);
+				// default selected
+				$('.paycart_category_class').val(response.category_id);
 			};
 			<!-- Callback function when error occur during category adding operation	-->
 			var callbackOnError = function ()
@@ -116,5 +121,25 @@ class PaycartFormFieldCategory extends JFormFieldList
 		ob_end_clean();
 		JFactory::getDocument()->addScriptDeclaration($script); 
 		;
+	}
+		
+	 /**
+	 * @return all available category array('category_id'=>'Array of category stuff')
+	 */
+	private static function getCategory($reset = false)
+	{
+		static $result ;
+		if ($result && !$reset ) {
+			return $result;
+		}
+		
+		$model = PaycartFactory::getInstance('category', 'Model');
+		// Should be sorted according to 'title' so need to write query with "order by"
+		$model->clearQuery();  
+		$query = $model->getQuery()->clear('order')->order('title');
+		
+		$result = $model->loadRecords();
+		 
+		return $result;
 	}
 }

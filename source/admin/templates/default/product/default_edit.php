@@ -24,7 +24,7 @@ PaycartHtml::_('behavior.formvalidation');
 	}
 </script>
 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data" >
 	<div class="row-fluid">
 		<div class="span10 form-horizontal">
 			<?php echo PaycartHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>

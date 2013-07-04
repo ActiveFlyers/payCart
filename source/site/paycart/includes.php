@@ -24,6 +24,9 @@ include_once dirname(__FILE__).'/defines.php';
 
 //load global stuff 
 Rb_HelperLoader::addAutoLoadFile(PAYCART_PATH_CORE.'/base/paycart.php',	'Paycart');
+// Manually Load event file so we can register internal events/trigger  
+include_once PAYCART_PATH_CORE.'/base/event.php';
+
 //load core
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/base',		     '',		 'Paycart');
 

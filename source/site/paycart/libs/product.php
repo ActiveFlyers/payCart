@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartProduct extends PaycartLib
 {
 	protected $product_id	 =	0; 
-	protected $name 		 =	null;
+	protected $name 		 =	null;	//@PCTODO:: rename "name" to "title"
 	protected $alias 		 =	'';
 	protected $published		 =	1;
 	protected $type			 =	'';
@@ -44,7 +44,7 @@ class PaycartProduct extends PaycartLib
 	public function reset() 
 	{		
 		$this->product_id	 =	0; 
-		$this->name 		 =	'';
+		$this->name 		 =	'';	//@PCTODO:: rename "name" to "title"
 		$this->alias 		 =	'';
 		$this->published 	 =	1;
 		$this->type			 =	Paycart::PRODUCT_TYPE_PHYSICAL;
@@ -60,6 +60,7 @@ class PaycartProduct extends PaycartLib
 		$this->publish_down  =	Rb_Date::getInstance('0000-00-00 00:00:00');	 	
 		$this->created_date  =	Rb_Date::getInstance();	
 		$this->modified_date =	Rb_Date::getInstance(); 	
+		$this->created_by	 =	0;
 		$this->ordering		 =	0;
 		$this->featured		 =	0;	
 		$this->description	 =	null; 	
@@ -73,5 +74,50 @@ class PaycartProduct extends PaycartLib
 	{
 		return parent::getInstance('Product', $id, $data);
 	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
+	 * Formating here before save content
+	 */
+	public function save()
+	{
+		// Set Product owner
+		if (!$this->created_by) {
+			$this->created_by = Rb_Factory::getUser()->get('id');
+		}
+		
+		// generate unique alias if not exist
+		//$this->alias = $this->getUniqueAlias();
+		
+		// Set Cover Image Path
+		// PCTODO :: Handle when multiple file uploads
+		$file = PaycartFactory::getApplication()->input->files->get('paycart_form', false);
+		// CoverImage is uploaded
+		if ( $file && isset($file['cover_image']) && $file['cover_image']['name']) {
+			$fileName = JString::substr( PaycartFactory::getApplication()->getHash( $file['cover_image']['name'] . time() ), 0, 16);
+			$this->cover_image = $fileName . PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
+		}
+		 
+		return parent::save();
+	}
+	
+	/**
+	 * @return Product name 
+	 */
+	public function getTitle() 
+	{	//@PCTODO:: rename "name" to "title"
+		return $this->name;
+		;
+	}
+	
+	/**
+	 * @return name of Product Cover Image 
+	 */
+	public function getCoverImage() 
+	{	//@PCTODO :: option for path
+		return $this->cover_image;
+	}
+	
 	
 }

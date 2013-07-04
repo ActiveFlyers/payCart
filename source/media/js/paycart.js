@@ -45,6 +45,21 @@ paycart.url = {
 	}
 };
 
+
+/** ===================================================
+ *  Common Javascript For Paycart
+ *  ===================================================
+ */
+paycart.category =
+	{
+		add : function(categoryName, CallbackOnSuccess, CallbackOnError)
+			{
+				var link  = 'index.php?option=com_paycart&task=save&view=category';
+				var data  = {'category_name': categoryName };
+				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
+			}
+	};
+
 // ENDING :
 // Scoping code for easy and non-conflicting access to $.
 // Should be last line, write code above this line.

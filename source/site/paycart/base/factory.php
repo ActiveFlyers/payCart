@@ -23,4 +23,31 @@ class PaycartFactory extends Rb_Factory
 	{
 		return parent::getInstance($name, $type, $prefix, $refresh);
 	}
+	
+	/**
+	 * 
+	 * Method invoke to get {Paycart + Site global} configuration object
+	 * 
+	 * @return Rb_registry object
+	 */
+	static function getConfig($file = null, $type = 'PHP', $namespace = '')
+	{
+		static $config;
+		if($config) {
+			return $config;
+		}
+		$config = parent::getConfig();
+		$config = self::_loadConfig($config->toArray());
+		return $config;
+	}
+	
+	/**
+	 * Private method for load Paycart global configuration
+	 */
+	private function _loadConfig($data = Array())
+	{
+		// PCTODO :: Load Config from Model
+		$config = new Rb_Registry($data);
+		return $config;
+	}
 }

@@ -55,11 +55,13 @@
 			</fileset>			
 		</copy>
 		
-		<!-- Copy Media source code		-->
-		<copy todir="${target}/source/site/media">
+		<!-- Copy Media code		-->
+		<copy todir="${target}/source/media">
 			<fileset dir="${source}/media/com_paycart">
-				<include name="**/*.*" />
+				<include  name="**/*.*" />
 				<exclude  name="**/*-min.js" />
+				<exclude  name="images/products/**.**" />
+				<exclude  name="images/categories/**.**" />
 			</fileset>			
 		</copy>
 	</target>

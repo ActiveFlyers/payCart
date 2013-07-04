@@ -26,12 +26,12 @@ class PaycartAdminControllerCategory extends PaycartController {
 			$post['title'] = $this->input->get('category_name');
 			// PCTODO:: move into view
 			$ajax = Rb_Factory::getAjaxResponse();
-			$entity = $this->_save($post); 
-			if($entity) {
+			$category = $this->_save($post); 
+			
+			if($category) {
 				// PCTODO:: save success, send new cat_id as response
-				$ajax->addRawData('response', 'true');
-				
-			}else {
+				$ajax->addRawData('response',$category->toArray());
+			} else {
 				//PCTODO::error msg
 			}
 			//set ajax response and return it
