@@ -41,79 +41,14 @@ class PaycartEvent extends JEvent
 	 */
 	protected static function _onProductAfterSave($previousObject, $currentObject) 
 	{
-		return self::_ImageProcess($previousObject, $currentObject);
+		retrun true;
 	}
 	
-	/**
-	 * 
-	 * Process Cover Image
-	 * @param Lib_object $previousObject
-	 * @param Lib_object $currentObject
-	 * 
-	 * @return (bool) True if successfully proccessed
-	 */
-	private function _ImageProcess($previousObject, $currentObject)
-	{
-		// @IMP :: must be sure data post from paycart form	
-		$file 		= PaycartFactory::getApplication()->input->files->get('paycart_form');
-		// no image
-		if ( !$file || !isset($file['cover_image']) || !$file['cover_image']['name'] ) {
-			return true;
-		}
-		
-		// 	Upload new image while Previous Image exist 
-		// need to remove previous image and thumbnail image
-		if ($previousObject  && $previousObject->get('cover_image')) {
-			// PCTODO::need to remove previous image and thumbnail image
-		}
-		
-		$imageFile 	= $file['cover_image'];
 
-		// Image validation required	
-		if (!PaycartHelperImage::isValid($imageFile)) {
-			$error = PaycartHelperImage::getError();
-			PaycartFactory::getApplication()->enqueueMessage($error, 'warning');
-			return false;
-		}
-		
-		//Create new folder
-		// PCTODO:: Should be common
-		$entity 	= $currentObject->getname();
-		// Dyamically get constant name 
-		$constant	= JString::strtoupper($entity.'_IMAGES_PATH');
-		$folderPath = JPATH_ROOT.constant("Paycart::$constant");
-		$folderName	= $currentObject->getId();	
-		$imagePath	= "$folderPath/$folderName";
-		
-		if(!JFolder::exists($imagePath) && !JFolder::create($imagePath)) {
-			// PCTODO:: Warning
-			return false;
-		}
-		
-		//Store original image
-		$source 		= $imageFile["tmp_name"];
-		//PCTODO:: Image name should be clean
-		$destination 	= $imagePath.'/'.$currentObject->getCoverImage();
-
-		if (!JFile::copy($source, $destination)) {
-			// PCTODO:: Warning
-			return false;
-		}
-		
-		//@PCTODO : Create new optimize image
-		
-		//Create thumbnail 
-		if(!PaycartHelperImage::createThumb($destination)){
-			// PCTODO:: Warning
-			return false;
-		}
-		
-		return true;
-	}
 }
 
 /**
  * Event Registeration here 
  */
-$dispatcher = JDispatcher::getInstance();
-$dispatcher->register('onPaycartAfterSave', 'PaycartEvent');
+//$dispatcher = JDispatcher::getInstance();
+//$dispatcher->register('onPaycartAfterSave', 'PaycartEvent');

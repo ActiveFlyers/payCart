@@ -20,23 +20,6 @@ class PaycartModelCategory extends PaycartModel
 	var $filterMatchOpeartor = Array(
 									'alias' => array('LIKE')
 									);
-	/**
-	 * Translate alias to id.
-	 *
-	 * @param string $alias The alias string
-	 *
-	 * @return numeric value The category id if found, or false/empty
-	 */
-	public function translateAliasToID($alias) 
-	{
-		$this->clearQuery(); 
-		$query = $this->getQuery();
-		
-		$this->_buildQueryFilter( $query, 'alias', $alias);
-		$result =  $this->loadRecords();
-		
-		return @($result->category_id);
-	}
 }
 
 class PaycartModelformCategory extends PaycartModelform { }

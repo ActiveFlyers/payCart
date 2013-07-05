@@ -13,10 +13,13 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /** 
- * Item Model
+ * Product Model
  */
 class PaycartModelProduct extends PaycartModel
 {
+	var $filterMatchOpeartor = Array(
+									'alias' => array('LIKE')
+									);
 }
 
 class PaycartModelformProduct extends PaycartModelform { }

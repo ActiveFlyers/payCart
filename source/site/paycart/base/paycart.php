@@ -30,16 +30,15 @@ class Paycart
 	const PRODUCT_IMAGES_PATH		= '/media/com_paycart/images/products/';
 	const CATEGORY_IMAGES_PATH		= '/media/com_paycart/images/categories/';
 	
-	// Image constant
-	//const PRODUCT_IMAGE_FOLDER_PREFIX	= 'product_';
-	//const CATEGORY_IMAGE_FOLDER_PREFIX	= 'category_';
-	//const OPTIMIZE_IMAGE_PREFIX 	= 'optimize_';
-	
+	// Image constant	
 	const ORIGINAL_IMAGE_PREFIX 	= 'original_';
 	
+	const OPTIMIZE_IMAGE_WIDTH 		= 200;
+	const OPTIMIZE_IMAGE_HEIGHT		= 200;
+	
 	const THUMB_IMAGE_PREFIX 	= 'thumb_';
-	const THUMB_IMAGE_WIDTH 	= 200;
-	const THUMB_IMAGE_HEIGHT	= 200;
+	const THUMB_IMAGE_WIDTH 	= 100;
+	const THUMB_IMAGE_HEIGHT	= 100;
 	
 	const IMAGE_FILE_DEFAULT_MAXIMUM_SIZE = 2; 	// 2MB
 	const IMAGE_FILE_DEFAULT_EXTENSION = '.png';

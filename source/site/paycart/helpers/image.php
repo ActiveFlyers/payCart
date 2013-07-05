@@ -60,28 +60,24 @@ class PaycartHelperImage extends PaycartHelper
 	
 	/**
 	 * 
-	 * Method to find out image extension name
-	 * @param String $type, Image file type
+	 * Method to find out image extension type
+	 * @param String $imageFile, Either image path or Image file name
 	 */
-	static public function getExtension( $type )
+	Private static function _getExtensionType( $imageFile )
 	{
-		$type = JString::strtolower($type);
+		$type = self::getConfigExtension($imageFile);
 	
 		switch($type){
-			case 'image/png' 	:
-			case 'image/x-png' 	:
-							$extension = '.png';
-							break;
-			case 'image/gif'	:
-							$extension = '.gif';
-							break;
-			case 'image/jpeg'	:
-			case 'image/pjpeg'	:
-			default:	// We default to use jpeg
-							$extension	='.jpg'; 
+			case '.gif'	:
+				return IMAGETYPE_GIF;
+			case '.jpeg'	:
+			case '.jpeg'	:
+				return IMAGETYPE_JPEG;
+			case '.png' 	:
+			default:	// We default to use png
+				return IMAGETYPE_PNG;  
 		}
-		
-		return $extension;
+
 	}
 	
 	/**
@@ -127,14 +123,14 @@ class PaycartHelperImage extends PaycartHelper
 			$thumbFolder = $imagePathInfo['dirname']; 
 		}
 		// Generate thumb name
-		$thumbFileName 	= Paycart::THUMB_IMAGE_PREFIX . $imagePathInfo['filename'] ;
+		$thumbFileName 	= Paycart::THUMB_IMAGE_PREFIX . $imagePathInfo['filename'] .self::getConfigExtension($imagePath) ;
 		
-		return self::create($imagePath, $thumbFolder, $thumbWidth, $thumbHeight, $thumbFileName);
+		return self::resize($imagePath, $thumbFolder, $thumbWidth, $thumbHeight, $thumbFileName);
 	}
 	
 	/**
 	 * 
-	 * Method call to create(Resizing) new image.
+	 * Method call to Resizing 
 	 * @param string $sourceImage 			A file path for a source image.
 	 * @param string $destinationFolder		A folder name where created image will be store
 	 * @param string $width					Width for new created image
@@ -146,7 +142,7 @@ class PaycartHelperImage extends PaycartHelper
 	 * @return (bool) True if image successfully created
 
 	 */
-	public static function create($sourceImage, $destinationFolder, $width, $height, $destinationFile='', $scaleMethod = JImage::SCALE_FILL) 
+	public static function resize($sourceImage, $destinationFolder, $width, $height, $destinationFile=null, $imageExtension = null, $scaleMethod = JImage::SCALE_FILL) 
 	{
 		$image = new JImage($sourceImage);
 		$image = $image->resize($width,$height, true, $scaleMethod);
@@ -166,10 +162,85 @@ class PaycartHelperImage extends PaycartHelper
 		
 		// Generate image name name
 		$config = PaycartFactory::getConfig();
-		$fileName 	= $destinationFolder.'/'. $destinationFile.$config->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
+		$fileName 	= $destinationFolder.'/'. $destinationFile;
 		// Save thumb file to disk
-		if (!$image->toFile($fileName, $imgProperties->type)) {
+		//@IMP :: File conversion decided here. is it png/jpg/gif 
+		if($imageExtension) {
+			$type = self::_getExtensionType($fileName);
+		}
+		if (!$image->toFile($fileName, $type)) {
 			return false;	
+		}
+		return true;
+	}
+	
+	/**
+	 * 
+	 * Method to get image thumb name 
+	 * @param String $imageTitle image name
+	 * 
+	 * @return string thumb image name
+	 */
+	public static function getThumbName($imageTitle)
+	{
+		return Paycart::THUMB_IMAGE_PREFIX.$imageTitle;
+	} 
+	
+	/**
+	 * 
+	 * Method to get original image name 
+	 * @param String $imageTitle image name
+	 * 
+	 * @return string original image name
+	 */
+	public static function getOriginalName($imageTitle)
+	{
+		return Paycart::ORIGINAL_IMAGE_PREFIX.$imageTitle;
+	}
+	
+	/**
+	 * 
+	 * Method to get original image name 
+	 * @param String $imageTitle image name
+	 * 
+	 * @return string original image name
+	 */
+	public static function getOptimizeName($imageTitle)
+	{
+		return PaycartHelper::getHash($imageTitle).self::getConfigExtension($imageTitle);
+	}
+	
+	/**
+	 * 
+	 * Method to get original image name 
+	 * @param String $imageFile Either image name or path
+	 * 
+	 * @return string original image name
+	 */
+	public static function getConfigExtension($imageFile)
+	{
+		//PCTODO :: Use 'auto' in image configuration nd remove hard code
+		$extension = PaycartFactory::getConfig()->get('image_extension', 'auto');
+		// auto means use upaload image's extension
+		if ($imageFile && strtolower($extension) == 'auto') {
+			$extension = '.'.JFile::getExt($imageFile);
+		}
+		// if extension is not exist then use default 
+		return (strtolower($extension) == 'auto') ? Paycart::IMAGE_FILE_DEFAULT_EXTENSION : $extension;
+	}
+	
+	/**
+	 * 
+	 * Method for delete image  
+	 * @param  String $path image path
+	 * 
+	 * @return (bool) True if image successfully delete
+	 */
+	public static function delete($path)
+	{
+		if ( !JFile::delete($path) ) {
+			Rb_Factory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_DELETE_FAILED', $path),'warning');
+			return false;
 		}
 		return true;
 	}

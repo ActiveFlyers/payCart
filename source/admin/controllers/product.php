@@ -16,6 +16,17 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  * @author Manish Trivedi
  */
 
-class PaycartAdminControllerProduct extends PaycartController {
+class PaycartAdminControllerProduct extends PaycartController 
+{
+	
+	/**
+	 * override it due to get all uploaded files 
+	 */
+	public function _save(array $data, $itemId=null, $type=null)
+	{
+		//Get All files from paycart form
+		$data['upload_files'] = PaycartFactory::getApplication()->input->files->get('paycart_form', false);
+		return parent::_save($data, $itemId, $type);
+	}
 		
 }

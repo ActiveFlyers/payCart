@@ -18,4 +18,21 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartHelperCategory extends PaycartHelper
 {	
 	
+	/**
+	 * Translate alias to id.
+	 *
+	 * @param string $alias The alias string
+	 *
+	 * @return numeric value The Category id if found, or false/empty
+	 */
+	public static function translateAliasToID($alias) 
+	{	
+		$query 	= new Rb_Query();
+		$result = $query->select('category_id')
+						->where("`alias` = '$alias'")
+			  			->from('#__paycart_category')
+			  			->dbLoadQuery()->loadResult();
+			  			
+		return $result;	
+	}
 }

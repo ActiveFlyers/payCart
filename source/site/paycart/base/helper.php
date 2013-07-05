@@ -44,4 +44,18 @@ class PaycartHelper extends Rb_Helper
 
 		return JString::trim($string);
 	}
+	
+	/**
+	 * 
+	 * Provides a secure hash based on a seed
+	 * 
+	 * @param   string  $seed  Seed string.
+	 *
+	 * @return  string  A secure hash
+	 */
+	public static function getHash($seed = '', $limit = 16) 
+	{
+		return JString::substr( PaycartFactory::getApplication()->getHash( $seed . time() ), 0, $limit);
+	}
+	
 }
