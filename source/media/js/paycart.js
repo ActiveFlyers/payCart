@@ -60,6 +60,16 @@ paycart.category =
 			}
 	};
 
+paycart.alias =
+	{
+		add : function(title, CallbackOnSuccess, CallbackOnError)
+			{
+				var link  = 'index.php?option=com_paycart&task=go&view=product';
+				var data  = {'title': title , 'method' : 'getalias' };
+				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
+			}
+	};
+
 // ENDING :
 // Scoping code for easy and non-conflicting access to $.
 // Should be last line, write code above this line.

@@ -120,8 +120,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_category` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `product_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique identification of product',
-  `name` varchar(255) NOT NULL COMMENT 'Product name',
-  `alias` varchar(255) NOT NULL COMMENT 'usful for sef urls',
+  `title` varchar(255) NOT NULL COMMENT 'Product name',
+  `alias` varchar(255) NOT NULL COMMENT 'useful for sef urls',
   `published` tinyint(1) NOT NULL DEFAULT '1',
   `type` int(4) DEFAULT NULL COMMENT 'Store pre-defined constant valuestypes like digital,physical etc',
   `amount` decimal(15,5) NOT NULL DEFAULT '0.00000',
@@ -136,6 +136,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_by` int(11) NOT NULL DEFAULT '0',
   `ordering` int(11) NOT NULL DEFAULT '0',
   `featured` tinyint(1) NOT NULL DEFAULT '0',
   `description` text,
@@ -143,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `meta_data` text COMMENT 'Here you can store meta title, tag and description.',
   PRIMARY KEY (`product_id`),
   UNIQUE KEY `sku` (`sku`),
-  KEY `alias` (`alias`)
+  UNIQUE KEY `alias` (`alias`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Table have all PayCart Products and thier core element.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

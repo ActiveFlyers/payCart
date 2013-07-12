@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartProduct extends PaycartLib
 {
 	protected $product_id	 =	0; 
-	protected $name 		 =	null;	//@PCTODO:: rename "name" to "title"
+	protected $title 		 =	null;	
 	protected $alias 		 =	'';
 	protected $published		 =	1;
 	protected $type			 =	'';
@@ -47,7 +47,7 @@ class PaycartProduct extends PaycartLib
 	public function reset() 
 	{		
 		$this->product_id	 =	0; 
-		$this->name 		 =	'';	//@PCTODO:: rename "name" to "title"
+		$this->title 		 =	'';	
 		$this->alias 		 =	'';
 		$this->published 	 =	1;
 		$this->type			 =	Paycart::PRODUCT_TYPE_PHYSICAL;
@@ -89,15 +89,19 @@ class PaycartProduct extends PaycartLib
 		if (!$this->created_by) {
 			$this->created_by = Rb_Factory::getUser()->get('id');
 		}
-		//PCTODO :: Save extra query execution if you will check current alias to previous alias  
-		// generate unique alias if not exist
-		$this->alias = $this->getUniqueAlias();
+		if (!$this->alias) {
+			$this->alias = $this->getTitle();
+		}
+		
+		// generate unique alias if not exist. If exist then sluggify it
+		$this->alias =  $this->getModel()->getTable()->getUniqueAlias($this->alias, $this->getId());
 		
 		// Set Cover Image Path
 		if ( $this->upload_files && isset($this->upload_files['cover_image']) && $this->upload_files['cover_image']['name']) {
-			$this->cover_image = PaycartHelperImage::getOptimizeName($this->upload_files['cover_image']['name']);			
+			$this->cover_image = PaycartHelper::getHash($this->upload_files['cover_image']['name']).PaycartHelperImage::getConfigExtension($this->upload_files['cover_image']['name']);
+			$this->cover_image = $this->getName().'/'.$this->getId().'/'.$this->cover_image;			
 		}
-		 
+		
 		return parent::save();
 	}
 	
@@ -105,16 +109,15 @@ class PaycartProduct extends PaycartLib
 	 * @return Product name 
 	 */
 	public function getTitle() 
-	{	//@PCTODO:: rename "name" to "title"
-		return $this->name;
-		;
+	{	
+		return $this->title;
 	}
 	
 	/**
 	 * @return name of Product Cover Image 
 	 */
 	public function getCoverImage() 
-	{	//@PCTODO :: option for path
+	{	
 		return $this->cover_image;
 	}
 	
@@ -161,6 +164,8 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function _ImageProcess($imageFile, $previousObject)
 	{
+		$app = PaycartFactory::getApplication();
+		
 		// Image validation required	
 		if (!PaycartHelperImage::isValid($imageFile)) {
 			$error = PaycartHelperImage::getError();
@@ -168,63 +173,62 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 		
-		$entity 	= $this->getname();
-		// Dyamically get constant name 
-		$constant	= JString::strtoupper($entity.'_IMAGES_PATH');
-		$folderPath = JPATH_ROOT.constant("Paycart::$constant");
-		$folderName	= $this->getId();	
-		$imagePath	= "$folderPath/$folderName";
+		$imagePath	= PaycartHelperImage::getDirectory();
 		
 		// 	Upload new image while Previous Image exist 
 		// need to remove previous image and thumbnail image
 		if ($previousObject  && $previousObject->get('cover_image')) {
-			// need to remove previous image and thumbnail image
-			$previousImage =  $previousObject->get('cover_image');
-			// Delete Original Image
-			PaycartHelperImage::delete($imagePath.'/'.PaycartHelperImage::getOriginalName($previousImage));
-			// Delete Optimize Image
-			PaycartHelperImage::delete($imagePath.'/'.$previousImage);
-			// Delete thumb Image
-			PaycartHelperImage::delete($imagePath.'/'.PaycartHelperImage::getThumbName($previousImage));
+			$previousImage 		 =  $previousObject->get('cover_image');
+			$previousImageDetail =  PaycartHelperImage::imageInfo($previousImage);
+			
+			$files = Array(
+							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$previousImageDetail['filename'].'.'.$previousImageDetail['extension'],		// Original Image
+							$imagePath.$previousImage,				// Optimize Image
+							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::THUMB_IMAGE_PREFIX.$previousImageDetail['filename'].'.'.$previousImageDetail['extension']
+						);
+			// Delete Original Image,Optimize Image and thumb Image
+			// @PCTODO :: Previous Original image will not delete if diffrent extension is used. { Previous Original image and Previous image } 
+			// Becoz we are directly store original image without extension change   
+			// @ISSUE:16   
+			JFile::delete($files);
 		}
 		
+		$currentImageDetail = PaycartHelperImage::imageInfo($this->cover_image);
+		$imagePath			= $imagePath.'/'.$currentImageDetail['dirname'];
+		
 		//Create new folder
+		// @PCTODO : Add index.html in each folder
+		// @ISSUE : 17
 		if(!JFolder::exists($imagePath) && !JFolder::create($imagePath)) {
-			$this->app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FOLDER_CREATEION_FAILED', $imagePath),'error');
+			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FOLDER_CREATEION_FAILED', $imagePath),'error');
 			return false;
 		}
 		
 		//Store original image
 		$source 		= $imageFile["tmp_name"];
-		$currentImage	= $this->getCoverImage();
-		//PCTODO:: Image name should be clean
-		$originalImage	= $imagePath.'/'.PaycartHelperImage::getOriginalName($currentImage);
+		$originalImage	= $imagePath.'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$currentImageDetail['filename'].'.'.$currentImageDetail['extension'];
+
 		if (!JFile::copy($source, $originalImage)) {
-			$this->app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage),'error');
+			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage),'error');
 			return false;
 		}
 		
 		// Create new optimize image
-		$optimizeImage 	= $imagePath.'/'.$currentImage;
+		$optimizeImageName = $currentImageDetail['filename'].PaycartHelperImage::getConfigExtension($imageFile['name']);
+		$optimizeImage 	= $imagePath.'/'.$optimizeImageName;
 		
 		//@PCTODO :: height and width calculate respect with original image
-		if (!PaycartHelperImage::resize($originalImage, $imagePath, Paycart::OPTIMIZE_IMAGE_WIDTH, Paycart::OPTIMIZE_IMAGE_HEIGHT, $currentImage)) {
-			$this->app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_RESIZE_FAILED', $optimizeImage),'error');
+		if (!PaycartHelperImage::resize($originalImage, $imagePath, Paycart::IMAGE_OPTIMIZE_WIDTH, Paycart::IMAGE_OPTIMIZE_HEIGHT, $optimizeImageName)) {
+			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_RESIZE_FAILED', $optimizeImage),'error');
 			return false;
 		}
 		
 		//Create thumbnail 
 		if(!PaycartHelperImage::createThumb($optimizeImage, $imagePath,  Paycart::THUMB_IMAGE_WIDTH,  Paycart::THUMB_IMAGE_HEIGHT)){
-			$this->app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage),'error');
+			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage),'error');
 			return false;
 		}
 		
 		return true;
 	}
-	// PCTODO:: Remove this function
-	function translateAliasToID($alias)
-	{
-		return PaycartHelperProduct::translateAliasToID($alias);
-	}
-	
 }

@@ -41,7 +41,7 @@ class PaycartEvent extends JEvent
 	 */
 	protected static function _onProductAfterSave($previousObject, $currentObject) 
 	{
-		retrun true;
+		return true;
 	}
 	
 

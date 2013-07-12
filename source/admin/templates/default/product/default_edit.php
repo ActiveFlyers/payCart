@@ -24,13 +24,43 @@ PaycartHtml::_('behavior.formvalidation');
 	}
 </script>
 
+<script>
+paycart.jQuery(document).ready(function($){
+	<!-- Callback function when Alias successfully generated				-->
+	var callbackOnSuccess = function(data)
+	{	// Add alias to element
+		$('#paycart_form_alias').val(data[0][1]);
+	};
+	
+	<!-- Callback function when error occur during category adding operation	-->
+	var callbackOnError = function ()
+	{
+		//@PCTODO :: Proper Error-handling 
+		alert('error in alias generating');
+	};
+
+	$('#paycart_form_title').blur( function()
+	{
+		var title = $(this).val();
+
+		// if title empty or alias pre-define
+		if (!title || $('#paycart_form_alias').val()) {
+			return true;
+		}
+
+		paycart.alias.add(title, callbackOnSuccess, callbackOnError);
+		
+	});
+});
+</script>
+
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data" >
 	<div class="row-fluid">
 		<div class="span10 form-horizontal">
 			<?php echo PaycartHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>
 <!--========	Product Basic Attributes	========-->
 			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
-				<?php $field = $form->getField('name') ?>
+				<?php $field = $form->getField('title') ?>
 				<div class="control-group">
 					<div class="control-label"><?php echo $field->label; ?> </div>
 					<div class="controls"><?php echo $field->input; ?></div>								

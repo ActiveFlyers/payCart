@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset name="image_details">
+		
+		<field 	name="image_maximum_upload_limit" 
+				type="text"
+				label="COM_PAYCART_IMAGE_UPLOAD_LIMIT" 
+				description="COM_PAYCART_IMAGE_UPLOAD_LIMIT_DESC"
+				default="2"
+		        />
+        
+        <field 	name="image_extension" 
+				type="list"
+				label="COM_PAYCART_IMAGE_EXTENSION" 
+				description="COM_PAYCART_IMAGE_EXTENSION_DESC"
+				default="auto"
+		        >
+		        <option value='auto'>-- Use upload image extension--</option>
+		        <option value='.png'>PNG</option>
+		        <option value='.jpg'>JPEG</option>
+		        <option value='.gif'>GIF</option>
+		 </field>
+		 
+        <field 	name="image_upload_directory" 
+				type="text"
+				label="COM_PAYCART_IMAGE_UPLOAD_DIRECTORY" 
+				description="COM_PAYCART_IMAGE_UPLOAD_DIRECTORY_DESC"
+				/>
+		
+		<field 	name="image_render_url" 
+				type="text"
+				label="COM_PAYCART_IMAGE_RENDER_URL" 
+				description="COM_PAYCART_IMAGE_RENDER_URL_DESC"
+				/>
+				
+	</fieldset>
+	
+</form>

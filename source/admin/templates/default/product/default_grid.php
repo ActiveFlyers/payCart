@@ -28,7 +28,7 @@ defined('_JEXEC') OR die();
 					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_ID", 'product_id', $filter_order_Dir, $filter_order);?>
 				</th>
 			    				
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_NAME", 'name', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_NAME", 'title', $filter_order_Dir, $filter_order);?></th>
 				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
 				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_AMOUNT", 'amount', $filter_order_Dir, $filter_order);?></th>			
 			</tr>
@@ -45,7 +45,7 @@ defined('_JEXEC') OR die();
 				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
 				    </th>				
 					<td><?php echo $record->product_id;?></td>
-					<td><?php echo PaycartHtml::link($uri.'&task=edit&product_id='.$record->{$record_key}, $record->name);?>
+					<td><?php echo PaycartHtml::link($uri.'&task=edit&product_id='.$record->{$record_key}, $record->title);?>
 						<br /> <?php echo $record->alias; ?>
 					</td>
 					<td><?php echo $record->sku;?></td>

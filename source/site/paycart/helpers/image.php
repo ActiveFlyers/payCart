@@ -150,15 +150,15 @@ class PaycartHelperImage extends PaycartHelper
 	 	// Parent image properties
 		$imgProperties = $image->getImageFileProperties($sourceImage);
 
-		$imagePathInfo = pathinfo($sourceImage);
-		
-		// Generat path
-		if (!$destinationFolder) {
-			$destinationFolder = $imagePathInfo['dirname']; 
-		}
-		if (!$destinationFile) {
-			$destinationFile = $imagePathInfo['filename'];
-		}
+//		$imagePathInfo = self::imageInfo($sourceImage);
+//		
+//		// Generat path
+//		if (!$destinationFolder) {
+//			$destinationFolder = $imagePathInfo['dirname']; 
+//		}
+//		if (!$destinationFile) {
+//			$destinationFile = $imagePathInfo['filename'];
+//		}
 		
 		// Generate image name name
 		$config = PaycartFactory::getConfig();
@@ -172,42 +172,6 @@ class PaycartHelperImage extends PaycartHelper
 			return false;	
 		}
 		return true;
-	}
-	
-	/**
-	 * 
-	 * Method to get image thumb name 
-	 * @param String $imageTitle image name
-	 * 
-	 * @return string thumb image name
-	 */
-	public static function getThumbName($imageTitle)
-	{
-		return Paycart::THUMB_IMAGE_PREFIX.$imageTitle;
-	} 
-	
-	/**
-	 * 
-	 * Method to get original image name 
-	 * @param String $imageTitle image name
-	 * 
-	 * @return string original image name
-	 */
-	public static function getOriginalName($imageTitle)
-	{
-		return Paycart::ORIGINAL_IMAGE_PREFIX.$imageTitle;
-	}
-	
-	/**
-	 * 
-	 * Method to get original image name 
-	 * @param String $imageTitle image name
-	 * 
-	 * @return string original image name
-	 */
-	public static function getOptimizeName($imageTitle)
-	{
-		return PaycartHelper::getHash($imageTitle).self::getConfigExtension($imageTitle);
 	}
 	
 	/**
@@ -231,17 +195,62 @@ class PaycartHelperImage extends PaycartHelper
 	
 	/**
 	 * 
-	 * Method for delete image  
-	 * @param  String $path image path
+	 * Method call to Create image url
+	 * @param $imagePath $image path
 	 * 
-	 * @return (bool) True if image successfully delete
+	 * @return (string) image url
 	 */
-	public static function delete($path)
+	public static function getURL($imagePath)
 	{
-		if ( !JFile::delete($path) ) {
-			Rb_Factory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_DELETE_FAILED', $path),'warning');
-			return false;
+		$config = PaycartFactory::getConfig();
+		$root 	= $config->get('image_render_url', false);
+		
+		$path = '';
+		if(!$root) {
+			$path = PaycartFactory::getURI()->root().Paycart::IMAGES_ROOT_PATH;
 		}
-		return true;
+			
+		return $path.'/'.$imagePath;
+	}
+	
+	public static function getDirectory()
+	{
+		$config = PaycartFactory::getConfig();
+		$root 	= $config->get('image_upload_directory', false);
+		
+		$path = '';
+		if(!$root) {
+			$path = JPATH_ROOT.Paycart::IMAGES_ROOT_PATH;
+		}
+			
+		return $path;
+	}
+	
+	/**
+	 * Returns information about a file path
+	 * @link http://www.php.net/manual/en/function.pathinfo.php
+	 * @param $imagePath string <p>
+	 * The path being checked.
+	 * </p>
+	 * @param options int[optional] <p>
+	 * You can specify which elements are returned with optional parameter
+	 * options. It composes from
+	 * PATHINFO_DIRNAME,
+	 * PATHINFO_BASENAME,
+	 * PATHINFO_EXTENSION and
+	 * PATHINFO_FILENAME. It
+	 * defaults to return all elements.
+	 * </p>
+	 * @return mixed The following associative array elements are returned:
+	 * dirname, basename,
+	 * extension (if any), and filename.
+	 * </p>
+	 * <p>
+	 * If options is used, this function will return a 
+	 * string if not all elements are requested.
+	 */
+	public static function imageInfo($imagePath) 
+	{
+		return pathinfo($imagePath);
 	}
 }

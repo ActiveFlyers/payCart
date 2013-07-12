@@ -62,8 +62,11 @@ class PaycartCategory extends PaycartLib
 			$this->created_by = Rb_Factory::getUser()->get('id');
 		}
 		
-		// generate unique alias if not exist
-		$this->alias = $this->getUniqueAlias();
+		if (!$this->alias) {
+			$this->alias = $this->getTitle();
+		}
+		// generate unique alias if not exist. If exist then sluggify it
+		$this->alias =  $this->getModel()->getTable()->getUniqueAlias($this->alias, $this->getId());
 		
 		return parent::save();
 	}
@@ -72,10 +75,5 @@ class PaycartCategory extends PaycartLib
 	public function getTitle()
 	{
 		return $this->title;
-	}
-	//PCTODO:: remove this function
-	function translateAliasToID($alias)
-	{
-		return PaycartHelperProduct::translateAliasToID($alias);
 	}
 }

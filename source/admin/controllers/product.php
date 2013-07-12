@@ -25,8 +25,26 @@ class PaycartAdminControllerProduct extends PaycartController
 	public function _save(array $data, $itemId=null, $type=null)
 	{
 		//Get All files from paycart form
-		$data['upload_files'] = PaycartFactory::getApplication()->input->files->get('paycart_form', false);
+		$data['upload_files'] = $this->input->files->get('paycart_form', false);
 		return parent::_save($data, $itemId, $type);
+	}
+	
+	/**
+	 * 
+	 * Task for all ajax call with action. 
+	 * All Ajax actiom must be define in same class otherwise they will not invoke.
+	 */
+	public function go() 
+	{
+		$method = $this->input->get('method');
+		if(!$method) {
+			throw new Exception(Rb_Text::sprintf('COM_PAYCART_INVALID_POST_DATA', '$method missing'));
+		}
+		
+		if(method_exists($this, $method)) {
+			$this->$method();
+		}
+		return true;
 	}
 		
 }

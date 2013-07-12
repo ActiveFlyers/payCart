@@ -24,9 +24,9 @@ class PaycartController extends Rb_Controller
 	function __construct($options = array())
 	{
 		parent::__construct();
-		
-		if(!isset($this->input)){
+		// PCTODO :: Why not override getinput function ??
+		if(!isset($this->input)) {
 			$this->input = PaycartFactory::getApplication()->input; 
-		}		
+		}	
 	}
 }

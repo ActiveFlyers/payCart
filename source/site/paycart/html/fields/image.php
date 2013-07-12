@@ -48,7 +48,18 @@ class PaycartFormFieldImage extends JFormField
 		$onchange = $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
 		
 		//PCTODO:: Display image if exist
-		return '<input type="file" name="' . $this->name . '" id="' . $this->id . '" value=""' . $accept . $disabled . $class . $size
-			. $onchange . $required . ' />';
+		$html = '';
+		if ($this->value) {
+			$path = PaycartHelperImage::getURL($this->value);
+			$html .= '<img 
+							src="'.$path.'"
+							title="'.$this->form->getValue('name').'"
+					  /><br/>';
+		}
+		
+		$html .= '<input type="file" name="' . $this->name . '" id="' . $this->id . '" value=""' . $accept . $disabled . $class . $size
+					. $onchange . $required . ' />';
+					
+		return $html;
 	}
 }
