@@ -18,7 +18,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  *		# define like ENTITY_SUBENTITY_SPECIFICATION
  *		# Language String should be COM_PAYCART_ENTITY_SUBENTITY_SPECIFICATION
  *
- * @author Manish Trivedi
+ * @author Manish,Puneet
  *
  */
 class Paycart 
@@ -41,4 +41,17 @@ class Paycart
 	
 	const IMAGE_FILE_DEFAULT_MAXIMUM_SIZE = 2; 	// 2MB
 	const IMAGE_FILE_DEFAULT_EXTENSION = '.png';
+
+
+	// Cart Entity Status
+	const CART_STATUS_NONE 		= 	0;
+	const CART_STATUS_CHECKOUT	=	5000;
+	const CART_STATUS_COMPLETE	=	5001;
+	const CART_STATUS_SHIPPED	=	5002;
+	const CART_STATUS_DELIVERED	=	5003;
+	const CART_STATUS_CANCEL	=	5004;
+	const CART_STATUS_REFUND	=	5005;
+	const CART_STATUS_REVERSAL	=	5006;
+	
+	
 }

@@ -58,4 +58,9 @@ class PaycartHelper extends Rb_Helper
 		return JString::substr( PaycartFactory::getApplication()->getHash( $seed . time() ), 0, $limit);
 	}
 	
+	public static function formatAmount($amount)
+	{
+		// PCTODO: Ask decimals in configuration
+		return number_format($amount, 2);
+	}
 }

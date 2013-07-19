@@ -21,8 +21,8 @@ class PaycartLib extends Rb_Lib
 {
 	public	$_component	= PAYCART_COMPONENT_NAME;
 
-	static public function getInstance($name, $id=0, $data=null, $dummy = null)
+	static public function getInstance($name, $id=0, $bindData=null, $dummy = null)
 	{
-		return parent::getInstance(PAYCART_COMPONENT_NAME, $name, $id, $data);
+		return parent::getInstance(PAYCART_COMPONENT_NAME, $name, $id, $bindData);
 	}
 }

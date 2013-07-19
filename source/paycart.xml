@@ -45,8 +45,11 @@
 	<!-- Administrator back-end section -->
 	<administration>
 		
-		<!-- Administration menu -->
-		<!-- <menu view="dashboard">COM_PAYCART</menu>-->
+		<menu img="">COM_PAYCART</menu>
+		<submenu>
+			<menu 	view="product" 		img="">COM_PAYCART_PRODUCT</menu>
+			<menu 	view="cart"			img="">COM_PAYCART_CART</menu>
+		</submenu>
 		
 	
 		<!-- Back-end files -->
