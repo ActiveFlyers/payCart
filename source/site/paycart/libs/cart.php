@@ -57,11 +57,11 @@ class PaycartCart extends PaycartLib
 		$this->status	 			=	Paycart::CART_STATUS_NONE; 	
 		$this->created_date 		=	Rb_Date::getInstance();
 		$this->modified_date		=	Rb_Date::getInstance();
-		$this->checkout_date  		=	Rb_Date::getInstance();	
-		$this->paid_date 			=	Rb_Date::getInstance();
-		$this->complete_date 		=	Rb_Date::getInstance();
-		$this->cancellation_date 	=	Rb_Date::getInstance();
-		$this->refund_date 			=	Rb_Date::getInstance();
+		$this->checkout_date  		=	Rb_Date::getInstance('0000-00-00 00:00:00');	
+		$this->paid_date 			=	Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->complete_date 		=	Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->cancellation_date 	=	Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->refund_date 			=	Rb_Date::getInstance('0000-00-00 00:00:00');
 		$this->params				=  	new Rb_Registry();
 		
 		return $this;

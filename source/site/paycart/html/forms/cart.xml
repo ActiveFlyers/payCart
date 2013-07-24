@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+		<fieldset name="basic-cart" label="COM_PAYCART_CART_BASIC_CART_FIELDSET_LABEL">
+			<field name="cart_id" type="text"
+				default="0"
+				label="COM_PAYCART_CART_ID_LABEL"
+				description="COM_PAYCART_CART_ID_DESC"
+				readonly="true"
+				size="10"
+				class="input-medium"
+			/>
+			<field name="buyer_id" type="text"
+				label="COM_PAYCART_CART_BUYER_LABEL"
+				description="COM_PAYCART_CART_BUYER_DESC"
+				required="true"
+				class="input-medium"
+			/>
+			<field name="status" type="paycart.cartstatus"
+				label="COM_PAYCART_CART_STATUS_LABEL"
+				description="COM_PAYCART_CART_STATUS_DESC"
+				default="0"
+				class="input-medium"
+			/>
+			
+			<field name="subtotal" type="text"
+				label="COM_PAYCART_CART_SUBTOTAL_LABEL"
+				description="COM_PAYCART_CART_SUBTOTAL_DESC"
+				default="@global.version@0"
+				class="input-medium"
+			/>
+			
+			<field name="total" type="text"
+				label="COM_PAYCART_CART_TOTAL_LABEL"
+				description="COM_PAYCART_CART_TOTAL_DESC"
+				default="@global.version@0"
+				class="input-medium"
+			/>
+			
+			<field name="modifiers" type="text"
+				label="COM_PAYCART_CART_MODIFIERS_LABEL" 
+				description="COM_PAYCART_CART_MODIFIERS_DESC"
+				default="@global.version@0"
+				class="input-medium"
+			/>
+			
+		</fieldset>
+		
+		<fieldset name="cart-dates" label="COM_PAYCART_CART_DATES_FIELDSET_LABEL">
+			
+			<field name="created_date" type="calendar"
+				default=""
+				description="COM_PAYCART_CART_CREATED_DATE_DESC"
+				label="COM_PAYCART_CART_CREATED_DATE_LABEL" 
+				format="%Y-%m-%d %H:%M:%S"
+				readonly="true"
+				class="input-medium"
+			/>
+			
+			<field name="modified_date" type="calendar"
+				description="COM_PAYCART_CART_MODIFIED_DATE_DESC"
+				label="COM_PAYCART_CART_MODIFIED_DATE_LABEL" 
+				format="%Y-%m-%d %H:%M:%S"
+				readonly="true"
+				class="input-medium"
+			/>
+			
+			<field name="checkout_date" type="calendar"
+				default="0000-00-00 00:00:00"
+				description="COM_PAYCART_CART_CHECKOUT_DATE_DESC"
+				label="COM_PAYCART_CART_CHECKOUT_DATE_LABEL"
+				format="%Y-%m-%d %H:%M:%S"
+				class="input-medium"
+			/>
+			
+			<field name="paid_date" type="calendar"
+				default="0000-00-00 00:00:00"
+				description="COM_PAYCART_CART_PAID_DATE_DESC"
+				label="COM_PAYCART_CART_PAID_DATE_LABEL"		
+				format="%Y-%m-%d %H:%M:%S"
+				class="input-medium"		
+			/>
+			
+			<field name="complete_date" type="calendar"
+				default="0000-00-00 00:00:00"
+				description="COM_PAYCART_CART_COMPLETE_DATE_DESC"
+				label="COM_PAYCART_CART_COMPLETE_DATE_LABEL"		
+				format="%Y-%m-%d %H:%M:%S"
+				class="input-medium"		
+			/>
+			
+			<field name="cancellation_date" type="calendar"
+				default="0000-00-00 00:00:00"
+				description="COM_PAYCART_CART_CANCELLATION_DATE_DESC"
+				label="COM_PAYCART_CART_CANCELLATION_DATE_LABEL"		
+				format="%Y-%m-%d %H:%M:%S"
+				class="input-medium"		
+			/>
+			
+			<field name="refund_date" type="calendar"
+				default="0000-00-00 00:00:00"
+				description="COM_PAYCART_CART_REFUND_DATE_DESC"
+				label="COM_PAYCART_CART_REFUND_DATE_LABEL"		
+				format="%Y-%m-%d %H:%M:%S"
+				class="input-medium"		
+			/>
+		</fieldset>
+</form>

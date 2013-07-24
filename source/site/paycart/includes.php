@@ -22,7 +22,12 @@ define('PAYCART_CORE_LOADED', true);
 // include defines
 include_once dirname(__FILE__).'/defines.php';
 
-//load global stuff 
+// load frontend language file on both end
+$filename = 'com_paycart';
+$language = JFactory::getLanguage();
+$language->load($filename, JPATH_SITE);
+
+//load global stuff
 Rb_HelperLoader::addAutoLoadFile(PAYCART_PATH_CORE.'/base/paycart.php',	'Paycart');
 // Manually Load event file so we can register internal events/trigger  
 include_once PAYCART_PATH_CORE.'/base/event.php';
