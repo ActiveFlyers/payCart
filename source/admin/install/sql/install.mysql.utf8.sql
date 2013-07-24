@@ -156,6 +156,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
 CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `cart_id` 		int(11)		NOT NULL	AUTO_INCREMENT,
   `buyer_id` 		int(11) 				DEFAULT '0',
+  `address_id` 		int(11) 				DEFAULT '0',
   `subtotal` 		decimal(15,5)	 		DEFAULT '0.00000',
   `total` 			decimal(15,5) 			DEFAULT '0.00000', 
   `modifiers` 		text,
@@ -201,3 +202,40 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart_particulars` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_user`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_user` (
+ `user_id` 		INT 		NOT NULL	AUTO_INCREMENT,
+ `mobile`		VARCHAR(20)						DEFAULT '0',
+ `params`  		TEXT 							DEFAULT '',
+ PRIMARY KEY (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_address`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_address` (
+ `address_id` 	INT 		NOT NULL	AUTO_INCREMENT,
+ `user_id` 		INT 		NOT NULL			DEFAULT '0',
+ `address` 		VARCHAR(255)		 			DEFAULT '',
+ `city` 		VARCHAR(255) 					DEFAULT '',
+ `state` 		VARCHAR(255) 					DEFAULT '',
+ `country` 		INT  		NOT NULL 			DEFAULT '0',
+ `zipcode` 		VARCHAR(10) NOT NULL 			DEFAULT '',
+ `longitude`	VARCHAR(20)						DEFAULT '',
+ `latitude`		VARCHAR(20)						DEFAULT '',
+ `preferred`	TINYINT							DEFAULT '0',
+ PRIMARY KEY (`address_id`),
+ INDEX `idx_user_id` (`user_id`),
+ INDEX `idx_state` (`state`),
+ INDEX `idx_country` (`country`)
+
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
