@@ -22,6 +22,12 @@
 				label="COM_PAYCART_PRODUCT_AMOUNT_LABEL"
 				description="COM_PAYCART_PRODUCT_AMOUNT_DESC"
 			/>
+			
+			<field name="teaser" type="text"
+				label="COM_PAYCART_PRODUCT_TEASER_LABEL"
+				description="COM_PAYCART_PRODUCT_TEASER_DESC"
+			/>
+			
 			<field name="quantity" type="text"
 				label="COM_PAYCART_PRODUCT_QUANTITY_LABEL"
 				description="COM_PAYCART_PRODUCT_QUANTITY_DESC"
@@ -34,7 +40,12 @@
 			
 			<field name="type" type="paycart.producttype"
 				label="COM_PAYCART_PRODUCT_TYPE"
-				description="COM_PAYCART_PRODUCT_TYPE_DESC"				
+				description="COM_PAYCART_PRODUCT_TYPE_DESC"	
+			/>
+			
+			<field name="digital_file" type="file"
+				label="COM_PAYCART_DIGITAL_FILE_TYPE"
+				description="COM_PAYCART_DIGITAL_FILE_DESC"				
 			/>
 			
 			<field name="featured" type="radio"
@@ -60,6 +71,7 @@
 			<field name="description" type="editor"
 				description="COM_PAYCART_PRODUCT_DESCRIPTION_DESC"
 				label="COM_PAYCART_PRODUCT_DESCRIPTION_LABEL" 
+				hide="readmore,pagebreak"
 			/>
 			<!-- Custom Element for paycart product category			-->
 			<field 	name="category_id" type="paycart.category"

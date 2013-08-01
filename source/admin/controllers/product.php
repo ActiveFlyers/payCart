@@ -33,6 +33,11 @@ class PaycartAdminControllerProduct extends PaycartController
 	 * 
 	 * Task for all ajax call with action. 
 	 * All Ajax actiom must be define in same class otherwise they will not invoke.
+	 * 
+	 * @throws Exception
+	 * 
+	 * @PCTODO::  Validation required Dont use one function if you are calling from ajax
+	 * Use JSON formate for this kind of method (Where you can get only data from server. no validation or task execution required)
 	 */
 	public function go() 
 	{

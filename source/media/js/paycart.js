@@ -69,6 +69,20 @@ paycart.alias =
 				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			}
 	};
+paycart.attribute = 
+	{
+		add : function()
+		{
+	
+		},
+		
+		display : function(CallbackOnSuccess, CallbackOnError)
+		{
+			var link  = 'index.php?option=com_paycart&task=go&view=attribute';
+			var data  = {'method' : 'display' };
+			paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
+		}
+	}
 
 // ENDING :
 // Scoping code for easy and non-conflicting access to $.
