@@ -15,6 +15,10 @@ JFormHelper::loadFieldClass('list');
 
 class PaycartFormFieldProductType extends JFormFieldList
 {	
+	/**
+	 * (non-PHPdoc)
+	 * @see libraries/joomla/form/fields/JFormFieldList::getOptions()
+	 */
 	public function getOptions()
 	{
 		$product_type = PaycartHelperProduct::getTypes();

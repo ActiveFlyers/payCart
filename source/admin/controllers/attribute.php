@@ -16,32 +16,27 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  * @author Manish Trivedi
  */
 
-class PaycartAdminControllerProduct extends PaycartController 
+class PaycartSiteControllerAttribute extends PaycartController 
 {
-	
 	/**
-	 * override it due to get all uploaded files 
-	 */
-	public function _save(array $data, $itemId=null, $type=null)
-	{
-		//Get All files from paycart form
-		$data['upload_files'] = $this->input->files->get('paycart_form', false);
-		return parent::_save($data, $itemId, $type);
-	}
-	
-	/**
-	 * 
-	 * Task for all ajax call with action. 
+	 * Task for Specific ajax call with action which are required few validation. 
 	 * All Ajax actiom must be define in same class otherwise they will not invoke.
 	 * 
 	 * @throws Exception
-	 * 
-	 * @PCTODO::  Validation required Dont use one function if you are calling from ajax
-	 * Use JSON formate for this kind of method (Where you can get only data from server. no validation or task execution required)
 	 */
 	public function go() 
 	{
+		// @PCTODO :: Joomla Session check.
+		
+//		// @PCTODO :: Validation required		
+//		$user = PaycartFactory::getUser(); 
+//		// Validate is admin or not
+//		if(!$user->get('isRoot') ) {
+//			return false;
+//		}
+		
 		$method = $this->input->get('method');
+		
 		if(!$method) {
 			throw new Exception(Rb_Text::sprintf('COM_PAYCART_INVALID_POST_DATA', '$method missing'));
 		}

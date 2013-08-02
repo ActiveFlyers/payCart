@@ -16,21 +16,9 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  * @author Manish Trivedi
  */
 
-class PaycartAdminControllerProduct extends PaycartController 
+class PaycartSiteControllerAttribute extends PaycartController 
 {
-	
 	/**
-	 * override it due to get all uploaded files 
-	 */
-	public function _save(array $data, $itemId=null, $type=null)
-	{
-		//Get All files from paycart form
-		$data['upload_files'] = $this->input->files->get('paycart_form', false);
-		return parent::_save($data, $itemId, $type);
-	}
-	
-	/**
-	 * 
 	 * Task for all ajax call with action. 
 	 * All Ajax actiom must be define in same class otherwise they will not invoke.
 	 * 
@@ -41,7 +29,16 @@ class PaycartAdminControllerProduct extends PaycartController
 	 */
 	public function go() 
 	{
+		// PCTODO :: Joomla Session check.
+		
+		$user = PaycartFactory::getUser(); 
+		// Validate is admin or not
+		if(!$user->get('isRoot') ) {
+			return false;
+		}
+		
 		$method = $this->input->get('method');
+		
 		if(!$method) {
 			throw new Exception(Rb_Text::sprintf('COM_PAYCART_INVALID_POST_DATA', '$method missing'));
 		}
