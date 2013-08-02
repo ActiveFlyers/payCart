@@ -15,14 +15,14 @@ defined('JPATH_PLATFORM') or die;
  * @package     Paycart
  * @subpackage  Form
  */
-class PaycartFormFieldImage extends JFormField
+class PaycartFormFieldMedia extends JFormField
 {
 
 	/**
 	 * The form field type.
 	 * @var    string
 	 */
-	public $type = 'Image';	
+//	public $type = 'Image';	
 		
 	/**
 	 * Method to get the field input markup for the Image field.

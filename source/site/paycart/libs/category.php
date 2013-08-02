@@ -23,7 +23,7 @@ class PaycartCategory extends PaycartLib
 	protected $description	 =	null;
 	protected $published	 =	1;
 	protected $parent 		 =	0;
-	protected $cover_image	 =	null; 	
+	protected $cover_media	 =	null; 	
 	protected $params 		 =	null;
 	protected $created_by	 =	0;
 	protected $created_date  =	'';	
@@ -37,7 +37,7 @@ class PaycartCategory extends PaycartLib
 		$this->description	 =	null;
 		$this->published	 =	1;
 		$this->parent 		 =	0;
-		$this->cover_image	 =	null; 	
+		$this->cover_media	 =	null; 	
 		$this->params 		 =	new Rb_Registry();
 		$this->created_by	 =	0;
 		$this->created_date  =	Rb_Date::getInstance();	

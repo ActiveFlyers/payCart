@@ -71,9 +71,9 @@ JHtml::_('behavior.formvalidation');
 	</div>
 	
 	<div class="control-group">
-		<?php echo $form->getLabel('cover_image'); ?>
+		<?php echo $form->getLabel('cover_media'); ?>
 		<div class="controls">
-			<?php echo $form->getInput('cover_image'); ?>
+			<?php echo $form->getInput('cover_media'); ?>
 		</div>
 	</div>
 	

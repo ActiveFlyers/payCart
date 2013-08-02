@@ -20,6 +20,12 @@ class PaycartModelProduct extends PaycartModel
 	var $filterMatchOpeartor = Array(
 									'alias' => array('LIKE')
 									);
+	/**
+	 * 
+	 * Array of those column which are unique. It will be checked (uniqueness) before save Product object 
+	 * @var Array
+	 */
+	protected $uniqueColumns = Array( 'alias','sku');
 }
 
 class PaycartModelformProduct extends PaycartModelform { }
