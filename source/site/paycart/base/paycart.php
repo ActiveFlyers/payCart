@@ -31,6 +31,7 @@ class Paycart
 	
 	// Image constant	
 	const IMAGE_ORIGINAL_PREFIX 	= 'original_';
+	const IMAGE_ORIGINAL_SUFIX 		= '.orig';
 	
 	const IMAGE_OPTIMIZE_WIDTH 		= 200;
 	const IMAGE_OPTIMIZE_HEIGHT		= 200;

@@ -50,6 +50,7 @@ PaycartHtml::_('behavior.formvalidation');
 			
 		});
 
+		//@PCTODO :: Declare into anonymously jquery block so any buddy can use it. 
 		// Change Attributes on bases of product type		
 		var typeAttributes = function(type) {
 				switch(type) 
@@ -126,7 +127,7 @@ PaycartHtml::_('behavior.formvalidation');
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
 					
-					<?php $field = $form->getField('cover_image') ?>
+					<?php $field = $form->getField('cover_media') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
@@ -222,7 +223,7 @@ PaycartHtml::_('behavior.formvalidation');
 							<?php endforeach;?>
 						<?php endforeach;?>
 					</fieldset>
-				<div>
+				</div>
 				
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>	
 				

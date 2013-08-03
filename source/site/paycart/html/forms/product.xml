@@ -83,9 +83,9 @@
 				<option>COM_PAYCART_SELECT_PRODUCT_CATEGORY</option>
 			</field>
 			
-			<field	name="cover_image" type="paycart.image"
-					description="COM_PAYCART_PRODUCT_COVER_IMAGE_DESC"
-					label="COM_PAYCART_PRODUCT_COVER_IMAGE_LABEL" 
+			<field	name="cover_media" type="paycart.media"
+					description="COM_PAYCART_PRODUCT_COVER_MEDIA_DESC"
+					label="COM_PAYCART_PRODUCT_COVER_MEDIA_LABEL" 
 			/>
 			<field name="teaser" type="text"
 				description="COM_PAYCART_PRODUCT_TEASER_DESC"

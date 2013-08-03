@@ -28,7 +28,7 @@ class PaycartProduct extends PaycartLib
 	protected $variation_of	 =	0;  		// This product is variation of another product. 	
 	protected $category_id 	 =	0;
 	protected $params 		 =	null;
-	protected $cover_image	 =	null; 	
+	protected $cover_media	 =	null; 	
 	protected $teaser		 =	null;
 	protected $publish_up	 =	'';
 	protected $publish_down  =	'';	 	
@@ -57,7 +57,7 @@ class PaycartProduct extends PaycartLib
 		$this->variation_of	 =	0;  		// This product is variation of another product. 	
 		$this->category_id 	 =	0;
 		$this->params 		 =	new Rb_Registry();
-		$this->cover_image	 =	null; 	
+		$this->cover_media	 =	null; 	
 		$this->teaser		 =	null;
 		$this->publish_up	 =	Rb_Date::getInstance();
 		$this->publish_down  =	Rb_Date::getInstance('0000-00-00 00:00:00');	 	
@@ -89,17 +89,20 @@ class PaycartProduct extends PaycartLib
 		if (!$this->created_by) {
 			$this->created_by = Rb_Factory::getUser()->get('id');
 		}
+		
+		// IMP :: It will be sliggify and unique into model validation
 		if (!$this->alias) {
 			$this->alias = $this->getTitle();
 		}
-		
-		// generate unique alias if not exist. If exist then sluggify it
-		$this->alias =  $this->getModel()->getTable()->getUniqueAlias($this->alias, $this->getId());
+		// IMP :: It will be sliggify and unique into model validation		
+		if (!$this->sku) {
+			$this->sku = $this->getTitle();
+		}
 		
 		// Set Cover Image Path
-		if ( $this->upload_files && isset($this->upload_files['cover_image']) && $this->upload_files['cover_image']['name']) {
-			$this->cover_image = PaycartHelper::getHash($this->upload_files['cover_image']['name']).PaycartHelperImage::getConfigExtension($this->upload_files['cover_image']['name']);
-			$this->cover_image = $this->getName().'/'.$this->getId().'/'.$this->cover_image;			
+		if ( $this->upload_files && isset($this->upload_files['cover_media']) && $this->upload_files['cover_media']['name']) {
+			$this->cover_media = PaycartHelper::getHash($this->upload_files['cover_media']['name']).PaycartHelperImage::getConfigExtension($this->upload_files['cover_media']['name']);
+			$this->cover_media = $this->getName().'/'.$this->cover_media;			
 		}
 		
 		return parent::save();
@@ -118,9 +121,13 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function getCoverImage() 
 	{	
-		return $this->cover_image;
+		return $this->cover_media;
 	}
-	
+	/**
+	 * We required media/image processing after Product save
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
+	 */
 	protected function _save($previousObject)
 	{
 		$id = parent::_save($previousObject);
@@ -128,8 +135,8 @@ class PaycartProduct extends PaycartLib
 		$this->setId($id);
 		
 		// Cover image
-		if ( $this->upload_files && isset($this->upload_files['cover_image']) && $this->upload_files['cover_image']['name'] ) {
-			$this->_ImageProcess($this->upload_files['cover_image'], $previousObject); 
+		if ( $this->upload_files && isset($this->upload_files['cover_media']) && $this->upload_files['cover_media']['name'] ) {
+			$this->_ImageProcess($this->upload_files['cover_media'], $previousObject); 
 		}
 		
 		return $id;
@@ -177,27 +184,25 @@ class PaycartProduct extends PaycartLib
 		
 		// 	Upload new image while Previous Image exist 
 		// need to remove previous image and thumbnail image
-		if ($previousObject  && $previousObject->get('cover_image')) {
-			$previousImage 		 =  $previousObject->get('cover_image');
+		if ($previousObject  && $previousObject->get('cover_media')) {
+			// PCTODO:: Break delete logic into function
+			$previousImage 		 =  $previousObject->get('cover_media');
 			$previousImageDetail =  PaycartHelperImage::imageInfo($previousImage);
 			
 			$files = Array(
-							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$previousImageDetail['filename'].'.'.$previousImageDetail['extension'],		// Original Image
+							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$previousImageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX,		// Original Image
 							$imagePath.$previousImage,				// Optimize Image
 							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::THUMB_IMAGE_PREFIX.$previousImageDetail['filename'].'.'.$previousImageDetail['extension']
 						);
 			// Delete Original Image,Optimize Image and thumb Image
-			// @PCTODO :: Previous Original image will not delete if diffrent extension is used. { Previous Original image and Previous image } 
-			// Becoz we are directly store original image without extension change   
-			// @ISSUE:16   
 			JFile::delete($files);
 		}
 		
-		$currentImageDetail = PaycartHelperImage::imageInfo($this->cover_image);
+		$currentImageDetail = PaycartHelperImage::imageInfo($this->cover_media);
 		$imagePath			= $imagePath.'/'.$currentImageDetail['dirname'];
 		
 		//Create new folder
-		// @PCTODO : Add index.html in each folder
+		// @PCTODO : Remove this checking
 		// @ISSUE : 17
 		if(!JFolder::exists($imagePath) && !JFolder::create($imagePath)) {
 			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FOLDER_CREATEION_FAILED', $imagePath),'error');
@@ -206,7 +211,7 @@ class PaycartProduct extends PaycartLib
 		
 		//Store original image
 		$source 		= $imageFile["tmp_name"];
-		$originalImage	= $imagePath.'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$currentImageDetail['filename'].'.'.$currentImageDetail['extension'];
+		$originalImage	= $imagePath.'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$currentImageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;
 
 		if (!JFile::copy($source, $originalImage)) {
 			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage),'error');

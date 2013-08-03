@@ -44,9 +44,9 @@
 				<option value='1'>COM_PAYCART_YES</option>
 			</field>
 			
-			<field name="cover_image" type="text"
-				description="COM_PAYCART_CATEGORY_COVER_IMAGE_DESC"
-				label="COM_PAYCART_CATEGORY_COVER_IMAGE_LABEL" 
+			<field name="cover_media" type="text"
+				description="COM_PAYCART_CATEGORY_COVER_MEDIA_DESC"
+				label="COM_PAYCART_CATEGORY_COVER_MEDIA_LABEL" 
 			/>
 			
 			<field name="created_date" type="calendar"

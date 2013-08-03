@@ -9,9 +9,8 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+// no direct access
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /** 
  * Item Table
