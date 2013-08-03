@@ -33,4 +33,9 @@ rbframework.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
 # RB Commerce Pakages
 build.package.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
 build.package.name	  	= Pakage_Paycart
-script.tag			= 
+script.tag			= <scriptfile>script.php</scriptfile>
+
+## Define for Package script File
+packageclass.name = Paycart
+redirect.url	  = index.php?option=com_paycart
+
