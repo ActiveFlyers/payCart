@@ -21,14 +21,23 @@ defined('_JEXEC') or die();
 
 ?>
 
+	<script>
+		paycart.jQuery(document).ready(function($) {
+
+			$('.paycart_attribute_window').click( function()
+			{
+				paycart.attribute.window();
+				
+			});
+		});
+	</script>
+	
 	<div class="row-fluid">
 		<div class="span12">
 			<p class="center"><?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_BLANK'); ?></p>
 		</div>
 		
 		<div class="center">
-			<a href="<?php echo JUri::base().'index.php?option=com_paycart&view=product&task=new';?>" class="btn btn-success"><i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_ADD_NEW');?></a>
+			<a href="#" class="btn btn-success paycart_attribute_window"><i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_ADD_NEW');?></a>
 		</div>
 	</div>
-
-<?php 

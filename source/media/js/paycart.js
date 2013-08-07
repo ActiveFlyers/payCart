@@ -40,50 +40,10 @@ paycart.url = {
 		paycart.ui.dialog.create(ajaxCall, '', 650, 300);
 	},
 		
-	redirect:function(url){
-		        document.location.href=url;
+	redirect:function(url) {
+		document.location.href=url;
 	}
 };
-
-
-/** ===================================================
- *  Common Javascript For Paycart
- *  ===================================================
- */
-paycart.category =
-	{
-		add : function(categoryName, CallbackOnSuccess, CallbackOnError)
-			{
-				var link  = 'index.php?option=com_paycart&task=save&view=category';
-				var data  = {'category_name': categoryName };
-				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
-			}
-	};
-
-paycart.alias =
-	{
-		add : function(title, CallbackOnSuccess, CallbackOnError)
-			{
-				var link  = 'index.php?option=com_paycart&task=go&view=product';
-				var data  = {'title': title , 'method' : 'getalias' };
-				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
-			}
-	};
-paycart.attribute = 
-	{
-		add : function()
-		{
-	
-		},
-		
-		display : function(CallbackOnSuccess, CallbackOnError)
-		{
-			var link  = 'index.php?option=com_paycart&task=go&view=attribute';
-			var data  = {'method' : 'display' };
-			paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
-		}
-	}
-
 // ENDING :
 // Scoping code for easy and non-conflicting access to $.
 // Should be last line, write code above this line.

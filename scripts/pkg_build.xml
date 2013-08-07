@@ -86,11 +86,13 @@
 
 	<target name="copy_pkg_xml">
 		<copy file="${build.package.location}/pkg.xml" tofile="${dir.packages}/pkg_${project.shortform}.xml" overwrite="true"/>
+		<copy file="${build.package.location}/script.php" tofile="${dir.packages}/script.php" overwrite="true"/>
 		
 		<!-- Apply the version change to all files. -->
 		<reflexive>
 			<fileset dir="${dir.packages}">
 			     <include name="pkg_${project.shortform}.xml" />
+			    <include name="script.php" />
 			</fileset>
 			 <filterchain>
 				<replacetokens>
@@ -106,6 +108,8 @@
 				    <token key="site.url"   					value="${site.url}" />	
 				    <token key="creation.date" 					value="${creation.date}" />
 				    <token key="script.tag" 					value="${script.tag}" />
+				    <token key="packageclass.name" 	value="${packageclass.name}" />
+				    <token key="redirect.url"   	value="${redirect.url}" />
 				</replacetokens>
 			</filterchain>
 		</reflexive>
