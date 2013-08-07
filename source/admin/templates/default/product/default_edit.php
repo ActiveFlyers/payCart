@@ -21,7 +21,27 @@ PaycartHtml::_('behavior.formvalidation');
 		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		}
-	}
+	};
+
+	
+	(function($){
+
+		// Change Attributes on bases of product type		
+		typeAttributes = function(type) {
+				switch(type) 
+				{//@PCTODO :: use constant
+					case '10':	// Physical type
+						$('.paycart_product_digital_file').hide();
+						$('.paycart_product_quantity').show();
+						break;
+					case '20' :	// Digital Type
+						$('.paycart_product_digital_file').show();
+						$('.paycart_product_quantity').hide();
+						break;
+				}
+			};	 	
+	})(paycart.jQuery);
+	
 
 	paycart.jQuery(document).ready(function($){
 		<!-- Callback function when Alias successfully generated				-->
@@ -50,22 +70,6 @@ PaycartHtml::_('behavior.formvalidation');
 			
 		});
 
-		//@PCTODO :: Declare into anonymously jquery block so any buddy can use it. 
-		// Change Attributes on bases of product type		
-		var typeAttributes = function(type) {
-				switch(type) 
-				{//@PCTODO :: use constant
-					case '10':	// Physical type
-						$('.paycart_product_digital_file').hide();
-						$('.paycart_product_quantity').show();
-						break;
-					case '20' :	// Digital Type
-						$('.paycart_product_digital_file').show();
-						$('.paycart_product_quantity').hide();
-						break;
-				}
-			}
-		
 		typeAttributes($('#paycart_form_type').val());
 
 		$('#paycart_form_type').change(
@@ -181,10 +185,10 @@ PaycartHtml::_('behavior.formvalidation');
 				
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 			
-<!--========	Product Core Attributes	========-->			
+<!--========	Product Custom Attributes	========-->			
 			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'custom', Rb_Text::_('COM_PAYCART_PRODUCT_CUSTOM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>				
 				<?php 
-						echo $this->loadtemplate('attribute');
+						echo $this->loadtemplate('customattribute');
 				?>
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 

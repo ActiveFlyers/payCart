@@ -16,12 +16,13 @@ class PaycartFormFieldAmount extends JFormField
 {	
 	public function getInput()
 	{
-		$currency = '$'; 
+		//Currency get from global config
+		$currency = PaycartFactory::getConfig()->get('currency', '$');
 		$value	  = $this->value;
 		return 
 				"<div class='input-prepend'>
 					<span class='add-on'>{$currency}</span>
-					<input class='input-small' type='text' value='{$value}'>
+					<input name='{$this->name}'class='input-small' type='text' value='{$value}'>
 				</div>";
 					
 	}

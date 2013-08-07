@@ -66,13 +66,13 @@ CREATE TABLE IF NOT EXISTS `#__paycart_rating` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
   `attribute_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
   `type` varchar(11) NOT NULL COMMENT 'predefine types like text, numeric etc',
-  `searchable` bit(1) DEFAULT 0,
-  `publish` bit(1) DEFAULT 0,
-  `visible` bit(1) DEFAULT 0,
-  `ordering` int(11) DEFAULT 0,
-  `params` text ,
+  `searchable` tinyint(1) DEFAULT '0',
+  `published` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) DEFAULT '0',
+  `ordering` int(11) DEFAULT '0',
+  `params` text,
   PRIMARY KEY (`attribute_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All attributes and their configuration param will store here.' AUTO_INCREMENT=1 ;
 

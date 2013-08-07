@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+		<fieldset name="basic-attributes" label="COM_PAYCART_ATTRIBUTE_BASIC_ATTRIBUTES_FIELDSET_LABEL">
+			
+			<field name="attribut_id" type="text"
+				default="0"
+				label="COM_PAYCART_PRODUCT_ID_LABEL"
+				description="COM_PAYCART_PRODUCT_ID_DESC"
+				readonly="true"
+				size="10"
+			/>
+			
+			<field name="title" type="text"
+				label="COM_PAYCART_PRODUCT_NAME_LABEL"
+				description="COM_PAYCART_PRODUCT_NAME_DESC"
+				required="true"
+			/>
+			
+			<field name="type" type="paycart.attributetype"
+				label="COM_PAYCART_PRODUCT_TYPE"
+				description="COM_PAYCART_PRODUCT_TYPE_DESC"	
+			/>
+			
+			<field name="searchable" type="radio"
+				default="0"
+				description="COM_PAYCART_PRODUCT_FEATURED_DESC"
+				label="COM_PAYCART_PRODUCT_FEATURED_LABEL" 
+				class="btn-group"
+			>
+				<option value='0'>COM_PAYCART_NO</option>
+				<option value='1'>COM_PAYCART_YES</option>
+			</field>
+			
+			<field 	name="published" type="radio"
+					default="1"
+					description="COM_PAYCART_PRODUCT_PUBLISHED_DESC"
+					label="COM_PAYCART_PRODUCT_PUBLISHED_LABEL" 
+					class="btn-group"
+			>
+				<option value='0'>COM_PAYCART_NO</option>
+				<option value='1'>COM_PAYCART_YES</option>
+			</field>
+			
+			<field 	name="visible" type="radio"
+					default="1"
+					description="COM_PAYCART_PRODUCT_PUBLISHED_DESC"
+					label="COM_PAYCART_PRODUCT_PUBLISHED_LABEL" 
+					class="btn-group"
+			>
+				<option value='0'>COM_PAYCART_NO</option>
+				<option value='1'>COM_PAYCART_YES</option>
+			</field>
+				
+		</fieldset>
+	
+		<fields name="params">
+			<fieldset name='params'>
+				<field	name="tooltip" type="text"
+						label="COM_PAYCART_PRODUCT_META_DATA_TITLE_LABEL" 
+						description="COM_PAYCART_PRODUCT_META_DATA_TITLE_DESC"
+				/>		
+			</fieldset>
+		</fields>
+					
+</form>

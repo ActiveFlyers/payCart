@@ -16,35 +16,16 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  * @author Manish Trivedi
  */
 
-class PaycartSiteControllerAttribute extends PaycartController 
+class PaycartAdminControllerAttribute extends PaycartController 
 {
-	/**
-	 * Task for Specific ajax call with action which are required few validation. 
-	 * All Ajax actiom must be define in same class otherwise they will not invoke.
-	 * 
-	 * @throws Exception
-	 */
-	public function go() 
+		
+	public function window()
 	{
-		// @PCTODO :: Joomla Session check.
-		
-//		// @PCTODO :: Validation required		
-//		$user = PaycartFactory::getUser(); 
-//		// Validate is admin or not
-//		if(!$user->get('isRoot') ) {
-//			return false;
-//		}
-		
-		$method = $this->input->get('method');
-		
-		if(!$method) {
-			throw new Exception(Rb_Text::sprintf('COM_PAYCART_INVALID_POST_DATA', '$method missing'));
+		//Check Joomla Session user should be login
+		if ( !JSession::checkToken() ) {
+			//@PCTODO :: Rise exception 
 		}
-		
-		if(method_exists($this, $method)) {
-			$this->$method();
-		}
-		return true;
+		 return true;
 	}
 		
 }

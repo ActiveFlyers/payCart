@@ -92,6 +92,46 @@ paycart.admin.grid = {
 };
 
 
+
+/** ===================================================
+ *  Javascript For Paycart Entity
+ *  ===================================================
+ */
+paycart.category =
+	{
+		add : function(categoryName, CallbackOnSuccess, CallbackOnError)
+			{
+				var link  = 'index.php?option=com_paycart&task=save&view=category';
+				var data  = {'category_name': categoryName };
+				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
+			}
+	};
+
+paycart.alias =
+	{
+		add : function(title, CallbackOnSuccess, CallbackOnError)
+			{
+				var link  = 'index.php?option=com_paycart&task=go&view=product';
+				var data  = {'title': title , 'method' : 'getalias' };
+				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
+			}
+	};
+paycart.attribute = 
+	{
+		add : function()
+		{
+	
+		},
+		
+		window : function(CallbackOnSuccess, CallbackOnError)
+		{
+			var link  = 'index.php?option=com_paycart&task=window&view=attribute';
+			//paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
+			paycart.url.modal(link);
+		}
+	}
+
+
 /*--------------------------------------------------------------
   on Document ready 
 --------------------------------------------------------------*/
