@@ -101,7 +101,7 @@ paycart.category =
 	{
 		add : function(categoryName, CallbackOnSuccess, CallbackOnError)
 			{
-				var link  = 'index.php?option=com_paycart&task=save&view=category';
+				var link  = 'index.php?option=com_paycart&task=create&view=category';
 				var data  = {'category_name': categoryName };
 				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			}
@@ -109,10 +109,10 @@ paycart.category =
 
 paycart.alias =
 	{
-		add : function(title, CallbackOnSuccess, CallbackOnError)
+		add : function(title, id,  CallbackOnSuccess, CallbackOnError)
 			{
-				var link  = 'index.php?option=com_paycart&task=go&view=product';
-				var data  = {'title': title , 'method' : 'getalias' };
+				var link  = 'index.php?option=com_paycart&task=getalias&view=product';
+				var data  = {'title': title , 'product_id': id };
 				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			}
 	};

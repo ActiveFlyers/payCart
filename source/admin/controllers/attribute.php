@@ -19,6 +19,10 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 class PaycartAdminControllerAttribute extends PaycartController 
 {
 		
+	/**
+	 * 
+	 * Ajax call : Open popup-window whith attribute creation + Available attribute list
+	 */
 	public function window()
 	{
 		//Check Joomla Session user should be login

@@ -19,26 +19,31 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 
 class PaycartAdminControllerCategory extends PaycartController {
 	
-	function save()
+	/**
+	 * 
+	 * Ajax Call : To create new category
+	 */
+	function create()
 	{
-		// PCTODO:: should be move into front end controller with new ajaxTask  		
-		if(RB_REQUEST_DOCUMENT_FORMAT == 'ajax') {
-			$post['title'] = $this->input->get('category_name');
-			// PCTODO:: move into view
-			$ajax = Rb_Factory::getAjaxResponse();
-			$category = $this->_save($post); 
-			
-			if($category) {
-				// PCTODO:: save success, send new cat_id as response
-				$ajax->addRawData('response',$category->toArray());
-			} else {
-				//PCTODO::error msg
-			}
-			//set ajax response and return it
-			$ajax->sendResponse();
+		//Check Joomla Session user should be login
+		if ( !JSession::checkToken() ) {
+			//@PCTODO :: Rise exception 
 		}
-
-		parent::save();
+		
+		$post['title'] = $this->input->get('category_name');
+		
+		if (!$post['title']) {
+			// @codeCoverageIgnoreStart
+			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_INVALID_POST_DATA', '$title must be required'));
+			// @codeCoverageIgnoreEnd
+		}
+		
+		$category = $this->_save($post);
+		// Id required in View
+		// IMP:: don't put category_id in property name otherwise it will not work 
+		$this->getModel()->setState('id', $category->getId());
+		
+		return  true;
 	}
 		
 }

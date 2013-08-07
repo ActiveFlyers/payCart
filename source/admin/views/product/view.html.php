@@ -40,12 +40,12 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 	 */
 	public function edit($tpl=null) {
 		
-		$product_id	=  $this->getModel()->getState('id');
-		$product	=  PaycartProduct::getInstance($product_id);
+		$productId	=  $this->getModel()->getId();
+		$product	=  PaycartProduct::getInstance($productId);
 		
 		$this->assign('form',  $product->getModelform()->getForm($product));
 		// @PCTODO:: Set availble variants
-		$this->assign('variant',  Array());
+		$this->assign('variants',  Array());
 		
 		return parent::edit($tpl);
 	}
