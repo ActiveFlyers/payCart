@@ -21,8 +21,8 @@ class PaycartFormFieldAttributeType extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$product_type = PaycartHelperProduct::getTypes();
-		return PaycartHtml::buildOptions($product_type);		
+		$attributeType	= Array ('checkbox', 'list',  'radio', 'text' );
+		return PaycartHtml::buildOptions($attributeType);		
 	}
 	
 }

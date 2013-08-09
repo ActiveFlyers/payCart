@@ -29,15 +29,18 @@ if (typeof(paycart.element)=='undefined'){
    	url.fetch		: fetch the url and replace to given node 
 --------------------------------------------------------------*/
 paycart.url = {
-  	modal: function( theurl, options){
-		if( typeof options=== "undefined" ){
-			var ajaxCall = {'url':theurl, 'data': {}, 'iframe': false};
-		}	
-		else{
-		    var ajaxCall = {'url':theurl, 'data':options.data, 'iframe' : false};
+  	modal: function( theurl, options, windowWidth, windowHeight){
+		var ajaxCall = {'url':theurl, 'data': {}, 'iframe': false};
+			
+		if(options) {
+		  ajaxCall = {'url':theurl, 'data':options.data, 'iframe' : false};
 		}
+		
+		if (!windowWidth)  { windowWidth = 650;	 }
+		
+		if (!windowHeight) { windowHeight = 300; }
 
-		paycart.ui.dialog.create(ajaxCall, '', 650, 300);
+		paycart.ui.dialog.create(ajaxCall, '', windowWidth, windowHeight);
 	},
 		
 	redirect:function(url) {

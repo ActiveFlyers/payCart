@@ -38,4 +38,20 @@
      -moz-border-radius: 4px 0 4px 0;
           border-radius: 4px 0 4px 0;
 }
+/*
+* @PCTODO :: Should be responsive
+*/
+.pc-attribute-window-header 
+{
+ 	background-color: #DDDDDD;
+    font-size: 12px;
+    line-height: 1em;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.pc-attribute-window-body
+{
+ 	max-height: 300px;
+    overflow-y: auto;
+}
 
