@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	
+		<field  name="field_type" 
+				default="text"
+				type="text"
+				description="Attribute Type define here so We can render this attribute will render by this FormFieldType"
+				hidden="true"
+		/>
+<!-- Text field attribute : Size, Maximum length, readonly, disable,required and onchange -->
+		<field  name="size" type="text"
+				default=""
+				label="COM_PAYCART_ATTRIBUTE_TEXT_SIZE_LABEL"
+				description="COM_PAYCART_ATTRIBUTE_TEXT_SIZE_DESC"
+			/>
+		
+		<field  name="maxlength" type="text"
+				default=""
+				label="COM_PAYCART_ATTRIBUTE_TEXT_MAXLENGTH_LABEL"
+				description="COM_PAYCART_ATTRIBUTE_TEXT_MAXLENGTH_DESC"
+			/>
+<!--	I think it should be generalise thing		-->
+<!--		<field  name="class" type="text"-->
+<!--				default=""-->
+<!--				label="COM_PAYCART_ATTRIBUTE_TEXT_CLASS_LABEL"-->
+<!--				description="COM_PAYCART_ATTRIBUTE_TEXT_CLASS_DESC"-->
+<!--			/>-->
+			
+		<field 	name="readonly" type="radio"
+					default="1"
+					description="COM_PAYCART_ATTRIBUTE_TEXT_READONLY_DESC"
+					label="COM_PAYCART_ATTRIBUTE_TEXT_READONLY_LABEL" 
+					class="btn-group"
+			>
+				<option value='0'>COM_PAYCART_NO</option>
+				<option value='1'>COM_PAYCART_YES</option>
+		</field>
+			
+		<field 	name="disabled" type="radio"
+					default="1"
+					description="COM_PAYCART_ATTRIBUTE_TEXT_DISABLED_DESC"
+					label="COM_PAYCART_ATTRIBUTE_TEXT_DISABLED_LABEL" 
+					class="btn-group"
+			>
+				<option value='0'>COM_PAYCART_NO</option>
+				<option value='1'>COM_PAYCART_YES</option>
+		</field>
+
+<!--	I think it should be generalise thing		-->		
+<!--		<field 	name="required" type="radio"-->
+<!--					default="1"-->
+<!--					description="COM_PAYCART_ATTRIBUTE_TEXT_REQUIRED_DESC"-->
+<!--					label="COM_PAYCART_ATTRIBUTE_TEXT_REQUIRED_LABEL" -->
+<!--					class="btn-group"-->
+<!--			>-->
+<!--				<option value='0'>COM_PAYCART_NO</option>-->
+<!--				<option value='1'>COM_PAYCART_YES</option>-->
+<!--		</field>-->
+		
+<!--			<field  name="onchange" type="textarea"
+				default=""
+				label="COM_PAYCART_ATTRIBUTE_TEXT_ONCHANGE_LABEL"
+				description="COM_PAYCART_ATTRIBUTE_TEXT_ONCHANGE_DESC"
+			/> -->
+	
+</form>

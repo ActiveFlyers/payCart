@@ -29,7 +29,7 @@ class PaycartAdminViewAttribute extends PaycartAdminBaseViewAttribute
 	public function window()
 	{
 		$attributeId	=  $this->getModel()->getState('id');
-		$attribute		=  PaycartProduct::getInstance($attributeId);
+		$attribute		=  PaycartAttribute::getInstance($attributeId);
 		
 		$this->assign('form',  $attribute->getModelform()->getForm());
 			

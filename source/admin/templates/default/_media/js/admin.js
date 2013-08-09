@@ -127,7 +127,7 @@ paycart.attribute =
 		{
 			var link  = 'index.php?option=com_paycart&task=window&view=attribute';
 			//paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
-			paycart.url.modal(link);
+			paycart.url.modal(link, null,800, 550);
 		}
 	}
 
