@@ -44,8 +44,11 @@ define('PAYCART_PATH_ADMIN_VIEW',			PAYCART_PATH_ADMIN.'/views');
 define('PAYCART_PATH_ADMIN_TEMPLATE',		PAYCART_PATH_ADMIN.'/templates');
 
 // Html => form + fields
-define('PAYCART_PATH_CORE_FORMS', 		PAYCART_PATH_CORE.'/html/forms');
-define('PAYCART_PATH_CORE_FIELDS', 		PAYCART_PATH_CORE.'/html/fields');
+define('PAYCART_PATH_CORE_FORMS', 			PAYCART_PATH_CORE.'/html/forms');
+define('PAYCART_PATH_CORE_FIELDS', 			PAYCART_PATH_CORE.'/html/fields');
+
+// Paycart Custom Attributes
+define('PAYCART_PATH_CUSTOM_ATTRIBUTES', 	PAYCART_PATH_CORE.'/attributes');
 
 // object to identify extension, create once, so same can be consumed by constructors
 Rb_Extension::getInstance(PAYCART_COMPONENT_NAME, array('prefix_css'=>'paycart'));

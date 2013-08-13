@@ -22,7 +22,21 @@ JHtml::_('behavior.formvalidation');
 		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		}
-	}
+	};
+
+	(function($)
+			{
+				$(document).ready(function()
+				{
+					paycart.attribute.element($('#paycart_form_attribute_type').val());
+
+					$('#paycart_form_attribute_type').change(function()
+						{
+							paycart.attribute.element($(this).val());
+						});
+				});
+			}
+	)(paycart.jQuery);
 </script>
 
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
@@ -74,7 +88,7 @@ JHtml::_('behavior.formvalidation');
 			</div>
 		</div>
 		
-		<div class="paycart-attribute-type-element"></div>
+		<div class="paycart-attribute-type-elements" id="paycart-attribute-type-elements"></div>
 	</div>	
 </div>
 

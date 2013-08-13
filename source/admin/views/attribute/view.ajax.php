@@ -36,4 +36,20 @@ class PaycartAdminViewAttribute extends PaycartAdminBaseViewAttribute
 		$this->setTpl('window');
 		return true;
 	}
+	
+	public function element()
+	{
+		$attributeId	=  $this->getModel()->getId();
+		$data['type']	=  $this->get('type');
+		
+		$attribute		=  PaycartAttribute::getInstance($attributeId, $data);
+		
+		$this->assign('form',  $attribute->getModelform()->getForm());
+		$this->setTpl('element');
+		
+		// change specific div html
+		$this->_renderOptions = array('domObject'=>'paycart-attribute-type-elements','domProperty'=>'innerHTML');
+		
+		return true;
+	}
 }
