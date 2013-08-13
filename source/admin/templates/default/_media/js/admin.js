@@ -97,46 +97,58 @@ paycart.admin.grid = {
  *  Javascript For Paycart Entity
  *  ===================================================
  */
-paycart.category =
+paycart.admin.product =
 	{
-		add : function(categoryName, CallbackOnSuccess, CallbackOnError)
+		category :
+		{	
+			add : function(categoryName, CallbackOnSuccess, CallbackOnError)
 			{
 				var link  = 'index.php?option=com_paycart&task=create&view=category';
 				var data  = {'category_name': categoryName };
 				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			}
-	};
-
-paycart.alias =
-	{
-		add : function(title, id,  CallbackOnSuccess, CallbackOnError)
+		},
+		alias  :
+		{
+			add : function(title, id,  CallbackOnSuccess, CallbackOnError)
 			{
 				var link  = 'index.php?option=com_paycart&task=getalias&view=product';
 				var data  = {'title': title , 'product_id': id };
 				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			}
+		},
+		attribute :
+		{
+			window : function()
+			{
+				var link  = 'index.php?option=com_paycart&task=addAttribute&view=product';
+				paycart.url.modal(link, null);
+			}
+		}
 	};
-paycart.attribute = 
+
+paycart.admin.attribute = 
 	{
 		add : function()
 		{
 	
 		},
 		
-		window : function(CallbackOnSuccess, CallbackOnError)
+		window : function()
 		{
-			var link  = 'index.php?option=com_paycart&task=window&view=attribute';
-			//paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
-			paycart.url.modal(link, null,800, 550);
+			var link  = 'index.php?option=com_paycart&task=edit&view=attribute';
+			//paycart.ajax.go(link,data);
+			paycart.url.modal(link, null);
 		},
-		// Get attribute elements
-		element : function(type, CallbackOnSuccess, CallbackOnError) 
+		// Get attribute config ,elements
+		elements : function(type, id) 
 		{
-			var link  = 'index.php?option=com_paycart&task=element&view=attribute';
-			var data  = {'type': type  };
-			paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
+			var link  = 'index.php?option=com_paycart&task=getTypeConfig&view=attribute';
+			var data  = {'type': type, 'attribute_id' : id  };
+			paycart.ajax.go(link,data);
 		}
-	}
+	};
+
 
 
 /*--------------------------------------------------------------

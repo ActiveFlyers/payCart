@@ -72,7 +72,7 @@ PaycartHtml::_('behavior.formvalidation');
 					
 					// pass title, Product ID, callbackOnSuccess,  callbackOnError
 					//@PCTODO :: Proper Error-handling in callbackOnError
-					paycart.alias.add(	title, id,callbackOnSuccess,
+					paycart.admin.product.alias.add(	title, id,callbackOnSuccess,
 										function(){alert('error in alias generating')}
 							);
 			});
@@ -93,7 +93,7 @@ PaycartHtml::_('behavior.formvalidation');
 
 				// pass title, Product ID , callbackOnSuccess,  callbackOnError
 				//@PCTODO :: Proper Error-handling in callbackOnError
-				paycart.alias.add(	title, id,callbackOnSuccess,
+				paycart.admin.product.alias.add(	title, id,callbackOnSuccess,
 									function(){alert('error in alias generating')}
 						);
 			});
@@ -214,7 +214,7 @@ PaycartHtml::_('behavior.formvalidation');
 <!--========	Product Custom Attributes	========-->			
 			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'custom', Rb_Text::_('COM_PAYCART_PRODUCT_CUSTOM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>				
 				<?php 
-						echo $this->loadtemplate('customattribute');
+						echo $this->loadtemplate('attribute');
 				?>
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 

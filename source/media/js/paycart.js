@@ -36,9 +36,9 @@ paycart.url = {
 		  ajaxCall = {'url':theurl, 'data':options.data, 'iframe' : false};
 		}
 		
-		if (!windowWidth)  { windowWidth = 650;	 }
+		if (!windowWidth)  { windowWidth = 'auto';	 }
 		
-		if (!windowHeight) { windowHeight = 300; }
+		if (!windowHeight) { windowHeight = 'auto'; }
 
 		paycart.ui.dialog.create(ajaxCall, '', windowWidth, windowHeight);
 	},

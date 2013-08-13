@@ -25,21 +25,22 @@ JHtml::_('behavior.formvalidation');
 	};
 
 	(function($)
+		{
+			$(document).ready(function()
 			{
-				$(document).ready(function()
-				{
-					paycart.attribute.element($('#paycart_form_attribute_type').val());
+				paycart.admin.attribute.elements($('#paycart_form_attribute_type').val());
 
-					$('#paycart_form_attribute_type').change(function()
-						{
-							paycart.attribute.element($(this).val());
-						});
+				$('#paycart_form_attribute_type').change(function()
+				{
+					paycart.admin.attribute.elements($(this).val()); 
 				});
-			}
+			}); 
+		}
 	)(paycart.jQuery);
+	
 </script>
 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
+<form action="<?php echo Rb_Route::_('index.php?option=com_paycart&view=attribute'); ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
 <div class="row-fluid">
 	<div class=" span12 form-horizontal">
 		
@@ -60,6 +61,8 @@ JHtml::_('behavior.formvalidation');
 				<?php echo $form->getInput('type'); ?>
 			</div>
 		</div>
+		
+		<div class="paycart-attribute-type-elements" id="paycart-attribute-type-elements"></div>
 		
 		<div class="control-group">
 			<div class="control-label">
@@ -88,11 +91,10 @@ JHtml::_('behavior.formvalidation');
 			</div>
 		</div>
 		
-		<div class="paycart-attribute-type-elements" id="paycart-attribute-type-elements"></div>
 	</div>	
 </div>
 
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="create" />
-	<input type='hidden' name='id' value='<?php echo $form->getInput('attribut_id');?>' />	
+	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
 </form>

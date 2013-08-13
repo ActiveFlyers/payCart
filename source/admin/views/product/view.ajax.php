@@ -24,7 +24,12 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		return parent::__construct($config);
 	}
 	
-	public function getAlias($ajax)
+	/**
+	 * Unique Alias return on Ajax Call  
+	 * 
+	 * @throws Exception
+	 */
+	public function getAlias()
 	{
 		$title  = $this->input->get('title');
 		$id 	= $this->input->get('product_id',0);
@@ -35,7 +40,28 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		$alias = PaycartFactory::getInstance('product','model')->getTable()->getUniqueAlias($title, $id);
 		//set ajax response and return it
 		$this->_response->addRawData('row',$alias);
-		$this->_response->sendResponse();
+		$this->_response->sendResponse();	
+	}
+	
+	/**
+	 * 
+	 * Render new attribute creation window 
+	 * 
+	 */
+	public function addAttribute()
+	{
+		// Id required when you will edit current attribute
+		$attributeId	=  $this->input->get('attribute_id',0);
+		$attribute		=  PaycartAttribute::getInstance($attributeId);
+
+		$attributeView = PaycartFactory::getInstance('attribute','view','paycartadmin');
+		// form variable required in attribute edit template		
+		$attributeView->assign('form',  $attribute->getModelform()->getForm());
+		$attributeView->assign( 'record_id',$attributeId);
 		
+		$this->assign('attributeView', $attributeView);
+		$this->setTpl('addattribute');
+
+		return true;
 	}
 }
