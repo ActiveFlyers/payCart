@@ -128,6 +128,13 @@ paycart.attribute =
 			var link  = 'index.php?option=com_paycart&task=window&view=attribute';
 			//paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			paycart.url.modal(link, null,800, 550);
+		},
+		// Get attribute elements
+		element : function(type, CallbackOnSuccess, CallbackOnError) 
+		{
+			var link  = 'index.php?option=com_paycart&task=element&view=attribute';
+			var data  = {'type': type  };
+			paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 		}
 	}
 

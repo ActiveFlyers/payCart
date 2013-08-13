@@ -243,15 +243,12 @@ PaycartHtml::_('behavior.formvalidation');
 				<div class="span6">
 					<fieldset class="form-horizontal">	
 <!--					<legend> <?php //echo Rb_Text::_('COM_PAYCART_PRODUCT_META_DATA_ATTRIBUTES_FIELDSET_LABEL' ); ?> </legend>-->
-					<?php $fieldSets = $form->getFieldsets('meta_data');?>
-						<?php foreach ($fieldSets as $name => $fieldSet) :?>
-							<?php foreach ($form->getFieldset($name) as $field):?>
+							<?php foreach ($form->getFieldset('meta_data') as $field):?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 							<?php endforeach;?>
-						<?php endforeach;?>
 					</fieldset>
 				</div>
 				

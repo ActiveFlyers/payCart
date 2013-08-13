@@ -31,5 +31,20 @@ class PaycartAdminControllerAttribute extends PaycartController
 		}
 		 return true;
 	}
+	
+	/**
+	 * 
+	 * Ajax call : Get Attribute elements
+	 */
+	public function element()
+	{
+		//Check Joomla Session user should be login
+		if ( !JSession::checkToken() ) {
+			//@PCTODO :: Rise exception 
+		}
+
+		$this->getView()->assign('type', $this->input->get('type','')); 
+		return true;
+	}
 		
 }

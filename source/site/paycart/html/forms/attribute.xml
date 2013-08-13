@@ -19,6 +19,7 @@
 			<field name="type" type="paycart.attributetype"
 				label="COM_PAYCART_ATTRIBUTE_TYPE"
 				description="COM_PAYCART_ATTRIBUTE_TYPE_DESC"	
+				id="attribute_type"
 			/>
 			
 			<field name="searchable" type="radio"

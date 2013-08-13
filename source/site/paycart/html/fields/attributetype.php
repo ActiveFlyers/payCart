@@ -21,8 +21,21 @@ class PaycartFormFieldAttributeType extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$attributeType	= Array ('checkbox', 'list',  'radio', 'text' );
-		return PaycartHtml::buildOptions($attributeType);		
+		return PaycartHtml::buildOptions(self::getAttributeList());		
+	}
+	
+	//@PCTODO:: Should be moved to helper if attribute inject from outside
+	private function getAttributeList()
+	{
+		$files	=	JFolder::files(PAYCART_PATH_CUSTOM_ATTRIBUTES,".xml$");
+		$fileList = Array();
+		// load all attributes configuration
+		foreach ($files as $file ) {
+			$name = JFile::stripExt($file);
+			$fileList[$name] = JString::ucwords($name);
+		}
+		
+		return $fileList;
 	}
 	
 }
