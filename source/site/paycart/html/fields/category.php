@@ -110,7 +110,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 							$('#add_new_category').focus();
 							return false;
 						}
-						paycart.category.add(value, callbackOnSuccess, callbackOnError);
+						paycart.admin.product.category.add(value, callbackOnSuccess, callbackOnError);
 					}
 				);		
 	

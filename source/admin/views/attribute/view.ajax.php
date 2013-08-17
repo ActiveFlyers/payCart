@@ -22,34 +22,38 @@ class PaycartAdminViewAttribute extends PaycartAdminBaseViewAttribute
 	
 	function __construct($config = array() ) 
 	{
-		//$this->_response = PaycartFactory::getAjaxResponse();
+		//@PCTODO :: Dont use response on $this
+		$this->_response = PaycartFactory::getAjaxResponse();
 		return parent::__construct($config);
 	}
-	
-	public function window()
+
+	/**
+	 * 
+	 * return Attribute type configuration
+	 */
+	public function getTypeConfig()
 	{
-		$attributeId	=  $this->getModel()->getState('id');
-		$attribute		=  PaycartAttribute::getInstance($attributeId);
-		
-		$this->assign('form',  $attribute->getModelform()->getForm());
-			
-		$this->setTpl('window');
-		return true;
-	}
-	
-	public function element()
-	{
-		$attributeId	=  $this->getModel()->getId();
-		$data['type']	=  $this->get('type');
+		$attributeId	=  $this->input->get('attribute_id',0);
+		$data['type']	=  $this->input->get('type',0);
 		
 		$attribute		=  PaycartAttribute::getInstance($attributeId, $data);
 		
 		$this->assign('form',  $attribute->getModelform()->getForm());
-		$this->setTpl('element');
+		$this->setTpl('typeconfig');
 		
 		// change specific div html
 		$this->_renderOptions = array('domObject'=>'paycart-attribute-type-elements','domProperty'=>'innerHTML');
 		
 		return true;
+	}
+	
+	public function create()
+	{
+		$attributeId	=	$this->getModel()->getId();
+		$attribute		=	PaycartAttribute::getInstance($attributeId);
+		
+		$this->_response->addRawData('response',$attribute->toArray());
+		//set ajax response and return it
+		$this->_response->sendResponse();
 	}
 }

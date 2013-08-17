@@ -21,30 +21,28 @@ class PaycartAdminControllerAttribute extends PaycartController
 		
 	/**
 	 * 
-	 * Ajax call : Open popup-window whith attribute creation + Available attribute list
+	 * Ajax call : Get elements of Attribute Configuration
 	 */
-	public function window()
+	public function getTypeConfig()
 	{
 		//Check Joomla Session user should be login
 		if ( !JSession::checkToken() ) {
 			//@PCTODO :: Rise exception 
 		}
-		 return true;
+		return true;
 	}
 	
 	/**
 	 * 
-	 * Ajax call : Get Attribute elements
+	 * Ajax Call create new attribute
 	 */
-	public function element()
+	public function create() 
 	{
-		//Check Joomla Session user should be login
-		if ( !JSession::checkToken() ) {
-			//@PCTODO :: Rise exception 
-		}
-
-		$this->getView()->assign('type', $this->input->get('type','')); 
+		$attribute = parent::save();
+		// Id required in View
+		// IMP:: don't put category_id in property name otherwise it will not work 
+		$this->getModel()->setState('id', $attribute->getId());
 		return true;
 	}
-		
+	
 }

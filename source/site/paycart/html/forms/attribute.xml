@@ -22,6 +22,12 @@
 				id="attribute_type"
 			/>
 			
+			<field name="default" type="text"
+				label="COM_PAYCART_ATTRIBUTE_DEFAULT_VALUE"
+				description="COM_PAYCART_ATTRIBUTE_DEFAULT_VALUE_DESC"	
+				default=""
+			/>
+			
 			<field name="searchable" type="radio"
 				default="0"
 				description="COM_PAYCART_ATTRIBUTE_SEARCHABLE_DESC"

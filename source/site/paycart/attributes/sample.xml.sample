@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-	
-		<field  name="attribute_type" 
-				default="text"
-				type="text"
-				description="Attribute Type define here so We can render this attribute will be render by this FormFieldType"
-				hidden="true"
-		/>
-		<!--	 Now field define here like joomla fields 	-->
-		<field  name="size" type="text"
-				default=""
-				label="COM_PAYCART_ATTRIBUTE_ID_LABEL"
-				description="COM_PAYCART_ATTRIBUTE_ID_DESC"
-			/>
-	
+	<fields name="params">
+		<fields name="attribute_config">
+			<fieldset name="attribute_config">
+				
+				<field  name="attribute_type" 
+						default="_ATTRIBUTE_TYPE"
+						type="hidden"
+						description="Attribute Type define here so We can render this attribute will render by this FormFieldType"
+				/>
+				
+				<!-- Define extra configuration field -->
+				<field  name="size" type="text"
+						default=""
+						label="COM_PAYCART_ATTRIBUTE_TEXT_SIZE_LABEL"
+						description="COM_PAYCART_ATTRIBUTE_TEXT_SIZE_DESC"
+					/>
+			</fieldset>
+		</fields>
+	</fields>
 </form>

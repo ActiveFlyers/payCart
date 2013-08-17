@@ -45,5 +45,19 @@ class PaycartAdminControllerProduct extends PaycartController
 		}
 		return true;
 	}
+	
+	/**
+	 * 
+	 * Ajax Call : Display "Add ttribute" window 
+	 * (to creating new attribute) 
+	 */
+	public function addAttribute()
+	{
+		//Check Joomla Session user should be login
+		if ( !JSession::checkToken() ) {
+			//@PCTODO :: Rise exception 
+		}
+		 return true;
+	}
 		
 }

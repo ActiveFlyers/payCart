@@ -11,9 +11,9 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-
-JHtml::_('behavior.formvalidation');
-
+PaycartHtml::_('behavior.framework', true);
+// validation for required fields
+PaycartHtml::_('behavior.formvalidation');
 ?>
 
 <script type="text/javascript">
@@ -25,21 +25,23 @@ JHtml::_('behavior.formvalidation');
 	};
 
 	(function($)
+		{
+			$(document).ready(function()
 			{
-				$(document).ready(function()
-				{
-					paycart.attribute.element($('#paycart_form_attribute_type').val());
+				
+				paycart.admin.attribute.getTypeConfig($('#paycart_form_attribute_type').val());
 
-					$('#paycart_form_attribute_type').change(function()
-						{
-							paycart.attribute.element($(this).val());
-						});
+				$('#paycart_form_attribute_type').change(function()
+				{
+					paycart.admin.attribute.getTypeConfig($(this).val()); 
 				});
-			}
+			}); 
+		}
 	)(paycart.jQuery);
+	
 </script>
 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
+<form action="<?php echo Rb_Route::_('index.php?option=com_paycart&view=attribute'); ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
 <div class="row-fluid">
 	<div class=" span12 form-horizontal">
 		
@@ -48,7 +50,7 @@ JHtml::_('behavior.formvalidation');
 				<?php echo $form->getLabel('title'); ?>
 			</div>
 			<div class="controls">
-				<?php echo $form->getInput('title'); ?>
+				<?php echo $form->getInput('title'); ?>	
 			</div>
 		</div>
 		
@@ -58,6 +60,17 @@ JHtml::_('behavior.formvalidation');
 			</div>
 			<div class="controls">
 				<?php echo $form->getInput('type'); ?>
+			</div>
+		</div>
+		
+		<div class="paycart-attribute-type-elements" id="paycart-attribute-type-elements"></div>
+		
+		<div class="control-group">
+			<div class="control-label">
+				<?php echo $form->getLabel('default'); ?>
+			</div>
+			<div class="controls">
+				<?php echo $form->getInput('default'); ?>
 			</div>
 		</div>
 		
@@ -88,11 +101,10 @@ JHtml::_('behavior.formvalidation');
 			</div>
 		</div>
 		
-		<div class="paycart-attribute-type-elements" id="paycart-attribute-type-elements"></div>
 	</div>	
 </div>
 
 <!--========	Hiddens variables	========-->	
-	<input type="hidden" name="task" value="create" />
-	<input type='hidden' name='id' value='<?php echo $form->getInput('attribut_id');?>' />	
+	<input type="hidden" name="task" value="apply" />
+	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
 </form>

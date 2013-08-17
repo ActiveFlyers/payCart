@@ -44,6 +44,11 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		$product	=  PaycartProduct::getInstance($productId);
 		
 		$this->assign('form',  $product->getModelform()->getForm($product));
+		
+		
+		$attributeModel = PaycartFactory::getInstance('attribute','model');
+		$this->assign('availbleAttributes',  $attributeModel->loadRecords());
+		
 		// @PCTODO:: Set availble variants
 		$this->assign('variants',  Array());
 		
