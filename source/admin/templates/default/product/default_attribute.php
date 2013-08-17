@@ -33,23 +33,51 @@ defined('_JEXEC') or die();
 	</script>
 	
 	<div class="row-fluid">
-		<div class="span8">
-			<div class="span3">&nbsp;</div>
+		<div class="span9">
 			
-			<div class="span6 pc-blank-heading">
-				<p class="muted"><?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_BLANK'); ?></p>
-				<div class="center">
-					<a href="#" class="btn btn-success paycart_attribute_add_window"><i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_ADD_NEW');?></a>
-					<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-question-sign "></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_SUPPORT_LINK');?></a>
-					<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-book"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_DOCUMENTATION_LINK');?></a>
-				</div>
+		</div>
+			
+		<div class="span3">
+		
+			<a href="#" class="btn btn-success paycart_attribute_add_window">
+				<i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_ADD_NEW');?>
+			</a>
+
+			<div class="input-append">  				
+  				<input class="span10" id="appendedInputButtons" type="text" placeholder="Search Attribute!!" />
+  				<span class="add-on">
+					<input type="checkbox" id="" value="">
+				</span>
+			  	<button class="btn" type="button">Add</button>
+			  	
 			</div>
+			
+			<div class="">
+				
+				<table class="table table-striped" >
+					<?php
+						$count = 0; 
+					?>
+					<?php foreach($availbleAttributes as $attribute) :?>
+						<tr class="<?php echo "row".$count%2; ?>">								
+							
+							<th>
+			    				<?php echo $attribute->title ; ?>
+			    			</th>
+			    			
+							<th>
+			    				<?php echo PaycartHtml::_('grid.id', $count++, 'attribute_id' ); ?>
+			    			</th>
+			    			
+			    		</tr>		
+					<?php endforeach;?>
+				</table>				
+			</div>
+			
+			
+				
 		</div>
 		
-		<div class="span4">
-			<a href="#" class="btn btn-success paycart_attribute_add_window"><i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_ADD_NEW');?></a>
-			<a href="#" class="btn btn-success paycart_attribute_list_window"><i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_LIST');?></a>
-		</div>
 		
 	</div>
 

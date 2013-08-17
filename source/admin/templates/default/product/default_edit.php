@@ -276,6 +276,6 @@ PaycartHtml::_('behavior.formvalidation');
 	</div>
 	
 <!--========	Hiddens variables	========-->	
-	<input type="hidden" name="task" value="save" />
+	<input type="hidden" name="task" value="apply" />
 	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
 </form>

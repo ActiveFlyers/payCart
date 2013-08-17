@@ -11,9 +11,9 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-
-JHtml::_('behavior.formvalidation');
-
+PaycartHtml::_('behavior.framework', true);
+// validation for required fields
+PaycartHtml::_('behavior.formvalidation');
 ?>
 
 <script type="text/javascript">
@@ -28,11 +28,12 @@ JHtml::_('behavior.formvalidation');
 		{
 			$(document).ready(function()
 			{
-				paycart.admin.attribute.elements($('#paycart_form_attribute_type').val());
+				
+				paycart.admin.attribute.getTypeConfig($('#paycart_form_attribute_type').val());
 
 				$('#paycart_form_attribute_type').change(function()
 				{
-					paycart.admin.attribute.elements($(this).val()); 
+					paycart.admin.attribute.getTypeConfig($(this).val()); 
 				});
 			}); 
 		}
@@ -49,7 +50,7 @@ JHtml::_('behavior.formvalidation');
 				<?php echo $form->getLabel('title'); ?>
 			</div>
 			<div class="controls">
-				<?php echo $form->getInput('title'); ?>
+				<?php echo $form->getInput('title'); ?>	
 			</div>
 		</div>
 		
@@ -63,6 +64,15 @@ JHtml::_('behavior.formvalidation');
 		</div>
 		
 		<div class="paycart-attribute-type-elements" id="paycart-attribute-type-elements"></div>
+		
+		<div class="control-group">
+			<div class="control-label">
+				<?php echo $form->getLabel('default'); ?>
+			</div>
+			<div class="controls">
+				<?php echo $form->getInput('default'); ?>
+			</div>
+		</div>
 		
 		<div class="control-group">
 			<div class="control-label">
@@ -95,6 +105,6 @@ JHtml::_('behavior.formvalidation');
 </div>
 
 <!--========	Hiddens variables	========-->	
-	<input type="hidden" name="task" value="create" />
+	<input type="hidden" name="task" value="apply" />
 	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
 </form>

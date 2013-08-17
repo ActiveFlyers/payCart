@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
   `attribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `type` varchar(11) NOT NULL COMMENT 'predefine types like text, numeric etc',
+  `default` varchar(250) DEFAULT NULL COMMENT 'Attribute default value',
   `searchable` tinyint(1) DEFAULT '0',
   `published` tinyint(1) DEFAULT '0',
   `visible` tinyint(1) DEFAULT '0',

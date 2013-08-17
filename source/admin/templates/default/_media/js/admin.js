@@ -129,8 +129,11 @@ paycart.admin.product =
 
 paycart.admin.attribute = 
 	{
-		add : function()
+		add : function(data, callBackOnSuccess)
 		{
+			var link  = 'index.php?option=com_paycart&task=create&view=attribute';
+			//var data  = {'title': title , 'product_id': id };
+			paycart.ajax.go(link, data, callBackOnSuccess);
 	
 		},
 		
@@ -141,7 +144,7 @@ paycart.admin.attribute =
 			paycart.url.modal(link, null);
 		},
 		// Get attribute config ,elements
-		elements : function(type, id) 
+		getTypeConfig : function(type, id) 
 		{
 			var link  = 'index.php?option=com_paycart&task=getTypeConfig&view=attribute';
 			var data  = {'type': type, 'attribute_id' : id  };

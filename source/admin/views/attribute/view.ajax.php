@@ -22,7 +22,8 @@ class PaycartAdminViewAttribute extends PaycartAdminBaseViewAttribute
 	
 	function __construct($config = array() ) 
 	{
-		//$this->_response = PaycartFactory::getAjaxResponse();
+		//@PCTODO :: Dont use response on $this
+		$this->_response = PaycartFactory::getAjaxResponse();
 		return parent::__construct($config);
 	}
 
@@ -44,5 +45,15 @@ class PaycartAdminViewAttribute extends PaycartAdminBaseViewAttribute
 		$this->_renderOptions = array('domObject'=>'paycart-attribute-type-elements','domProperty'=>'innerHTML');
 		
 		return true;
+	}
+	
+	public function create()
+	{
+		$attributeId	=	$this->getModel()->getId();
+		$attribute		=	PaycartAttribute::getInstance($attributeId);
+		
+		$this->_response->addRawData('response',$attribute->toArray());
+		//set ajax response and return it
+		$this->_response->sendResponse();
 	}
 }

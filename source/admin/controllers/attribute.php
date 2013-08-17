@@ -31,5 +31,18 @@ class PaycartAdminControllerAttribute extends PaycartController
 		}
 		return true;
 	}
-		
+	
+	/**
+	 * 
+	 * Ajax Call create new attribute
+	 */
+	public function create() 
+	{
+		$attribute = parent::save();
+		// Id required in View
+		// IMP:: don't put category_id in property name otherwise it will not work 
+		$this->getModel()->setState('id', $attribute->getId());
+		return true;
+	}
+	
 }
