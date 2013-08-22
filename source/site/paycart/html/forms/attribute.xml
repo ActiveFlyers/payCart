@@ -2,7 +2,7 @@
 <form>
 		<fieldset name="basic-attributes" label="COM_PAYCART_ATTRIBUTE_BASIC_ATTRIBUTES_FIELDSET_LABEL">
 			
-			<field name="attribut_id" type="text"
+			<field name="attribute_id" type="text"
 				default="0"
 				label="COM_PAYCART_ATTRIBUTE_ID_LABEL"
 				description="COM_PAYCART_ATTRIBUTE_ID_DESC"

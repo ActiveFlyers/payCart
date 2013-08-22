@@ -21,8 +21,9 @@ class PaycartAttribute extends PaycartLib
 	protected $title 		 =	null;
 	protected $published	 =	1;
 	protected $visible		 =	1;
-	protected $serchable	 =	0;
+	protected $searchable	 =	0;
 	protected $type 		 =	0;
+	protected $default		 =  0;
 	protected $params 		 =	null;
 	protected $created_by	 =	0;
 	protected $created_date  =	'';	
@@ -34,8 +35,9 @@ class PaycartAttribute extends PaycartLib
 		$this->title 		 =	null;
 		$this->published	 =	1;
 		$this->visible		 =	1;
-		$this->serchable	 =	0;
+		$this->searchable	 =	0;
 		$this->type 		 =	0;
+		$this->default 		 =	0;
 		$this->params 		 =	new Rb_Registry();
 		$this->created_by	 =	0;
 		$this->created_date  =	Rb_Date::getInstance();	
