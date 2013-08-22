@@ -36,7 +36,7 @@ class PaycartAdminViewAttribute extends PaycartAdminBaseViewAttribute
 		$attributeId	=  $this->input->get('attribute_id',0);
 		$data['type']	=  $this->input->get('type',0);
 		
-		$attribute		=  PaycartAttribute::getInstance($attributeId, $data);
+		$attribute		=  PaycartAttribute::getInstance($attributeId)->bind($data);
 		
 		$this->assign('form',  $attribute->getModelform()->getForm());
 		$this->setTpl('typeconfig');

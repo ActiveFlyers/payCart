@@ -28,12 +28,13 @@ PaycartHtml::_('behavior.formvalidation');
 		{
 			$(document).ready(function()
 			{
-				
-				paycart.admin.attribute.getTypeConfig($('#paycart_form_attribute_type').val());
+
+				var attributeId = $('#paycart_form_attribute_id').val();
+				paycart.admin.attribute.getTypeConfig($('#paycart_form_attribute_type').val(),attributeId);
 
 				$('#paycart_form_attribute_type').change(function()
 				{
-					paycart.admin.attribute.getTypeConfig($(this).val()); 
+					paycart.admin.attribute.getTypeConfig($(this).val(), attributeId); 
 				});
 			}); 
 		}
@@ -44,6 +45,15 @@ PaycartHtml::_('behavior.formvalidation');
 <form action="<?php echo Rb_Route::_('index.php?option=com_paycart&view=attribute'); ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
 <div class="row-fluid">
 	<div class=" span12 form-horizontal">
+		
+		<div class="control-group hidden">
+			<div class="control-label">
+				<?php echo $form->getLabel('attribute_id'); ?>
+			</div>
+			<div class="controls">
+				<?php echo $form->getInput('attribute_id'); ?>	
+			</div>
+		</div>
 		
 		<div class="control-group">
 			<div class="control-label">
