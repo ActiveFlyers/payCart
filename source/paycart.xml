@@ -49,6 +49,7 @@
 		<submenu>
 			<menu 	view="product" 		img="">COM_PAYCART_PRODUCT</menu>
 			<menu 	view="cart"			img="">COM_PAYCART_CART</menu>
+			<menu 	view="user"			img="">COM_PAYCART_USER</menu>
 		</submenu>
 		
 	
