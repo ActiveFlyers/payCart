@@ -111,6 +111,15 @@ PaycartHtml::_('behavior.formvalidation');
 			</div>
 		</div>
 		
+		<div class="control-group">
+			<div class="control-label">
+				<?php echo $form->getLabel('class'); ?>
+			</div>
+			<div class="controls">
+				<?php echo $form->getInput('class'); ?>
+			</div>
+		</div>
+		
 	</div>	
 </div>
 

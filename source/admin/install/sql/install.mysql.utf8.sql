@@ -69,11 +69,13 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
   `title` varchar(255) NOT NULL,
   `type` varchar(11) NOT NULL COMMENT 'predefine types like text, numeric etc',
   `default` varchar(250) DEFAULT NULL COMMENT 'Attribute default value',
+  `class` varchar(100) DEFAULT NULL,
   `searchable` tinyint(1) DEFAULT '0',
   `published` tinyint(1) DEFAULT '0',
   `visible` tinyint(1) DEFAULT '0',
   `ordering` int(11) DEFAULT '0',
   `params` text,
+  `xml` text,
   PRIMARY KEY (`attribute_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All attributes and their configuration param will store here.' AUTO_INCREMENT=1 ;
 
@@ -87,7 +89,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute_value` (
   `attribute_value_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `attribute_id` int(11) NOT NULL,
-  `attribute_value` text ,
+  `attribute_value` text,
+  `order` int(50) NOT NULL COMMENT 'Attribute''s order on Product Window',
   PRIMARY KEY (`attribute_value_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' AUTO_INCREMENT=1 ;
 
