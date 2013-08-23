@@ -19,13 +19,30 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 class PaycartAdminControllerAttribute extends PaycartController 
 {
 		
-	public function window()
+	/**
+	 * 
+	 * Ajax call : Get elements of Attribute Configuration
+	 */
+	public function getTypeConfig()
 	{
 		//Check Joomla Session user should be login
 		if ( !JSession::checkToken() ) {
 			//@PCTODO :: Rise exception 
 		}
-		 return true;
+		return true;
 	}
-		
+	
+	/**
+	 * 
+	 * Ajax Call create new attribute
+	 */
+	public function create() 
+	{
+		$attribute = parent::save();
+		// Id required in View
+		// IMP:: don't put category_id in property name otherwise it will not work 
+		$this->getModel()->setState('id', $attribute->getId());
+		return true;
+	}
+	
 }

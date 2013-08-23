@@ -102,5 +102,5 @@ JHtml::_('behavior.formvalidation');
 
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="save" />
-	<input type='hidden' name='id' value='<?php echo $form->getInput('category_id');?>' />	
+	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
 </form>

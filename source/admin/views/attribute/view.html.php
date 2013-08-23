@@ -16,4 +16,22 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewAttribute extends PaycartAdminBaseViewProduct {}
+class PaycartAdminViewAttribute extends PaycartAdminBaseViewAttribute 
+{
+	protected function _adminEditToolbar()
+	{
+		Rb_HelperToolbar::apply();
+		Rb_HelperToolbar::save();
+		Rb_HelperToolbar::cancel();
+	}
+	
+	public function edit()
+	{
+		$attributeId	=  $this->getModel()->getState('id');
+		$attribute		=  PaycartAttribute::getInstance($attributeId);
+		
+		$this->assign('form',  $attribute->getModelform()->getForm());
+			
+		return true;
+	}
+}

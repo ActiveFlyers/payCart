@@ -27,58 +27,84 @@ PaycartHtml::_('behavior.formvalidation');
 	(function($){
 
 		// Change Attributes on bases of product type		
-		typeAttributes = function(type) {
-				switch(type) 
-				{//@PCTODO :: use constant
-					case '10':	// Physical type
-						$('.paycart_product_digital_file').hide();
-						$('.paycart_product_quantity').show();
-						break;
-					case '20' :	// Digital Type
-						$('.paycart_product_digital_file').show();
-						$('.paycart_product_quantity').hide();
-						break;
+		typeAttributes = function(type) 
+		{
+			switch(type) 
+			{//@PCTODO :: use constant
+				case '10':	// Physical type
+					$('.paycart_product_digital_file').hide();
+					$('.paycart_product_quantity').show();
+					break;
+				case '20' :	// Digital Type
+					$('.paycart_product_digital_file').show();
+					$('.paycart_product_quantity').hide();
+					break;
+			}
+
+		};	
+
+		$(document).ready(function($){
+			
+			typeAttributes($('#paycart_form_type').val());
+
+			$('#paycart_form_type').change( function() {
+				typeAttributes($(this).val());
+			});
+
+			<!-- Callback function when Alias successfully generated				-->
+			var callbackOnSuccess = function(data)
+			{	// Add alias to element
+				$('#paycart_form_alias').val(data[0][1]);
+			};
+			
+			// When product title assign then create alias			
+			$('#paycart_form_title').blur( function() 
+			{
+					var title = $(this).val();
+			
+					// if title empty or alias pre-define
+					if (!title || $('#paycart_form_alias').val()) {
+						return true;
+					}
+
+					// Get Product id
+					var id = $('input[name="id"]').val();
+					
+					// pass title, Product ID, callbackOnSuccess,  callbackOnError
+					//@PCTODO :: Proper Error-handling in callbackOnError
+					paycart.admin.product.alias.add(	title, id,callbackOnSuccess,
+										function(){alert('error in alias generating')}
+							);
+			});
+
+			// When alias is empty then create new alias
+			$('#paycart_form_alias').blur( function() 
+			{
+				var alias = $(this).val();
+				var title = $('#paycart_form_title').val();
+
+				// if alias pre-define Or product title empty 
+				if (alias || !title) {
+					return true;
 				}
-			};	 	
+
+				// Get Product id
+				var id = $('input[name="id"]').val();
+
+				// pass title, Product ID , callbackOnSuccess,  callbackOnError
+				//@PCTODO :: Proper Error-handling in callbackOnError
+				paycart.admin.product.alias.add(	title, id,callbackOnSuccess,
+									function(){alert('error in alias generating')}
+						);
+			});
+			
+		});
+			
+	 	
 	})(paycart.jQuery);
 	
 
-	paycart.jQuery(document).ready(function($){
-		<!-- Callback function when Alias successfully generated				-->
-		var callbackOnSuccess = function(data)
-		{	// Add alias to element
-			$('#paycart_form_alias').val(data[0][1]);
-		};
-		
-		<!-- Callback function when error occur during category adding operation	-->
-		var callbackOnError = function ()
-		{
-			//@PCTODO :: Proper Error-handling 
-			alert('error in alias generating');
-		};
 	
-		$('#paycart_form_title').blur( function()
-		{
-			var title = $(this).val();
-	
-			// if title empty or alias pre-define
-			if (!title || $('#paycart_form_alias').val()) {
-				return true;
-			}
-	
-			paycart.alias.add(title, callbackOnSuccess, callbackOnError);
-			
-		});
-
-		typeAttributes($('#paycart_form_type').val());
-
-		$('#paycart_form_type').change(
-						function() {
-							typeAttributes($(this).val());
-						});
-		
-		
-	});
 </script>
 
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data" >
@@ -188,7 +214,7 @@ PaycartHtml::_('behavior.formvalidation');
 <!--========	Product Custom Attributes	========-->			
 			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'custom', Rb_Text::_('COM_PAYCART_PRODUCT_CUSTOM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>				
 				<?php 
-						echo $this->loadtemplate('customattribute');
+						echo $this->loadtemplate('attribute');
 				?>
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 
@@ -217,15 +243,12 @@ PaycartHtml::_('behavior.formvalidation');
 				<div class="span6">
 					<fieldset class="form-horizontal">	
 <!--					<legend> <?php //echo Rb_Text::_('COM_PAYCART_PRODUCT_META_DATA_ATTRIBUTES_FIELDSET_LABEL' ); ?> </legend>-->
-					<?php $fieldSets = $form->getFieldsets('meta_data');?>
-						<?php foreach ($fieldSets as $name => $fieldSet) :?>
-							<?php foreach ($form->getFieldset($name) as $field):?>
+							<?php foreach ($form->getFieldset('meta_data') as $field):?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 							<?php endforeach;?>
-						<?php endforeach;?>
 					</fieldset>
 				</div>
 				
@@ -253,6 +276,6 @@ PaycartHtml::_('behavior.formvalidation');
 	</div>
 	
 <!--========	Hiddens variables	========-->	
-	<input type="hidden" name="task" value="save" />
+	<input type="hidden" name="task" value="apply" />
 	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
 </form>
