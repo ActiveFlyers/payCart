@@ -104,42 +104,49 @@ class PaycartAttribute extends PaycartLib
 	{
 		$attributeConfig = $this->params->get('attribute_config');
 		
-		$field = 	" <field name='value' ";
+		// required hard binding {Field label nd name }
+		$field = " <field 
+						name  = 'value'
+						label = '{$this->title}' 
+		         ";
 		
+		// any applied css class
+		if($this->class) {
+			$field .= " class= '{$this->class}'";
+		}
+		
+		// Default value
+		if($this->default) {
+			$field .= " default= '{$this->default}'";
+		}
+		
+		//Other field attributes
 		foreach ($attributeConfig as $name => $value) {
-			if('options' == $name) {
-				// IMP :: Newline always behave like separator 
-				$value = explode("\n", $value);
-				$options = "";
-				foreach ($value as $key) {
-					$options .= "<option value='$key'>$key</option>";
-				}
+			if('options' == $name) { 
+				// Next move it will be handled 
 				continue;
 			}
 			$field .= " $name='$value' ";
 		} 
 		
-		if($this->class) {
-			$field .= " class= '{$this->class}'";
-		}
-		
-		if($this->default) {
-			$field .= " default= '{$this->default}'";
-		}
-		
-		$field .=	">";
+		$field .=">";
 
+		// handle here option type attributes like checkbox, radio, list etc
 		if(isset($attributeConfig->options)) {
-			$field .=	$options ";
+			// IMP :: Newline always behave like separator 
+			$values = explode("\n", $attributeConfig->options);
+			foreach ($values as $value) {
+				$field .= "<option value='$value'>$value</option>";
+			}
 		}
 
 		$field .= ' </field>';
-		
+		//@PCTODO :: only store Attribute configuration
 		$fieldset = 
-					"<fields name='attribute'>".
+					"<fields name='attributes'>".
 					"	<fields name='{$this->getId()}'>".
 							$field.
-						    "<field name='order' type='hidden'   /> ".
+						    "<field name='order' type='hidden' /> ".
 					"	</fields>".
 					"<fields>"
 				;

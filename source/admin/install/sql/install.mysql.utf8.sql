@@ -85,14 +85,16 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
 -- Table structure for table `#__paycart_attribute_value`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_attribute_value` (
-  `attribute_value_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `#__paycart_attributevalue` (
+  `attributevalue_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `attribute_id` int(11) NOT NULL,
-  `attribute_value` text,
+  `value` text,
   `order` int(50) NOT NULL COMMENT 'Attribute''s order on Product Window',
-  PRIMARY KEY (`attribute_value_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`attributevalue_id`),
+  INDEX `idx_product_id` (`product_id`),
+  INDEX `idx_attribute_id` (`attribute_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
