@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cartparticulars` (
   `reversal_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
   `delivery_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
   `params` 			text 			COMMENT 'Include extra stuff like, Notes.',
-  PRIMARY KEY (`cart_particulars_id`),
+  PRIMARY KEY (`cartparticulars_id`),
   INDEX `idx_buyer_id` (`buyer_id`),
   INDEX `idx_product_id` (`product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

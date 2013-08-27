@@ -12,10 +12,10 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 /** 
- * User Html View
+ * Buyer Html View
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewUser extends PaycartAdminBaseViewUser
+class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
 {	
 	protected function _adminEditToolbar()
 	{
@@ -30,11 +30,11 @@ class PaycartAdminViewUser extends PaycartAdminBaseViewUser
 	 */
 	public function edit($tpl=null) {
 		
-		$user_id	=  $this->getModel()->getState('id');
-		$user		=  PaycartUser::getInstance($user_id);
-		$addresses	= PaycartHelperUser::getAddresses($user_id);
+		$buyer_id	=  $this->getModel()->getState('id');
+		$buyer		=  PaycartBuyer::getInstance($buyer_id);
+		$addresses	= PaycartHelperBuyer::getAddresses($buyer_id);
 		
-		$this->assign('form',  $user->getModelform()->getForm($user));
+		$this->assign('form',  $buyer->getModelform()->getForm($buyer));
 		$this->assign('addresses', $addresses);
 		
 		return parent::edit($tpl);

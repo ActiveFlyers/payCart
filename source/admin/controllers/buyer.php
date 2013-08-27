@@ -12,6 +12,6 @@
 // no direct access
 defined( '_JEXEC' ) or	die( 'Restricted access' );
 
-class PaycartAdminControllerUser extends PaycartController {
+class PaycartAdminControllerBuyer extends PaycartController {
 		
 }

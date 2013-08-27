@@ -5,16 +5,14 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @contact		team@readybytes.in
+* @author		Puneet Singhal
 */
 
 // no direct access
 defined('_JEXEC') or die( 'Restricted access' );
 
-/** 
- * Users Base View
-* @author Puneet Singhal
- */
-class PaycartAdminBaseViewUser extends PaycartView
+require_once dirname(__FILE__).'/view.php';
+class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
 {	
 	
 }

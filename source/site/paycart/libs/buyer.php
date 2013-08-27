@@ -54,7 +54,7 @@ class PaycartBuyer extends PaycartLib
 		return $this;
 	}
 	
-	public function bind($data, $ignore)
+	public function bind($data, $ignore=array())
 	{
 		parent::bind($data, $ignore);
 		$buyer_id = $this->getId();

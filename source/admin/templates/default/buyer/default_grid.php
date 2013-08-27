@@ -21,7 +21,7 @@ defined('_JEXEC') OR die();
 			<tr>
 			
 				<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" /></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_USER_ID_LABEL", 'user_id', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_USER_ID_LABEL", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
 				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_USER_USERNAME_LABEL", 'username', $filter_order_Dir, $filter_order);?></th>
 				<th ><?php echo Rb_Text::_('COM_PAYCART_USER_NAME_LABEL');?></th>
 				<th ><?php echo Rb_Text::_('COM_PAYCART_USER_EMAIL_LABEL');?></th>
@@ -39,8 +39,8 @@ defined('_JEXEC') OR die();
 			
 				<tr class="<?php echo "row".$count%2; ?>">								
 					<th><?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} );?></th>
-					<td><?php echo $record->user_id;?></td>
-					<td><?php echo PaycartHtml::link($uri.'&task=edit&user_id='.$record->user_id, $record->username);?></td>
+					<td><?php echo $record->buyer_id;?></td>
+					<td><?php echo PaycartHtml::link($uri.'&task=edit&buyer_id='.$record->buyer_id, $record->username);?></td>
 					<td><?php echo $record->realname;?></td>
 					<td><?php echo $record->email;?></td>
 					<td><?php echo $record->usertype;?></td>
