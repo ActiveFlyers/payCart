@@ -49,7 +49,22 @@ class PaycartUser extends PaycartLib
 		$this->usertype				= 	null;	
 		$this->mobile				=	0;
 		$this->params				=  	new Rb_Registry();
+		$this->_addresses			=	array();
 		
+		return $this;
+	}
+	
+	public function bind($data, $ignore)
+	{
+		parent::bind($data, $ignore);
+		$user_id = $this->getId();
+		
+		return $this->_loadAddresses($user_id);
+	}
+	
+	protected function _loadAddresses($user_id = 0)
+	{
+		$this->_addresses = PaycartFactory::getInstance('address', 'model')->loadRecords(array('user_id' => $user_id));
 		return $this;
 	}
 	

@@ -52,7 +52,7 @@ class PaycartAddress extends PaycartLib
 		$this->zipcode				=	0;
 		$this->longitude			=  	0;
 		$this->latitude				=	0;
-		$this->preferred			=	new Rb_Registry();
+		$this->preferred			=	0;
 		
 		return $this;
 	}

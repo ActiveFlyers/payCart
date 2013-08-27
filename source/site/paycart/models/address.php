@@ -23,18 +23,7 @@ class PaycartModelAddress extends PaycartModel
 										);
 										
 	public function setNonPreferred($user_id)
-	{
-		$query = new Rb_Query();
-		$query->select('count(address_id)')
-			  ->from('#__paycart_address')
-			  ->where("user_id = $user_id");
-			  
-		$count = $query->dbLoadQuery()->loadColumn();
-
-		if($count == 1){
-			return true;
-		}
-		
+	{	
 		// Set all addresses of one user as Non-Preferred
 		$query = new Rb_Query();
 		$query->update("#__paycart_address")
