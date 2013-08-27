@@ -28,4 +28,22 @@ class PaycartModelProduct extends PaycartModel
 	protected $uniqueColumns = Array( 'alias','sku');
 }
 
-class PaycartModelformProduct extends PaycartModelform { }
+class PaycartModelformProduct extends PaycartModelform 
+{
+	// Load Extra Custom atrributes configuration 
+	protected function preprocessForm($form, $data)
+	{
+		// If Custom Attributes available at Product 
+		// Then get all attribute's config Xml annd inject into Product Form
+		if(!empty($data['attributes'])) {
+			// Step-1 : Get All Attribute's Config XML
+			$configXML = PaycartHelperAttribute::getAttributeXML(array_keys($data['attributes']));
+			// Step-2 : Load on Form
+			// Don't use Setfields here becoz we have fields hierarchy nd SetFields does not support it.(support only one level)
+			// All Attribute config will be availble with form object.
+			$form->load($configXML);
+		}
+		return parent::preprocessForm($form, $data);
+	} 
+	
+}

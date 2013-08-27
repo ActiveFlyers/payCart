@@ -28,7 +28,8 @@ class PaycartModelAttributeValue extends PaycartModel
 		// @PCTODO:: Should be cached 
 		$query = $this->_db->getQuery(true);
 		$query->select('*')->from($this->getTable()->get('_tbl'))
-			  			  ->where($this->_db->quoteName('product_id') .' = '.$productId);
+			  			  ->where($this->_db->quoteName('product_id') .' = '.$productId)
+			  			  ->order($this->_db->quoteName('order'));		// Order is most important thing for position of attributes
 		try	{
 			$records =	$this->_db->setQuery($query)->loadAssocList('attribute_id');
 		}
@@ -68,7 +69,7 @@ class PaycartModelAttributeValue extends PaycartModel
 							$this->_db->quoteName('value'), $this->_db->quoteName('order')
 						)
 					);
-					
+		//@PCTODO :: Order must be check before save data			
 		foreach ($data as $row) {
 			$query->values("
 							{$this->_db->quote($row['product_id'])},{$this->_db->quote($row['attribute_id'])},

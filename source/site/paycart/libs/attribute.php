@@ -141,16 +141,7 @@ class PaycartAttribute extends PaycartLib
 		}
 
 		$field .= ' </field>';
-		//@PCTODO :: only store Attribute configuration
-		$fieldset = 
-					"<fields name='attributes'>".
-					"	<fields name='{$this->getId()}'>".
-							$field.
-						    "<field name='order' type='hidden' /> ".
-					"	</fields>".
-					"<fields>"
-				;
-		
-		return $fieldset;
+
+		return $field;
 	}
 }

@@ -70,7 +70,9 @@ class PaycartProduct extends PaycartLib
 		$this->hits			 =	0;
 		$this->meta_data	 = new Rb_Registry();
 		//Extra fields (not realted to columm)
-		$this->_attributes   = Array();
+		//IMP:: Dont use '_'(underscore here) becoz we need to inject extra attributes into form
+		//if we use _ then it will treat as a extra object property and discarded it.(At data-binding on form) 
+		$this->attributes   = Array();
 		
 		return $this;
 	}
@@ -119,9 +121,9 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * @return name of Product Cover Image 
+	 * @return name of Product Cover Media 
 	 */
-	public function getCoverImage() 
+	public function getCoverMedia() 
 	{	
 		return $this->cover_media;
 	}
@@ -149,14 +151,14 @@ class PaycartProduct extends PaycartLib
 		
 		$attributeValue = PaycartFactory::getInstance('attributevalue', 'model');
 		//Delete all Custom attribute if exist on Previous object
-		if (!empty($previousObject->_attributes)) {
+		if (!empty($previousObject->attributes)) {
 			$attributeValue->deleteMany(Array('product_id'=>$id));
 		} 
 		
 		// If any new custom attribute attached with new object then need to save it 
-		if(!empty($this->_attributes)) {
+		if(!empty($this->attributes)) {
 			$data = Array();
-			foreach ($this->_attributes as $attributeId => $value) {
+			foreach ($this->attributes as $attributeId => $value) {
 				$data[$attributeId]['product_id']	= $id;
 				$data[$attributeId]['attribute_id'] = $attributeId;
 				$data[$attributeId]['value'] 		= $value['value'];
@@ -176,14 +178,14 @@ class PaycartProduct extends PaycartLib
 	 */
 	function bind($data, $ignore = Array()) 
 	{
-		$productLib = parent::bind($data, $ignore);
+		parent::bind($data, $ignore);
 		
 		if(is_array($data)) {
 			$data = (object) $data;
 		}
 
 		if(isset( $data->upload_files)) {
-			$productLib->upload_files = $data->upload_files;
+			$this->upload_files = $data->upload_files;
 		}
 		
 		// if custom Attributes available in data then bind with lib object 
@@ -193,15 +195,15 @@ class PaycartProduct extends PaycartLib
 		// If attribute value is avilable at data object then no need to set it
 		if($this->getId() && empty($attributes)) { 
 			$attributeValueModel 		= PaycartFactory::getInstance('attributevalue', 'model');
-			$productLib->_attributes 	= $attributeValueModel->loadProductRecords($this->getid());
+			$this->attributes 	= $attributeValueModel->loadProductRecords($this->getid());
 		}
 		
 		foreach ($attributes as $attribute_id => $attribute) {
-			$productLib->_attributes[$attribute_id]['value'] = $attribute['value'];
-			$productLib->_attributes[$attribute_id]['order'] = $attribute['order'];
+			$this->attributes[$attribute_id]['value'] = $attribute['value'];
+			$this->attributes[$attribute_id]['order'] = $attribute['order'];
 		}
 		
-		return $productLib;
+		return $this;
 	}
 	
 	/**
