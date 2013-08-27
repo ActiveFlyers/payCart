@@ -23,8 +23,8 @@ class PaycartModelAttribute extends PaycartModel
 class PaycartModelformAttribute extends PaycartModelform 
 {
 	 
-	// Load specific atrribute type configuration from th
-	function preprocessForm($form, $data)
+	// Load specific atrribute type configuration xml
+	protected function preprocessForm($form, $data)
 	{
 		if($data['type']) {
 			// @PCTODO :: Path should be injected from outside.
