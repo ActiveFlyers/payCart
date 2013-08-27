@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartAddress extends PaycartLib
 {
 	protected $address_id;
-	protected $user_id;
+	protected $buyer_id;
 	protected $address;
 	protected $city;
 	protected $state;
@@ -44,7 +44,7 @@ class PaycartAddress extends PaycartLib
 	public function reset() 
 	{
 		$this->address_id			=	0;
-		$this->user_id	 			=	0;
+		$this->buyer_id	 			=	0;
 		$this->address				=	null;
 		$this->city					=	null;
 		$this->state				=	null;
@@ -75,12 +75,12 @@ class PaycartAddress extends PaycartLib
 	 * 
 	 * @param boolean $instance
 	 */
-	public function getUser($instance = false)
+	public function getBuyer($instance = false)
 	{
 		if($instance){
-			return PaycartUser::getInstance($this->user_id);
+			return PaycartBuyer::getInstance($this->buyer_id);
 		}
-		return $this->user_id;
+		return $this->buyer_id;
 	}
 	
 	public function getAddress()

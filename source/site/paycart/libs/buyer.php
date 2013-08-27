@@ -13,11 +13,11 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /** 
- * Cart Lib
+ * Buyer Lib
  */
-class PaycartUser extends PaycartLib
+class PaycartBuyer extends PaycartLib
 {
-	protected $user_id;
+	protected $buyer_id;
 	protected $realname;
 	protected $username;
 	protected $email;
@@ -36,12 +36,12 @@ class PaycartUser extends PaycartLib
 	 */
 	public static function getInstance($id = 0, $bindData = null, $dummy1 = null, $dummy2 = null)
 	{
-		return parent::getInstance('user', $id, $bindData);
+		return parent::getInstance('buyer', $id, $bindData);
 	}
 	
 	public function reset() 
 	{		
-		$this->user_id	 			=	0;
+		$this->buyer_id	 			=	0;
 		$this->realname					=	null;
 		$this->username				=	null;
 		$this->email				=	null;
@@ -57,30 +57,17 @@ class PaycartUser extends PaycartLib
 	public function bind($data, $ignore)
 	{
 		parent::bind($data, $ignore);
-		$user_id = $this->getId();
+		$buyer_id = $this->getId();
 		
-		return $this->_loadAddresses($user_id);
+		return $this->_loadAddresses($buyer_id);
 	}
 	
-	protected function _loadAddresses($user_id = 0)
+	protected function _loadAddresses($buyer_id = 0)
 	{
-		$this->_addresses = PaycartFactory::getInstance('address', 'model')->loadRecords(array('user_id' => $user_id));
+		$this->_addresses = PaycartFactory::getInstance('address', 'model')->loadRecords(array('buyer_id' => $buyer_id));
 		return $this;
 	}
-	
 		
-	/**
-	 * 
-	 * @param boolean $instance
-	 */
-	public function getUser($instance = false)
-	{
-		if($instance){
-			return PaycartUser::getInstance($this->user_id);
-		}
-		return $this->user_id;
-	}
-	
 	public function getUsername()
 	{
 		return $this->username;

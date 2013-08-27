@@ -13,9 +13,14 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /** 
- * Cart_Particulars Table
+ * CartParticulars Model
  */
-class PaycartTableCart_Particulars extends PaycartTable
+class PaycartModelCartParticulars extends PaycartModel
 {
-	
+	var $filterMatchOpeartor = Array(
+									'buyer_id' 	=> array('='),
+									'product_id'	=> array('=')
+									);
 }
+
+class PaycartModelformCartParticulars extends PaycartModelform { }

@@ -78,7 +78,7 @@ class PaycartCart extends PaycartLib
 	protected function _loadCartParticulars($cart_id)
 	{
 		// get all cart-particulars w.r.t cart
-		$this->_cart_particulars = PaycartFactory::getInstance('cart_particulars','model')
+		$this->_cart_particulars = PaycartFactory::getInstance('cartparticulars','model')
 												->loadRecords(array('cart_id' => $cart_id));
 		
 		return $this;
@@ -92,7 +92,7 @@ class PaycartCart extends PaycartLib
 	public function getBuyer($instance = false)
 	{
 		if($instance){
-			return PaycartUser::getInstance($this->buyer_id);
+			return PaycartBuyer::getInstance($this->buyer_id);
 		}
 		return $this->buyer_id;
 	}
