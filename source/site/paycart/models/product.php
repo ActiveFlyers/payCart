@@ -26,6 +26,27 @@ class PaycartModelProduct extends PaycartModel
 	 * @var Array
 	 */
 	protected $uniqueColumns = Array( 'alias','sku');
+	
+	/**
+	 * 
+	 * Validation check beofore save:
+	 * 1#. @PCTODO::Discuess anout it (Don't support variant of variant.) 
+	 *
+	 * @see components/com_paycart/paycart/base/PaycartModel::validate() 
+	 */
+	public function validate(&$data, $pk=null,array $filter = array(),array $ignore = array()) 
+	{
+		// 1#. No need to create variant of variant
+		if ($data['variation_of']) {
+			$product  = PaycartProduct::getInstance($data['variation_of']);
+			if(!$product || $product->getVariationOf()) {
+				//PCTODO :: Notify to user we dont support this kind of thing.
+				return false;
+			}
+		}
+		// Invoke parent validation
+		return parent::validate($data, $pk, $filter, $ignore);
+	}
 }
 
 class PaycartModelformProduct extends PaycartModelform 

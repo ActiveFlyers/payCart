@@ -53,7 +53,8 @@ class PaycartModelAttributeValue extends PaycartModel
 		if(empty($data)) {
 			return true;
 		}
-		// 2#. PCTODO :: Valiadate Data
+		// 2#. Valiadate Data
+		$this->validate($data);
 		
 		// 3#. Delete existing data
 		//$this->deleteMany(Array('product_id'=>$productId));

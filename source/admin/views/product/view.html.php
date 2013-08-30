@@ -32,6 +32,7 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		Rb_HelperToolbar::apply();
 		Rb_HelperToolbar::save();
 		Rb_HelperToolbar::cancel();
+		Rb_HelperToolbar::custom('addvariant','retweet','',Rb_Text::_('COM_PAYCART_VARIANT_ADD'),false);
 	}
 	
 	/**

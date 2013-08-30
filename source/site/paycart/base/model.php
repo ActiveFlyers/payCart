@@ -31,7 +31,7 @@ class PaycartModel extends Rb_Model
 	 * This should be vaildate and filter the data
 	 * 
 	 * @param unknown_type $data
-	 * @param unknown_type $pk
+	 * @param string $pk
 	 * @param array $filter
 	 * @param array $ignore
 	 *
@@ -41,7 +41,7 @@ class PaycartModel extends Rb_Model
 	 *  
 	 * @see plugins/system/rbsl/rb/rb/Rb_Model::validate()
 	 */
-	function validate(&$data, $pk=null,array $filter = array(),array $ignore = array())
+	public function validate(&$data, $pk=null,array $filter = array(),array $ignore = array())
 	{
 		// Availble column must be unique
 		if (!empty($this->uniqueColumns)) {

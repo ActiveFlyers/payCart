@@ -5,7 +5,8 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
-* @contact		team@readybytes.in
+* @contact		support+paycart@readybytes.in
+* @author 		mManishTrivedi
 */
 
 // no direct access
@@ -13,7 +14,7 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 
 /** 
  * Product Controller
- * @author Manish Trivedi
+ * @author mManishTrivedi
  */
 
 class PaycartAdminControllerProduct extends PaycartController 
@@ -57,7 +58,40 @@ class PaycartAdminControllerProduct extends PaycartController
 		if ( !JSession::checkToken() ) {
 			//@PCTODO :: Rise exception 
 		}
-		 return true;
+		return true;
+	}
+	/**
+	* Add New Product Variant
+	*/
+	public function addVariant()
+	{
+		$variantOf = $this->input->get('variant_of', false);
+		//@PCTODO :: use setredirector
+		$app = PaycartFactory::getApplication();
+		// Check variantof 
+		if(!$variantOf) {
+			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_PARENT_REQUIRED'),'error');
+			return false;
+		}
+		$product = PaycartProduct::getInstance($variantOf);
+		//Validate Variant exist or not
+		if (!$product) {
+			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_PARENT_NOT_EXIST'),'error');
+			return false;
+		} 
+		// if everything is ok then create new variant
+		$variant = $product->addVariant();
+		if(!$variant) {
+			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_CREATION_FAIL'),'error');
+			return false;
+		}
+		
+		$this->setRedirect(
+						'index.php?option=com_paycart&view=product&task=edit&id='.$variant->getId(),
+						Rb_Text::_('COM_PAYCART_VARIANT_CREATION_SUCCESS')
+							);
+		// no need to execute view functions
+		return false;
 	}
 		
 }
