@@ -55,3 +55,11 @@
     overflow-y: auto;
 }
 
+.paycart .clearfix{
+	clear : both;
+}
+
+.paycart .pc-user-address:hover{
+	background-color : #f5f5f5;
+}
+	

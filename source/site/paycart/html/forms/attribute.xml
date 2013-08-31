@@ -57,6 +57,12 @@
 				<option value='0'>COM_PAYCART_NO</option>
 				<option value='1'>COM_PAYCART_YES</option>
 			</field>
+			
+			<field 	name="class" type="text"
+					label="COM_PAYCART_ATTRIBUTE_CLASS"
+					description="COM_PAYCART_ATTRIBUTE_CLASS_DESC"	
+					default=""
+			/>
 				
 		</fieldset>
 	

@@ -18,7 +18,8 @@
  * 
  */
 defined('_JEXEC') or die();
-
+// List of applied attribtes on Product
+$appliedAttributes = $form->getFieldset('attributes');  
 ?>
 
 	<script>
@@ -34,6 +35,14 @@ defined('_JEXEC') or die();
 	
 	<div class="row-fluid">
 		<div class="span9">
+			<?php  if(!empty($appliedAttributes)):?>
+				<?php	foreach ($appliedAttributes as $attribute) : ?>
+							<div class="control-group">
+								<div class="control-label">	<?php echo $attribute->label; ?> </div>
+								<div class="controls">		<?php echo $attribute->input; ?></div>								
+							</div>
+				<?php 	endforeach;?>
+			<?php endif;?>
 			
 		</div>
 			
@@ -73,9 +82,6 @@ defined('_JEXEC') or die();
 					<?php endforeach;?>
 				</table>				
 			</div>
-			
-			
-				
 		</div>
 		
 		

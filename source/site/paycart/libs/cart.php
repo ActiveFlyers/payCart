@@ -63,10 +63,26 @@ class PaycartCart extends PaycartLib
 		$this->cancellation_date 	=	Rb_Date::getInstance('0000-00-00 00:00:00');
 		$this->refund_date 			=	Rb_Date::getInstance('0000-00-00 00:00:00');
 		$this->params				=  	new Rb_Registry();
+		$this->_cart_particulars	=	array();
 		
 		return $this;
 	}
 	
+	public function bind($data, $ignore){
+		parent::bind($data, $ignore);	
+		
+		$cart_id = $this->getId();
+		return $this->_loadCartParticulars($cart_id);
+	}
+	
+	protected function _loadCartParticulars($cart_id)
+	{
+		// get all cart-particulars w.r.t cart
+		$this->_cart_particulars = PaycartFactory::getInstance('cartparticulars','model')
+												->loadRecords(array('cart_id' => $cart_id));
+		
+		return $this;
+	}
 		
 	/**
 	 * 
@@ -76,7 +92,7 @@ class PaycartCart extends PaycartLib
 	public function getBuyer($instance = false)
 	{
 		if($instance){
-			return PaycartUser::getInstance($this->buyer_id);
+			return PaycartBuyer::getInstance($this->buyer_id);
 		}
 		return $this->buyer_id;
 	}
@@ -86,21 +102,9 @@ class PaycartCart extends PaycartLib
 		return PaycartHelper::price_format($this->subtotal);
 	}
 	
-	public function setSubtotal($subtotal)
-	{
-		$this->subtotal = $subtotal;
-		return $this;
-	}
-	
 	public function getTotal()
 	{
 		return PaycartHelper::price_format($this->total);
-	}
-	
-	public function setTotal($total)
-	{
-		$this->total = $total;
-		return $this;
 	}
 	
 	public function getCurrency()
@@ -125,7 +129,6 @@ class PaycartCart extends PaycartLib
 		return $this;
 	}
 	
-	
 	public function getParams($object = true)
 	{
 		if($object){
@@ -133,8 +136,6 @@ class PaycartCart extends PaycartLib
 		}
 
 		return $this->params->toArray();
-	} 
-	
-	
+	}
 	
 }

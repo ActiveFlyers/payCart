@@ -4,7 +4,7 @@
 		<fields name="attribute_config">
 			<fieldset name="attribute_config">
 				
-				<field  name="attribute_type" 
+				<field  name="type" 
 						default="_ATTRIBUTE_TYPE"
 						type="hidden"
 						description="Attribute Type define here so We can render this attribute will render by this FormFieldType"

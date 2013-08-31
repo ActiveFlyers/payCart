@@ -69,11 +69,13 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
   `title` varchar(255) NOT NULL,
   `type` varchar(11) NOT NULL COMMENT 'predefine types like text, numeric etc',
   `default` varchar(250) DEFAULT NULL COMMENT 'Attribute default value',
+  `class` varchar(100) DEFAULT NULL,
   `searchable` tinyint(1) DEFAULT '0',
   `published` tinyint(1) DEFAULT '0',
   `visible` tinyint(1) DEFAULT '0',
   `ordering` int(11) DEFAULT '0',
   `params` text,
+  `xml` text,
   PRIMARY KEY (`attribute_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All attributes and their configuration param will store here.' AUTO_INCREMENT=1 ;
 
@@ -83,13 +85,16 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
 -- Table structure for table `#__paycart_attribute_value`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_attribute_value` (
-  `attribute_value_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `#__paycart_attributevalue` (
+  `attributevalue_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `attribute_id` int(11) NOT NULL,
-  `attribute_value` text ,
-  PRIMARY KEY (`attribute_value_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' AUTO_INCREMENT=1 ;
+  `value` text,
+  `order` int(50) NOT NULL COMMENT 'Attribute''s order on Product Window',
+  PRIMARY KEY (`attributevalue_id`),
+  INDEX `idx_product_id` (`product_id`),
+  INDEX `idx_attribute_id` (`attribute_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -183,8 +188,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
 -- Table structure for table `#__paycart_cart_particulars`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_cart_particulars` (
-  `cart_particulars_id` int(11) 	NOT NULL 	AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `#__paycart_cartparticulars` (
+  `cartparticulars_id` int(11) 	NOT NULL 	AUTO_INCREMENT,
   `cart_id` 		int(11) 					DEFAULT '0',
   `buyer_id` 		int(11) 					DEFAULT '0',
   `product_id` 		int(11) 					DEFAULT '0',
@@ -207,14 +212,14 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart_particulars` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_user`
+-- Table structure for table `#__paycart_buyer`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_user` (
- `user_id` 		INT 		NOT NULL	AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `#__paycart_buyer` (
+ `buyer_id` 		INT 		NOT NULL	AUTO_INCREMENT,
  `mobile`		VARCHAR(20)						DEFAULT '0',
  `params`  		TEXT 							DEFAULT '',
- PRIMARY KEY (`user_id`)
+ PRIMARY KEY (`buyer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -226,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_user` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_address` (
  `address_id` 	INT 		NOT NULL	AUTO_INCREMENT,
- `user_id` 		INT 		NOT NULL			DEFAULT '0',
+ `buyer_id` 		INT 		NOT NULL			DEFAULT '0',
  `address` 		VARCHAR(255)		 			DEFAULT '',
  `city` 		VARCHAR(255) 					DEFAULT '',
  `state` 		VARCHAR(255) 					DEFAULT '',
@@ -236,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_address` (
  `latitude`		VARCHAR(20)						DEFAULT '',
  `preferred`	TINYINT							DEFAULT '0',
  PRIMARY KEY (`address_id`),
- INDEX `idx_user_id` (`user_id`),
+ INDEX `idx_buyer_id` (`buyer_id`),
  INDEX `idx_state` (`state`),
  INDEX `idx_country` (`country`)
 
