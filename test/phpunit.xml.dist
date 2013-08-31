@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit>
+<phpunit bootstrap="bootstrap.php">
 	<!-- These constants help setup environment configurations for running optional tests.
 	<php>
 		<const name="JTEST_DATABASE_MYSQL_DSN" value="host=localhost;dbname=joomla_ut;user=utuser;pass=ut1234" />
@@ -9,19 +9,16 @@
 	-->
 
 	<testsuites>
-		<testsuite name="install">
-			<directory>install</directory>
-		</testsuite>
-	<!--
 		<testsuite name="unit">
 			<directory>unit</directory>
 		</testsuite>
-		<testsuite name="system">
-			<directory>system</directory>
-		</testsuite>
-		-->
 		
 	</testsuites>
+	
+	<listeners>
+		<listener class="RbTestListener" file="core/listener.php">
+		</listener>
+	</listeners>
 	
 <!--
 	<logging>

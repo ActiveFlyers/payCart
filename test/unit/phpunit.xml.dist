@@ -1,8 +1,12 @@
-<phpunit bootstrap="servers/configdef.php" colors="true">
-	<testsuite name="Install">
-		<file>suite/doInstall.php</file>
+<phpunit bootstrap="bootstrap.php" colors="true">
+	<testsuite name="helper">
+		<directory>suites/helper</directory>
 	</testsuite>
 
+	<listeners>
+		<listener class="RbTestListener" file="../core/listener.php">
+		</listener>
+	</listeners>
 <!--
 	<logging>
 		<log type="junit" target="suite/logs/junit.xml" logIncompleteSkipped="false" />
