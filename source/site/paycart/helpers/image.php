@@ -123,26 +123,27 @@ class PaycartHelperImage extends PaycartHelper
 			$thumbFolder = $imagePathInfo['dirname']; 
 		}
 		// Generate thumb name
-		$thumbFileName 	= Paycart::THUMB_IMAGE_PREFIX . $imagePathInfo['filename'] .self::getConfigExtension($imagePath) ;
+		$thumbFileName 	= $thumbFolder.'/'.Paycart::THUMB_IMAGE_PREFIX . $imagePathInfo['filename'] .self::getConfigExtension($imagePath) ;
 		
-		return self::resize($imagePath, $thumbFolder, $thumbWidth, $thumbHeight, $thumbFileName);
+		return self::resize($imagePath, $thumbFileName, $thumbWidth, $thumbHeight);
 	}
 	
 	/**
 	 * 
 	 * Method call to Resizing 
-	 * @param string $sourceImage 			A file path for a source image.
-	 * @param string $destinationFolder		A folder name where created image will be store
+	 * @param string $sourceImage 			Source Image File (with Absolute Path)
+	 * @param string $destinationImage		A new created image file.( with Absolute Path)
 	 * @param string $width					Width for new created image
 	 * @param string $height				Height for new created image
 	 * @param string $destinationFile		New created image name
 	 * @param Integer $creationMethod		1-3 resize $scaleMethod | 4 create croppping (not supported)
+	 * 
 	 * @see JImage Class Constant
 	 *
 	 * @return (bool) True if image successfully created
 
 	 */
-	public static function resize($sourceImage, $destinationFolder, $width, $height, $destinationFile=null, $imageExtension = null, $scaleMethod = JImage::SCALE_FILL) 
+	public static function resize($sourceImage, $destinationImage, $width, $height, $scaleMethod = JImage::SCALE_FILL) 
 	{
 		$image = new JImage($sourceImage);
 		$image = $image->resize($width,$height, true, $scaleMethod);
@@ -162,12 +163,10 @@ class PaycartHelperImage extends PaycartHelper
 		
 		// Generate image name name
 		$config = PaycartFactory::getConfig();
-		$fileName 	= $destinationFolder.'/'. $destinationFile;
+		$fileName 	= $destinationImage;	//$destinationFolder.'/'. $destinationFile;
 		// Save thumb file to disk
 		//@IMP :: File conversion decided here. is it png/jpg/gif 
-		if($imageExtension) {
-			$type = self::_getExtensionType($fileName);
-		}
+		$type = self::_getExtensionType($fileName);
 		if (!$image->toFile($fileName, $type)) {
 			return false;	
 		}
@@ -176,12 +175,13 @@ class PaycartHelperImage extends PaycartHelper
 	
 	/**
 	 * 
-	 * Method to get original image name 
+	 * Method to get image extension 
 	 * @param String $imageFile Either image name or path
 	 * 
-	 * @return string original image name
+	 * @return string image extension
+	 * @PCTODO :: Improve it
 	 */
-	public static function getConfigExtension($imageFile)
+	public static function getConfigExtension($imageFile = null)
 	{
 		//PCTODO :: Use 'auto' in image configuration nd remove hard code
 		$extension = PaycartFactory::getConfig()->get('image_extension', 'auto');
@@ -190,7 +190,7 @@ class PaycartHelperImage extends PaycartHelper
 			$extension = '.'.JFile::getExt($imageFile);
 		}
 		// if extension is not exist then use default 
-		return (strtolower($extension) == 'auto') ? Paycart::IMAGE_FILE_DEFAULT_EXTENSION : $extension;
+		return (strtolower($extension) == 'auto') ? $extension : Paycart::IMAGE_FILE_DEFAULT_EXTENSION ;
 	}
 	
 	/**

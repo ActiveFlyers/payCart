@@ -18,6 +18,10 @@ PaycartHtml::_('behavior.formvalidation');
 <script type="text/javascript">
 	Joomla.submitbutton = function(task)
 	{
+		if (task == 'addvariant' && !setVariant()) {
+			return false;
+		}
+
 		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
 			Joomla.submitform(task, document.getElementById('adminForm'));
 		}
@@ -42,6 +46,21 @@ PaycartHtml::_('behavior.formvalidation');
 			}
 
 		};	
+
+		setVariant = function()
+		{
+			var variantOf = $('#product_id').val();
+
+			// Creating Variant without Product Creation
+			if(!variantOf) {
+				// @PCTODO :: Alert to create Product first
+				return false;
+			}
+			//set variation_of var on admin form beofre submit it
+			$('#adminForm').append("<input type='hidden' name='variant_of' value='"+
+					 variantOf+"' />");
+ 			return true;			
+		};
 
 		$(document).ready(function($){
 			
@@ -277,5 +296,5 @@ PaycartHtml::_('behavior.formvalidation');
 	
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
-	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
+	<input type='hidden' name='id' id="product_id" value='<?php echo $record_id;?>' />	
 </form>

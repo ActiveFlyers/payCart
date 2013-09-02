@@ -127,9 +127,18 @@ class PaycartProduct extends PaycartLib
 	{	
 		return $this->cover_media;
 	}
+
+	/**
+	 * 
+	 * @return Product's Variantion_of
+	 */
+	public function getVariationOf() {
+		return $this->variation_of;
+	}
+	
 	/**
 	 * We required media/image processing after Product save
-	 * (non-PHPdoc)
+	 * 
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
 	 */
 	protected function _save($previousObject)
@@ -145,8 +154,26 @@ class PaycartProduct extends PaycartLib
 		$this->setId($id);
 		
 		// Cover image
-		if ( $this->upload_files && isset($this->upload_files['cover_media']) && $this->upload_files['cover_media']['name'] ) {
-			$this->_ImageProcess($this->upload_files['cover_media'], $previousObject); 
+		if ( $this->upload_files && isset($this->upload_files['cover_media'])) {
+			// Don't check here isset otherwise it will true (In < PHP 5.4)
+			if(is_array($this->upload_files['cover_media'])) { // create new product or re-save product
+				$this->_ImageProcess($this->upload_files['cover_media'], $previousObject);
+			} elseif(!$previousObject && $this->cover_media && $this->variation_of) { // create new variant
+				// Get Image info
+				$sourceFileInfo = PaycartHelperImage::imageInfo($this->upload_files['cover_media']);
+				// target file-name 
+				$targetFileInfo = PaycartHelperImage::imageInfo($this->cover_media);
+				// Original Image
+				$sourceImage = PaycartHelperImage::getDirectory().$sourceFileInfo['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$sourceFileInfo['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;		
+				
+				$imageInfo = Array (
+	  					'sourceFile' 	=> $sourceImage ,
+	  					'targetFolder' 	=> PaycartHelperImage::getDirectory().$sourceFileInfo['dirname'],
+	 					'targetFileName'=> $targetFileInfo['filename']
+	  					  );
+	  			//@PCTODO :: Source Image must be save
+	  			$this->_ImageCreate($imageInfo);
+			} 
 		}
 		
 		$attributeValue = PaycartFactory::getInstance('attributevalue', 'model');
@@ -172,9 +199,9 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 * Override it due to set upload_files variable
+	 * 
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 */
 	function bind($data, $ignore = Array()) 
 	{
@@ -194,8 +221,8 @@ class PaycartProduct extends PaycartLib
 		// load custom attributes and bind with product lib
 		// If attribute value is avilable at data object then no need to set it
 		if($this->getId() && empty($attributes)) { 
-			$attributeValueModel 		= PaycartFactory::getInstance('attributevalue', 'model');
-			$this->attributes 	= $attributeValueModel->loadProductRecords($this->getid());
+			$attributeValueModel 	= PaycartFactory::getInstance('attributevalue', 'model');
+			$this->attributes 		= $attributeValueModel->loadProductRecords($this->getid());
 		}
 		
 		foreach ($attributes as $attribute_id => $attribute) {
@@ -209,6 +236,7 @@ class PaycartProduct extends PaycartLib
 	/**
 	 * 
 	 * Process Cover Image
+	 * @param $imageFile, File type requested data.
 	 * @param Lib_object $previousObject
 	 * 
 	 * @return (bool) True if successfully proccessed
@@ -254,31 +282,79 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 		
-		//Store original image
-		$source 		= $imageFile["tmp_name"];
-		$originalImage	= $imagePath.'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$currentImageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;
+		$imageInfo = Array('sourceFile' => $imageFile["tmp_name"], 'targetFolder' => $imagePath, 'targetFileName' => $currentImageDetail['filename']);
+		return  $this->_ImageCreate($imageInfo);
+	}
+	
+	/**
+	 * PCTODO :: Move code to proper location so other entity like category will utilize it.
+	 * Create new Image with Thumb. We do not provide any extension flexibility. Image extension have configured by Paycart System 
+	 * How to Create :
+	 * 		1#. Copy Original Image. Prfix 'original_' and Suffix '.orig' will be added to original image like "original_IMAGE-NAME.orig"
+	 * 		2#. create New optimize Image (From New copied original Image)
+	 * 		3#. Create new thumb(From optimize Image). Prifix "thumb_" will be added to optimized image. Like "thumb_IMAGE_NAME" 
+	 * @param array $imageInfo
+	 * 		$mageInfo = Array 
+	 * 					( 	
+	 * 						'sourceFile' 	=>	'_ABSOLUTE_PATH_OF_SOURCE_IMAGE_',
+	 * 						'targetFolder'	=>	'_ABSOLUTE_PATH_OF_TARGET_FOLDER_'
+	 * 						'targetFileName'=>	'_NEW_CREATED_IMAGE_NAME_WITHOUT_IMAGE_EXTENSION' 
+	 * 					)
+	 */
+	protected function _ImageCreate(Array $imageInfo)
+	{
+		// 1#. Copy source image to target folder it will be usefull for future operation like batch opration, reset operation etc 
+		// Build Store path for Original image. Original Image available with prefix nd suffix like original_IMAGE-NAME.orig
+		$originalImage	= $imageInfo['targetFolder'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$imageInfo['targetFileName'].Paycart::IMAGE_ORIGINAL_SUFIX;;
+		if (!JFile::copy($imageInfo['sourceFile'], $originalImage )) {
+			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage),'error');
+			return false;
+		}
+		
+		//2#.Create new optimize image
+		// make Optimized Image Path. Extension of optimized image confiured by Paycart System
+		$optimizeImage	= $imageInfo['targetFolder'].'/'.$imageInfo['targetFileName'].PaycartHelperImage::getConfigExtension($imageInfo['sourceFile']);
+		//@PCTODO (Discuss Point ) : height and width calculate with respect to original image.
+		if (!PaycartHelperImage::resize($imageInfo['sourceFile'], $optimizeImage, Paycart::IMAGE_OPTIMIZE_WIDTH, Paycart::IMAGE_OPTIMIZE_HEIGHT)) {
+			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_RESIZE_FAILED', $optimizeImage),'error');
+			return false;
+		}
 
-		if (!JFile::copy($source, $originalImage)) {
-			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage),'error');
+		//3# Create thumbnail
+		if(!PaycartHelperImage::createThumb($optimizeImage, $imageInfo['targetFolder'],  Paycart::THUMB_IMAGE_WIDTH,  Paycart::THUMB_IMAGE_HEIGHT)){
+			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage),'error');
 			return false;
 		}
-		
-		// Create new optimize image
-		$optimizeImageName = $currentImageDetail['filename'].PaycartHelperImage::getConfigExtension($imageFile['name']);
-		$optimizeImage 	= $imagePath.'/'.$optimizeImageName;
-		
-		//@PCTODO :: height and width calculate respect with original image
-		if (!PaycartHelperImage::resize($originalImage, $imagePath, Paycart::IMAGE_OPTIMIZE_WIDTH, Paycart::IMAGE_OPTIMIZE_HEIGHT, $optimizeImageName)) {
-			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_RESIZE_FAILED', $optimizeImage),'error');
-			return false;
-		}
-		
-		//Create thumbnail 
-		if(!PaycartHelperImage::createThumb($optimizeImage, $imagePath,  Paycart::THUMB_IMAGE_WIDTH,  Paycart::THUMB_IMAGE_HEIGHT)){
-			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage),'error');
-			return false;
-		}
-		
 		return true;
+	}
+	
+	/**
+	 * 
+	 * Create new variation of Product. 
+	 */
+	public function addVariant()
+	{
+		$newProduct 	= $this->getClone();
+		$newProduct->variation_of = $this->getId();
+		// New created variant will be always variation of ROOT product. 
+		// @see Discuss#39
+		if($variantOf = $this->getVariationOf()) {
+			$newProduct->variation_of = $variantOf;
+		}
+		//### Attribute Changes in Variants
+		//1. Product id should be 0
+		$newProduct->product_id = 0 ;
+		//2. New image file name save nd create new after save
+		if($this->getCoverMedia()) { 
+			// set Image name  
+			$newProduct->cover_media = PaycartHelper::getHash($this->getTitle()).PaycartHelperImage::getConfigExtension($this->getCoverMedia());
+			$newProduct->cover_media = $this->getName().'/'.$newProduct->cover_media;
+			// set source path. It will required on image processing
+			$newProduct->upload_files['cover_media'] = $this->getCoverMedia();
+		}		
+		
+		// Save new variant		
+		return $newProduct->save();
+		
 	}
 }
