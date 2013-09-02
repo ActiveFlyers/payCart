@@ -156,20 +156,20 @@ class PaycartProduct extends PaycartLib
 		// Cover image
 		if ( $this->upload_files && isset($this->upload_files['cover_media'])) {
 			// Don't check here isset otherwise it will true (In < PHP 5.4)
-			if(!empty($this->upload_files['cover_media']['name'])) { // create new product or re-save product
+			if(is_array($this->upload_files['cover_media'])) { // create new product or re-save product
 				$this->_ImageProcess($this->upload_files['cover_media'], $previousObject);
 			} elseif(!$previousObject && $this->cover_media && $this->variation_of) { // create new variant
 				// Get Image info
 				$sourceFileInfo = PaycartHelperImage::imageInfo($this->upload_files['cover_media']);
 				// target file-name 
-				$targetFileName = basename($this->cover_media);
+				$targetFileInfo = PaycartHelperImage::imageInfo($this->cover_media);
 				// Original Image
 				$sourceImage = PaycartHelperImage::getDirectory().$sourceFileInfo['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$sourceFileInfo['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;		
 				
 				$imageInfo = Array (
 	  					'sourceFile' 	=> $sourceImage ,
 	  					'targetFolder' 	=> PaycartHelperImage::getDirectory().$sourceFileInfo['dirname'],
-	 					'targetFileName'=> $targetFileName
+	 					'targetFileName'=> $targetFileInfo['filename']
 	  					  );
 	  			//@PCTODO :: Source Image must be save
 	  			$this->_ImageCreate($imageInfo);
@@ -282,52 +282,49 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 		
-		//Store original image
-		$source 		= $imageFile["tmp_name"];
-		$originalImage	= $imagePath.'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$currentImageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;
-
-		if (!JFile::copy($source, $originalImage)) {
-			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage),'error');
-			return false;
-		}
-		
-		// Create new optimize image
-		$optimizeImageName = $currentImageDetail['filename'].PaycartHelperImage::getConfigExtension($imageFile['name']);
-		$optimizeImage 	= $imagePath.'/'.$optimizeImageName;
-		
-		$imageInfo = Array('sourceFile' => $originalImage, 'targetFolder' => $imagePath, 'targetFileName' => $optimizeImageName);
-		
+		$imageInfo = Array('sourceFile' => $imageFile["tmp_name"], 'targetFolder' => $imagePath, 'targetFileName' => $currentImageDetail['filename']);
 		return  $this->_ImageCreate($imageInfo);
 	}
 	
 	/**
-	 * 
-	 * Create new image with thumb.
-	 * @param array $imageInfo contain image attributes
-	 * 			
-	 * 	$imageInfo = Array (
-	 * 					'sourceFile' 	=> 'Full path of source image',
-	 * 					'targetFolder' 	=> 'Folder Path Where I'll store Image'
-	 					'targetFileName'=> 'target file name'
-	 * 					   ) 
-	 * 
+	 * PCTODO :: Move code to proper location so other entity like category will utilize it.
+	 * Create new Image with Thumb. We do not provide any extension flexibility. Image extension have configured by Paycart System 
+	 * How to Create :
+	 * 		1#. Copy Original Image. Prfix 'original_' and Suffix '.orig' will be added to original image like "original_IMAGE-NAME.orig"
+	 * 		2#. create New optimize Image (From New copied original Image)
+	 * 		3#. Create new thumb(From optimize Image). Prifix "thumb_" will be added to optimized image. Like "thumb_IMAGE_NAME" 
+	 * @param array $imageInfo
+	 * 		$mageInfo = Array 
+	 * 					( 	
+	 * 						'sourceFile' 	=>	'_ABSOLUTE_PATH_OF_SOURCE_IMAGE_',
+	 * 						'targetFolder'	=>	'_ABSOLUTE_PATH_OF_TARGET_FOLDER_'
+	 * 						'targetFileName'=>	'_NEW_CREATED_IMAGE_NAME_WITHOUT_IMAGE_EXTENSION' 
+	 * 					)
 	 */
 	protected function _ImageCreate(Array $imageInfo)
 	{
-		//@PCTODO :: height and width calculate respect with original image
-		$target = $imageInfo['targetFolder'].'/'.$imageInfo['targetFileName'];
-		// Create Image
-		if (!PaycartHelperImage::resize($imageInfo['sourceFile'], $target, Paycart::IMAGE_OPTIMIZE_WIDTH, Paycart::IMAGE_OPTIMIZE_HEIGHT)) {
-			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_RESIZE_FAILED', $optimizeImage),'error');
+		// 1#. Copy source image to target folder it will be usefull for future operation like batch opration, reset operation etc 
+		// Build Store path for Original image. Original Image available with prefix nd suffix like original_IMAGE-NAME.orig
+		$originalImage	= $imageInfo['targetFolder'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$imageInfo['targetFileName'].Paycart::IMAGE_ORIGINAL_SUFIX;;
+		if (!JFile::copy($imageInfo['sourceFile'], $originalImage )) {
+			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage),'error');
 			return false;
 		}
 		
-		//Create thumbnail 
-		if(!PaycartHelperImage::createThumb($target, $imageInfo['targetFolder'],  Paycart::THUMB_IMAGE_WIDTH,  Paycart::THUMB_IMAGE_HEIGHT)){
-			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage),'error');
+		//2#.Create new optimize image
+		// make Optimized Image Path. Extension of optimized image confiured by Paycart System
+		$optimizeImage	= $imageInfo['targetFolder'].'/'.$imageInfo['targetFileName'].PaycartHelperImage::getConfigExtension($imageInfo['sourceFile']);
+		//@PCTODO (Discuss Point ) : height and width calculate with respect to original image.
+		if (!PaycartHelperImage::resize($imageInfo['sourceFile'], $optimizeImage, Paycart::IMAGE_OPTIMIZE_WIDTH, Paycart::IMAGE_OPTIMIZE_HEIGHT)) {
+			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_RESIZE_FAILED', $optimizeImage),'error');
 			return false;
 		}
-		
+
+		//3# Create thumbnail
+		if(!PaycartHelperImage::createThumb($optimizeImage, $imageInfo['targetFolder'],  Paycart::THUMB_IMAGE_WIDTH,  Paycart::THUMB_IMAGE_HEIGHT)){
+			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage),'error');
+			return false;
+		}
 		return true;
 	}
 	
