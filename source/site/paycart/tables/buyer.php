@@ -13,9 +13,9 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /** 
- * Cart_Particulars Table
+ * User Table
  */
-class PaycartTableCart_Particulars extends PaycartTable
+class PaycartTableBuyer extends PaycartTable
 {
 	
 }

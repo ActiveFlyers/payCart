@@ -6,16 +6,12 @@
 * @package 		PAYCART
 * @subpackage	Back-end
 * @contact		team@readybytes.in
-* @author 		Puneet Singhal 
+* @author		Puneet Singhal
 */
 
 // no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined( '_JEXEC' ) or	die( 'Restricted access' );
 
-/** 
- * User Table
- */
-class PaycartTableUser extends PaycartTable
-{
-	
+class PaycartAdminControllerBuyer extends PaycartController {
+		
 }
