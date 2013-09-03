@@ -156,7 +156,8 @@ class PaycartProduct extends PaycartLib
 		// Cover image
 		if ( $this->upload_files && isset($this->upload_files['cover_media'])) {
 			// Don't check here isset otherwise it will true (In < PHP 5.4)
-			if(is_array($this->upload_files['cover_media'])) { // create new product or re-save product
+			// is_aaray check for it's not a variant && Post data is not empty
+			if(is_array($this->upload_files['cover_media']) && !empty($this->upload_files['cover_media']['name'])) { // create new product or re-save product
 				$this->_ImageProcess($this->upload_files['cover_media'], $previousObject);
 			} elseif(!$previousObject && $this->cover_media && $this->variation_of) { // create new variant
 				// Get Image info

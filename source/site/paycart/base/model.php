@@ -48,7 +48,7 @@ class PaycartModel extends Rb_Model
 			$table 	 	= $this->getTable();
 			$tableKey 	= $table->getKeyName();
 			foreach ($this->uniqueColumns as $column) {
-				// if unique column is empty then fire extension
+				// if unique column is empty then fire exception
 				if (!$data[$column]) {
 					// unique key empty not allwoed
 					throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_UNIQUE_KEY_EMPTY',$column));

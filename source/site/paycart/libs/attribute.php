@@ -56,20 +56,6 @@ class PaycartAttribute extends PaycartLib
 	}	
 	
 	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
-	 * Formating here before save content
-	 */
-	public function save()
-	{
-//		if(!$this->created_by) {
-//			$this->created_by = Rb_Factory::getUser()->get('id');
-//		}
-		
-		return parent::save();
-	}
-	/**
-	 * (non-PHPdoc)
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
 	 * After Attribute creation we build xml by using atrribute config and we need attribute id 
 	 * so save opration excute twice times.  
@@ -136,6 +122,7 @@ class PaycartAttribute extends PaycartLib
 			// IMP :: Newline always behave like separator 
 			$values = explode("\n", $attributeConfig->options);
 			foreach ($values as $value) {
+				$value = trim($value);
 				$field .= "<option value='$value'>$value</option>";
 			}
 		}

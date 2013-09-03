@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fields name="attribute_config">
+			<fieldset name="attribute_config">
+				
+				<field  name="type" 
+						default="list"
+						type="hidden"
+						description="Attribute Type define here so We can render this attribute will render by this FormFieldType"
+				/>
+				
+				<field  name="options" type="textarea"
+						default=""
+						label="COM_PAYCART_ATTRIBUTE_LIST_OPTIONS_LABEL"
+						description="COM_PAYCART_ATTRIBUTE_LIST_OPTIONS_DESC"
+					/> 
+
+				<field  name="multiple" type="radio"
+						default="0"
+						label="COM_PAYCART_ATTRIBUTE_LIST_MULTIPLE_LABEL"
+						description="COM_PAYCART_ATTRIBUTE_LIST_MULTIPLE_DESC"	
+						class="btn-group"
+					>
+						<option value='false'>COM_PAYCART_NO</option>
+						<option value='true'>COM_PAYCART_YES</option>
+				</field>
+
+				<field  name="size" type="text"
+						default=""
+						label="COM_PAYCART_ATTRIBUTE_LIST_SIZE_LABEL"
+						description="COM_PAYCART_ATTRIBUTE_LIST_SIZE_DESC"
+					/>
+
+				<field 	name="readonly" type="radio"
+						default="0"
+						description="COM_PAYCART_ATTRIBUTE_LIST_READONLY_DESC"
+						label="COM_PAYCART_ATTRIBUTE_LIST_READONLY_LABEL" 
+						class="btn-group"
+					>
+						<option value='0'>COM_PAYCART_NO</option>
+						<option value='1'>COM_PAYCART_YES</option>
+				</field>
+
+				<field  name="onchange" type="textarea"
+						default=""
+						label="COM_PAYCART_ATTRIBUTE_LIST_ONCHANGE_LABEL"
+						description="COM_PAYCART_ATTRIBUTE_LIST_ONCHANGE_DESC"
+					/> 
+				
+			</fieldset>
+		</fields>
+	</fields>
+</form>
