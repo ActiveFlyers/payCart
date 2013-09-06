@@ -45,5 +45,24 @@ class PaycartHelperAttribute extends PaycartHelper
 		
 		return $xml;
 	}
+	// Format Attribute Values
+	public static function formatValue($type, $value)
+	{
+		$fun = '_Format'.$type;
+		return self::$fun($value);
+	}
+	
+	protected function _FormatText($value)
+	{
+		return trim($value);
+	}
+	
+	protected function _FormatList($value)
+	{
+		if(!is_array($value)) {
+			$value = explode(',', $value);
+		} 
+		return $value;	
+	}
 	
 }

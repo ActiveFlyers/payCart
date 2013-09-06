@@ -17,6 +17,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartAttribute extends PaycartLib
 {
+	// Table field
 	protected $attribute_id	 =	0; 
 	protected $title 		 =	null;
 	protected $published	 =	1;
@@ -50,26 +51,23 @@ class PaycartAttribute extends PaycartLib
 		return $this;
 	}
 	
-	public static function getInstance($id = 0, $data = null, $dummy1 = null, $dummy2 = null)
+	public static function getInstance($id = 0, $data = null, $cached = false, $dummy2 = null)
 	{
-		return parent::getInstance('attribute', $id, $data);
+		// PCTODO :: remove it .
+		static $attribute;
+
+		if(!$cached || !$id) {
+			return parent::getInstance('attribute', $id, $data);
+		}
+		// Cached required on Attribute value Instance
+		if(!isset($attribute[$id])) {
+			$attribute[$id] = parent::getInstance('attribute', $id, $data);
+		}
+
+		return $attribute[$id];
 	}	
 	
 	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
-	 * Formating here before save content
-	 */
-	public function save()
-	{
-//		if(!$this->created_by) {
-//			$this->created_by = Rb_Factory::getUser()->get('id');
-//		}
-		
-		return parent::save();
-	}
-	/**
-	 * (non-PHPdoc)
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
 	 * After Attribute creation we build xml by using atrribute config and we need attribute id 
 	 * so save opration excute twice times.  
@@ -136,6 +134,7 @@ class PaycartAttribute extends PaycartLib
 			// IMP :: Newline always behave like separator 
 			$values = explode("\n", $attributeConfig->options);
 			foreach ($values as $value) {
+				$value = trim($value);
 				$field .= "<option value='$value'>$value</option>";
 			}
 		}
@@ -143,5 +142,10 @@ class PaycartAttribute extends PaycartLib
 		$field .= ' </field>';
 
 		return $field;
+	}
+	
+	public function formatValue($value)
+	{
+		return PaycartHelperAttribute::formatValue($this->type, $value);
 	}
 }

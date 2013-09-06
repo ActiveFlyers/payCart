@@ -51,14 +51,14 @@ class PaycartModelProduct extends PaycartModel
 
 class PaycartModelformProduct extends PaycartModelform 
 {
-	// Load Extra Custom atrributes configuration 
+	// Load Custom atrributes configuration XML
 	protected function preprocessForm($form, $data)
 	{
 		// If Custom Attributes available at Product 
 		// Then get all attribute's config Xml annd inject into Product Form
-		if(!empty($data['attributes'])) {
+		if(!empty($data['_attributeValue'])) {
 			// Step-1 : Get All Attribute's Config XML
-			$configXML = PaycartHelperAttribute::getAttributeXML(array_keys($data['attributes']));
+			$configXML = PaycartHelperAttribute::getAttributeXML(array_keys($data['_attributeValue']));
 			// Step-2 : Load on Form
 			// Don't use Setfields here becoz we have fields hierarchy nd SetFields does not support it.(support only one level)
 			// All Attribute config will be availble with form object.
@@ -66,5 +66,25 @@ class PaycartModelformProduct extends PaycartModelform
 		}
 		return parent::preprocessForm($form, $data);
 	} 
+	
+	// Load Custom Attributes Data 
+	protected function preprocessData($context, &$data)
+	{
+		if(!empty($data['_attributeValue'])) {
+			//IMP :: We have always set attributeValue lib data
+			foreach ( $data['_attributeValue'] as $attributeId => $attribute) {
+				// set attributes index on Data
+				$data['attributes'][$attributeId] = $attribute->toArray();
+			}
+		}
+		return parent::preprocessData($context, $data);
+	}
+	
+	protected function loadFormData()
+	{
+		$data  = parent::loadFormData();
+		$this->preprocessData('com_paycart.product', $data);
+		return $data;
+	}
 	
 }
