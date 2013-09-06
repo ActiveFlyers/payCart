@@ -17,6 +17,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartAttribute extends PaycartLib
 {
+	// Table field
 	protected $attribute_id	 =	0; 
 	protected $title 		 =	null;
 	protected $published	 =	1;
@@ -50,9 +51,20 @@ class PaycartAttribute extends PaycartLib
 		return $this;
 	}
 	
-	public static function getInstance($id = 0, $data = null, $dummy1 = null, $dummy2 = null)
+	public static function getInstance($id = 0, $data = null, $cached = false, $dummy2 = null)
 	{
-		return parent::getInstance('attribute', $id, $data);
+		// PCTODO :: remove it .
+		static $attribute;
+
+		if(!$cached || !$id) {
+			return parent::getInstance('attribute', $id, $data);
+		}
+		// Cached required on Attribute value Instance
+		if(!isset($attribute[$id])) {
+			$attribute[$id] = parent::getInstance('attribute', $id, $data);
+		}
+
+		return $attribute[$id];
 	}	
 	
 	/**
@@ -130,5 +142,10 @@ class PaycartAttribute extends PaycartLib
 		$field .= ' </field>';
 
 		return $field;
+	}
+	
+	public function formatValue($value)
+	{
+		return PaycartHelperAttribute::formatValue($this->type, $value);
 	}
 }
