@@ -288,7 +288,7 @@ class PaycartProduct extends PaycartLib
 			$files = Array(
 							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$previousImageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX,		// Original Image
 							$imagePath.$previousImage,				// Optimize Image
-							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::THUMB_IMAGE_PREFIX.$previousImageDetail['filename'].'.'.$previousImageDetail['extension']
+							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::IMAGE_THUMB_PREFIX.$previousImageDetail['filename'].'.'.$previousImageDetail['extension']
 						);
 			// Delete Original Image,Optimize Image and thumb Image
 			JFile::delete($files);
@@ -344,7 +344,7 @@ class PaycartProduct extends PaycartLib
 		}
 
 		//3# Create thumbnail
-		if(!PaycartHelperImage::createThumb($optimizeImage, $imageInfo['targetFolder'],  Paycart::THUMB_IMAGE_WIDTH,  Paycart::THUMB_IMAGE_HEIGHT)){
+		if(!PaycartHelperImage::createThumb($optimizeImage, $imageInfo['targetFolder'],  Paycart::IMAGE_THUMB_WIDTH,  Paycart::IMAGE_THUMB_HEIGHT)){
 			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage),'error');
 			return false;
 		}

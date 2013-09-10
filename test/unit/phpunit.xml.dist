@@ -1,6 +1,6 @@
 <phpunit bootstrap="bootstrap.php" colors="true">
-	<testsuite name="helper">
-		<directory>suites/helper</directory>
+	<testsuite name="TestCases">
+		<directory>suites</directory>
 	</testsuite>
 
 	<listeners>

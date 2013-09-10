@@ -39,7 +39,7 @@ class PaycartHelper extends Rb_Helper
 			$string = JFilterOutput::stringURLSafe($string);
 		} else {
 			// Handle by Joomla global configuration varible 'unicodeslugs'
-			$string = Rb_Factory::getApplication()->stringURLSafe($string);
+			$string = PaycartFactory::getApplication()->stringURLSafe($string);
 		}
 
 		return JString::trim($string);

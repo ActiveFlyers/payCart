@@ -27,21 +27,17 @@ class Paycart
 	const PRODUCT_TYPE_PHYSICAL	=	10;		// langusage String "COM_PAYCART_PRODUCT_TYPE_PHYSICAL"
 	const PRODUCT_TYPE_DIGITAL	=	20;		
 	
-	const IMAGES_ROOT_PATH		= '/media/com_paycart/images/';
-	
 	// Image constant	
-	const IMAGE_ORIGINAL_PREFIX 	= 'original_';
-	const IMAGE_ORIGINAL_SUFIX 		= '.orig';
-	
-	const IMAGE_OPTIMIZE_WIDTH 		= 200;
-	const IMAGE_OPTIMIZE_HEIGHT		= 200;
-	
-	const THUMB_IMAGE_PREFIX 	= 'thumb_';
-	const THUMB_IMAGE_WIDTH 	= 100;
-	const THUMB_IMAGE_HEIGHT	= 100;
-	
-	const IMAGE_FILE_DEFAULT_MAXIMUM_SIZE = 2; 	// 2MB
-	const IMAGE_FILE_DEFAULT_EXTENSION = '.png';
+	const IMAGES_ROOT_PATH					= '/media/com_paycart/images/';
+	const IMAGE_ORIGINAL_PREFIX 			= 'original_';
+	const IMAGE_ORIGINAL_SUFIX 				= '.orig';
+	const IMAGE_OPTIMIZE_WIDTH 				= 200;
+	const IMAGE_OPTIMIZE_HEIGHT				= 200;
+	const IMAGE_THUMB_PREFIX 				= 'thumb_';
+	const IMAGE_THUMB_WIDTH 				= 100;
+	const IMAGE_THUMB_HEIGHT				= 100;
+	const IMAGE_FILE_DEFAULT_MAXIMUM_SIZE 	= 2; 	// 2MB
+	const IMAGE_FILE_DEFAULT_EXTENSION 		= '.png';
 
 
 	// Cart Entity Status
