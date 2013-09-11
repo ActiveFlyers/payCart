@@ -9,16 +9,16 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined('_JEXEC') or die( 'Restricted access' );
 
 /** 
  * Factory
  * @author Team Readybytes
  */
 class PaycartFactory extends Rb_Factory
-{
+{ 
+ 	static protected $_config;
+ 	 
 	static function getInstance($name, $type='', $prefix='Paycart', $refresh=false)
 	{
 		return parent::getInstance($name, $type, $prefix, $refresh);
@@ -28,26 +28,27 @@ class PaycartFactory extends Rb_Factory
 	 * 
 	 * Method invoke to get {Paycart + Site global} configuration object
 	 * 
-	 * @return Rb_registry object
+	 * @return JRegistry object
 	 */
-	static function getConfig($file = null, $type = 'PHP', $namespace = '')
+	static function getConfig($file = null, $type = 'PHP', $namespace = '', $records = Array())
 	{
-		static $config;
-		if($config) {
-			return $config;
+		if(self::$_config) {
+			return self::$_config;
 		}
-		$config = parent::getConfig();
-		$config = self::_loadConfig($config->toArray());
-		return $config;
-	}
-	
-	/**
-	 * Private method for load Paycart global configuration
-	 */
-	private function _loadConfig($data = Array())
-	{
-		// PCTODO :: Load Config from Model
-		$config = new Rb_Registry($data);
-		return $config;
+
+		// load  Joomla Config
+		self::$_config = parent::getConfig($file , $type, $namespace);
+
+		// For unit test case, you need to get $records from outside 
+		if(empty($records)) { 
+			$paycartConfig = self::getInstance('config', 'model')->loadRecords();
+			foreach ($paycartConfig as $record) {
+				$records[$record->key] = $record->value;
+			}
+		}
+
+		// Bind paycart config to joomla config
+		self::$_config->loadArray($records);
+		return self::$config;
 	}
 }

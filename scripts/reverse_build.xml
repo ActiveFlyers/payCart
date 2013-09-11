@@ -74,6 +74,7 @@
 			<fileset dir="${source}/test/">
 				<include name="**/*.*" />
 				<exclude name="**/screenshots/*_log.png" />
+				<exclude name="report/**.**" />
 			</fileset>
 		</copy>
 	</target>
