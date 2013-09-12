@@ -69,9 +69,7 @@ class PaycartProduct extends PaycartLib
 		$this->description	 =	null; 	
 		$this->hits			 =	0;
 		$this->meta_data	 = new Rb_Registry();
-		//Extra fields (not realted to columm)
-		//IMP:: Dont use '_'(underscore here) becoz we need to inject extra attributes into form
-		//if we use _ then it will treat as a extra object property and discarded it.(At data-binding on form) 
+		//Extra fields (not realted to columm) 
 		$this->_attributeValue   = Array();
 		
 		return $this;

@@ -85,8 +85,22 @@ class PaycartFactoryTest extends PayCartTestCase
 					 ->will($this->returnValue(true));
 		//assign to joomla config
 		JFactory::$config = $mockRegistry;
+		
+		// Create a stub for the PaycartModelConfig class.
+		$mockModel 	= $this->getMock('PaycartModelConfig', Array('loadRecords'));
+		$dummyData1 = new stdClass;
+		$dummyData2	= new stdClass;
+		$dummyData1->key 	= '_rbsl_testing_key1';
+		$dummyData1->value 	= '_rbsl_testing_value1';
+		$dummyData2->key 	= '_rbsl_testing_key2';
+		$dummyData2->value 	= '_rbsl_testing_value2';
+		
+		$mockModel->expects($this->any())
+				  ->method('loadRecords')
+				  ->will($this->returnValue(Array(1=>$dummyData1, 2=>$dummyData2)));
+		
 		// get Paycart config
-		$paycartConfig 	= PaycartFactory::getConfig( null, 'PHP', '', Array('key_1'=>'value_1') );
+		$paycartConfig 	= PaycartFactory::getConfig( null, 'PHP', '', $mockModel);
 		// Test config should be instance of JRegistry
 		$this->assertInstanceOf(
 			'JRegistry',

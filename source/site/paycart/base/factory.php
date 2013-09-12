@@ -30,7 +30,7 @@ class PaycartFactory extends Rb_Factory
 	 * 
 	 * @return JRegistry object
 	 */
-	static function getConfig($file = null, $type = 'PHP', $namespace = '', $records = Array())
+	static function getConfig($file = null, $type = 'PHP', $namespace = '', $paycartModelConfig = false)
 	{
 		if(self::$_config) {
 			return self::$_config;
@@ -39,12 +39,14 @@ class PaycartFactory extends Rb_Factory
 		// load  Joomla Config
 		self::$_config = parent::getConfig($file , $type, $namespace);
 
-		// For unit test case, you need to get $records from outside 
-		if(empty($records)) { 
-			$paycartConfig = self::getInstance('config', 'model')->loadRecords();
-			foreach ($paycartConfig as $record) {
-				$records[$record->key] = $record->value;
-			}
+		// For unit test case, inject mock-object from outside 
+		if(!$paycartModelConfig) { 
+			$paycartModelConfig = self::getInstance('config', 'model');
+		}
+
+		$paycartConfig = $paycartModelConfig->loadRecords();
+		foreach ($paycartConfig as $record) {
+			$records[$record->key] = $record->value;
 		}
 
 		// Bind paycart config to joomla config
