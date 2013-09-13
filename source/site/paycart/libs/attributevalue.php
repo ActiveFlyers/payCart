@@ -55,12 +55,26 @@ class PaycartAttributeValue extends PaycartLib
 			$this->_attribute = PaycartAttribute::getInstance($this->attribute_id);
 		}
 		// IMP :: Attribute value should be formate here
-		// PCTODO:: break into function
-		if(is_a($this->_attribute, 'PaycartAttribute')) {
-			$this->value = $this->_attribute->formatValue($this->value);
-		}
-		
+		$this->value = $this->formatValue();
+
 		return $this;
+	}
+	
+	/**
+	 * 
+	 * Format Attribute value
+	 * @param  $_attribute, Use for Unit test
+	 */
+	public function formatValue($_attribute = null )
+	{
+		$value = '';
+		//PCTODO :: We can check is_object and 'formatValue' should be callable 
+		if(is_a($this->_attribute, 'PaycartAttribute') ) {
+			$value = $this->_attribute->formatValue($this->value);
+		}elseif (is_object($_attribute)) {
+			$value = $_attribute->formatValue($this->value);
+		}
+		return $value;
 	}
 	
 	public function getValue()

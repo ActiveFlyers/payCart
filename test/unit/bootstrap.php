@@ -25,5 +25,6 @@ require_once 'defines.php';
 
 // Load PaycartTestCase Class
 require_once 'PaycartTestCase.php';
+require_once 'reflection.php';
 
 

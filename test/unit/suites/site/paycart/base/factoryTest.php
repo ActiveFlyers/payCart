@@ -21,7 +21,7 @@ class PaycartFactoryTest extends PayCartTestCase
 	protected function setUp() 
 	{
 		// load stub class
-		require_once __DIR__.'/stub/factory.php';
+		require_once __DIR__.'/stubs/factory.php';
 		parent::setUp();
 		;
 	}

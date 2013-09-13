@@ -52,24 +52,33 @@ class PaycartCategory extends PaycartLib
 	}	
 	
 	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
+	 * 
 	 * Formating here before save content
+	 * @param $user, Use for unit test case
+	 * @param $table, Use for unit test case
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
+	 *
 	 */
-	public function save()
+	public function save($user = null, $table= null)
 	{
 		if(!$this->created_by) {
-			$this->created_by = Rb_Factory::getUser()->get('id');
+			if(!$user) {
+				$user = Rb_Factory::getUser();
+			}
+			$this->created_by = $user->get('id');
 		}
-		
+
 		if (!$this->alias) {
 			$this->alias = $this->getTitle();
 		}
 		// generate unique alias if not exist. If exist then sluggify it
-		$this->alias =  $this->getModel()->getTable()->getUniqueAlias($this->alias, $this->getId());
+		if(!$table) {
+			$table = $this->getModel()->getTable();
+		}
+		$this->alias =  $table->getUniqueAlias($this->alias, $this->getId());
 		
 		return parent::save();
-	}
+	}	
 	
 	
 	public function getTitle()
