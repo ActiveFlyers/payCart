@@ -36,7 +36,7 @@ class InstallerPage extends AdminPage
 		$this->clickMenu('Extension Manage');
 		$this->setField('Filter', $kit_name);
 		$this->clickButton("//button[@class='btn tip hasTooltip'][@type='submit'][@ data-original-title='Search']");
-		// RBTODO:: Be Ensure your extension type
+		// RBTODO:: Be ensured your extension type
 		$this->driver->findElement(By::name("checkall-toggle"))->click();
 		$this->clickToolbar('Uninstall');
 		//RBTODO:: Ensure extension uninstall

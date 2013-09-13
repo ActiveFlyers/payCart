@@ -110,11 +110,11 @@ class PaycartHelperImage extends PaycartHelper
 		$config = PaycartFactory::getConfig();
 		
 		if (!$thumbWidth) {
-			$thumbWidth 	= $config->get('thumb_width',  Paycart::THUMB_IMAGE_WIDTH);
+			$thumbWidth 	= $config->get('thumb_width',  Paycart::IMAGE_THUMB_WIDTH);
 		}
 		
 		if (!$thumbHeight) {
-			$thumbHeight 	= $config->get('thumb_height', Paycart::THUMB_IMAGE_HEIGHT); 
+			$thumbHeight 	= $config->get('thumb_height', Paycart::IMAGE_THUMB_HEIGHT); 
 		}
 		
 		$imagePathInfo = pathinfo($imagePath);
@@ -123,7 +123,7 @@ class PaycartHelperImage extends PaycartHelper
 			$thumbFolder = $imagePathInfo['dirname']; 
 		}
 		// Generate thumb name
-		$thumbFileName 	= $thumbFolder.'/'.Paycart::THUMB_IMAGE_PREFIX . $imagePathInfo['filename'] .self::getConfigExtension($imagePath) ;
+		$thumbFileName 	= $thumbFolder.'/'.Paycart::IMAGE_THUMB_PREFIX . $imagePathInfo['filename'] .self::getConfigExtension($imagePath) ;
 		
 		return self::resize($imagePath, $thumbFileName, $thumbWidth, $thumbHeight);
 	}

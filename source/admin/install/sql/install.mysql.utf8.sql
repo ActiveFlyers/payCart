@@ -6,13 +6,15 @@
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_configuration`
+-- Table structure for table `#__paycart_config`
 --
-
-CREATE TABLE IF NOT EXISTS `#__paycart_configuration` (
-  `configuration_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+CREATE TABLE IF NOT EXISTS `#__paycart_config` (
+  `config_id` int(11) NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) NOT NULL,
+  `value` text,
+  UNIQUE KEY `key` (`key`),
+  UNIQUE KEY `config_id` (`config_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 -- --------------------------------------------------------
 
 --

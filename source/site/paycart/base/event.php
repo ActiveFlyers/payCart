@@ -7,7 +7,8 @@
  *@author 		mManishTrivedi 
 */
 
-defined('JPATH_PLATFORM') or die;
+// no direct access
+defined('_JEXEC') or die( 'Restricted access' );
 
 /**
  * 

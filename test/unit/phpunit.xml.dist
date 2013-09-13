@@ -1,6 +1,6 @@
 <phpunit bootstrap="bootstrap.php" colors="true">
-	<testsuite name="helper">
-		<directory>suites/helper</directory>
+	<testsuite name="TestCases">
+		<directory>suites</directory>
 	</testsuite>
 
 	<listeners>
@@ -12,4 +12,25 @@
 		<log type="junit" target="suite/logs/junit.xml" logIncompleteSkipped="false" />
 	</logging>
 -->
+
+	<filter>
+	  <whitelist addUncoveredFilesFromWhitelist="true">
+	    <directory suffix=".php">../../components/com_paycart/paycart</directory>
+	  </whitelist>
+	</filter>
+	
+	<logging>
+	  <log type="coverage-html" target="../report" charset="UTF-8"
+	       yui="true" highlight="false"
+	       lowUpperBound="35" highLowerBound="70"/>
+<!--	  <log type="coverage-clover" target="test/tmp/coverage.xml"/>-->
+<!--	  <log type="coverage-php" target="test/tmp/coverage.serialized"/>-->
+<!--	  <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>-->
+<!--	  <log type="json" target="test/tmp/logfile.json"/>-->
+<!--	  <log type="tap" target="test/tmp/logfile.tap"/>-->
+<!--	  <log type="junit" target="test/tmp/logfile.xml" logIncompleteSkipped="false"/>-->
+<!--	  <log type="testdox-html" target="test/tmp/testdox.html"/>-->
+<!--	  <log type="testdox-text" target="test/tmp/testdox.txt"/>-->
+	</logging>
+
 </phpunit>
