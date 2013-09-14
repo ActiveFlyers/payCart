@@ -24,6 +24,7 @@ abstract class PayCartTestCase extends TestCase
 
 		JFactory::$application = $this->getMockApplication();
 		JFactory::$config = $this->getMockConfig();
+
 		parent::setUp();
 	}
 

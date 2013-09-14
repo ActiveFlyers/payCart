@@ -45,6 +45,8 @@ class PaycartFactory extends Rb_Factory
 		}
 
 		$paycartConfig = $paycartModelConfig->loadRecords();
+
+		$records	=	Array();
 		foreach ($paycartConfig as $record) {
 			$records[$record->key] = $record->value;
 		}

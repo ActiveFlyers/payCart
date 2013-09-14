@@ -43,6 +43,6 @@ class PaycartControllerTest extends PayCartTestCase
   		//test class property
   		$this->assertTrue($reflection->hasProperty('_component'));
   		//Check number of attributes and attributes default values in class
-  		$this->assertEquals(Array('_component'), PaycartTestReflection::getClassAttribute('PaycartController'));
+  		$this->assertEquals(Array('_component'), PayCartTestReflection::getClassAttribute('PaycartController'));
 	}
 }
