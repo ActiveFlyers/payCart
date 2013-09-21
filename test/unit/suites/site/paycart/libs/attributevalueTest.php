@@ -9,9 +9,6 @@
 * @author 		mManishTrivedi 
 */
 
-// no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
-
 /** 
  * Test AttributeValue Lib 
  */

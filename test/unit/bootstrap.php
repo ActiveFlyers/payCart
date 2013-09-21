@@ -17,14 +17,22 @@ error_reporting(E_ALL & ~E_STRICT);
 ini_set('display_errors', 1);
 
 
+/*
+ * Ensure that required path constants are defined.  These can be overridden within the phpunit.xml file
+ * if you chose to create a custom version of that file.
+ */
+if (!defined('RBTEST_BASE')) 		{ 	define('RBTEST_BASE', 			realpath(dirname(__DIR__))); }
+if (!defined('RBTEST_SYSTEM_BASE')) { 	define('RBTEST_SYSTEM_BASE', 	RBTEST_BASE.'/system/'); }
+if (!defined('RBTEST_UNIT_BASE')) 	{ 	define('RBTEST_UNIT_BASE', 		RBTEST_BASE.'/unit/'); }
+
+
+//include our Testing Core 
+require_once realpath(dirname(__DIR__)).'/core/defines.php';
 // Load Joomla and Joomla Mock classes
-require_once __DIR__ . '/core/core.php';
+require_once __DIR__ . '/joomla/joomla.php';
 
-//load core Paycart and basic test case stuff
-require_once 'defines.php'; 
+// Load Paycart Stuff
+require_once __DIR__ . '/paycart/paycart.php';
 
-// Load PaycartTestCase Class
-require_once 'PaycartTestCase.php';
-require_once 'reflection.php';
 
 

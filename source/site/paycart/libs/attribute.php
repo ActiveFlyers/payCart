@@ -39,8 +39,8 @@ class PaycartAttribute extends PaycartLib
 		$this->published	 =	1;
 		$this->visible		 =	1;
 		$this->searchable	 =	0;
-		$this->type 		 =	0;
-		$this->default 		 =	0;
+		$this->type 		 =	null;
+		$this->default 		 =	null;
 		$this->params 		 =	new Rb_Registry();
 		$this->xml 		 	 =	null;
 		$this->class		 = 	null;
@@ -53,40 +53,27 @@ class PaycartAttribute extends PaycartLib
 	
 	public static function getInstance($id = 0, $data = null, $cached = false, $dummy2 = null)
 	{
-		// PCTODO :: remove it .
-		static $attribute;
-
-		if(!$cached || !$id) {
-			return parent::getInstance('attribute', $id, $data);
-		}
-		// Cached required on Attribute value Instance
-		if(!isset($attribute[$id])) {
-			$attribute[$id] = parent::getInstance('attribute', $id, $data);
-		}
-
-		return $attribute[$id];
+		return parent::getInstance('attribute', $id, $data);
 	}	
 	
 	/**
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
-	 * After Attribute creation we build xml by using atrribute config and we need attribute id 
-	 * so save opration excute twice times.  
+	 * bind XML field on lib object
+	 * 
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 */
-	protected function _save($previousObject)
+	public function bind($data, $ignore=array()) 
 	{
-		//@PCTODO :: if $previousObject is exist then first build xml then save it, no need to save twice time 
-		$id = parent::_save($previousObject);
-		
-		if(!$id){
-			return false;
+		if(is_object($data)){
+			$data = (array) ($data);
 		}
-		// set id to $this 
-		$this->setId($id);
-		
-		// Create XML for Attribute
+
+		// Parent bind	
+		parent::bind($data, $ignore);
+
+		//Format XML Value
 		$this->xml = $this->_buildFieldXML();
-		//@PCTODO :: check previous formate if xml dont have any change then no need to re-save 
-		return parent::_save($previousObject);
+		
+		return $this;
 	}
 	
 	public function getTitle()
@@ -97,6 +84,8 @@ class PaycartAttribute extends PaycartLib
 	/**
 	 * 
 	 * Create xml element for xml column
+	 * 
+	 * @return field-xml
 	 */
 	protected function _buildFieldXML()
 	{

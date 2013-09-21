@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="paycart186">
+	<table_data name="jos_paycart_attribute">
+	<row>
+		<field name="attribute_id">1</field>
+		<field name="title">Attribute-1</field>
+		<field name="type">text</field>
+		<field name="default">deafault-attribut-1</field>
+		<field name="class">class-attribute-1</field>
+		<field name="searchable">1</field>
+		<field name="published">1</field>
+		<field name="visible">1</field>
+		<field name="ordering">1</field>
+		<field name="params">{&quot;attribute_config&quot;:{&quot;type&quot;:&quot;text&quot;,&quot;size&quot;:&quot;25&quot;,&quot;maxlength&quot;:&quot;16&quot;,&quot;readonly&quot;:&quot;0&quot;,&quot;disabled&quot;:&quot;0&quot;}}</field>
+		<field name="xml"> &lt;field 
+						name  = 'value'
+						label = 'Attribute-1' 
+		          class= 'class-attribute-1' default= 'deafault-attribut-1' type='text'  size='25'  maxlength='16'  readonly='0'  disabled='0' &gt; &lt;/field&gt;</field>
+	</row>
+	<row>
+		<field name="attribute_id">2</field>
+		<field name="title">Attribute-2</field>
+		<field name="type">list</field>
+		<field name="default">option-22</field>
+		<field name="class">class-list</field>
+		<field name="searchable">0</field>
+		<field name="published">1</field>
+		<field name="visible">1</field>
+		<field name="ordering">2</field>
+		<field name="params">{&quot;attribute_config&quot;:{&quot;type&quot;:&quot;list&quot;,&quot;options&quot;:&quot;option-21\r\noption-22\r\noption-23\r\noption-24\r\noption-25&quot;,&quot;multiple&quot;:&quot;false&quot;,&quot;size&quot;:&quot;3&quot;,&quot;readonly&quot;:&quot;0&quot;,&quot;onchange&quot;:&quot;&quot;}}</field>
+		<field name="xml"> &lt;field 
+						name  = 'value'
+						label = 'Attribute-2' 
+		          class= 'class-list' default= 'option-22' type='list'  multiple='false'  size='3'  readonly='0'  onchange='' &gt;&lt;option value='option-21'&gt;option-21&lt;/option&gt;&lt;option value='option-22'&gt;option-22&lt;/option&gt;&lt;option value='option-23'&gt;option-23&lt;/option&gt;&lt;option value='option-24'&gt;option-24&lt;/option&gt;&lt;option value='option-25'&gt;option-25&lt;/option&gt; &lt;/field&gt;</field>
+	</row>
+	<row>
+		<field name="attribute_id">3</field>
+		<field name="title">Attribute-A</field>
+		<field name="type">list</field>
+		<field name="default">option-D</field>
+		<field name="class"></field>
+		<field name="searchable">0</field>
+		<field name="published">1</field>
+		<field name="visible">1</field>
+		<field name="ordering">3</field>
+		<field name="params">{&quot;attribute_config&quot;:{&quot;type&quot;:&quot;list&quot;,&quot;options&quot;:&quot;option-A\r\noption-B\r\noption-C\r\noption-D\r\noption-E\r\noption-F&quot;,&quot;multiple&quot;:&quot;true&quot;,&quot;size&quot;:&quot;4&quot;,&quot;readonly&quot;:&quot;0&quot;,&quot;onchange&quot;:&quot;&quot;}}</field>
+		<field name="xml"> &lt;field 
+						name  = 'value'
+						label = 'Attribute-A' 
+		          default= 'option-D' type='list'  multiple='true'  size='4'  readonly='0'  onchange='' &gt;&lt;option value='option-A'&gt;option-A&lt;/option&gt;&lt;option value='option-B'&gt;option-B&lt;/option&gt;&lt;option value='option-C'&gt;option-C&lt;/option&gt;&lt;option value='option-D'&gt;option-D&lt;/option&gt;&lt;option value='option-E'&gt;option-E&lt;/option&gt;&lt;option value='option-F'&gt;option-F&lt;/option&gt; &lt;/field&gt;</field>
+	</row>
+	<row>
+		<field name="attribute_id">4</field>
+		<field name="title">Attribute-B</field>
+		<field name="type">text</field>
+		<field name="default">trial</field>
+		<field name="class"></field>
+		<field name="searchable">0</field>
+		<field name="published">1</field>
+		<field name="visible">1</field>
+		<field name="ordering">4</field>
+		<field name="params">{&quot;attribute_config&quot;:{&quot;type&quot;:&quot;text&quot;,&quot;size&quot;:&quot;15&quot;,&quot;maxlength&quot;:&quot;6&quot;,&quot;readonly&quot;:&quot;0&quot;,&quot;disabled&quot;:&quot;0&quot;}}</field>
+		<field name="xml"> &lt;field 
+						name  = 'value'
+						label = 'Attribute-B' 
+		          default= 'trial' type='text'  size='15'  maxlength='6'  readonly='0'  disabled='0' &gt; &lt;/field&gt;</field>
+	</row>
+	</table_data>
+	<table_data name="jos_paycart_product">
+	<row>
+		<field name="product_id">1</field>
+		<field name="title">Product-1</field>
+		<field name="alias">product-1</field>
+		<field name="published">1</field>
+		<field name="type">10</field>
+		<field name="amount">0.00000</field>
+		<field name="quantity">0</field>
+		<field name="file" xsi:nil="true" />
+		<field name="sku">product-1</field>
+		<field name="variation_of">0</field>
+		<field name="category_id">0</field>
+		<field name="params">{}</field>
+		<field name="cover_media" xsi:nil="true" />
+		<field name="teaser"></field>
+		<field name="publish_up">2013-09-19 09:46:09</field>
+		<field name="publish_down">0000-00-00 00:00:00</field>
+		<field name="created_date">2013-09-19 09:47:12</field>
+		<field name="modified_date">2013-09-19 10:33:07</field>
+		<field name="created_by">489</field>
+		<field name="ordering">1</field>
+		<field name="featured">0</field>
+		<field name="description"></field>
+		<field name="hits">0</field>
+		<field name="meta_data">{&quot;title&quot;:&quot;&quot;,&quot;descriprion&quot;:&quot;&quot;,&quot;keyword&quot;:&quot;&quot;}</field>
+	</row>
+	<row>
+		<field name="product_id">2</field>
+		<field name="title">product-2</field>
+		<field name="alias">product-2</field>
+		<field name="published">1</field>
+		<field name="type">10</field>
+		<field name="amount">0.00000</field>
+		<field name="quantity">0</field>
+		<field name="file" xsi:nil="true" />
+		<field name="sku">product-2</field>
+		<field name="variation_of">0</field>
+		<field name="category_id">0</field>
+		<field name="params">{}</field>
+		<field name="cover_media" xsi:nil="true" />
+		<field name="teaser"></field>
+		<field name="publish_up">2013-09-19 09:49:17</field>
+		<field name="publish_down">0000-00-00 00:00:00</field>
+		<field name="created_date">2013-09-19 09:49:36</field>
+		<field name="modified_date">2013-09-19 10:34:15</field>
+		<field name="created_by">489</field>
+		<field name="ordering">2</field>
+		<field name="featured">0</field>
+		<field name="description"></field>
+		<field name="hits">0</field>
+		<field name="meta_data">{&quot;title&quot;:&quot;&quot;,&quot;descriprion&quot;:&quot;&quot;,&quot;keyword&quot;:&quot;&quot;}</field>
+	</row>
+	</table_data>
+	<table_data name="jos_paycart_attributevalue">
+	<row>
+		<field name="attributevalue_id">10</field>
+		<field name="product_id">1</field>
+		<field name="attribute_id">2</field>
+		<field name="value">option-21</field>
+		<field name="order">2</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">9</field>
+		<field name="product_id">1</field>
+		<field name="attribute_id">1</field>
+		<field name="value">text-attribute</field>
+		<field name="order">1</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">14</field>
+		<field name="product_id">2</field>
+		<field name="attribute_id">2</field>
+		<field name="value">option-22</field>
+		<field name="order">6</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">13</field>
+		<field name="product_id">2</field>
+		<field name="attribute_id">1</field>
+		<field name="value">attr-1</field>
+		<field name="order">5</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">11</field>
+		<field name="product_id">1</field>
+		<field name="attribute_id">3</field>
+		<field name="value">option-A,option-B</field>
+		<field name="order">3</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">12</field>
+		<field name="product_id">1</field>
+		<field name="attribute_id">4</field>
+		<field name="value">Attr</field>
+		<field name="order">4</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">15</field>
+		<field name="product_id">2</field>
+		<field name="attribute_id">3</field>
+		<field name="value">option-B,option-C,option-D</field>
+		<field name="order">7</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">16</field>
+		<field name="product_id">2</field>
+		<field name="attribute_id">4</field>
+		<field name="value">attr-b</field>
+		<field name="order">8</field>
+	</row>
+	</table_data>
+</database>
+</mysqldump>

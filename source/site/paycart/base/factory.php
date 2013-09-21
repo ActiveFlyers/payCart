@@ -17,10 +17,21 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartFactory extends Rb_Factory
 { 
- 	static protected $_config;
+ 	protected static $_config;
+ 	
+ 	
+ 	/**
+ 	 * Used for Unit test cases 
+	 */
+ 	private static $_mocks 	= Array();
  	 
 	static function getInstance($name, $type='', $prefix='Paycart', $refresh=false)
 	{
+		// Mocked instance for unit test cases
+		if(isset(self::$_mocks[$prefix.$type.$name])) {
+			return self::$_mocks[$prefix.$type.$name];
+		}
+		// Real world instance
 		return parent::getInstance($name, $type, $prefix, $refresh);
 	}
 	
@@ -30,7 +41,7 @@ class PaycartFactory extends Rb_Factory
 	 * 
 	 * @return JRegistry object
 	 */
-	static function getConfig($file = null, $type = 'PHP', $namespace = '', $paycartModelConfig = false)
+	public static function getConfig($file = null, $type = 'PHP', $namespace = '', $paycartModelConfig = false)
 	{
 		if(self::$_config) {
 			return self::$_config;
@@ -45,6 +56,8 @@ class PaycartFactory extends Rb_Factory
 		}
 
 		$paycartConfig = $paycartModelConfig->loadRecords();
+
+		$records	=	Array();
 		foreach ($paycartConfig as $record) {
 			$records[$record->key] = $record->value;
 		}
