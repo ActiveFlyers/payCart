@@ -12,7 +12,7 @@
  * @author mManishTrivedi
  */
 
-class PaycartCategoryTest extends PayCartTestCase
+class PaycartCategoryTest extends PayCartTestCaseDatabase
 {
 	/**
 	 * (non-PHPdoc)
@@ -44,7 +44,7 @@ class PaycartCategoryTest extends PayCartTestCase
   								 );
   								 
   		//test class property
-  		$this->assertEquals($expectedProperty, PaycartTestReflection::getClassAttribute('PaycartCategory'));
+  		$this->assertEquals($expectedProperty, PayCartTestReflection::getClassAttribute('PaycartCategory'));
   		//@PCTODO:: TEST method name and thier params
 	}
 	
@@ -90,40 +90,36 @@ class PaycartCategoryTest extends PayCartTestCase
 	 */
 	public function testSave()
 	{
-		// Mock Juser class
-		$mockUser 	= $this->getMockBuilder('Juser',  Array('get'))
-         			 ->disableOriginalConstructor()
-         			 ->setMethods(Array('get'))
-                     ->getMock();
-        // Get fun call only one time with id param
-		$mockUser->expects($this->once())
-				  ->method('get')
-				  ->with($this->equalTo('id'))
-				  ->will($this->returnValue(52));
-        
-		// Mock PaycartTableCategory class
-		$mockTable 	= $this->getMockBuilder('PaycartTableCategory')
-                     ->disableOriginalConstructor()
-                     ->getMock();
-        // Call one time with 'testing_title' and 5 param
-        $mockTable->expects($this->once())
-				  ->method('getUniqueAlias')
-				  ->with($this->equalTo('testing_title'), $this->equalTo(5))
-				  ->will($this->returnValue('alias'));
-		
-		// Create a stub for the SomeClass class.
-        $stub = $this->getMockBuilder('PaycartCategory')
-         			 ->setMethods(Array('getId', 'getTitle'))
-                     ->getMock();
-        $stub->expects($this->once())
-				  ->method('getId')
-				  ->will($this->returnValue(5));
-		$stub->expects($this->once())
-				  ->method('getTitle')
-				  ->will($this->returnValue('testing_title'));
+		// Mock Dependancy
+		$session = PaycartFactory::$session;
+		$options = Array(
+						'get.user.id' 		=>  44,
+						'get.user.name'		=> '_MANISH_TRIVEDI_',
+						'get.user.username' => 'mManishTrivedi',
+						'get.user.guest'	=>	0
+						);
+		// MockSession and set 44 user id in session
+		PaycartFactory::$session = $this->getMockSession($options);
 
-		// check return object should be same
-		$this->assertSame($stub, $stub->save($mockUser, $mockTable));      
+		// Test Alias auto creation as per title
+		$data    = Array('title' => 'testing_title_1',);
+		$instance = PaycartCategory::getInstance(0, $data);
+		$instance->save();
+
+		// Test: Alias should be unique
+		$data = Array('title' => 'testing_title_2', 'alias'=>'cat-3');
+		$instance = PaycartCategory::getInstance(0, $data);
+		$instance->save();
+
+		// Test: Alias should be unique and auto increment
+		$data = Array('title' => 'testing_title_3', 'alias'=>'cat-3');
+		$instance = PaycartCategory::getInstance(0, $data);
+		$instance->save();
+		
+		$this->compareTable('jos_paycart_category', Array( 'cover_image', 'created_date', 'modified_date'));
+		
+		// revert cached stuff
+		PaycartFactory::$session = $session ;		  
 	}
 
 }

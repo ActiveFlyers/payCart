@@ -503,20 +503,4 @@ CREATE TABLE `jos_dbtest_composite` (
   CONSTRAINT `idx_dbtest_composite` PRIMARY KEY (`id1`,`id2`)
 );
 
---
--- Table structure for table `jos_paycart_attribute`
---
 
-CREATE TABLE `jos_paycart_attribute` (
-  `attribute_id` INTEGER PRIMARY KEY AUTOINCREMENT,
-  `title` TEXT NOT NULL DEFAULT '',
-  `type` TEXT NOT NULL ,
-  `default` TEXT NOT NULL DEFAULT '',
-  `class` TEXT NOT NULL DEFAULT '',
-  `searchable` INTEGER NOT NULL DEFAULT '0',
-  `published` INTEGER NOT NULL DEFAULT '0',
-  `visible` INTEGER NOT NULL DEFAULT '0',
-  `ordering` int(11) DEFAULT '0',
-  `params` TEXT NOT NULL DEFAULT '',
-  `xml` TEXT NOT NULL DEFAULT ''
-);

@@ -33,7 +33,8 @@ class PaycartProduct extends PaycartLib
 	protected $publish_up	 =	'';
 	protected $publish_down  =	'';	 	
 	protected $created_date  =	'';	
-	protected $modified_date =	''; 	
+	protected $modified_date =	''; 
+	protected $created_by 	 =	0;
 	protected $ordering		 =	0;
 	protected $featured		 =	0;	
 	protected $description	 =	null; 	
@@ -53,7 +54,7 @@ class PaycartProduct extends PaycartLib
 		$this->type			 =	Paycart::PRODUCT_TYPE_PHYSICAL;
 		$this->amount		 = 	0;
 		$this->quantity		 =	0;
-		$this->sku;	
+		$this->sku			 =  '';	
 		$this->variation_of	 =	0;  		// This product is variation of another product. 	
 		$this->category_id 	 =	0;
 		$this->params 		 =	new Rb_Registry();
@@ -217,21 +218,27 @@ class PaycartProduct extends PaycartLib
 		// if custom Attributes available in data then bind with lib object 
 		$attributes = isset($data['attributes']) ? $data['attributes'] : Array();
 		
-		// load custom attributes and bind with product lib
-		// If attribute value is avilable at data object then no need to set it
-		if($this->getId() && empty($attributes)) { 
-			$attributeValueModel 	= PaycartFactory::getInstance('attributevalue', 'model');
-			$attributes = $attributeValueModel->loadProductRecords($this->getid());
-		}
-		
 		// Bind attributevalue-lib's instance on Product lib  
 		$this->_setAttributeValues($attributes);
 		
 		return $this;
 	}
 	
-	protected function _setAttributeValues(Array $attributeData)
+	/**
+	 * 
+	 * Invoke method to set attribute on Product
+	 * @param array $attributeData Array('_ATTRIBUTE_ID_' => '_ATTRIBUTE_DATA_')
+	 * 
+	 *  @return void
+	 */
+	protected function _setAttributeValues(Array $attributeData = Array())
 	{
+		// If attribute-data is empty and product exist then load attribute data from database
+		if ($this->getId() && empty($attributeData)) {
+			$attributeValueModel = PaycartFactory::getInstance('attributevalue', 'model');
+			$attributeData 	= $attributeValueModel->loadProductRecords($this->getid());
+		}
+		
 		if(empty($attributeData)) {
 			//throw InvalidArgumentException(Rb_Text::_('COM_PAYCART_PRODUCT_ATTRIBUTEVALUE_INVALID'));
 			return false;
@@ -252,6 +259,8 @@ class PaycartProduct extends PaycartLib
 			// Set PaycartAttributeValue instance
 			$this->_attributeValue[$attributeId] = PaycartAttributeValue::getInstance(0, $data);
 		}
+
+		return $this;
 	}
 	
 	/**
@@ -328,8 +337,7 @@ class PaycartProduct extends PaycartLib
 		// Build Store path for Original image. Original Image available with prefix nd suffix like original_IMAGE-NAME.orig
 		$originalImage	= $imageInfo['targetFolder'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$imageInfo['targetFileName'].Paycart::IMAGE_ORIGINAL_SUFIX;;
 		if (!JFile::copy($imageInfo['sourceFile'], $originalImage )) {
-			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage),'error');
-			return false;
+			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $originalImage));
 		}
 		
 		//2#.Create new optimize image
@@ -337,15 +345,14 @@ class PaycartProduct extends PaycartLib
 		$optimizeImage	= $imageInfo['targetFolder'].'/'.$imageInfo['targetFileName'].PaycartHelperImage::getConfigExtension($imageInfo['sourceFile']);
 		//@PCTODO (Discuss Point ) : height and width calculate with respect to original image.
 		if (!PaycartHelperImage::resize($imageInfo['sourceFile'], $optimizeImage, Paycart::IMAGE_OPTIMIZE_WIDTH, Paycart::IMAGE_OPTIMIZE_HEIGHT)) {
-			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_IMAGE_RESIZE_FAILED', $optimizeImage),'error');
-			return false;
+			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_IMAGE_RESIZE_FAILED', $optimizeImage));
 		}
 
 		//3# Create thumbnail
 		if(!PaycartHelperImage::createThumb($optimizeImage, $imageInfo['targetFolder'],  Paycart::IMAGE_THUMB_WIDTH,  Paycart::IMAGE_THUMB_HEIGHT)){
-			JFactory::getApplication()->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage),'error');
-			return false;
+			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_THUMB_IMAGE_CREATION_FAILED', $optimizeImage));
 		}
+
 		return true;
 	}
 	

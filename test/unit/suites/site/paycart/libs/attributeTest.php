@@ -11,6 +11,7 @@
  */
 class PaycartAttributeTest extends PayCartTestCaseDatabase
 {
+	protected $sqlDataSet = false;
 		
 	/**
 	 * Test design structure of PayCartCategory class.  

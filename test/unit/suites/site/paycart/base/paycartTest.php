@@ -35,7 +35,7 @@ class PaycartTest extends PayCartTestCase
 		$this->assertEquals(200, $paycart::IMAGE_OPTIMIZE_WIDTH);
 		$this->assertEquals('thumb_', $paycart::IMAGE_THUMB_PREFIX);
 		$this->assertEquals(100, $paycart::IMAGE_THUMB_HEIGHT);
-		$this->assertEquals(100, $paycart::IMAGE_THUMB_WIDTH);
+		$this->assertEquals(133, $paycart::IMAGE_THUMB_WIDTH);
 		$this->assertEquals(2, $paycart::IMAGE_FILE_DEFAULT_MAXIMUM_SIZE); //2MB
 		$this->assertEquals('.png', $paycart::IMAGE_FILE_DEFAULT_EXTENSION);
 		// Cart Entity Status

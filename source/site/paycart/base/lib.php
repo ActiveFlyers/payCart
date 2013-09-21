@@ -25,4 +25,12 @@ class PaycartLib extends Rb_Lib
 	{
 		return parent::getInstance(PAYCART_COMPONENT_NAME, $name, $id, $bindData);
 	}
+	
+	/**
+	 * @return : Rb_Model
+	 */
+	public function getModel()
+	{
+		return PaycartFactory::getInstance($this->getName(), 'Model');
+	}
 }

@@ -34,7 +34,7 @@ class Paycart
 	const IMAGE_OPTIMIZE_WIDTH 				= 200;
 	const IMAGE_OPTIMIZE_HEIGHT				= 200;
 	const IMAGE_THUMB_PREFIX 				= 'thumb_';
-	const IMAGE_THUMB_WIDTH 				= 100;
+	const IMAGE_THUMB_WIDTH 				= 133;
 	const IMAGE_THUMB_HEIGHT				= 100;
 	const IMAGE_FILE_DEFAULT_MAXIMUM_SIZE 	= 2; 	// 2MB
 	const IMAGE_FILE_DEFAULT_EXTENSION 		= '.png';
