@@ -172,7 +172,12 @@ class PaycartProduct extends PaycartLib
 	 					'targetFileName'=> $targetFileInfo['filename']
 	  					  );
 
-	  			$this->_ImageCreate($imageInfo);
+				try {
+					$this->_ImageCreate($imageInfo);
+				}catch (RuntimeException $e) {
+					//PCTODO:: Notify to user	
+				}
+	  			
 			} 
 		}
 		//PCTODO:: Break into function
@@ -268,54 +273,69 @@ class PaycartProduct extends PaycartLib
 	 * Process Cover Image
 	 * @param $imageFile, File type requested data.
 	 * @param Lib_object $previousObject
+	 * @throws RuntimeException
 	 * 
 	 * @return (bool) True if successfully proccessed
-	 * PCTODO:: move to parent lib
+	 * @PCTODO:: move to parent lib
 	 */
 	protected function _ImageProcess($imageFile, $previousObject)
-	{
-		$app = PaycartFactory::getApplication();
-		
-		// Image validation required	
-		if (!PaycartHelperImage::isValid($imageFile)) {
-			$error = PaycartHelperImage::getError();
-			PaycartFactory::getApplication()->enqueueMessage($error, 'warning');
-			return false;
-		}
-		
-		$imagePath	= PaycartHelperImage::getDirectory();
-		
-		// 	Upload new image while Previous Image exist 
-		// need to remove previous image and thumbnail image
-		if ($previousObject  && $previousObject->get('cover_media')) {
-			// PCTODO:: Break delete logic into function
-			$previousImage 		 =  $previousObject->get('cover_media');
-			$previousImageDetail =  PaycartHelperImage::imageInfo($previousImage);
+	{	
+		try {
+			// Image validation required
+			PaycartHelperImage::isValid($imageFile);
+
+			// Get file path where Image will be saved 
+			$imagePath	= PaycartHelperImage::getDirectory();
 			
-			$files = Array(
-							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$previousImageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX,		// Original Image
-							$imagePath.$previousImage,				// Optimize Image
-							$imagePath.$previousImageDetail['dirname'].'/'.Paycart::IMAGE_THUMB_PREFIX.$previousImageDetail['filename'].'.'.$previousImageDetail['extension']
-						);
-			// Delete Original Image,Optimize Image and thumb Image
-			JFile::delete($files);
-		}
+			// Upload new image while Previous Image exist 
+			// need to remove previous image { Original, Optimized and thumbnail image }
+			if ($previousObject && $previousObject->get('cover_media')) {
+				$previousImage 	=  $previousObject->get('cover_media');
+				$this->_ImageDelete($imagePath.'/'.$previousImage);
+			}
 		
-		$currentImageDetail = PaycartHelperImage::imageInfo($this->cover_media);
-		$imagePath			= $imagePath.'/'.$currentImageDetail['dirname'];
-		
-		//Create new folder
-		// @PCTODO : Remove this checking
-		// @ISSUE : 17
-		if(!JFolder::exists($imagePath) && !JFolder::create($imagePath)) {
-			$app->enqueueMessage(Rb_Text::sprintf('COM_PAYCART_FOLDER_CREATEION_FAILED', $imagePath),'error');
+			$currentImageDetail = PaycartHelperImage::imageInfo($this->cover_media);
+			$imagePath			= $imagePath.'/'.$currentImageDetail['dirname'];
+			
+//			//Create new folder
+//			// @PCTODO : Remove this checking
+//			// @ISSUE : 17
+//			if(!JFolder::exists($imagePath) && !JFolder::create($imagePath)) {
+//				// @codeCoverageIgnoreStart
+//				throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_FOLDER_CREATEION_FAILED', $imagePath));
+//				// @codeCoverageIgnoreEnd
+//			}
+				
+			$imageInfo = Array('sourceFile' => $imageFile["tmp_name"], 'targetFolder' => $imagePath, 'targetFileName' => $currentImageDetail['filename']);
+			
+			$this->_ImageCreate($imageInfo);
+			
+		} catch (RuntimeException $e) {
+			//PCTODO :: Notify to User Or set-up error queue 
 			return false;
 		}
-		
-		$imageInfo = Array('sourceFile' => $imageFile["tmp_name"], 'targetFolder' => $imagePath, 'targetFileName' => $currentImageDetail['filename']);
-		return  $this->_ImageCreate($imageInfo);
+			
+		return true;
 	}
-	
+			
+	/**
+	 * 
+	 * Delete existing Images {Original, Optimized and thumb image}
+	 * @param $imageFile : Absolute Path of optimized Image
+	 */
+	protected function _ImageDelete($imageFile)
+	{
+		$imageDetail =  PaycartHelperImage::imageInfo($imageFile);
+		// Files for delete 
+		$files = Array(
+						$imageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$imageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX,		// Original Image
+						$imageFile,				// Optimized Image
+						$imageDetail['dirname'].'/'.Paycart::IMAGE_THUMB_PREFIX.$imageDetail['filename'].'.'.$imageDetail['extension'] // thumb image
+					);
+		
+		// Delete Original Image,Optimize Image and thumb Image
+		JFile::delete($files);
+	}
 	/**
 	 * PCTODO :: Move code to proper location so other entity like category will utilize it.
 	 * Create new Image with Thumb. We do not provide any extension flexibility. Image extension have configured by Paycart System 

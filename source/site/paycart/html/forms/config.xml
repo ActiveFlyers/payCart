@@ -33,6 +33,19 @@
 				description="COM_PAYCART_IMAGE_RENDER_URL_DESC"
 				/>
 				
+		<field 	name="image_thumb_height" 
+				type="text"
+				label="COM_PAYCART_IMAGE_THUMB_HEIGHT" 
+				description="COM_PAYCART_IMAGE_THUMB_HEIGHT_DESC"
+				default="100"
+				/>
+		
+		<field 	name="image_thumb_width" 
+				type="text"
+				label="COM_PAYCART_IMAGE_THUMB_WIDTH" 
+				description="COM_PAYCART_IMAGE_THUMB_WIDTH_DESC"
+				default="133"
+				/>
 	</fieldset>
 	
 </form>

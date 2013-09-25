@@ -15,17 +15,6 @@
 class PaycartCategoryTest extends PayCartTestCaseDatabase
 {
 	/**
-	 * (non-PHPdoc)
-	 * @see test/unit/PayCartTestCase::setUp()
-	 */
-	protected function setUp() 
-	{
-		// load stub class
-		require_once __DIR__.'/stubs/lib.php';
-		parent::setUp();
-		;
-	}
-	/**
 	 * Test design structure of PayCartCategory class.  
 	 * Test => Class Structure + Structure of Class Behavior
 	 * 

@@ -174,22 +174,70 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	 * Provider for _ImageCreate
 	 */
 	public function provider_ImageCreate() {
-		
-		$imageInfo1 = Array( 	
+		//image info
+		$provider[] = Array( 	
 	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/dummy.jpg',
 	  						'targetFolder'	=>	RBTEST_BASE.'/tmp/',
 	  						'targetFileName'=>	'tested_paycart' 
 	  					);
-		
-		$imageInfo2 = Array( 	
-	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/paycart.jpg',
+	  	// result
+	  	$provider[]	= 'COM_PAYCART_FILE_COPY_FAILED';
+	  	$provider[] = null;
+		// Case :: through Exception Image 	  	
+	  	$providers[] = $provider;
+	  			
+	  	$extensions = Array('.jpg','.png','.gif'
+	  					//	,'.bmp'				// Right now, Joomla does not support it
+	  						);
+	 
+	  	// Cases ::Paycart Config have 
+	  	// When paycart config have .jpg extension and image uploaded in different-2 flavour {.jpg, .gif, .png}
+		// When paycart config have .png extension and image uploaded in different-2 flavour {.jpg, .gif, .png}
+		// When paycart config have .gif extension and image uploaded in different-2 flavour {.jpg, .gif, .png}
+	  	foreach ($extensions as $extension) {
+	  		foreach ($extensions as $value) {
+	  			$provider = Array();
+	  			// Image Info
+	  			$provider[] = Array( 	
+	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/paycart'.$value,
 	  						'targetFolder'	=>	RBTEST_BASE.'/tmp/',
 	  						'targetFileName'=>	'tested_paycart' 
+	  					);	
+	  			// result images	
+	  			$provider[]	=	Array(
+	  						'orininal_image'  => RBTEST_BASE.'/tmp/original_tested_paycart.orig',
+	  						'optimized_image' => RBTEST_BASE.'/tmp/tested_paycart'.$extension,
+	  						'thumb_image' 	  => RBTEST_BASE.'/tmp/thumb_tested_paycart'.$extension			
 	  					);
-	  	return Array(
-	  					 Array($imageInfo1)
-	  					,Array($imageInfo2)
-	  				);
+	  			// Config Extension
+				$provider[]  = $extension;
+				
+	  			$providers[] = $provider;
+	  		}
+	  	}
+	  	
+	  	// case : When paycart config have "Auto" extension and image uploaded in different-2 flavour {.jpg, .gif, .png}
+		foreach ($extensions as $value) {
+	  			$provider = Array();
+	  			// Image Info
+	  			$provider[] = Array( 	
+	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/paycart'.$value,
+	  						'targetFolder'	=>	RBTEST_BASE.'/tmp/',
+	  						'targetFileName'=>	'tested_paycart' 
+	  					);	
+	  			// result images		
+	  			$provider[]	=	Array(
+	  						'orininal_image'  => RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'tested_paycart'.Paycart::IMAGE_ORIGINAL_SUFIX,
+	  						'optimized_image' => RBTEST_BASE.'/tmp/tested_paycart'.$value,
+	  						'thumb_image' 	  => RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'tested_paycart'.$value			
+	  					);
+	  			// Config Extension
+				$provider[]  = $value;
+				
+	  			$providers[] = $provider;
+	  		}
+	  	
+	  	return $providers;
 	}
 	
 	/**
@@ -198,22 +246,151 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	 * 
 	 * @dataProvider provider_ImageCreate
 	 */
-	public function test_ImageCreate($imageInfo) 
+	public function test_ImageCreate($imageInfo, $result, $configExtension) 
 	{	
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete('This test has not been implemented yet.');
+		// Backup Paycart Config
+		$backupConfig = PayCartTestReflection::getValue('PaycartFactory', '_config');
+
+		// before test clean all files
+		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
 		
+		// Dependency :Create Mock for PaycartConfig 
+		$mockConfig = $this->getMock('Rb_Registry');
+		$mockConfig->expects($this->any())
+					->method('get')
+					->will($this->returnCallback(function($prop) use ($configExtension) { return  $configExtension; }));
+
+		// Set Mockconfig
+	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $mockConfig);
 		
+	  	//Get Product Instance
 	  	$object = PaycartProduct::getInstance();
-	  	try{
+	  	
+	  	try {
+	  		// invoke SUT
 	  		PayCartTestReflection::invoke($object, '_imageCreate', $imageInfo);
-	  	}catch (RuntimeException $e) {
-	  		// PCTODO ::Clean language string
-	  		$this->assertSame(Rb_Text::_('COM_PAYCART_FILE_COPY_FAILED'), $e->getMessage());
+	  	} catch (RuntimeException $e) {
+	  		//@PCTODO ::Clean language string
+	  		//@PCTODO:: Seperate this test case (Only for First Case) so we proper testing if exception fire
+	  		$this->assertSame(Rb_Text::_($result), $e->getMessage());
 	  	}
+	  	
+	  	if (is_array($result)) {
+	  		$this->assertFileExists($result['orininal_image'], 'Missing Original Image');
+	  		$this->assertFileExists($result['optimized_image'], 'Missing Optimized Image');
+	  		$this->assertFileExists($result['thumb_image'], 'Missing Thumb Image');
+
+	  		//check  image scale
+	  		$expected_optimized_size = Array (Paycart::IMAGE_OPTIMIZE_HEIGHT, Paycart::IMAGE_OPTIMIZE_WIDTH);
+	  		//height, width 
+	  		list($actual_optimized_size[], $actual_optimized_size[]) = getimagesize($result['optimized_image']);
+	  		
+			$this->assertSame($expected_optimized_size, $actual_optimized_size);
+			
+	  		$expected_thumb_size = Array (Paycart::IMAGE_THUMB_HEIGHT, Paycart::IMAGE_THUMB_WIDTH);
+	  		list($actual_thumb_size[], $actual_thumb_size[]) = getimagesize($result['thumb_image']);
+	  		
+	  		$this->assertSame($expected_thumb_size, $actual_thumb_size);
+	  	}
+	  	
+	  	// After test clean all files
+		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
+
+	  	// Revert Paycart config
+	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $backupConfig);
 	}
 	
 	
+	/**
+	 * 
+	 * Test _ImageProcess method
+	 */
+	public function test_ImageProcess()
+	{
+		// Backup Paycart Config
+		$backupConfig = PayCartTestReflection::getValue('PaycartFactory', '_config');
+		// before test clean all files
+		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
+		
+		// Dependency :Create Mock for PaycartConfig 
+		$mockConfig = $this->getMock('Rb_Registry');
+		$mockConfig->expects($this->any())
+					->method('get')
+					->will($this->returnCallback(Array(__CLASS__, 'callback_ImageProcess' )));
+
+		// Set Mockconfig
+	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $mockConfig);
+		
+	  	
+		//uploaded file
+		$imageFile['size'] 		= 5242880; 		// 5MB
+		$imageFile['type'] 		= 'image/png';
+		// Source image
+		$imageFile['tmp_name']	= RBTEST_BASE . '/_data/images/paycart.png' ;
+		// Output image
+		$data['cover_media'] 	= 'tmp/tested_pc.png';
+		
+		$product = PaycartProduct::getInstance(0, $data);
+		
+		// Invoke SUT 
+		//@Case :: If new uploaded image on new created product
+	  	PayCartTestReflection::invoke($product, '_ImageProcess', $imageFile, null);
+	  	
+		// Assert : Image properly created or not
+		$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'tested_pc'.Paycart::IMAGE_ORIGINAL_SUFIX, 'Missing Original Image');
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/tested_pc.png', 'Missing Optimized Image');
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'tested_pc.png', 'Missing Thumb Image');
+
+	  	
+	  	$imageFile['type'] 		= 'image/jpeg';
+		// Source image
+		$imageFile['tmp_name']	= RBTEST_BASE . '/_data/images/paycart.jpg' ;
+		// Output image
+		$data['cover_media'] 	= 'tmp/existing_pc.png';
+		
+		$object = PaycartProduct::getInstance(0, $data);
+		//@Case :: If new uploaded image on existing Product (Product already have image)
+	  	PayCartTestReflection::invoke($object, '_ImageProcess', $imageFile, $product);
+	  	
+	  	// Assert : Old files Must vbe deleted
+		$this->assertFileNotExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'tested_pc'.Paycart::IMAGE_ORIGINAL_SUFIX, 'Original Image should be deleted');
+	  	$this->assertFileNotExists(RBTEST_BASE.'/tmp/tested_pc.png', 'Optimized Image should be deleted');
+	  	$this->assertFileNotExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'tested_pc.png', 'Thumb Image should be deleted');
+	 
+	  	// Assert : Image properly created or not
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'existing_pc'.Paycart::IMAGE_ORIGINAL_SUFIX, 'Missing Original Image');
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/existing_pc.png', 'Missing Optimized Image');
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'existing_pc.png', 'Missing Thumb Image');
+	  	
+	  	
+	  	
+		// Revert Paycart config
+	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $backupConfig);
+	  	// After test clean all files
+		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
+	}
 	
-	
+	/**
+	 * 
+	 * Enter description here ...
+	 * @param unknown_type $prop
+	 * @param unknown_type $default
+	 */
+	public function callback_ImageProcess($prop, $default) 
+	{
+		switch ($prop) 
+		{
+			case 'image_maximum_upload_limit' :
+				return 5;
+				
+			case 'image_upload_directory' :
+				return RBTEST_BASE;
+			
+			case 'image_extension'	:
+				return '.png';
+				
+			default:
+				return $default;		
+		}
+	}
 }

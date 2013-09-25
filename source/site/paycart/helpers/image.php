@@ -17,7 +17,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartHelperImage extends PaycartHelper
 {
-	static protected $erroMessage = '';	
 	/**
 	 * 
 	 * Method check image is valid or not
@@ -29,13 +28,12 @@ class PaycartHelperImage extends PaycartHelper
 	{
 		$config			= PaycartFactory::getConfig();
 		
-		$uploadLimit	= (double) $config->get('maxuploadsize', Paycart::IMAGE_FILE_DEFAULT_MAXIMUM_SIZE);	// size unit is MB
+		$uploadLimit	= (double) $config->get('image_maximum_upload_limit', Paycart::IMAGE_FILE_DEFAULT_MAXIMUM_SIZE);	// size unit is MB
 		$uploadLimit	= ( $uploadLimit * 1024 * 1024 );				// Convert to byte
 		
 		// @rule1: Limit image size based on the maximum upload allowed.
 		if( $file['size'] > $uploadLimit && $uploadLimit != 0 ) {
-			self::$erroMessage  =  Rb_Text::_('COM_PAYCART_IMAGE_FILE_SIZE_EXCEEDED');
-			return false;
+			throw new RuntimeException( Rb_Text::_('COM_PAYCART_IMAGE_FILE_SIZE_EXCEEDED'));
 		}
 						
 		// @rule2:Image type validation		
@@ -43,20 +41,12 @@ class PaycartHelperImage extends PaycartHelper
         $validType 	= array('image/png', 'image/x-png', 'image/gif', 'image/jpeg', 'image/pjpeg');
 
         if(!in_array($type, $validType )) {
-        	self::$erroMessage  =  Rb_Text::_('COM_PAYCART_IMAGE_FILE_NOT_SUPPORTED');
-			return false;
+			throw new RuntimeException(Rb_Text::_('COM_PAYCART_IMAGE_FILE_NOT_SUPPORTED'));
         }
         
         return true;
 	}	
 	
-	/**
-	 * 
-	 * @return Last error messge 
-	 */
-	static public function getError() {
-		return self::$erroMessage;
-	}
 	
 	/**
 	 * 
@@ -70,9 +60,14 @@ class PaycartHelperImage extends PaycartHelper
 		switch($type){
 			case '.gif'	:
 				return IMAGETYPE_GIF;
+
 			case '.jpeg'	:
-			case '.jpeg'	:
+			case '.jpg'	:
 				return IMAGETYPE_JPEG;
+
+			case '.bmp' 	:
+				return IMAGETYPE_BMP;
+
 			case '.png' 	:
 			default:	// We default to use png
 				return IMAGETYPE_PNG;  
@@ -101,20 +96,18 @@ class PaycartHelperImage extends PaycartHelper
 	{
 		// Image File must be valid 
 		if (!$imagePath || !JFile::exists($imagePath)) {
-			// @codeCoverageIgnoreStart
-			//PCTODO :: Us language string for Error msg 
+			//PCTODO :: Use language string for Error msg 
 			throw new InvalidArgumentException('Invalid argument {$imagePath} in thumb creation : Might be empty or image does not exist');
-			// @codeCoverageIgnoreEnd
 		}
 
 		$config = PaycartFactory::getConfig();
 		
 		if (!$thumbWidth) {
-			$thumbWidth 	= $config->get('thumb_width',  Paycart::IMAGE_THUMB_WIDTH);
+			$thumbWidth 	= $config->get('image_thumb_width',  Paycart::IMAGE_THUMB_WIDTH);
 		}
 		
 		if (!$thumbHeight) {
-			$thumbHeight 	= $config->get('thumb_height', Paycart::IMAGE_THUMB_HEIGHT); 
+			$thumbHeight 	= $config->get('image_thumb_height', Paycart::IMAGE_THUMB_HEIGHT); 
 		}
 		
 		$imagePathInfo = pathinfo($imagePath);
@@ -179,18 +172,18 @@ class PaycartHelperImage extends PaycartHelper
 	 * @param String $imageFile Either image name or path
 	 * 
 	 * @return string image extension
-	 * @PCTODO :: Improve it
 	 */
 	public static function getConfigExtension($imageFile = null)
 	{
-		//PCTODO :: Use 'auto' in image configuration nd remove hard code
 		$extension = PaycartFactory::getConfig()->get('image_extension', 'auto');
+
 		// auto means use upaload image's extension
-		if ($imageFile && strtolower($extension) == 'auto') {
-			$extension = '.'.JFile::getExt($imageFile);
+		if (strtolower($extension) == 'auto') {
+			// if imagefile is not available then use default extension
+			$extension = ($imageFile) ? '.'.JFile::getExt($imageFile) : Paycart::IMAGE_FILE_DEFAULT_EXTENSION ;
 		}
-		// if extension is not exist then use default 
-		return (strtolower($extension) == 'auto') ? $extension : Paycart::IMAGE_FILE_DEFAULT_EXTENSION ;
+		
+		return $extension;
 	}
 	
 	/**
@@ -218,12 +211,11 @@ class PaycartHelperImage extends PaycartHelper
 		$config = PaycartFactory::getConfig();
 		$root 	= $config->get('image_upload_directory', false);
 		
-		$path = '';
 		if(!$root) {
-			$path = JPATH_ROOT.Paycart::IMAGES_ROOT_PATH;
+			$root = JPATH_ROOT.Paycart::IMAGES_ROOT_PATH;
 		}
-			
-		return $path;
+		
+		return $root;
 	}
 	
 	/**
