@@ -135,6 +135,7 @@ class PaycartProduct extends PaycartLib
 		return $this->variation_of;
 	}
 	
+	
 	/**
 	 * We required media/image processing after Product save
 	 * 
@@ -149,41 +150,30 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 		
-		// correct the id, for new records required
+		// Correct the id, for new records required
 		$this->setId($id);
 		
-		// Cover image
-		if ( $this->upload_files && isset($this->upload_files['cover_media'])) {
-			// Don't check here isset otherwise it will true (In < PHP 5.4)
-			// is_aaray check for it's not a variant && Post data is not empty
-			if(is_array($this->upload_files['cover_media']) && !empty($this->upload_files['cover_media']['name'])) { // create new product or re-save product
-				$this->_ImageProcess($this->upload_files['cover_media'], $previousObject);
-			} elseif(!$previousObject && $this->cover_media && $this->variation_of) { // create new variant
-				// Get Image info
-				$sourceFileInfo = PaycartHelperImage::imageInfo($this->upload_files['cover_media']);
-				// target file-name 
-				$targetFileInfo = PaycartHelperImage::imageInfo($this->cover_media);
-				// Original Image
-				$sourceImage = PaycartHelperImage::getDirectory().$sourceFileInfo['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$sourceFileInfo['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;		
-				
-				$imageInfo = Array (
-	  					'sourceFile' 	=> $sourceImage ,
-	  					'targetFolder' 	=> PaycartHelperImage::getDirectory().$sourceFileInfo['dirname'],
-	 					'targetFileName'=> $targetFileInfo['filename']
-	  					  );
-
-				try {
-					$this->_ImageCreate($imageInfo);
-				}catch (RuntimeException $e) {
-					//PCTODO:: Notify to user	
-				}
-	  			
-			} 
+		// Process If Cover-media exist
+		if (!empty($this->cover_media)) {
+			$this->_ProcessCoverMedia($previousObject);
 		}
-		//PCTODO:: Break into function
+		
+		// Process Attribute Value
+		$this->_ProcessAttributeValue($previousObject);
+		
+		return $id;
+	}
+	
+	/**
+	 * 
+	 * Enter description here ...
+	 * @param unknown_type $previousObject
+	 */
+	protected function _ProcessAttributeValue($previousObject)
+	{
 		$attributeValueModel = PaycartFactory::getInstance('attributevalue', 'model');
 		//Delete all Custom attribute if exist on Previous object
-		if (!empty($previousObject->_attributeValue)) {
+		if ( $previousObject && !empty($previousObject->_attributeValue) ) {
 			$attributeValueModel->deleteMany(Array('product_id'=>$id));
 		} 
 		
@@ -200,7 +190,47 @@ class PaycartProduct extends PaycartLib
 			$attributeValueModel->save($data);
 		}
 		
-		return $id;
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * Process Cover Meda
+	 * @param  $previousObject, Product lib object
+	 * @throws RuntimeException
+	 * 
+	 * @return Product Lib object 
+	 */
+	protected function _ProcessCoverMedia($previousObject)
+	{
+		try {
+			// Create new product or re-save existing product
+			// IMP :: Don't check here isset otherwise it will true (In < PHP 5.4)
+			// is_array check for it's not a variant && Post data is not empty
+			if (is_array($this->upload_files['cover_media']) && !empty($this->upload_files['cover_media']['name']) ) {
+				$this->_ImageProcess($this->upload_files['cover_media'], $previousObject);
+			}
+			
+			// Create new variant then you dont have any uploaded image. Use parent Image
+			if (!$previousObject && $this->variation_of) {
+				// target file-info 
+				$targetFileInfo = PaycartHelperImage::imageInfo($this->cover_media);
+				// Original Image
+				$sourceImage = PaycartHelperImage::getDirectory().'/'.$this->upload_files['cover_media'];
+				
+				$imageInfo = Array (
+	  					'sourceFile' 	=> $sourceImage ,
+	  					'targetFolder' 	=> PaycartHelperImage::getDirectory().$targetFileInfo['dirname'],
+	 					'targetFileName'=> $targetFileInfo['filename']
+	  					  );
+
+				$this->_ImageCreate($imageInfo);
+			}
+		} catch (RuntimeException $e) {
+			//PCTODO :: Notify to User Or set-up error queue
+			$message = $e->getMessage();
+		}
+		return $this;
 	}
 	
 	/**
@@ -280,41 +310,25 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function _ImageProcess($imageFile, $previousObject)
 	{	
-		try {
-			// Image validation required
-			PaycartHelperImage::isValid($imageFile);
+		// Image validation required
+		PaycartHelperImage::isValid($imageFile);
 
-			// Get file path where Image will be saved 
-			$imagePath	= PaycartHelperImage::getDirectory();
-			
-			// Upload new image while Previous Image exist 
-			// need to remove previous image { Original, Optimized and thumbnail image }
-			if ($previousObject && $previousObject->get('cover_media')) {
-				$previousImage 	=  $previousObject->get('cover_media');
-				$this->_ImageDelete($imagePath.'/'.$previousImage);
-			}
+		// Get file path where Image will be saved 
+		$imagePath	= PaycartHelperImage::getDirectory();
 		
-			$currentImageDetail = PaycartHelperImage::imageInfo($this->cover_media);
-			$imagePath			= $imagePath.'/'.$currentImageDetail['dirname'];
-			
-//			//Create new folder
-//			// @PCTODO : Remove this checking
-//			// @ISSUE : 17
-//			if(!JFolder::exists($imagePath) && !JFolder::create($imagePath)) {
-//				// @codeCoverageIgnoreStart
-//				throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_FOLDER_CREATEION_FAILED', $imagePath));
-//				// @codeCoverageIgnoreEnd
-//			}
-				
-			$imageInfo = Array('sourceFile' => $imageFile["tmp_name"], 'targetFolder' => $imagePath, 'targetFileName' => $currentImageDetail['filename']);
-			
-			$this->_ImageCreate($imageInfo);
-			
-		} catch (RuntimeException $e) {
-			//PCTODO :: Notify to User Or set-up error queue 
-			return false;
+		// Upload new image while Previous Image exist 
+		// need to remove previous image { Original, Optimized and thumbnail image }
+		if ($previousObject && $previousObject->get('cover_media')) {
+			$previousImage 	=  $previousObject->get('cover_media');
+			$this->_ImageDelete($imagePath.'/'.$previousImage);
 		}
-			
+		
+		$currentImageDetail = PaycartHelperImage::imageInfo($this->cover_media);
+		$imagePath			= $imagePath.'/'.$currentImageDetail['dirname'];
+						
+		$imageInfo = Array('sourceFile' => $imageFile["tmp_name"], 'targetFolder' => $imagePath, 'targetFileName' => $currentImageDetail['filename']);
+		
+		$this->_ImageCreate($imageInfo);
 		return true;
 	}
 			

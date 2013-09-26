@@ -172,17 +172,11 @@ class PaycartHelperImage extends PaycartHelper
 	 * @param String $imageFile Either image name or path
 	 * 
 	 * @return string image extension
+	 * @PCTODO :: remove this method
 	 */
 	public static function getConfigExtension($imageFile = null)
 	{
-		$extension = PaycartFactory::getConfig()->get('image_extension', 'auto');
-
-		// auto means use upaload image's extension
-		if (strtolower($extension) == 'auto') {
-			// if imagefile is not available then use default extension
-			$extension = ($imageFile) ? '.'.JFile::getExt($imageFile) : Paycart::IMAGE_FILE_DEFAULT_EXTENSION ;
-		}
-		
+		$extension = PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);		
 		return $extension;
 	}
 	

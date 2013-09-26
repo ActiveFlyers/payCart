@@ -205,7 +205,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	  					);	
 	  			// result images	
 	  			$provider[]	=	Array(
-	  						'orininal_image'  => RBTEST_BASE.'/tmp/original_tested_paycart.orig',
+	  						'original_image'  => RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'tested_paycart'.Paycart::IMAGE_ORIGINAL_SUFIX,
 	  						'optimized_image' => RBTEST_BASE.'/tmp/tested_paycart'.$extension,
 	  						'thumb_image' 	  => RBTEST_BASE.'/tmp/thumb_tested_paycart'.$extension			
 	  					);
@@ -215,27 +215,6 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	  			$providers[] = $provider;
 	  		}
 	  	}
-	  	
-	  	// case : When paycart config have "Auto" extension and image uploaded in different-2 flavour {.jpg, .gif, .png}
-		foreach ($extensions as $value) {
-	  			$provider = Array();
-	  			// Image Info
-	  			$provider[] = Array( 	
-	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/paycart'.$value,
-	  						'targetFolder'	=>	RBTEST_BASE.'/tmp/',
-	  						'targetFileName'=>	'tested_paycart' 
-	  					);	
-	  			// result images		
-	  			$provider[]	=	Array(
-	  						'orininal_image'  => RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'tested_paycart'.Paycart::IMAGE_ORIGINAL_SUFIX,
-	  						'optimized_image' => RBTEST_BASE.'/tmp/tested_paycart'.$value,
-	  						'thumb_image' 	  => RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'tested_paycart'.$value			
-	  					);
-	  			// Config Extension
-				$provider[]  = $value;
-				
-	  			$providers[] = $provider;
-	  		}
 	  	
 	  	return $providers;
 	}
@@ -276,7 +255,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	  	}
 	  	
 	  	if (is_array($result)) {
-	  		$this->assertFileExists($result['orininal_image'], 'Missing Original Image');
+	  		$this->assertFileExists($result['original_image'], 'Missing Original Image');
 	  		$this->assertFileExists($result['optimized_image'], 'Missing Optimized Image');
 	  		$this->assertFileExists($result['thumb_image'], 'Missing Thumb Image');
 
@@ -362,9 +341,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	  	$this->assertFileExists(RBTEST_BASE.'/tmp/existing_pc.png', 'Missing Optimized Image');
 	  	$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'existing_pc.png', 'Missing Thumb Image');
 	  	
-	  	
-	  	
-		// Revert Paycart config
+	  	// Revert Paycart config
 	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $backupConfig);
 	  	// After test clean all files
 		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
@@ -392,5 +369,32 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 			default:
 				return $default;		
 		}
+	}
+	
+	
+	public function XX_test_ProcessCoverMedia()
+	{
+		// create Mock object
+		$mockProduct = $this->getMockBuilder('PaycartProduct', array('_ImageProcess', '_ImageCreate'))
+							->disableOriginalConstructor()
+							->getMock();
+		// create dummy data	
+		$uploadFile = Array(
+							'name'		=> 'paycart.png',
+							'size' 		=> 5242880,
+							'type' 		=> 'image/png',
+							'tmp_name'	=> RBTEST_BASE . '/_data/images/paycart.png' 
+							);
+		// setup mock 					
+		$mockProduct->expects($this->once())
+					->method('_ImageProcess')
+					->with($this->equalTo($uploadFile), null)
+					->will($this->returnValue(true));
+		
+		$mockProduct->upload_files['cover_media'] = $uploadFile; 						
+		PayCartTestReflection::setValue($mockProduct, 'cover_media', 'tmp/tested_pc.png');
+		
+		PayCartTestReflection::invoke($mockProduct, '_ProcessCoverMedia', null);
+							
 	}
 }
