@@ -109,7 +109,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	{
 		// Create a stub for the PaycartProduct class.
         $stub = $this->getMockBuilder('PaycartProduct')
-         			 ->setMethods(Array('_setAttributeValues', 'getid'))
+         			 ->setMethods(Array('setAttributeValues', 'getid'))
                      ->getMock();
                      
 		// mock dependency
@@ -118,7 +118,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 			 ->will($this->returnValue(0));
 			 
         $stub->expects($this->once())
-			 ->method('_setAttributeValues')
+			 ->method('setAttributeValues')
 	 		 ->will($this->returnValue(false));
 					 
 		$stub->bind($data, $ignore);
@@ -138,15 +138,15 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	
 	/**
 	 * 
-	 * Test _setAttributes Method
+	 * Test SetAttributes Method
 	 */
-	public function test_setAttributeValues() 
+	public function testSetAttributeValues() 
 	{		        
 		// Dummy instance and empty Attribute data
 		$product = PaycartProduct::getInstance();
-		$this->assertFalse(PayCartTestReflection::invoke($product, '_setAttributeValues'));
+		$this->assertFalse(PayCartTestReflection::invoke($product, 'setAttributeValues'));
 
-		// get instance and _setAttributeValues will be called on bind method 
+		// get instance and setAttributeValues will be called on bind method 
 		$product = PaycartProduct::getInstance(1);
 		$attributeValue = $product->get('_attributeValue');
 
@@ -171,49 +171,120 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	}
 	
 	/**
-	 * Provider for _ImageCreate
+	 * 
+	 * Test _ImageProcess method
 	 */
-	public function provider_ImageCreate() {
+	public function test_ImageProcess()
+	{
+		// Backup Paycart Config
+		$backupConfig = PayCartTestReflection::getValue('PaycartFactory', '_config');
+		// before test clean all files
+		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
 		
-		$imageInfo1 = Array( 	
-	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/dummy.jpg',
-	  						'targetFolder'	=>	RBTEST_BASE.'/tmp/',
-	  						'targetFileName'=>	'tested_paycart' 
-	  					);
+		// Dependency :Create Mock for PaycartConfig 
+		$mockConfig = $this->getMock('Rb_Registry');
+		$mockConfig->expects($this->any())
+					->method('get')
+					->will($this->returnCallback(Array(__CLASS__, 'callback_ImageProcess' )));
+
+		// Set Mockconfig
+	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $mockConfig);
 		
-		$imageInfo2 = Array( 	
-	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/paycart.jpg',
-	  						'targetFolder'	=>	RBTEST_BASE.'/tmp/',
-	  						'targetFileName'=>	'tested_paycart' 
-	  					);
-	  	return Array(
-	  					 Array($imageInfo1)
-	  					,Array($imageInfo2)
-	  				);
+	  	
+		//uploaded file
+		$imageFile['size'] 		= 5242880; 		// 5MB
+		$imageFile['type'] 		= 'image/png';
+		// Source image
+		$imageFile['tmp_name']	= RBTEST_BASE . '/_data/images/paycart.png' ;
+		// Output image
+		$data['cover_media'] 	= 'tmp/tested_pc.png';
+		
+		$product = PaycartProduct::getInstance(0, $data);
+		
+		// Invoke SUT 
+		//@Case :: If new uploaded image on new created product
+	  	PayCartTestReflection::invoke($product, '_ImageProcess', $imageFile, null);
+	  	
+		// Assert : Image properly created or not
+		$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'tested_pc'.Paycart::IMAGE_ORIGINAL_SUFIX, 'Missing Original Image');
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/tested_pc.png', 'Missing Optimized Image');
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'tested_pc.png', 'Missing Thumb Image');
+
+	  	
+	  	$imageFile['type'] 		= 'image/jpeg';
+		// Source image
+		$imageFile['tmp_name']	= RBTEST_BASE . '/_data/images/paycart.jpg' ;
+		// Output image
+		$data['cover_media'] 	= 'tmp/existing_pc.png';
+		
+		$object = PaycartProduct::getInstance(0, $data);
+		//@Case :: If new uploaded image on existing Product (Product already have image)
+	  	PayCartTestReflection::invoke($object, '_ImageProcess', $imageFile, $product);
+	  	
+	  	// Assert : Old files Must vbe deleted
+		$this->assertFileNotExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'tested_pc'.Paycart::IMAGE_ORIGINAL_SUFIX, 'Original Image should be deleted');
+	  	$this->assertFileNotExists(RBTEST_BASE.'/tmp/tested_pc.png', 'Optimized Image should be deleted');
+	  	$this->assertFileNotExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'tested_pc.png', 'Thumb Image should be deleted');
+	 
+	  	// Assert : Image properly created or not
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'existing_pc'.Paycart::IMAGE_ORIGINAL_SUFIX, 'Missing Original Image');
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/existing_pc.png', 'Missing Optimized Image');
+	  	$this->assertFileExists(RBTEST_BASE.'/tmp/'.Paycart::IMAGE_THUMB_PREFIX.'existing_pc.png', 'Missing Thumb Image');
+	  	
+	  	// Revert Paycart config
+	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $backupConfig);
+	  	// After test clean all files
+		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
 	}
 	
 	/**
 	 * 
-	 * Test _ImageCreate Method
-	 * 
-	 * @dataProvider provider_ImageCreate
+	 * Enter description here ...
+	 * @param unknown_type $prop
+	 * @param unknown_type $default
 	 */
-	public function test_ImageCreate($imageInfo) 
-	{	
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete('This test has not been implemented yet.');
-		
-		
-	  	$object = PaycartProduct::getInstance();
-	  	try{
-	  		PayCartTestReflection::invoke($object, '_imageCreate', $imageInfo);
-	  	}catch (RuntimeException $e) {
-	  		// PCTODO ::Clean language string
-	  		$this->assertSame(Rb_Text::_('COM_PAYCART_FILE_COPY_FAILED'), $e->getMessage());
-	  	}
+	public function callback_ImageProcess($prop, $default) 
+	{
+		switch ($prop) 
+		{
+			case 'image_maximum_upload_limit' :
+				return 5;
+				
+			case 'image_upload_directory' :
+				return RBTEST_BASE;
+			
+			case 'image_extension'	:
+				return '.png';
+				
+			default:
+				return $default;		
+		}
 	}
 	
 	
-	
-	
+	public function XX_test_ProcessCoverMedia()
+	{
+		// create Mock object
+		$mockProduct = $this->getMockBuilder('PaycartProduct', array('_ImageProcess', '_ImageCreate'))
+							->disableOriginalConstructor()
+							->getMock();
+		// create dummy data	
+		$uploadFile = Array(
+							'name'		=> 'paycart.png',
+							'size' 		=> 5242880,
+							'type' 		=> 'image/png',
+							'tmp_name'	=> RBTEST_BASE . '/_data/images/paycart.png' 
+							);
+		// setup mock 					
+		$mockProduct->expects($this->once())
+					->method('_ImageProcess')
+					->with($this->equalTo($uploadFile), null)
+					->will($this->returnValue(true));
+		
+		$mockProduct->upload_files['cover_media'] = $uploadFile; 						
+		PayCartTestReflection::setValue($mockProduct, 'cover_media', 'tmp/tested_pc.png');
+		
+		PayCartTestReflection::invoke($mockProduct, '_ProcessCoverMedia', null);
+							
+	}
 }

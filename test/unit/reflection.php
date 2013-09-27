@@ -11,7 +11,7 @@
  *
  * @package  Paycart.Test
  */
-class PaycartTestReflection extends TestReflection
+class PayCartTestReflection extends TestReflection
 {
 	/** 
 	 * 
