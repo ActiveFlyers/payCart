@@ -109,7 +109,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	{
 		// Create a stub for the PaycartProduct class.
         $stub = $this->getMockBuilder('PaycartProduct')
-         			 ->setMethods(Array('_setAttributeValues', 'getid'))
+         			 ->setMethods(Array('setAttributeValues', 'getid'))
                      ->getMock();
                      
 		// mock dependency
@@ -118,7 +118,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 			 ->will($this->returnValue(0));
 			 
         $stub->expects($this->once())
-			 ->method('_setAttributeValues')
+			 ->method('setAttributeValues')
 	 		 ->will($this->returnValue(false));
 					 
 		$stub->bind($data, $ignore);
@@ -138,15 +138,15 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	
 	/**
 	 * 
-	 * Test _setAttributes Method
+	 * Test SetAttributes Method
 	 */
-	public function test_setAttributeValues() 
+	public function testSetAttributeValues() 
 	{		        
 		// Dummy instance and empty Attribute data
 		$product = PaycartProduct::getInstance();
-		$this->assertFalse(PayCartTestReflection::invoke($product, '_setAttributeValues'));
+		$this->assertFalse(PayCartTestReflection::invoke($product, 'setAttributeValues'));
 
-		// get instance and _setAttributeValues will be called on bind method 
+		// get instance and setAttributeValues will be called on bind method 
 		$product = PaycartProduct::getInstance(1);
 		$attributeValue = $product->get('_attributeValue');
 
@@ -169,116 +169,6 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 			$this->assertSame($expectedAttributeValue[$id]['type'], $value->get('_attribute')->get('type'));
 		}
 	}
-	
-	/**
-	 * Provider for _ImageCreate
-	 */
-	public function provider_ImageCreate() {
-		//image info
-		$provider[] = Array( 	
-	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/dummy.jpg',
-	  						'targetFolder'	=>	RBTEST_BASE.'/tmp/',
-	  						'targetFileName'=>	'tested_paycart' 
-	  					);
-	  	// result
-	  	$provider[]	= 'COM_PAYCART_FILE_COPY_FAILED';
-	  	$provider[] = null;
-		// Case :: through Exception Image 	  	
-	  	$providers[] = $provider;
-	  			
-	  	$extensions = Array('.jpg','.png','.gif'
-	  					//	,'.bmp'				// Right now, Joomla does not support it
-	  						);
-	 
-	  	// Cases ::Paycart Config have 
-	  	// When paycart config have .jpg extension and image uploaded in different-2 flavour {.jpg, .gif, .png}
-		// When paycart config have .png extension and image uploaded in different-2 flavour {.jpg, .gif, .png}
-		// When paycart config have .gif extension and image uploaded in different-2 flavour {.jpg, .gif, .png}
-	  	foreach ($extensions as $extension) {
-	  		foreach ($extensions as $value) {
-	  			$provider = Array();
-	  			// Image Info
-	  			$provider[] = Array( 	
-	  						'sourceFile' 	=>	RBTEST_BASE . '/_data/images/paycart'.$value,
-	  						'targetFolder'	=>	RBTEST_BASE.'/tmp/',
-	  						'targetFileName'=>	'tested_paycart' 
-	  					);	
-	  			// result images	
-	  			$provider[]	=	Array(
-	  						'original_image'  => RBTEST_BASE.'/tmp/'.Paycart::IMAGE_ORIGINAL_PREFIX.'tested_paycart'.Paycart::IMAGE_ORIGINAL_SUFIX,
-	  						'optimized_image' => RBTEST_BASE.'/tmp/tested_paycart'.$extension,
-	  						'thumb_image' 	  => RBTEST_BASE.'/tmp/thumb_tested_paycart'.$extension			
-	  					);
-	  			// Config Extension
-				$provider[]  = $extension;
-				
-	  			$providers[] = $provider;
-	  		}
-	  	}
-	  	
-	  	return $providers;
-	}
-	
-	/**
-	 * 
-	 * Test _ImageCreate Method
-	 * 
-	 * @dataProvider provider_ImageCreate
-	 */
-	public function test_ImageCreate($imageInfo, $result, $configExtension) 
-	{	
-		// Backup Paycart Config
-		$backupConfig = PayCartTestReflection::getValue('PaycartFactory', '_config');
-
-		// before test clean all files
-		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
-		
-		// Dependency :Create Mock for PaycartConfig 
-		$mockConfig = $this->getMock('Rb_Registry');
-		$mockConfig->expects($this->any())
-					->method('get')
-					->will($this->returnCallback(function($prop) use ($configExtension) { return  $configExtension; }));
-
-		// Set Mockconfig
-	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $mockConfig);
-		
-	  	//Get Product Instance
-	  	$object = PaycartProduct::getInstance();
-	  	
-	  	try {
-	  		// invoke SUT
-	  		PayCartTestReflection::invoke($object, '_imageCreate', $imageInfo);
-	  	} catch (RuntimeException $e) {
-	  		//@PCTODO ::Clean language string
-	  		//@PCTODO:: Seperate this test case (Only for First Case) so we proper testing if exception fire
-	  		$this->assertSame(Rb_Text::_($result), $e->getMessage());
-	  	}
-	  	
-	  	if (is_array($result)) {
-	  		$this->assertFileExists($result['original_image'], 'Missing Original Image');
-	  		$this->assertFileExists($result['optimized_image'], 'Missing Optimized Image');
-	  		$this->assertFileExists($result['thumb_image'], 'Missing Thumb Image');
-
-	  		//check  image scale
-	  		$expected_optimized_size = Array (Paycart::IMAGE_OPTIMIZE_HEIGHT, Paycart::IMAGE_OPTIMIZE_WIDTH);
-	  		//height, width 
-	  		list($actual_optimized_size[], $actual_optimized_size[]) = getimagesize($result['optimized_image']);
-	  		
-			$this->assertSame($expected_optimized_size, $actual_optimized_size);
-			
-	  		$expected_thumb_size = Array (Paycart::IMAGE_THUMB_HEIGHT, Paycart::IMAGE_THUMB_WIDTH);
-	  		list($actual_thumb_size[], $actual_thumb_size[]) = getimagesize($result['thumb_image']);
-	  		
-	  		$this->assertSame($expected_thumb_size, $actual_thumb_size);
-	  	}
-	  	
-	  	// After test clean all files
-		JFile::delete(glob(RBTEST_BASE.'/tmp/*.*'));
-
-	  	// Revert Paycart config
-	  	PayCartTestReflection::setValue('PaycartFactory', '_config', $backupConfig);
-	}
-	
 	
 	/**
 	 * 
