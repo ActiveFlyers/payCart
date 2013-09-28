@@ -248,3 +248,21 @@ CREATE TABLE IF NOT EXISTS `#__paycart_address` (
  INDEX `idx_country` (`country`)
 
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+
+----------------------------------------------------------
+--------------------- DEFAULT VALUES ---------------------
+----------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_config`
+--
+INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
+('image_extension', '.png'),
+('image_maximum_upload_limit', '2'),
+('image_render_url', NULL),
+('image_thumb_height', '100'),
+('image_thumb_width', '133'),
+('image_upload_directory', NULL);
+

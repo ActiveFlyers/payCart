@@ -212,17 +212,15 @@ class PaycartHelperImage extends PaycartHelper
 	 * 
 	 * @return (string) image url
 	 */
-	public static function getURL($imagePath)
+	public static function getURL()
 	{
 		$config = PaycartFactory::getConfig();
 		$root 	= $config->get('image_render_url', false);
-		
-		$path = '';
 		if(!$root) {
-			$path = PaycartFactory::getURI()->root().Paycart::IMAGES_ROOT_PATH;
+			$root = PaycartFactory::getURI()->root().Paycart::IMAGES_ROOT_PATH;
 		}
-			
-		return $path.'/'.$imagePath;
+		
+		return $root;
 	}
 		
 	/**

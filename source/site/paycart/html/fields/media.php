@@ -50,9 +50,9 @@ class PaycartFormFieldMedia extends JFormField
 		//PCTODO:: Display image if exist
 		$html = '';
 		if ($this->value) {
-			$path = PaycartHelperImage::getURL($this->value);
+			$path = PaycartHelperImage::getURL();
 			$html .= '<img 
-							src="'.$path.'"
+							src="'.$path.$this->value.'"
 							title="'.$this->form->getValue('name').'"
 					  /><br/>';
 		}

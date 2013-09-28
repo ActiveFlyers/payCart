@@ -35,6 +35,11 @@ class PaycartFactory extends Rb_Factory
 		return parent::getInstance($name, $type, $prefix, $refresh);
 	}
 	
+	static function getHelper($name)
+	{
+		return self::getInstance($name, 'helper');
+	}
+	
 	/**
 	 * 
 	 * Method invoke to get {Paycart + Site global} configuration object

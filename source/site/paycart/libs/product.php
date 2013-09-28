@@ -198,9 +198,9 @@ class PaycartProduct extends PaycartLib
 	
 	/**
 	 * 
-	 * Process Cover Meda
+	 * Process Cover Media
 	 * @param  $previousObject, Product lib object
-	 * @throws RuntimeException
+	 * @throws RuntimeException OR InvalidArgumentException
 	 * 
 	 * @return Product Lib object 
 	 */
@@ -216,26 +216,22 @@ class PaycartProduct extends PaycartLib
 			
 			// Create new variant then you dont have any uploaded image. Use parent Image
 			if (!$previousObject && $this->variation_of) {
-				$image = PaycartFactory::getInstance('image','helper');
 				// Image store path
 				$path = PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
 				// Source Image
 				$sourceImage = $path.'/'.$this->upload_files['cover_media'];
-				
-				// Load and validate image
-				$image->loadFile($sourceImage)
-					  ->validate();
-			  
-				// target file-info 
-				$targetFileInfo = $image->imageInfo($this->cover_media);
-				$targetFolder = $path.'/'.$targetFileInfo['dirname'];
-				// Create new image
-				$image->create($targetFolder, $targetFileInfo['filename']);
+				$this->_ImageProcess($sourceImage);
 			}
+			
+		//PCTODO:: exception fire at proper location	
 		} catch (RuntimeException $e) {
 			//PCTODO :: Notify to User Or set-up error queue
 			$message = $e->getMessage();
+		} catch (InvalidArgumentException $e) {
+			//PCTODO :: Notify to User Or set-up error queue
+			$message = $e->getMessage();
 		}
+			
 		return $this;
 	}
 	
@@ -309,19 +305,15 @@ class PaycartProduct extends PaycartLib
 	 * Process Cover Image
 	 * @param $imageFile, File type requested data.
 	 * @param Lib_object $previousObject
-	 * @throws RuntimeException
+	 * @throws RuntimeException OR InvalidArgumentException
 	 * 
 	 * @return ProductLib
 	 * @PCTODO:: move to parent lib
 	 */
-	protected function _ImageProcess($imageFile, $previousObject)
+	protected function _ImageProcess($imageFile, $previousObject = null)
 	{	
-		$image = PaycartFactory::getInstance('image','helper');
-		// Load Image and validate it 
-		$image->loadFile($imageFile)
-			  ->validate();
-		
 		// Get file path where Image will be saved 
+		//PCTODO :: get it from helper
 		$imagePath	= PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
 		
 		// Upload new image while Previous Image exist 
@@ -331,12 +323,17 @@ class PaycartProduct extends PaycartLib
 			$image->delete($imagePath.'/'.$previousImage);
 		}
 		
-		$currentImageDetail = $image->imageInfo($this->cover_media);
-		$imagePath			= $imagePath.'/'.$currentImageDetail['dirname'];
-
-		// create new image
-		$image->create($imagePath, $currentImageDetail['filename']);
+		$image = PaycartFactory::getHelper('image');
 		
+		// target file-info 
+		$targetFileInfo = $image->imageInfo($this->cover_media);
+		$targetFolder 	= $path.'/'.$targetFileInfo['dirname'];
+		
+		// Load, validate and then create image 
+		$image->loadFile($sourceImage)
+			  ->validate()
+			  ->create($targetFolder, $targetFileInfo['filename']);
+			 
 		return $this;
 	}
 			
