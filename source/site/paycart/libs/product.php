@@ -310,20 +310,20 @@ class PaycartProduct extends PaycartLib
 	 * @return ProductLib
 	 * @PCTODO:: move to parent lib
 	 */
-	protected function _ImageProcess($imageFile, $previousObject = null)
+	protected function _ImageProcess($sourceImage, $previousObject = null)
 	{	
 		// Get file path where Image will be saved 
 		//PCTODO :: get it from helper
-		$imagePath	= PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
+		$path	= PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
+
+		$image = PaycartFactory::getHelper('image');
 		
 		// Upload new image while Previous Image exist 
 		// need to remove previous image { Original, Optimized and thumbnail image }
 		if ($previousObject && $previousObject->getCoverMedia()) {
 			$previousImage 	=  $previousObject->getCoverMedia();
-			$image->delete($imagePath.'/'.$previousImage);
+			$image->delete($path.'/'.$previousImage);
 		}
-		
-		$image = PaycartFactory::getHelper('image');
 		
 		// target file-info 
 		$targetFileInfo = $image->imageInfo($this->cover_media);
