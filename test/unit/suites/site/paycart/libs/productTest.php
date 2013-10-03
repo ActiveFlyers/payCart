@@ -12,7 +12,21 @@
  */
 class PaycartProductTest extends PayCartTestCaseDatabase
 {
-
+	//@PCTODO :: use test case name insted of stub data 
+	protected $_stubData = 
+				Array(
+						'testSetAttributeValues' =>
+								Array(	'table' => Array('product-1', 'attribute-1', 'attributevalue-1')), 					
+						'testSave_Case1' =>	
+								Array(	'file' => Array('_data/dataset/paycart.xml')),
+						'testSave_Case2' =>	
+								Array(	'file' => Array('_data/dataset/paycart.xml')),
+				
+					 );
+					 
+					 
+	private $_session; 
+	
 	/**
 	 * 
 	 * Test Reset Method
@@ -77,14 +91,14 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	 */
 	public function providerTestBind() 
 	{
-		$data1 	 = Array('upload_files' => Array('uploaded file here'),'title'=>'testing');
+		$data1 	 = Array('_upload_files' => Array('uploaded file here'),'title'=>'testing');
 		$ignore1 = Array();
 		$result1 = Array(
-						'upload_files' 	=> Array('uploaded file here'),
+						'_upload_files' 	=> Array('uploaded file here'),
 						'_attributeValue'	=> Array()
 						);
 
-		$data2 	 = Array('upload_files' => Array('uploaded file here'), 'title'=>'testing');
+		$data2 	 = Array('_upload_files' => Array('uploaded file here'), 'title'=>'testing');
 		$ignore2 = Array('title');
 
 		
@@ -131,7 +145,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 				continue;
 			}
 			// test binded data
-			$this->assertSame($value, $stub->$key);
+			$this->assertSame($value, $stub->get($key));	
 		}
 	}
 	
@@ -281,10 +295,194 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 					->with($this->equalTo($uploadFile), null)
 					->will($this->returnValue(true));
 		
-		$mockProduct->upload_files['cover_media'] = $uploadFile; 						
+		$mockProduct->_upload_files['cover_media'] = $uploadFile; 						
 		PayCartTestReflection::setValue($mockProduct, 'cover_media', 'tmp/tested_pc.png');
 		
 		PayCartTestReflection::invoke($mockProduct, '_ProcessCoverMedia', null);
 							
+	}
+		
+	/**
+	 * 
+	 * test save task 
+	 * Case : Post only required data i.e. title (Save only title with default data)
+	 */
+	function testSave_Case1()
+	{
+		// Mock Dependancy
+		$this->_beforeSaveTask();
+		
+		// Case : Post only required data i.e. title (Save only with title)
+		$data = Array('title' => 'Product-1');
+		//SUT
+		$this->assertInstanceOf('PaycartProduct', PaycartProduct::getInstance(0,$data)->save());
+		
+		// Expected data
+		$row	 = $this->au_Data();
+		$au_data = Array( "jos_paycart_product" => Array ($row[1]) );
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array('publish_down', 'publish_up','created_date', 'modified_date'));
+		
+		// revert dependency stuff
+		$this->_afterSaveTask();
+	}
+	
+	/**
+	 * 
+	 * test save task 
+	 * Case : Post redundant data for unique key
+	 * @depends testSave_Case1
+	 */
+	public function testSave_Case2()
+	{
+		// Multiple testing data will be availble by Invoke testSave_Case1 
+		$this->testSave_Case1();
+		
+		// Mock Dependancy
+		$this->_beforeSaveTask();
+		
+		// Case : Post redundant data for unique key
+		$data = Array(
+						'title' => 'Product-1',
+						'alias' => 'Product-1',
+						'sku' 	=> 'Product-1',
+						'category_id' =>1
+					 );
+					 
+		$this->assertInstanceOf('PaycartProduct', PaycartProduct::getInstance(0,$data)->save());
+		
+		// Expected data
+		$row	 = $this->au_Data();
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2]));
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array('publish_down', 'publish_up','created_date', 'modified_date'));
+		
+		// revert dependency stuff
+		$this->_afterSaveTask();
+		
+	}
+	
+	/**
+	 * 
+	 * test save task 
+	 * Case : Post redundant data for unique key
+	 * @depends testSave_Case2
+	 */
+	public function testSave_Case3()
+	{
+		// Multiple testing data will be availble by Invoke testSave_Case1 
+		$this->testSave_Case2();
+		
+		// Mock Dependancy
+		$this->_beforeSaveTask();
+		
+		// case : Post image with redundant data
+		$data = Array(
+						'title' => 'Product-1',
+						'alias' => 'Product-1',
+						'sku' 	=> 'Product-1',
+						'category_id' =>1,
+						'_upload_files' => 
+								Array('cover_media'=> 
+										Array(
+											'name'		=> 'paycart.png',
+											'size' 		=> 2097152,
+											'type' 		=> 'image/png',
+											'tmp_name'	=> RBTEST_BASE . '/_data/images/paycart.png' 
+											)
+									)
+					);
+					
+		$product = PaycartProduct::getInstance(0,$data)->save();
+		
+		$this->assertInstanceOf('PaycartProduct', $product);
+		
+		
+		$path 		 = PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
+		$imageFile 	 = $path.$product->getCoverMedia();
+		
+		$image = PaycartFactory::getHelper('image');
+		
+		$imageDetail =  $image->imageInfo($imageFile);
+		
+		// Original Image 
+		$files[]	=	$imageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$imageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;
+		// Optimized Image
+		$files[]	=	$imageFile;
+		// thumb image
+		$files[]	=	$imageDetail['dirname'].'/'.Paycart::IMAGE_THUMB_PREFIX.$imageDetail['filename'].'.'.$imageDetail['extension'] ;
+		
+		// Assert : Image properly created  and exist
+		foreach ($files as $file) {	
+	  		$this->assertFileExists($file, 'Missing Image Files');
+		}
+		
+		// delete files
+		$image->delete($imageFile); 
+		
+		// Expected data
+		$row	 = $this->au_Data();
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2], $row[3]));
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array('publish_down', 'publish_up','created_date', 'modified_date', 'cover_media'));
+		
+		// revert dependency stuff
+		$this->_afterSaveTask();
+		
+	}
+	
+	
+	
+	protected function au_Data() 
+	{
+		$date = Rb_Date::getInstance()->toSql();
+		
+		$row[1]	=  Array(
+						"product_id" =>1, "title" => 'Product-1', "alias" => 'product-1',"published" => 1,
+						"type" => 10, "amount" => 0.000000, "quantity" => 0, "file" => null,  "sku" => 'product-1',
+						"variation_of" => 0, "category_id" => 0,"params" => '{}', "cover_media" => null ,
+						"teaser" => null, "publish_down" => '0000-00-00 00:00:00', 
+						'publish_up'=> $date, "created_date" => $date,"modified_date" => $date, 
+						"created_by" => 662, "ordering" => 1, "featured" => 0, "description" => null,"hits" => 0, 
+						"meta_data" => '{}'
+						);
+		
+		$row[2]	=  array_replace($row[1], Array( "product_id" =>2,  "alias" => 'product-2',"sku" => 'product-2',
+												  "category_id" => 1, "ordering" => 2 ));
+		
+		$row[3]	=  array_replace($row[2], Array( "product_id" =>3,  "alias" => 'product-3',"sku" => 'product-3',
+												  "ordering" => 3 ));
+	
+		return $row;
+						
+	}
+	
+	protected function _beforeSaveTask() 
+	{
+		// Mock Dependancy
+		$this->_session = PaycartFactory::$session;
+		$options = Array(
+						'get.user.id' 		=>  662,
+						'get.user.name'		=> '_MANISH_TRIVEDI_',
+						'get.user.username' => 'mManishTrivedi',
+						'get.user.guest'	=>	0
+						);
+		// MockSession and set 44 user id in session
+		PaycartFactory::$session = $this->getMockSession($options);
+	}
+
+	protected function _afterSaveTask()
+	{
+		// revert cached stuff
+		PaycartFactory::$session = $this->_session ;
 	}
 }

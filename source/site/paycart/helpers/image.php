@@ -260,7 +260,6 @@ class PaycartHelperImage extends PaycartHelper
 	 * @param array $imageInfo
 	 * 		$mageInfo = Array 
 	 * 					( 	
-	 * 						'sourceFile' 	=>	'_ABSOLUTE_PATH_OF_SOURCE_IMAGE_',
 	 * 						'targetFolder'	=>	'_ABSOLUTE_PATH_OF_TARGET_FOLDER_'
 	 * 						'targetFileName'=>	'_NEW_CREATED_IMAGE_NAME_WITHOUT_IMAGE_EXTENSION' 
 	 * 					)

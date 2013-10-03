@@ -14,6 +14,23 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 {
 	protected $sqlDataSet = true;
 	
+	// all required dataset set on this var
+	Private $_dataset;
+	
+	/**
+	 * Array of stubData for Suite
+	 * 	Array $_stubdata = Array(
+	 * 							_TEST_CASE_NAME_ =>
+	 * 								Array(
+	 * 										'table' => Array("_REQUIRED_TABLE_VARIATION"), // test specific data
+	 *  									'file'	=> Array("_REQUIRED_FILE_") //like load paycart , joomla stuff
+	 * 									)
+	 * 							)
+	 *
+	 */
+	protected $_stubData = Array();
+	
+	
 	/**
 	 * @var    JDatabaseDriver  The saved database driver to be restored after these tests.
 	 * @since  12.1
@@ -85,46 +102,37 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 */
 	protected function getDataSet()
 	{
-		$class = new ReflectionObject($this);
-		$path = dirname($class->getFileName());
-		$path = $path . '/stubs/'.get_class($this).'/'.$this->getName().'.xml';
-		// If dataset file exist then load it 		
-		if(file_exists($path)) {
-			if($this->sqlDataSet) {
-				return $this->createMySQLXMLDataSet($path);
-			}
-			return $this->createXMLDataSet($path);
+		if(!isset($this->_stubData[$this->getName()]) || !isset($this->_stubData[$this->getName()]['table']) ) {
+			return new PHPUnit_Extensions_Database_DataSet_NullDataSet;
 		}
+		
+		$dataSet = Array();
+		
+		foreach ($this->_stubData[$this->getName()]['table'] as $variation) {
+			$entity 	  = substr($variation, 0, strrpos($variation, '-') );
+			$dataSetFile  = RBTEST_PATH_DATASET."$entity/$variation.xml";
 
-		return new PHPUnit_Extensions_Database_DataSet_NullDataSet;
+			if(!JFile::exists($dataSetFile)) {
+				throw new RuntimeException("DataSet File is not exist:: {$dataSetFile}");
+			}
+			
+			$dataSet[] = $this->createMySQLXMLDataSet($dataSetFile);
+		}
+		
+		return new PHPUnit_Extensions_Database_DataSet_CompositeDataSet($dataSet);
 	}
+	
+	
 	/**
 	 * 
 	 * Compare Table
 	 * @param $actualTable
 	 * @param $excludeColumns
 	 */
-	protected function compareTable($actualTable, $excludeColumns = Array())
+	protected function compareTable($actualTable, $expectedDataSet,  $excludeColumns = Array())
 	{
 		// get Current dataset 
 		$actualDataSet	= $this->getConnection()->createDataSet(Array($actualTable));
-		
-		// get stub path
-		// @Assumption 
-		$class = new ReflectionObject($this);
-		$path = dirname($class->getFileName());
-		$path = $path . '/stubs/'.get_class($this).'/au_'.$this->getName().'.xml';		
-		//expected dataset
-		// If dataset file exist then load it 		
-		if(!file_exists($path)) {
-			throw RuntimeException("##### Gold Table Not found :: $path ####");
-		}
-		// Get Expected Dataset
-		if($this->sqlDataSet) {
-			$expectedDataSet = $this->createMySQLXMLDataSet($path);
-		}else{
-			$expectedDataSet =  $this->createXMLDataSet($path);
-		}
 		
 		//Exclude columns
 		if(!empty($excludeColumns)) {
@@ -140,10 +148,102 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	}
 	
 	protected  function setUp() 
-	{
+	{	
+		if(isset($this->_stubData[$this->getName()]) && isset($this->_stubData[$this->getName()]['file']) ) {
+			$this->_setUp();
+		}
+		
 		// Clean static Cache
 		Rb_Factory::cleanStaticCache(true);
 		parent::setUp();
 	}
 	
+	
+	/**
+	 * Returns the database operation executed in test setup.
+	 *
+	 * @return  PHPUnit_Extensions_Database_Operation_DatabaseOperation
+	 *
+	 * @since   12.1
+	 */
+	protected function getSetUpOperation()
+	{
+		// Required given the use of InnoDB contraints.
+		// IMP:: second argument specific for SQLite 
+		return new PHPUnit_Extensions_Database_Operation_Composite(
+			array(
+				PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL(),
+				new PHPUnit_Extensions_Database_Operation_DeleteSqliteSequence,
+				PHPUnit_Extensions_Database_Operation_Factory::INSERT()
+			)
+		);
+	}
+	
+	// load testing stuff
+	protected function _setUp() 
+	{
+		$dataSet = Array();
+		
+		foreach ($this->_stubData[$this->getName()]['file'] as $file) {
+			$file = RBTEST_BASE.'/'.$file;
+			
+			// File must be available
+			if(!file_exists($file)) {
+				throw new RuntimeException("DataSet File is not exist:: {$file}");
+			}
+			// Array of all dataset
+			$dataSet[] = $this->createMySQLXMLDataSet($file);
+		}
+		
+		$this->_dataset =  new PHPUnit_Extensions_Database_DataSet_CompositeDataSet($dataSet);
+			
+		// get db connection
+		$connection = $this->getConnection();
+		
+		// delete previous loaded data
+		$this->_cleanUp();
+		
+		// insert data
+		$insertOperation = new PHPUnit_Extensions_Database_Operation_Insert();
+		$insertOperation->execute($connection, $this->_dataset);
+	}
+	
+	/**
+	 * Returns the database operation executed in test cleanup.
+	 *
+	 * @return  PHPUnit_Extensions_Database_Operation_DatabaseOperation
+	 *
+	 * @since   12.1
+	 */
+	protected function getTearDownOperation()
+	{
+		// loaded data should be deleted
+		if ($this->_dataset) {
+			$this->_cleanUp();
+		}
+		
+		// Required given the use of InnoDB contraints.
+		return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
+	}
+	
+	/**
+	 * 
+	 * Clean data on dataset bases. 
+	 * If you load any kind of testing stuff like paycart inital(preconfigure) data, Joomla's data 
+	 * Then all loaded data will be deleted.  
+	 * 
+	 */
+	protected function _cleanUp()
+	{
+		// get db connection
+		$connection = $this->getConnection();
+		
+		// Delete all previous database tables
+		$deleteOperation = new PHPUnit_Extensions_Database_Operation_DeleteAll();
+		$deleteOperation->execute($connection, $this->_dataset);
+		
+		// reset SQLite autoincrement 
+		$sqliteSequence = new PHPUnit_Extensions_Database_Operation_DeleteSqliteSequence();
+		$sqliteSequence->execute($connection, $this->_dataset);
+	}
 }

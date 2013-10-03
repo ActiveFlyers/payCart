@@ -41,6 +41,9 @@ class PaycartProduct extends PaycartLib
 	protected $hits			 =	0;
 	protected $meta_data	 = 	null;
 	
+	//Extra fields (not realted to columm) 
+	protected $_upload_files   = Array();
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::reset()
@@ -72,6 +75,7 @@ class PaycartProduct extends PaycartLib
 		$this->meta_data	 = new Rb_Registry();
 		//Extra fields (not realted to columm) 
 		$this->_attributeValue   = Array();
+		$this->_upload_files   = Array();
 		
 		return $this;
 	}
@@ -102,10 +106,11 @@ class PaycartProduct extends PaycartLib
 			$this->sku = $this->getTitle();
 		}
 		
+		// @PCTODO :: Set default Image 
 		// Set Cover Image Path
-		if ( $this->upload_files && isset($this->upload_files['cover_media']) && $this->upload_files['cover_media']['name']) {
+		if ( isset($this->_upload_files['cover_media']) && $this->_upload_files['cover_media']['name']) {
 			$extension = PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
-			$this->cover_media = PaycartHelper::getHash($this->upload_files['cover_media']['name']);
+			$this->cover_media = PaycartHelper::getHash($this->_upload_files['cover_media']['name']);
 			$this->cover_media = $this->getName().'/'.$this->cover_media.$extension;			
 		}
 		
@@ -210,8 +215,8 @@ class PaycartProduct extends PaycartLib
 			// Create new product or re-save existing product
 			// IMP :: Don't check here isset otherwise it will true (In < PHP 5.4)
 			// is_array check for it's not a variant && Post data is not empty
-			if (is_array($this->upload_files['cover_media']) && !empty($this->upload_files['cover_media']['name']) ) {
-				$this->_ImageProcess($this->upload_files['cover_media'], $previousObject);
+			if (is_array($this->_upload_files['cover_media']) && !empty($this->_upload_files['cover_media']['name']) ) {
+				$this->_ImageProcess($this->_upload_files['cover_media'], $previousObject);
 			}
 			
 			// Create new variant then you dont have any uploaded image. Use parent Image
@@ -219,7 +224,7 @@ class PaycartProduct extends PaycartLib
 				// Image store path
 				$path = PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
 				// Source Image
-				$sourceImage = $path.'/'.$this->upload_files['cover_media'];
+				$sourceImage = $path.'/'.$this->_upload_files['cover_media'];
 				$this->_ImageProcess($sourceImage);
 			}
 			
@@ -236,7 +241,7 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * Override it due to set upload_files variable
+	 * Override it due to set _upload_files variable
 	 * 
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 */
@@ -248,8 +253,8 @@ class PaycartProduct extends PaycartLib
 		
 		parent::bind($data, $ignore);
 		
-		if( isset($data['upload_files'])) {
-			$this->upload_files = $data['upload_files'];
+		if( isset($data['_upload_files'])) {
+			$this->_upload_files = $data['_upload_files'];
 		}
 		
 		// if custom Attributes available in data then bind with lib object 
@@ -257,7 +262,7 @@ class PaycartProduct extends PaycartLib
 		
 		// Bind attributevalue-lib's instance on Product lib  
 		$this->setAttributeValues($attributes);
-		
+
 		return $this;
 	}
 	
@@ -361,7 +366,7 @@ class PaycartProduct extends PaycartLib
 			$newProduct->cover_media = PaycartHelper::getHash($this->getTitle());
 			$newProduct->cover_media = $this->getName().'/'.$newProduct->cover_media.$extension;
 			// set source path. It will required on image processing
-			$newProduct->upload_files['cover_media'] = $this->getCoverMedia();
+			$newProduct->_upload_files['cover_media'] = $this->getCoverMedia();
 		}		
 		
 		// Save new variant		

@@ -28,6 +28,7 @@ require_once PAYCARTTEST_FRONT_END.'/paycart/includes.php';
 JLoader::registerPrefix('PayCartTest', __DIR__ );
 
 include_once 'NullDataSet.php';
-
+include_once 'DeleteSqliteSequence.php';
+include_once 'Array.php';
 
 

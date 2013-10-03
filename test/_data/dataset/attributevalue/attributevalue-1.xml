@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="paycart">
+	<table_data name="jos_paycart_attributevalue">
+	<row>
+		<field name="attributevalue_id">10</field>
+		<field name="product_id">1</field>
+		<field name="attribute_id">2</field>
+		<field name="value">option-21</field>
+		<field name="order">2</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">9</field>
+		<field name="product_id">1</field>
+		<field name="attribute_id">1</field>
+		<field name="value">text-attribute</field>
+		<field name="order">1</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">14</field>
+		<field name="product_id">2</field>
+		<field name="attribute_id">2</field>
+		<field name="value">option-22</field>
+		<field name="order">6</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">13</field>
+		<field name="product_id">2</field>
+		<field name="attribute_id">1</field>
+		<field name="value">attr-1</field>
+		<field name="order">5</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">11</field>
+		<field name="product_id">1</field>
+		<field name="attribute_id">3</field>
+		<field name="value">option-A,option-B</field>
+		<field name="order">3</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">12</field>
+		<field name="product_id">1</field>
+		<field name="attribute_id">4</field>
+		<field name="value">Attr</field>
+		<field name="order">4</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">15</field>
+		<field name="product_id">2</field>
+		<field name="attribute_id">3</field>
+		<field name="value">option-B,option-C,option-D</field>
+		<field name="order">7</field>
+	</row>
+	<row>
+		<field name="attributevalue_id">16</field>
+		<field name="product_id">2</field>
+		<field name="attribute_id">4</field>
+		<field name="value">attr-b</field>
+		<field name="order">8</field>
+	</row>
+	</table_data>
+</database>
+</mysqldump>

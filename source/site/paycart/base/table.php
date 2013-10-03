@@ -50,9 +50,15 @@ class PaycartTable extends Rb_Table
 			return $value;
 		}
 		
+		// if Value already have '-'(dash) with numeric-data then remove numeric-data 
+		$string = $value;
+		if (preg_match('#-(\d+)$#', $string, $matches)) {
+			$string = preg_replace('#-(\d+)$#', sprintf('-', ''), $string);
+		}
+		
 		$query 	= new Rb_Query();
 		$result = $query->select($column)
-						->where("`$column` LIKE '$value%'")
+						->where("`$column` LIKE '$string%'")
 			  			->from($this->_tbl)
 			  			->dbLoadQuery()->loadcolumn();
 
