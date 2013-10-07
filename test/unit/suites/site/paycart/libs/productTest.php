@@ -533,28 +533,36 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	{
 		$row	= Array();
 		
-		$row[]	= array_merge(Array('attributevalue_id'=>0), include RBTEST_PATH_DATASET.'/attributevalue/tmpl.php');
+		$row[0]	= array_merge(Array('attributevalue_id'=>0), include RBTEST_PATH_DATASET.'/attributevalue/tmpl.php');
 		
-		$row[]	= array_replace($row[0], Array('attributevalue_id'=>1, "product_id" => 4, "attribute_id" => 1,  
+		$row[1]	= array_replace($row[0], Array('attributevalue_id'=>1, "product_id" => 4, "attribute_id" => 1,  
 												"value" => '_MANISH_', "order" => 1 ));
 								
-		$row[]	= array_replace($row[0], Array( 'attributevalue_id'=>2, "product_id" => 4, "attribute_id" => 2,  
+		$row[2]	= array_replace($row[0], Array( 'attributevalue_id'=>2, "product_id" => 4, "attribute_id" => 2,  
 												"value" => 'option-23', "order" => 2 ));
 
-		$row[]	= array_replace($row[0], Array( 'attributevalue_id'=>3, "product_id" => 4, "attribute_id" => 3,  
+		$row[3]	= array_replace($row[0], Array( 'attributevalue_id'=>3, "product_id" => 4, "attribute_id" => 3,  
 												"value" => 'option-C', "order" => 3 ));
 		
-		$row[]	= array_replace($row[0], Array( 'attributevalue_id'=>4, "product_id" => 4, "attribute_id" => 4,  
+		$row[4]	= array_replace($row[0], Array( 'attributevalue_id'=>4, "product_id" => 4, "attribute_id" => 4,  
 												"value" => '_PUNEET_', "order" => 4 ));
 								
-		$row[]	= array_replace($row[1], Array('attributevalue_id'=>5, "value" => '_TRIVEDI_'));
+		$row[5]	= array_replace($row[1], Array('attributevalue_id'=>5, "value" => '_TRIVEDI_'));
 								
-		$row[]	= array_replace($row[2], Array( 'attributevalue_id'=>6, "value" => 'option-21'));
+		$row[6]	= array_replace($row[2], Array( 'attributevalue_id'=>6, "value" => 'option-21'));
 
-		$row[]	= array_replace($row[3], Array( 'attributevalue_id'=>7, "value" => 'option-A'));
+		$row[7]	= array_replace($row[3], Array( 'attributevalue_id'=>7, "value" => 'option-A'));
 		
-		$row[]	= array_replace($row[4], Array( 'attributevalue_id'=>8, "value" => '_SINGHAL_'));
+		$row[8]	= array_replace($row[4], Array( 'attributevalue_id'=>8, "value" => '_SINGHAL_'));
+		
+		$row[9]	= array_replace($row[5], Array( 'product_id' => 8));
 								
+		$row[10]= array_replace($row[6], Array( 'product_id' => 8));
+
+		$row[11]= array_replace($row[7], Array( 'product_id' => 8));
+		
+		$row[12]= array_replace($row[8], Array( 'product_id' => 8));
+									
 		return $row;
 	}
 	
@@ -570,7 +578,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 			return $row;
 		}
 		
-		$row[] 	= array_merge(Array('product_id'=>0), include RBTEST_PATH_DATASET.'/product/tmpl.php');
+		$row[0] 	= array_merge(Array('product_id'=>0), include RBTEST_PATH_DATASET.'/product/tmpl.php');
 		
 
 		$row[1]	=  array_replace($row[0], Array(
@@ -589,7 +597,16 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 												  "ordering" => 4 ));
 		
 		$row[5]	=  array_replace($row[1], Array( "product_id" =>5,  "alias" => 'product-5',"sku" => 'product-5',
-												  "ordering" => 5, 'variant_of'=>1 ));
+												  "ordering" => 5, 'variation_of'=>1 ));
+		
+		$row[6]	=  array_replace($row[5], Array( "product_id" =>6,  "alias" => 'product-6',"sku" => 'product-6',
+												  "ordering" => 6 ));
+		
+		$row[7]	=  array_replace($row[3], Array( "product_id" =>7,  "alias" => 'product-7',"sku" => 'product-7',
+												  "ordering" => 7, 'variation_of'=>3 ));
+		
+		$row[8]	=  array_replace($row[4], Array( "product_id" =>8,  "alias" => 'product-8',"sku" => 'product-8',
+												  "ordering" => 8, 'variation_of'=>4 ));
 	
 		return $row;
 						
@@ -637,14 +654,15 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 		// Mock Dependancy
 		$this->_beforeSaveTest();
 		
+		// Expected data
+		$row	 = $this->auDataProduct();
+		
 		//Case-1: Create normal variant (nither images nor custom attributes)only change alias,sku
 		$product = PaycartProduct::getInstance(1);
 		
 		//SUT
 		$this->assertInstanceOf('PaycartProduct', $product->addVariant());
 		
-		// Expected data
-		$row	 = $this->auDataProduct();
 		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2], $row[3], $row[4], $row[5]) );
 		
 		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
@@ -652,6 +670,80 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 		// Compare table
 		$this->compareTable('jos_paycart_product', $expectedDataSet, Array( 'publish_down', 'publish_up','created_date', 'modified_date', 
 																			'description','teaser','cover_media','file'));
+		
+		//Case-2: Create varaint of existing variant then variation_of should be root product
+		$product = PaycartProduct::getInstance(5);
+		
+		//SUT
+		$this->assertInstanceOf('PaycartProduct', $product->addVariant());
+		
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2], $row[3], $row[4], $row[5], $row[6]) );
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array( 'publish_down', 'publish_up','created_date', 'modified_date', 
+																			'description','teaser','cover_media','file'));
+		
+		//Case-3: Create varaint with existing product cover-media, category etc
+		$product = PaycartProduct::getInstance(3);
+		
+		//SUT
+		$this->assertInstanceOf('PaycartProduct', $product->addVariant());
+		
+		// Assert that images should be created new
+		$path 		 = PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
+		$imageFile 	 = $path.$product->getCoverMedia();
+
+		$imageDetail = PaycartFactory::getHelper('image')->imageInfo($imageFile);
+		
+		$files = Array();
+		// Original Image 
+		$files[]	=	$imageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$imageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;
+		// Optimized Image
+		$files[]	=	$imageFile;
+		// thumb image
+		$files[]	=	$imageDetail['dirname'].'/'.Paycart::IMAGE_THUMB_PREFIX.$imageDetail['filename'].'.'.$imageDetail['extension'] ;
+		
+		// Assert : New uploaded Image properly created  and exist
+		foreach ($files as $file) {	
+			$this->assertFileExists($file, 'Missing Image Files');
+			// it will be deleted at the end of test cases 
+			$this->_files[] = $file; 
+		}
+		
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2], $row[3], $row[4], $row[5], $row[6], $row[7]) );
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array( 'publish_down', 'publish_up','created_date', 'modified_date', 
+																			'description','teaser','cover_media','file'));
+		
+		
+		//Case-4: Create varaint with existing product-attributes (custom attribute)
+		$product = PaycartProduct::getInstance(4);
+		
+		//SUT
+		$this->assertInstanceOf('PaycartProduct', $product->addVariant());
+		
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2], $row[3], $row[4], $row[5], $row[6], $row[7], $row[8]) );
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array( 'publish_down', 'publish_up','created_date', 'modified_date', 
+																			'description','teaser','cover_media','file'));
+		
+		// comapare attribute data
+		$row = $this->auDataAttributeValue();
+		
+		$au_data = Array( "jos_paycart_attributevalue" => Array($row[5], $row[6], $row[7],$row[8], $row[9], $row[10], $row[11], $row[12]));
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+
+		$this->compareTable('jos_paycart_attributevalue', $expectedDataSet, Array('attributevalue_id'));
+		
 		
 		// revert dependency stuff
 		$this->_afterSaveTest();
