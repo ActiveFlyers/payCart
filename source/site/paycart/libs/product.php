@@ -387,6 +387,12 @@ class PaycartProduct extends PaycartLib
 			$newProduct->_upload_files['cover_media'] = $this->getCoverMedia();
 		}		
 		
+		// Changable Property
+		$newProduct->publish_up	   =	Rb_Date::getInstance();
+		$newProduct->publish_down  =	Rb_Date::getInstance('0000-00-00 00:00:00');	 	
+		$newProduct->created_date  =	Rb_Date::getInstance();	
+		$newProduct->modified_date =	Rb_Date::getInstance(); 
+		
 		// Save new variant		
 		return $newProduct->save();	
 	}

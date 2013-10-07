@@ -30,7 +30,7 @@ class PaycartModelProduct extends PaycartModel
 	/**
 	 * 
 	 * Validation check beofore save:
-	 * 1#. @PCTODO::Discuess anout it (Don't support variant of variant.) 
+	 * 1#. Don't support variant of variant.(Multi-level variation) 
 	 *
 	 * @see components/com_paycart/paycart/base/PaycartModel::validate() 
 	 */
@@ -40,8 +40,9 @@ class PaycartModelProduct extends PaycartModel
 		if ($data['variation_of']) {
 			$product  = PaycartProduct::getInstance($data['variation_of']);
 			if(!$product || $product->getVariationOf()) {
-				//PCTODO :: Notify to user we dont support this kind of thing.
-				return false;
+				// PCTODO :: Dont need to fire exception juts set variation_of property    
+				// Notify to user we dont support multi-level variation
+				throw new UnexpectedValueException(Rb_Text::_('COM_PAYCART_NOT_SUPPORT_MULTILEVEL_VARIATION'));
 			}
 		}
 		// Invoke parent validation

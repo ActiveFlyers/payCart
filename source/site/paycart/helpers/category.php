@@ -19,6 +19,7 @@ class PaycartHelperCategory extends PaycartHelper
 {	
 	
 	/**
+	 * @PCTODO: remove it if unused
 	 * Translate alias to id.
 	 *
 	 * @param string $alias The alias string

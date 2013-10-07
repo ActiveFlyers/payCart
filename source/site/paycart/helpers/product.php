@@ -30,13 +30,14 @@ class PaycartHelperProduct extends PaycartHelper
 	}	
 	
 	/**
+	 * @PCTODO: remove it if unused
 	 * Translate alias to id.
 	 *
 	 * @param string $alias The alias string
 	 *
 	 * @return numeric value The Product id if found, or false/empty
 	 */
-	public static function translateAliasToID($alias) 
+	public static function XXX_translateAliasToID($alias) 
 	{	
 		$query 	= new Rb_Query();
 		$result = $query->select('product_id')
