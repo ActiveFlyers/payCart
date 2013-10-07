@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="paycart">
+
+	<table_data name="jos_paycart_config">
+		<row>
+			<field name="config_id">1</field>
+			<field name="key">image_extension</field>
+			<field name="value">.png</field>
+		</row>
+		<row>
+			<field name="config_id">2</field>
+			<field name="key">image_maximum_upload_limit</field>
+			<field name="value">2</field>
+		</row>
+		<row>
+			<field name="config_id">3</field>
+			<field name="key">image_render_url</field>
+			<field name="value" xsi:nil="true" />
+		</row>
+		<row>
+			<field name="config_id">4</field>
+			<field name="key">image_thumb_height</field>
+			<field name="value">100</field>
+		</row>
+		<row>
+			<field name="config_id">5</field>
+			<field name="key">image_thumb_width</field>
+			<field name="value">133</field>
+		</row>
+		<row>
+			<field name="config_id">6</field>
+			<field name="key">image_upload_directory</field>
+			<field name="value" xsi:nil="true" />
+		</row>
+	</table_data>
+	
+	<table_data name="jos_paycart_product">
+	</table_data>
+	
+	<table_data name="jos_paycart_category">
+	</table_data>
+	
+	<table_data name="jos_paycart_attribute">
+	</table_data>
+	
+	<table_data name="jos_paycart_attributevalue">
+	</table_data>
+	
+	</database>
+		
+</mysqldump>

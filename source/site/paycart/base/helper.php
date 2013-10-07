@@ -55,7 +55,7 @@ class PaycartHelper extends Rb_Helper
 	 */
 	public static function getHash($seed = '', $limit = 16) 
 	{
-		return JString::substr( PaycartFactory::getApplication()->getHash( $seed . time() ), 0, $limit);
+		return JString::substr( JApplication::getHash( $seed . time() ), 0, $limit);
 	}
 	
 	public static function formatAmount($amount)

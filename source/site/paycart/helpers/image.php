@@ -212,17 +212,15 @@ class PaycartHelperImage extends PaycartHelper
 	 * 
 	 * @return (string) image url
 	 */
-	public static function getURL($imagePath)
+	public static function getURL()
 	{
 		$config = PaycartFactory::getConfig();
 		$root 	= $config->get('image_render_url', false);
-		
-		$path = '';
 		if(!$root) {
-			$path = PaycartFactory::getURI()->root().Paycart::IMAGES_ROOT_PATH;
+			$root = PaycartFactory::getURI()->root().Paycart::IMAGES_ROOT_PATH;
 		}
-			
-		return $path.'/'.$imagePath;
+		
+		return $root;
 	}
 		
 	/**
@@ -262,7 +260,6 @@ class PaycartHelperImage extends PaycartHelper
 	 * @param array $imageInfo
 	 * 		$mageInfo = Array 
 	 * 					( 	
-	 * 						'sourceFile' 	=>	'_ABSOLUTE_PATH_OF_SOURCE_IMAGE_',
 	 * 						'targetFolder'	=>	'_ABSOLUTE_PATH_OF_TARGET_FOLDER_'
 	 * 						'targetFileName'=>	'_NEW_CREATED_IMAGE_NAME_WITHOUT_IMAGE_EXTENSION' 
 	 * 					)

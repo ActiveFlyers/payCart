@@ -12,7 +12,10 @@
  */
 class PaycartProductTest extends PayCartTestCaseDatabase
 {
-
+	private $_session; 
+	// temp files like images
+	private $_files; 
+	
 	/**
 	 * 
 	 * Test Reset Method
@@ -77,14 +80,14 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	 */
 	public function providerTestBind() 
 	{
-		$data1 	 = Array('upload_files' => Array('uploaded file here'),'title'=>'testing');
+		$data1 	 = Array('_upload_files' => Array('uploaded file here'),'title'=>'testing');
 		$ignore1 = Array();
 		$result1 = Array(
-						'upload_files' 	=> Array('uploaded file here'),
+						'_upload_files' 	=> Array('uploaded file here'),
 						'_attributeValue'	=> Array()
 						);
 
-		$data2 	 = Array('upload_files' => Array('uploaded file here'), 'title'=>'testing');
+		$data2 	 = Array('_upload_files' => Array('uploaded file here'), 'title'=>'testing');
 		$ignore2 = Array('title');
 
 		
@@ -131,11 +134,18 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 				continue;
 			}
 			// test binded data
-			$this->assertSame($value, $stub->$key);
+			$this->assertSame($value, $stub->get($key));	
 		}
 	}
 	
 	
+	public $testSetAttributeValues =  
+						Array(
+								'_data/dataset/product/product-1.php',
+								'_data/dataset/attribute/attribute-1.php',
+								'_data/dataset/attributevalue/attributevalue-1.php'
+							);
+	 
 	/**
 	 * 
 	 * Test SetAttributes Method
@@ -262,29 +272,397 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 	}
 	
 	
-	public function XX_test_ProcessCoverMedia()
+	/**
+	 * 
+	 * test save task 
+	 * Case : Post only required data i.e. title (Save only title with default data)
+	 */
+	public function testSave_Case1()
 	{
-		// create Mock object
-		$mockProduct = $this->getMockBuilder('PaycartProduct', array('_ImageProcess', '_ImageCreate'))
-							->disableOriginalConstructor()
-							->getMock();
-		// create dummy data	
-		$uploadFile = Array(
-							'name'		=> 'paycart.png',
-							'size' 		=> 5242880,
-							'type' 		=> 'image/png',
-							'tmp_name'	=> RBTEST_BASE . '/_data/images/paycart.png' 
-							);
-		// setup mock 					
-		$mockProduct->expects($this->once())
-					->method('_ImageProcess')
-					->with($this->equalTo($uploadFile), null)
-					->will($this->returnValue(true));
+		// Mock Dependancy
+		$this->_beforeSaveTest();
 		
-		$mockProduct->upload_files['cover_media'] = $uploadFile; 						
-		PayCartTestReflection::setValue($mockProduct, 'cover_media', 'tmp/tested_pc.png');
+		// Case : Post only required data i.e. title (Save only with title)
+		$data = Array('title' => 'Product-1');
+		//SUT
+		$this->assertInstanceOf('PaycartProduct', PaycartProduct::getInstance(0,$data)->save());
 		
-		PayCartTestReflection::invoke($mockProduct, '_ProcessCoverMedia', null);
-							
+		// Expected data
+		$row	 = $this->auDataProduct();
+		$au_data = Array( "jos_paycart_product" => Array ($row[1]) );
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array( 'publish_down', 'publish_up','created_date', 'modified_date', 
+																			'description','teaser','cover_media','file'));
+		
+		// revert dependency stuff
+		$this->_afterSaveTest();
+	}
+	
+	/**
+	 * 
+	 * test save task 
+	 * Case : Post redundant data for unique key
+	 * @depends testSave_Case1
+	 */
+	public function testSave_Case2()
+	{
+		// Multiple testing data will be availble by Invoke testSave_Case1 
+		$this->testSave_Case1();
+		
+		// Mock Dependancy
+		$this->_beforeSaveTest();
+		
+		// Case : Post redundant data for unique key
+		$data = Array(
+						'title' => 'Product-1',
+						'alias' => 'Product-1',
+						'sku' 	=> 'Product-1',
+						'category_id' =>1
+					 );
+					 
+		$this->assertInstanceOf('PaycartProduct', PaycartProduct::getInstance(0,$data)->save());
+		
+		// Expected data
+		$row	 = $this->auDataProduct();
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2]));
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array( 'publish_down', 'publish_up','created_date', 'modified_date',
+																			'description','teaser','cover_media','file'));
+		
+		// revert dependency stuff
+		$this->_afterSaveTest();
+		
+	}
+	
+	/**
+	 * 
+	 * test save task 
+	 * Case : Post redundant data for unique key
+	 * @depends testSave_Case2
+	 */
+	public function testSave_Case3()
+	{
+		// Multiple testing data will be availble by Invoke testSave_Case1 
+		$this->testSave_Case2();
+		
+		// Mock Dependancy
+		$this->_beforeSaveTest();
+		
+		// case : Post image with redundant data
+		$data = Array(
+						'title' => 'Product-1',
+						'alias' => 'Product-1',
+						'sku' 	=> 'Product-1',
+						'category_id' =>1,
+						'_upload_files' => 
+								Array('cover_media'=> 
+										Array(
+											'name'		=> 'paycart.png',
+											'size' 		=> 2097152,
+											'type' 		=> 'image/png',
+											'tmp_name'	=> RBTEST_BASE . '/_data/images/paycart.png' 
+											)
+									)
+					);
+					
+		$product = PaycartProduct::getInstance(0,$data)->save();
+		
+		$this->assertInstanceOf('PaycartProduct', $product);
+		
+		
+		$path 		 = PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
+		$imageFile 	 = $path.$product->getCoverMedia();
+		
+		$image = PaycartFactory::getHelper('image');
+		
+		$imageDetail =  $image->imageInfo($imageFile);
+		
+		$this->_files = Array();
+		// Original Image 
+		$this->_files[]	=	$imageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$imageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;
+		// Optimized Image
+		$this->_files[]	=	$imageFile;
+		// thumb image
+		$this->_files[]	=	$imageDetail['dirname'].'/'.Paycart::IMAGE_THUMB_PREFIX.$imageDetail['filename'].'.'.$imageDetail['extension'] ;
+		
+		// Assert : Image properly created  and exist
+		foreach ($this->_files as $file) {	
+	  		$this->assertFileExists($file, 'Missing Image Files');
+		}
+		
+		// case : Upload new image on existing product
+		// it will remove pre image file and upload new
+		$data = Array('_upload_files' => 
+						Array('cover_media'=> 
+							Array(
+								'name'		=> 'paycart.jpg',
+								'size' 		=> 2097152,
+								'type' 		=> 'image/jpeg',
+								'tmp_name'	=> RBTEST_BASE . '/_data/images/paycart.jpg' 
+								)
+						));
+					
+		$product->bind($data)->save();
+		// Assert : Previous Image deleted
+		foreach ($this->_files as $file) {	
+	  		$this->assertFileNotExists($file, 'Missing Image Files');
+		}
+		// get new cover media file
+		$imageFile 	 = $path.$product->getCoverMedia();
+		
+		$imageDetail =  $image->imageInfo($imageFile);
+		
+		$this->_files = Array();
+		// Original Image 
+		$this->_files[]	=	$imageDetail['dirname'].'/'.Paycart::IMAGE_ORIGINAL_PREFIX.$imageDetail['filename'].Paycart::IMAGE_ORIGINAL_SUFIX;
+		// Optimized Image
+		$this->_files[]	=	$imageFile;
+		// thumb image
+		$this->_files[]	=	$imageDetail['dirname'].'/'.Paycart::IMAGE_THUMB_PREFIX.$imageDetail['filename'].'.'.$imageDetail['extension'] ;
+		
+		// Assert : New uploaded Image properly created  and exist
+		foreach ($this->_files as $file) {	
+	  		$this->assertFileExists($file, 'Missing Image Files');
+		}
+
+		// delete images (unused images)
+		//$image->delete($imageFile	);
+		
+		// Expected data
+		$row	 = $this->auDataProduct();
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2], $row[3]));
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array('publish_down', 'publish_up','created_date', 'modified_date', 'cover_media',
+																			'description','teaser','file'));
+		
+		// revert dependency stuff
+		$this->_afterSaveTest();
+		
+	}
+	
+	
+	public $testSave_Case4 = Array('_data/dataset/attribute/attribute-1.php');
+
+	/**
+	 * 
+	 * test save task 
+	 * Case : Post redundant data for unique key
+	 * @depends testSave_Case3
+	 */
+	public function testSave_Case4()
+	{
+		// Multiple testing data will be availble by Invoke testSave_Case1 
+		$this->testSave_Case3();
+		
+		// Mock Dependancy
+		$this->_beforeSaveTest();
+		
+		// attribute data {Array(attribute_id=>Array(value='', 'order'=>''))} in request data
+		$attributes = Array(
+						1 => Array('value'=>'_MANISH_', 	'order'=>1),
+						2 => Array('value'=>'option-23', 	'order'=>2),
+						3 => Array('value'=>'option-C', 	'order'=>3),
+						4 => Array('value'=>'_PUNEET_', 	'order'=>4)					
+						);
+						
+		// Case : Post redundant data for unique key and attributes values 
+		$data = Array(
+						'title' 		=> 'Product-1',
+						'alias' 		=> 'Product-1',
+						'sku' 			=> 'Product-1',
+						'category_id' 	=> 1,
+						'attributes'	=> $attributes
+					 );
+
+		$product = PaycartProduct::getInstance(0,$data)->save();	
+
+		// compare product table
+		// Expected data
+		$row	 = $this->auDataProduct();
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2], $row[3], $row[4]) );
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array( 'publish_down', 'publish_up','created_date', 'modified_date', 
+																			'description','teaser','cover_media','file'));
+		
+		// Expected data
+		$row	 = $this->auDataAttributeValue();
+		$au_data = Array( "jos_paycart_attributevalue" => Array ($row[1], $row[2], $row[3], $row[4]));
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+
+		$this->compareTable('jos_paycart_attributevalue', $expectedDataSet);
+		
+		// reset data and save
+		$attributes = Array(
+						1 => Array('value'=>'_TRIVEDI_', 	'order'=>1),
+						2 => Array('value'=>'option-21', 	'order'=>2),
+						3 => Array('value'=>'option-A', 	'order'=>3),
+						4 => Array('value'=>'_SINGHAL_', 	'order'=>4)					
+						);
+						
+		$product->bind(Array('attributes'	=> $attributes))->save();
+		
+		$au_data = Array( "jos_paycart_attributevalue" => Array ($row[5], $row[6], $row[7], $row[8]));
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+
+		$this->compareTable('jos_paycart_attributevalue', $expectedDataSet);
+		
+		// revert dependency stuff
+		$this->_afterSaveTest();
+		
+	}
+					 
+	/**
+	 * 
+	 * Gold table (data for dataset)
+	 */
+	protected function auDataAttributeValue() 
+	{
+		$row	= Array();
+		
+		$row[]	= array_merge(Array('attributevalue_id'=>0), include RBTEST_PATH_DATASET.'/attributevalue/tmpl.php');
+		
+		$row[]	= array_replace($row[0], Array('attributevalue_id'=>1, "product_id" => 4, "attribute_id" => 1,  
+												"value" => '_MANISH_', "order" => 1 ));
+								
+		$row[]	= array_replace($row[0], Array( 'attributevalue_id'=>2, "product_id" => 4, "attribute_id" => 2,  
+												"value" => 'option-23', "order" => 2 ));
+
+		$row[]	= array_replace($row[0], Array( 'attributevalue_id'=>3, "product_id" => 4, "attribute_id" => 3,  
+												"value" => 'option-C', "order" => 3 ));
+		
+		$row[]	= array_replace($row[0], Array( 'attributevalue_id'=>4, "product_id" => 4, "attribute_id" => 4,  
+												"value" => '_PUNEET_', "order" => 4 ));
+								
+		$row[]	= array_replace($row[1], Array('attributevalue_id'=>5, "value" => '_TRIVEDI_'));
+								
+		$row[]	= array_replace($row[2], Array( 'attributevalue_id'=>6, "value" => 'option-21'));
+
+		$row[]	= array_replace($row[3], Array( 'attributevalue_id'=>7, "value" => 'option-A'));
+		
+		$row[]	= array_replace($row[4], Array( 'attributevalue_id'=>8, "value" => '_SINGHAL_'));
+								
+		return $row;
+	}
+	
+	/**
+	 * 
+	 * Gold table (data for dataset)
+	 */
+	protected function auDataProduct() 
+	{
+		static $row	= Array();
+		
+		if(!empty($row)) {
+			return $row;
+		}
+		
+		$row[] 	= array_merge(Array('product_id'=>0), include RBTEST_PATH_DATASET.'/product/tmpl.php');
+		
+
+		$row[1]	=  array_replace($row[0], Array(
+											"product_id" =>1, "title" => 'Product-1', "alias" => 'product-1',
+											"sku" => 'product-1', "publish_down" => '0000-00-00 00:00:00', 
+											"created_by" => 662, "ordering" => 1
+									));
+		
+		$row[2]	=  array_replace($row[1], Array( "product_id" =>2,  "alias" => 'product-2',"sku" => 'product-2',
+												  "category_id" => 1, "ordering" => 2 ));
+		
+		$row[3]	=  array_replace($row[2], Array( "product_id" =>3,  "alias" => 'product-3',"sku" => 'product-3',
+												  "ordering" => 3 ));
+		
+		$row[4]	=  array_replace($row[2], Array( "product_id" =>4,  "alias" => 'product-4',"sku" => 'product-4',
+												  "ordering" => 4 ));
+		
+		$row[5]	=  array_replace($row[1], Array( "product_id" =>5,  "alias" => 'product-5',"sku" => 'product-5',
+												  "ordering" => 5, 'variant_of'=>1 ));
+	
+		return $row;
+						
+	}
+	
+	/**
+	 * 
+	 * execute it before test save task 
+	 */
+	protected function _beforeSaveTest() 
+	{
+		// Mock Dependancy
+		$this->_session = PaycartFactory::$session;
+		$options = Array(
+						'get.user.id' 		=>  662,
+						'get.user.name'		=> '_MANISH_TRIVEDI_',
+						'get.user.username' => 'mManishTrivedi',
+						'get.user.guest'	=>	0
+						);
+		// MockSession and set 44 user id in session
+		PaycartFactory::$session = $this->getMockSession($options);
+	}
+
+	/**
+	 * 
+	 * execute it After test save task 
+	 */
+	protected function _afterSaveTest()
+	{
+		// revert cached stuff
+		PaycartFactory::$session = $this->_session ;
+	}
+	
+	public $testAddVariant = Array('_data/dataset/attribute/attribute-1.php');
+	/**
+	 * 
+	 * test AddVariant task 
+	 * @depends testSave_Case4
+	 */
+	public function testAddVariant() 
+	{
+		// Multiple testing data will be availble by Invoke testSave_Case4 like data with image
+		$this->testSave_Case4();
+		
+		// Mock Dependancy
+		$this->_beforeSaveTest();
+		
+		//Case-1: Create normal variant (nither images nor custom attributes)only change alias,sku
+		$product = PaycartProduct::getInstance(1);
+		
+		//SUT
+		$this->assertInstanceOf('PaycartProduct', $product->addVariant());
+		
+		// Expected data
+		$row	 = $this->auDataProduct();
+		$au_data = Array( "jos_paycart_product" => Array ($row[1], $row[2], $row[3], $row[4], $row[5]) );
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+		
+		// Compare table
+		$this->compareTable('jos_paycart_product', $expectedDataSet, Array( 'publish_down', 'publish_up','created_date', 'modified_date', 
+																			'description','teaser','cover_media','file'));
+		
+		// revert dependency stuff
+		$this->_afterSaveTest();
+	}
+	
+	protected function tearDown()
+	{
+		// remove files created on testing time
+		if(!empty($this->_files)) {
+			JFile::delete($this->_files);
+		}
+		parent::tearDown();
 	}
 }

@@ -99,16 +99,19 @@ class PaycartFactoryTest extends PayCartTestCase
 				  ->method('loadRecords')
 				  ->will($this->returnValue(Array(1=>$dummyData1, 2=>$dummyData2)));
 		
+		//set mock object
+		PayCartTestReflection::setValue('paycartfactory', '_mocks', Array('paycartmodelconfig'=>$mockModel));
 		// get Paycart config
-		$paycartConfig 	= PaycartFactory::getConfig( null, 'PHP', '', $mockModel);
+		$paycartConfig 	= PaycartFactory::getConfig();
 		// Test config should be instance of JRegistry
 		$this->assertInstanceOf(
 			'JRegistry',
 			$paycartConfig,	
 			'Line: ' . __LINE__
 		);
-
+		
 		// PCTODO:: Add few more stuff with database
+		PayCartTestReflection::setValue('paycartfactory', '_mocks', null);
 		// revert joomla config
 		JFactory::$config = $temp;
 	}

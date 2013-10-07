@@ -25,6 +25,8 @@ if (!defined('RBTEST_BASE')) 		{ 	define('RBTEST_BASE', 			realpath(dirname(__DI
 if (!defined('RBTEST_SYSTEM_BASE')) { 	define('RBTEST_SYSTEM_BASE', 	RBTEST_BASE.'/system/'); }
 if (!defined('RBTEST_UNIT_BASE')) 	{ 	define('RBTEST_UNIT_BASE', 		RBTEST_BASE.'/unit/'); }
 
+if (!defined('RBTEST_PATH_DATA')) 		{ 	define('RBTEST_PATH_DATA', 	RBTEST_BASE.'/_data/'); }
+if (!defined('RBTEST_PATH_DATASET')) 	{ 	define('RBTEST_PATH_DATASET', 	RBTEST_PATH_DATA.'/dataset/'); }
 
 //include our Testing Core 
 require_once realpath(dirname(__DIR__)).'/core/defines.php';

@@ -11,7 +11,6 @@
  */
 class PaycartAttributeTest extends PayCartTestCaseDatabase
 {
-	protected $sqlDataSet = false;
 		
 	/**
 	 * Test design structure of PayCartCategory class.  
@@ -80,7 +79,7 @@ class PaycartAttributeTest extends PayCartTestCaseDatabase
 	/**
 	 * 
 	 * Test bind and  _save method
-	 * 
+	 * @PCTODOD:: test with various data-type
 	 * @return void
 	 */
 	public function test_save() 
@@ -91,10 +90,7 @@ class PaycartAttributeTest extends PayCartTestCaseDatabase
 						'type'		=>	'text',
 						'default' 	=>	'default_text',
 					    'class' 	=>	'testing_class',
-					    'searchable'=>	0,
-					    'published' =>	1,
-					    'visible' 	=>	1,
-					    'ordering' 	=>	'',
+					    'ordering' 	=>	0,
 					    'params'	=> 	Array(
 					    					'attribute_config'=>Array(
 					    								"type"=>"text","size"=>"50",
@@ -107,33 +103,41 @@ class PaycartAttributeTest extends PayCartTestCaseDatabase
 		$attributeId = PayCartTestReflection::invoke($instance, '_save', null);
 
 		// We have already loaded attribute_id one (into our dataset)  so always next created id must be 2
-		$this->assertEquals(2, $attributeId);
+		$this->assertEquals(1, $attributeId);
 
 		// Count of the row
-		$this->assertEquals(2, $this->getConnection()->getRowCount('jos_paycart_attribute'));
+		$this->assertEquals(1, $this->getConnection()->getRowCount('jos_paycart_attribute'));
 		
 		// get Current dataset 
 		$queryTable	= $this->getConnection()->createDataSet(Array('jos_paycart_attribute'));
 		
-		//expected dataset
-		$path = __DIR__.'/stubs/'.__CLASS__.'/au_'.$this->getName().'.xml';
-		$expectedTable = $this->createXMLDataSet($path);
-                              
-         //Exclude column xml
-         $expectedDataSet = new PHPUnit_Extensions_Database_DataSet_DataSetFilter($expectedTable);
-         $queryDataSet 	 =	new PHPUnit_Extensions_Database_DataSet_DataSetFilter($queryTable);
-
-         $expectedDataSet->setExcludeColumnsForTable('jos_paycart_attribute', array('xml'));
-         $queryDataSet->setExcludeColumnsForTable('jos_paycart_attribute', array('xml'));
-
-         //Comapre Table                              
-		$this->assertDataSetsEqual($expectedDataSet, $queryDataSet);
+		// Expected data
+		$row	 = $this->auDataAttribute();
+		$au_data = Array( "jos_paycart_attribute" => Array ($row[1]));
 		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+
+		$this->compareTable('jos_paycart_attribute', $expectedDataSet, Array('xml'));
+				
 		// Test Protected XML variable 
-        $instance 	 = PaycartAttribute::getInstance(2);
+        $instance 	 = PaycartAttribute::getInstance(1);
         $actualXML	 = PaycartTestReflection::getValue($instance, 'xml');
         $expectedXML = "<fieldname='value'label='title_text'class='testing_class'default='default_text'type='text'size='50'maxlength='25'readonly='1'disabled='1'></field>";       	
         $this->assertEquals($expectedXML, str_replace(array(" ", "\r", "\n", "\t"), '',$actualXML));
+	}
+	
+	public function auDataAttribute() 
+	{
+		$row 	= Array();
+		
+		$row[] 	= array_merge(Array('attribute_id'=>0), include RBTEST_PATH_DATASET.'/attribute/tmpl.php');
+		
+		$row[]	= array_replace($row[0], 	Array(  'attribute_id' => 1,'title'=>'title_text', 'type'=>'text',
+													'default' => 'default_text', 'class'=>'testing_class','ordering'=>1, 
+													'params'=>'{"attribute_config":{"type":"text","size":"50","maxlength":"25","readonly":"1","disabled":"1"}}'
+													));
+													
+		return $row;
 	}
 	
 

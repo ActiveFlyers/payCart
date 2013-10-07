@@ -12,13 +12,24 @@
  */
 abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 {
-	protected $sqlDataSet = true;
 	
 	/**
 	 * @var    JDatabaseDriver  The saved database driver to be restored after these tests.
 	 * @since  12.1
 	 */
 	private static $_stash;
+	
+	/**
+	 * Sets up the fixture.
+	 * This method is called before a test is executed.
+	 *
+	 * @return  void
+	 */
+	private $_stashedPayCartState = array(
+				'paycartfactory' =>Array('_config' => null)
+			);
+			
+			
 	
 	/**
 	 * This method is called before the first test of this test class is run.
@@ -85,46 +96,43 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 */
 	protected function getDataSet()
 	{
-		$class = new ReflectionObject($this);
-		$path = dirname($class->getFileName());
-		$path = $path . '/stubs/'.get_class($this).'/'.$this->getName().'.xml';
-		// If dataset file exist then load it 		
-		if(file_exists($path)) {
-			if($this->sqlDataSet) {
-				return $this->createMySQLXMLDataSet($path);
+		// it will clean existing data and reset schema
+		$files		= Array('_data/dataset/paycart.php');
+		
+		$testCase 	= $this->getName();
+		// get test case specific db-content  
+		if (isset($this->{$testCase})) {
+			$files = array_merge($files, $this->{$testCase});
+		}
+		
+		
+		foreach ($files as $file) {
+			
+			$dataSetFile  = RBTEST_BASE."/$file";
+
+			if(!JFile::exists($dataSetFile)) {
+				throw new RuntimeException("DataSet File is not exist:: {$dataSetFile}");
 			}
-			return $this->createXMLDataSet($path);
+			
+			// Array of all dataset
+			$dataSet[] = new PHPUnit_Extensions_Database_DataSet_Specs_Array(include $dataSetFile);
 		}
 
-		return new PHPUnit_Extensions_Database_DataSet_NullDataSet;
+		// return Composit db
+		return new PayCart_Database_DataSet_CompositeDataSet($dataSet);
 	}
+	
+	
 	/**
 	 * 
 	 * Compare Table
 	 * @param $actualTable
 	 * @param $excludeColumns
 	 */
-	protected function compareTable($actualTable, $excludeColumns = Array())
+	protected function compareTable($actualTable, $expectedDataSet,  $excludeColumns = Array())
 	{
 		// get Current dataset 
 		$actualDataSet	= $this->getConnection()->createDataSet(Array($actualTable));
-		
-		// get stub path
-		// @Assumption 
-		$class = new ReflectionObject($this);
-		$path = dirname($class->getFileName());
-		$path = $path . '/stubs/'.get_class($this).'/au_'.$this->getName().'.xml';		
-		//expected dataset
-		// If dataset file exist then load it 		
-		if(!file_exists($path)) {
-			throw RuntimeException("##### Gold Table Not found :: $path ####");
-		}
-		// Get Expected Dataset
-		if($this->sqlDataSet) {
-			$expectedDataSet = $this->createMySQLXMLDataSet($path);
-		}else{
-			$expectedDataSet =  $this->createXMLDataSet($path);
-		}
 		
 		//Exclude columns
 		if(!empty($excludeColumns)) {
@@ -135,15 +143,102 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	        $actualDataSet->setExcludeColumnsForTable($actualTable, $excludeColumns);
          }
 
-         //Comapre Table                              
-		$this->assertDataSetsEqual($expectedDataSet, $actualDataSet);
+         //Comapre Table   
+        $this->assertDataSetsEqual($expectedDataSet, $actualDataSet);
+	//  $this->assertTablesEqual($expectedDataSet->getTable($actualTable), $actualDataSet->getTable("$actualTable"));
 	}
 	
 	protected  function setUp() 
-	{
-		// Clean static Cache
-		Rb_Factory::cleanStaticCache(true);
+	{	
+		$this->saveSystemState();		
 		parent::setUp();
 	}
 	
+	
+	/**
+	 * Returns the database operation executed in test setup.
+	 *
+	 * @return  PHPUnit_Extensions_Database_Operation_DatabaseOperation
+	 *
+	 * @since   12.1
+	 */
+	protected function getSetUpOperation()
+	{
+		// Required given the use of InnoDB contraints.
+		// IMP:: second argument specific for SQLite 
+		return new PHPUnit_Extensions_Database_Operation_Composite(
+			array(
+				PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL(),
+				new PHPUnit_Extensions_Database_Operation_DeleteSqliteSequence,
+				PHPUnit_Extensions_Database_Operation_Factory::INSERT()
+			)
+		);
+	}
+	
+	
+	/**
+	 * Returns the database operation executed in test cleanup.
+	 *
+	 * @return  PHPUnit_Extensions_Database_Operation_DatabaseOperation
+	 *
+	 * @since   12.1
+	 */
+	protected function getTearDownOperation()
+	{
+		// Required given the use of InnoDB contraints.
+		return new PHPUnit_Extensions_Database_Operation_Composite(
+			array(
+				PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL(),
+				new PHPUnit_Extensions_Database_Operation_DeleteSqliteSequence
+			)
+		);
+	}
+	
+	/**
+	 * Tears down the fixture.
+	 * This method is called after a test is executed.
+	 *
+	 * @return  void
+	 */
+	protected function tearDown()
+	{
+		$this->restoreSystemState();
+		parent::tearDown();
+	}
+	
+	/**
+	 * 
+	 * Before test case save system state. includeing Joomla, Rbframwork and Paycart 
+	 * like store cached value
+	 */
+	protected function saveSystemState() 
+	{
+		// first save joomla state
+		$this->saveFactoryState();
+		
+		// RB_framwork : Clean static Cache
+		Rb_Factory::cleanStaticCache(true);
+		
+		foreach ($this->_stashedPayCartState as $entity => $properties) {
+			foreach ($properties as $prop=>$value) {
+				$this->_stashedPayCartState[$entity][$prop] = PayCartTestReflection::getValue($entity, $prop);
+			}
+		}
+	}
+	
+	protected function restoreSystemState() 
+	{
+		// restore save joomla state
+		$this->restoreFactoryState();
+		
+		// RB_framwork : Clean static Cache
+		Rb_Factory::cleanStaticCache(true);
+		
+		foreach ($this->_stashedPayCartState as $entity => $properties) {
+			foreach ($properties as $prop=>$value) {
+				PayCartTestReflection::setValue($entity, $prop, $this->_stashedPayCartState[$entity][$prop]);
+			}
+		}
+		$image = PaycartFactory::getHelper('image');
+	}
 }

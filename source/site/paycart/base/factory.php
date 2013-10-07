@@ -28,11 +28,17 @@ class PaycartFactory extends Rb_Factory
 	static function getInstance($name, $type='', $prefix='Paycart', $refresh=false)
 	{
 		// Mocked instance for unit test cases
-		if(isset(self::$_mocks[$prefix.$type.$name])) {
-			return self::$_mocks[$prefix.$type.$name];
+		$string = JString::strtolower($prefix.$type.$name);
+		if(isset(self::$_mocks[$string])) {
+			return self::$_mocks[$string];
 		}
 		// Real world instance
 		return parent::getInstance($name, $type, $prefix, $refresh);
+	}
+	
+	static function getHelper($name)
+	{
+		return self::getInstance($name, 'helper');
 	}
 	
 	/**
@@ -41,7 +47,7 @@ class PaycartFactory extends Rb_Factory
 	 * 
 	 * @return JRegistry object
 	 */
-	public static function getConfig($file = null, $type = 'PHP', $namespace = '', $paycartModelConfig = false)
+	public static function getConfig($file = null, $type = 'PHP', $namespace = '')
 	{
 		if(self::$_config) {
 			return self::$_config;
@@ -50,11 +56,8 @@ class PaycartFactory extends Rb_Factory
 		// load  Joomla Config
 		self::$_config = parent::getConfig($file , $type, $namespace);
 
-		// For unit test case, inject mock-object from outside 
-		if(!$paycartModelConfig) { 
-			$paycartModelConfig = self::getInstance('config', 'model');
-		}
-
+		$paycartModelConfig = self::getInstance('config', 'model');
+		
 		$paycartConfig = $paycartModelConfig->loadRecords();
 
 		$records	=	Array();

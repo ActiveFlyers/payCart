@@ -105,10 +105,33 @@ class PaycartCategoryTest extends PayCartTestCaseDatabase
 		$instance = PaycartCategory::getInstance(0, $data);
 		$instance->save();
 		
-		$this->compareTable('jos_paycart_category', Array( 'cover_image', 'created_date', 'modified_date'));
+		// Expected data
+		$row	 = $this->auDataCategory();
+		$au_data = Array( "jos_paycart_category" => Array ($row[1], $row[2], $row[3]));
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
+
+		$this->compareTable('jos_paycart_category', $expectedDataSet, Array( 'cover_image','description', 'created_date', 'modified_date'));
 		
 		// revert cached stuff
 		PaycartFactory::$session = $session ;		  
 	}
 
+	protected function auDataCategory() 
+	{	
+		$row	= Array();
+		
+		$row[] 	= array_merge(Array('category_id'=>0), include RBTEST_PATH_DATASET.'/category/tmpl.php');
+		
+		$row[]	= array_replace($row[0], Array( 'category_id'=>1, 'title'=>'testing_title_1','alias'=>'testing-title-1',
+												'ordering'=>1, 'created_by'=>44));
+		
+		$row[]	= array_replace($row[0], Array( 'category_id'=> 2, 'title'=>'testing_title_2','alias'=>'cat-3',
+												'ordering'=>2, 'created_by'=>44));
+	
+		$row[]	= array_replace($row[0], Array( 'category_id'=>3, 'title'=>'testing_title_3','alias'=>'cat-4',
+												'ordering'=>3, 'created_by'=>44));
+	
+		return $row;
+	}
 }
