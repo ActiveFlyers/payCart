@@ -50,6 +50,7 @@ class PaycartTable extends Rb_Table
 			return $value;
 		}
 		
+		//@PCTODO:: move to helper
 		// if Value already have '-'(dash) with numeric-data then remove numeric-data 
 		$string = $value;
 		if (preg_match('#-(\d+)$#', $string, $matches)) {

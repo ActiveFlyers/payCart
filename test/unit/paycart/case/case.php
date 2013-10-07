@@ -18,13 +18,13 @@ abstract class PayCartTestCase extends TestCase
 	 *
 	 * @return  void
 	 */
+	private $_stashedPayCartState = array(
+				'paycartfactory' =>Array('_config' => null)
+			);
+			
 	protected function setUp()
 	{ 
-		$this->saveFactoryState();
-
-		JFactory::$application = $this->getMockApplication();
-		JFactory::$config = $this->getMockConfig();
-
+		$this->saveSystemState();
 		parent::setUp();
 	}
 
@@ -36,7 +36,44 @@ abstract class PayCartTestCase extends TestCase
 	 */
 	protected function tearDown()
 	{
-		$this->restoreFactoryState();
+		$this->restoreSystemState();
 		parent::tearDown();
 	}
+	
+	/**
+	 * 
+	 * Before test case save system state. includeing Joomla, Rbframwork and Paycart 
+	 * like store cached value
+	 */
+	protected function saveSystemState() 
+	{
+		// first save joomla state
+		$this->saveFactoryState();
+		
+		// RB_framwork : Clean static Cache
+		Rb_Factory::cleanStaticCache(true);
+		
+		foreach ($this->_stashedPayCartState as $entity => $properties) {
+			foreach ($properties as $prop => $value) {
+				$this->_stashedPayCartState[$entity][$prop] = PayCartTestReflection::getValue($entity, $prop);
+			}
+		}
+	}
+	
+	protected function restoreSystemState() 
+	{
+		// restore save joomla state
+		$this->restoreFactoryState();
+		
+		// RB_framwork : Clean static Cache
+		Rb_Factory::cleanStaticCache(true);
+		
+		foreach ($this->_stashedPayCartState as $entity => $properties) {
+			foreach ($properties as $prop=>$value) {
+				PayCartTestReflection::setValue($entity, $prop, $this->_stashedPayCartState[$entity][$prop]);
+			}
+		}
+	}
+	
+	
 }

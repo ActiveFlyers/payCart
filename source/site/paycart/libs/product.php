@@ -94,7 +94,7 @@ class PaycartProduct extends PaycartLib
 	{
 		// Set Product owner
 		if (!$this->created_by) {
-			$this->created_by = Rb_Factory::getUser()->get('id');
+			$this->created_by = PaycartFactory::getUser()->get('id');
 		}
 		
 		// IMP :: It will be sliggify and unique into model validation
@@ -166,8 +166,26 @@ class PaycartProduct extends PaycartLib
 		
 		// Process Attribute Value
 		$this->_saveAttributeValue($previousObject);
+
+		// few class property might be changed by model validation
+		// so we need to reflect these kind of changes (by model validation) to lib object
+		// Also set attributes value on product
+		$this->reload();
 		
 		return $id;
+	}
+	
+	/**
+	 * 
+	 * Reload current object
+	 * 
+	 * @return PaycartProduct instance
+	 */
+	
+	public function reload()
+	{
+		$data = $this->getModel()->loadRecords(array('id'=>$this->getId()));
+		return $this->bind($data[$this->getId()]);
 	}
 	
 	/**
@@ -182,14 +200,14 @@ class PaycartProduct extends PaycartLib
 		$attributeValueModel = PaycartFactory::getInstance('attributevalue', 'model');
 		//Delete all Custom attribute if exist on Previous object
 		if ( $previousObject && !empty($previousObject->_attributeValue) ) {
-			$attributeValueModel->deleteMany(Array('product_id'=>$id));
+			$attributeValueModel->deleteMany(Array('product_id'=>$this->getId()));
 		} 
 		
 		// If any new custom attribute attached with new object then need to save it 
 		if(!empty($this->_attributeValue )) {
 			$data = Array();
 			foreach ($this->_attributeValue as $attributeId => $attributeValue) {
-				$data[$attributeId]['product_id']	= $id;
+				$data[$attributeId]['product_id']	= $this->getId();
 				$data[$attributeId]['attribute_id'] = $attributeId;
 				$data[$attributeId]['value'] 		= $attributeValue->getValue();
 				$data[$attributeId]['order'] 		= $attributeValue->getOrder();
@@ -213,9 +231,9 @@ class PaycartProduct extends PaycartLib
 	{
 		try {
 			// Create new product or re-save existing product
-			// IMP :: Don't check here isset otherwise it will true (In < PHP 5.4)
+			// IMP :: Don't check here isset otherwise it will true (In < PHP 5.4) (for $this->_upload_files['cover_media']['name'])
 			// is_array check for it's not a variant && Post data is not empty
-			if (is_array($this->_upload_files['cover_media']) && !empty($this->_upload_files['cover_media']['name']) ) {
+			if (isset($this->_upload_files['cover_media']) && is_array($this->_upload_files['cover_media']) && !empty($this->_upload_files['cover_media']['name']) ) {
 				$this->_ImageProcess($this->_upload_files['cover_media'], $previousObject);
 			}
 			

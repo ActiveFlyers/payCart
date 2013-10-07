@@ -22,9 +22,13 @@ class PHPUnit_Extensions_Database_DataSet_Specs_Array extends PHPUnit_Extensions
             $metaData = new PHPUnit_Extensions_Database_DataSet_DefaultTableMetaData($tableName, $columns);
             $table = new PHPUnit_Extensions_Database_DataSet_DefaultTable($metaData);
  
-            foreach ($rows AS $row) {
-                $table->addRow($row);
+            // if row exist then create 
+            if(!empty($rows)) {
+	            foreach ($rows AS $row) {
+	                $table->addRow($row);
+	            }
             }
+            
             $this->tables[$tableName] = $table;
         }
     }

@@ -27,8 +27,9 @@ require_once PAYCARTTEST_FRONT_END.'/paycart/includes.php';
 // 'c' should be capital in Paycart
 JLoader::registerPrefix('PayCartTest', __DIR__ );
 
-include_once 'NullDataSet.php';
+// PHPUnit specific stuff (customized by us)
 include_once 'DeleteSqliteSequence.php';
 include_once 'Array.php';
+include_once 'CompositeDataSet.php';
 
 

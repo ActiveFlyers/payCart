@@ -21,6 +21,10 @@ class PaycartControllerTest extends PayCartTestCase
 	 */
 	public function testConstructor() 
 	{
+		//mock dependancy
+		$backupApp = JFactory::$application;
+		JFactory::$application = $this->getMockApplication();
+		
 		// We are using new instance not singleton instance 
 		$paycartController = new PaycartController();
 		// public attribute
@@ -44,5 +48,7 @@ class PaycartControllerTest extends PayCartTestCase
   		$this->assertTrue($reflection->hasProperty('_component'));
   		//Check number of attributes and attributes default values in class
   		$this->assertEquals(Array('_component'), PayCartTestReflection::getClassAttribute('PaycartController'));
+		//Revert back  		
+  		JFactory::$application = $backupApp;
 	}
 }

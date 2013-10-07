@@ -12,30 +12,24 @@
  */
 abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 {
-	protected $sqlDataSet = true;
-	
-	// all required dataset set on this var
-	Private $_dataset;
-	
-	/**
-	 * Array of stubData for Suite
-	 * 	Array $_stubdata = Array(
-	 * 							_TEST_CASE_NAME_ =>
-	 * 								Array(
-	 * 										'table' => Array("_REQUIRED_TABLE_VARIATION"), // test specific data
-	 *  									'file'	=> Array("_REQUIRED_FILE_") //like load paycart , joomla stuff
-	 * 									)
-	 * 							)
-	 *
-	 */
-	protected $_stubData = Array();
-	
 	
 	/**
 	 * @var    JDatabaseDriver  The saved database driver to be restored after these tests.
 	 * @since  12.1
 	 */
 	private static $_stash;
+	
+	/**
+	 * Sets up the fixture.
+	 * This method is called before a test is executed.
+	 *
+	 * @return  void
+	 */
+	private $_stashedPayCartState = array(
+				'paycartfactory' =>Array('_config' => null)
+			);
+			
+			
 	
 	/**
 	 * This method is called before the first test of this test class is run.
@@ -102,24 +96,30 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 */
 	protected function getDataSet()
 	{
-		if(!isset($this->_stubData[$this->getName()]) || !isset($this->_stubData[$this->getName()]['table']) ) {
-			return new PHPUnit_Extensions_Database_DataSet_NullDataSet;
+		// it will clean existing data and reset schema
+		$files		= Array('_data/dataset/paycart.php');
+		
+		$testCase 	= $this->getName();
+		// get test case specific db-content  
+		if (isset($this->{$testCase})) {
+			$files = array_merge($files, $this->{$testCase});
 		}
 		
-		$dataSet = Array();
 		
-		foreach ($this->_stubData[$this->getName()]['table'] as $variation) {
-			$entity 	  = substr($variation, 0, strrpos($variation, '-') );
-			$dataSetFile  = RBTEST_PATH_DATASET."$entity/$variation.xml";
+		foreach ($files as $file) {
+			
+			$dataSetFile  = RBTEST_BASE."/$file";
 
 			if(!JFile::exists($dataSetFile)) {
 				throw new RuntimeException("DataSet File is not exist:: {$dataSetFile}");
 			}
 			
-			$dataSet[] = $this->createMySQLXMLDataSet($dataSetFile);
+			// Array of all dataset
+			$dataSet[] = new PHPUnit_Extensions_Database_DataSet_Specs_Array(include $dataSetFile);
 		}
-		
-		return new PHPUnit_Extensions_Database_DataSet_CompositeDataSet($dataSet);
+
+		// return Composit db
+		return new PayCart_Database_DataSet_CompositeDataSet($dataSet);
 	}
 	
 	
@@ -143,18 +143,14 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	        $actualDataSet->setExcludeColumnsForTable($actualTable, $excludeColumns);
          }
 
-         //Comapre Table                              
-		$this->assertDataSetsEqual($expectedDataSet, $actualDataSet);
+         //Comapre Table   
+        $this->assertDataSetsEqual($expectedDataSet, $actualDataSet);
+	//  $this->assertTablesEqual($expectedDataSet->getTable($actualTable), $actualDataSet->getTable("$actualTable"));
 	}
 	
 	protected  function setUp() 
 	{	
-		if(isset($this->_stubData[$this->getName()]) && isset($this->_stubData[$this->getName()]['file']) ) {
-			$this->_setUp();
-		}
-		
-		// Clean static Cache
-		Rb_Factory::cleanStaticCache(true);
+		$this->saveSystemState();		
 		parent::setUp();
 	}
 	
@@ -179,34 +175,6 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 		);
 	}
 	
-	// load testing stuff
-	protected function _setUp() 
-	{
-		$dataSet = Array();
-		
-		foreach ($this->_stubData[$this->getName()]['file'] as $file) {
-			$file = RBTEST_BASE.'/'.$file;
-			
-			// File must be available
-			if(!file_exists($file)) {
-				throw new RuntimeException("DataSet File is not exist:: {$file}");
-			}
-			// Array of all dataset
-			$dataSet[] = $this->createMySQLXMLDataSet($file);
-		}
-		
-		$this->_dataset =  new PHPUnit_Extensions_Database_DataSet_CompositeDataSet($dataSet);
-			
-		// get db connection
-		$connection = $this->getConnection();
-		
-		// delete previous loaded data
-		$this->_cleanUp();
-		
-		// insert data
-		$insertOperation = new PHPUnit_Extensions_Database_Operation_Insert();
-		$insertOperation->execute($connection, $this->_dataset);
-	}
 	
 	/**
 	 * Returns the database operation executed in test cleanup.
@@ -217,33 +185,60 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 */
 	protected function getTearDownOperation()
 	{
-		// loaded data should be deleted
-		if ($this->_dataset) {
-			$this->_cleanUp();
-		}
-		
 		// Required given the use of InnoDB contraints.
-		return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
+		return new PHPUnit_Extensions_Database_Operation_Composite(
+			array(
+				PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL(),
+				new PHPUnit_Extensions_Database_Operation_DeleteSqliteSequence
+			)
+		);
+	}
+	
+	/**
+	 * Tears down the fixture.
+	 * This method is called after a test is executed.
+	 *
+	 * @return  void
+	 */
+	protected function tearDown()
+	{
+		$this->restoreSystemState();
+		parent::tearDown();
 	}
 	
 	/**
 	 * 
-	 * Clean data on dataset bases. 
-	 * If you load any kind of testing stuff like paycart inital(preconfigure) data, Joomla's data 
-	 * Then all loaded data will be deleted.  
-	 * 
+	 * Before test case save system state. includeing Joomla, Rbframwork and Paycart 
+	 * like store cached value
 	 */
-	protected function _cleanUp()
+	protected function saveSystemState() 
 	{
-		// get db connection
-		$connection = $this->getConnection();
+		// first save joomla state
+		$this->saveFactoryState();
 		
-		// Delete all previous database tables
-		$deleteOperation = new PHPUnit_Extensions_Database_Operation_DeleteAll();
-		$deleteOperation->execute($connection, $this->_dataset);
+		// RB_framwork : Clean static Cache
+		Rb_Factory::cleanStaticCache(true);
 		
-		// reset SQLite autoincrement 
-		$sqliteSequence = new PHPUnit_Extensions_Database_Operation_DeleteSqliteSequence();
-		$sqliteSequence->execute($connection, $this->_dataset);
+		foreach ($this->_stashedPayCartState as $entity => $properties) {
+			foreach ($properties as $prop=>$value) {
+				$this->_stashedPayCartState[$entity][$prop] = PayCartTestReflection::getValue($entity, $prop);
+			}
+		}
+	}
+	
+	protected function restoreSystemState() 
+	{
+		// restore save joomla state
+		$this->restoreFactoryState();
+		
+		// RB_framwork : Clean static Cache
+		Rb_Factory::cleanStaticCache(true);
+		
+		foreach ($this->_stashedPayCartState as $entity => $properties) {
+			foreach ($properties as $prop=>$value) {
+				PayCartTestReflection::setValue($entity, $prop, $this->_stashedPayCartState[$entity][$prop]);
+			}
+		}
+		$image = PaycartFactory::getHelper('image');
 	}
 }
