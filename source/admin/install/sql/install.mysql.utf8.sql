@@ -250,6 +250,34 @@ CREATE TABLE IF NOT EXISTS `#__paycart_address` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_filter`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_filter` (
+  `filter_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  PRIMARY KEY (`filter_id`),
+  UNIQUE KEY `product_id` (`product_id`),
+  KEY `filter_id` (`filter_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Filter Column Available here as Fields';
+
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_indexer`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_indexer` (
+  `indexer_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL COMMENT 'Product identification',
+  `content` longtext NOT NULL COMMENT 'Use for keyword search',
+  PRIMARY KEY (`indexer_id`),
+  UNIQUE KEY `product_id` (`product_id`),
+  FULLTEXT KEY `content` (`content`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+
 
 -- --------------------------------------------------------
 -- ------------------- DEFAULT VALUES ---------------------

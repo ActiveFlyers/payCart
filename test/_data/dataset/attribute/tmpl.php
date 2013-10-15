@@ -6,6 +6,7 @@ return  Array(
 				"type"			=> NULL,
 				"default"		=> NULL,
 				"class"			=> NULL,
+				"filterable"	=> 0,
 				"searchable"	=> 0,
 				"published"		=> 1,
 				"visible"		=> 1,

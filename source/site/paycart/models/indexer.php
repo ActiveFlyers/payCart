@@ -5,17 +5,15 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
-* @contact		team@readybytes.in
+* @contact		support+paycart@readybytes.in
+* @author 		mManishTrivedi 
 */
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /** 
- * Item Table
- * @author Team Readybytes
+ * Indexer Model
  */
-class PaycartTableAttribute extends PaycartTable
-{
-	
-}
+class PaycartModelIndexer extends PaycartModel
+{	}

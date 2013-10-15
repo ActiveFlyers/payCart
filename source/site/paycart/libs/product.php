@@ -180,8 +180,8 @@ class PaycartProduct extends PaycartLib
 	 * Reload current object
 	 * 
 	 * @return PaycartProduct instance
+	 * @PCTODO:: move to upper level
 	 */
-	
 	public function reload()
 	{
 		$data = $this->getModel()->loadRecords(array('id'=>$this->getId()));
@@ -206,12 +206,18 @@ class PaycartProduct extends PaycartLib
 		// If any new custom attribute attached with new object then need to save it 
 		if(!empty($this->_attributeValue )) {
 			$data = Array();
+			
 			foreach ($this->_attributeValue as $attributeId => $attributeValue) {
 				$data[$attributeId]['product_id']	= $this->getId();
 				$data[$attributeId]['attribute_id'] = $attributeId;
-				$data[$attributeId]['value'] 		= $attributeValue->getValue();
-				$data[$attributeId]['order'] 		= $attributeValue->getOrder();
+				
+				// get formatted records
+				$record = $attributeValue->toDatabase();
+				
+				$data[$attributeId]['value'] 		= $record['value'];
+				$data[$attributeId]['order'] 		= $record['order'];
 			}
+			
 			// save new attrinutes
 			$attributeValueModel->save($data);
 		}
