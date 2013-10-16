@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -15,7 +16,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 /** 
  * Filter Model
  */
-class PaycartModelFilter extends PaycartModel
+class PaycartModelProductFilter extends PaycartModel
 {	
 	/**
 	 * 
@@ -26,8 +27,11 @@ class PaycartModelFilter extends PaycartModel
 	 */
 	public function addColumn(Array $columns)
 	{	
+		$tableName = $this->getTable()->getTableName();
+		
 		// build query
-		$query = 'ALTER TABLE `#__paycart_filter` ';
+		$query = 'ALTER TABLE '.$this->_db->quoteName($tableName);
+		// add multiple columns
 		foreach ($columns as $column => $definition ) {
 			$query .= "ADD COLUMN $column $definition"; 
 		}
@@ -47,8 +51,11 @@ class PaycartModelFilter extends PaycartModel
 			$columns = Array($columns);
 		}
 		
+		$tableName = $this->getTable()->getTableName();
+		
 		// build query
-		$query = 'ALTER TABLE `#__paycart_filter` ';
+		$query = 'ALTER TABLE '.$this->_db->quoteName($tableName);
+		// drop multiple columns
 		foreach ($columns as $column  ) {
 			$query .= "DROP $column "; 
 		}

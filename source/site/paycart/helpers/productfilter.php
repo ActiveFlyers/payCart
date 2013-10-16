@@ -17,7 +17,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @author manish
  *
  */
-class PaycartHelperFilter
+class PaycartHelperProductFilter
 {
 	
 	/**
@@ -56,18 +56,20 @@ class PaycartHelperFilter
 		$fields->product_id = $currentProduct->getId();
 		
 		// get filter model
-		$model = PaycartFactory::getModel('filter');
+		$model = PaycartFactory::getModel('productfilter');
 		
 		$record = $model->loadRecords(Array('product_id' => $fields->product_id ));
 		
 		// Check filter values already exist or insert new
-		$indexerId = null;
+		$indexerId 	= null;
+		$new		= true;
 		if (!empty($record)) {
 			list($indexerId) = array_keys($record);
+			$new = false;
 		}
 		
 		// save filtered values
-		return $model->save($fields, $indexerId);
+		return $model->save($fields, $indexerId, $new);
 	}
 	
 	/**
@@ -77,9 +79,9 @@ class PaycartHelperFilter
 	 * 
 	 * @return (bool)type, True If column exist other-wise false
 	 */
-	public function isExist($column)
+	public function checkColumn($column)
 	{
-		$table 	= PaycartFactory::getTable('filter');
+		$table 	= PaycartFactory::getTable('productfilter');
 		$fields = $table->getFields();
 		return (bool)array_key_exists($column, $fields);
 	}	
@@ -90,7 +92,7 @@ class PaycartHelperFilter
 	 * @param $previousObject, Attribute Lib object
 	 * @param $currentObject, Attribute Lib object
 	 */
-	public function alterFields($previousObject, $currentObject) 
+	public function alterColumn($previousObject, $currentObject) 
 	{
 		// look like atribute_1, attribute_4 etc
 		$column	= Paycart::FILTER_FIELD_PREFIX.$currentObject->getId();
@@ -106,7 +108,7 @@ class PaycartHelperFilter
 		//	then create column for it.
 		//  Case 3:: if {$previousObject}attribute filterable AND {$currentObject}attribute also filterable 
 		// 	then check column exist (then return) else create column
-		if ( (bool)$currentObject->get('filterable') && !$this->isExist($column)) {
+		if ( (bool)$currentObject->get('filterable') && !$this->checkColumn($column)) {
 			$definition = $this->getColumnDefinition($currentObject->get('type'));
 			$this->createColumn(Array($column =>$definition) );
 			return true;
@@ -124,8 +126,8 @@ class PaycartHelperFilter
 	 */
 	public function removeColumn($column)
 	{
-		if($this->isExist($column)) {
-			PaycartFactory::getModel('filter')->dropColumn($column);
+		if($this->checkColumn($column)) {
+			PaycartFactory::getModel('productfilter')->dropColumn($column);
 		}
 		
 		return true;	
@@ -140,7 +142,7 @@ class PaycartHelperFilter
 	 */
 	public function createColumn(Array $column)
 	{
-		PaycartFactory::getModel('filter')->addColumn($column);
+		PaycartFactory::getModel('productfilter')->addColumn($column);
 		return true;
 	}
 	

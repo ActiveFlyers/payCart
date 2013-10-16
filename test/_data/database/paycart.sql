@@ -96,7 +96,6 @@ CREATE TABLE `jos_paycart_category` (
 --
 
 CREATE TABLE `jos_paycart_indexer` (
-  `indexer_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   `product_id` INTEGER NOT NULL UNIQUE,
   `content` TEXT
 );
@@ -106,6 +105,5 @@ CREATE TABLE `jos_paycart_indexer` (
 --
 
 CREATE TABLE `jos_paycart_filter` (
-  `filter_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   `product_id` INTEGER NOT NULL UNIQUE
 );

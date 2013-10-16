@@ -13,11 +13,17 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 /**
  * 
- * Filter Table
+ * Index Table
  * @author manish
  *
  */
-class PaycartTableFilter extends PaycartTable
+class PaycartTableProductIndex extends PaycartTable
 {
+	//change primary key
+	public function __construct($tblFullName=null, $tblPrimaryKey='product_id', $db=null)
+	{
+		//call parent to build the table object
+		return parent::__construct( $tblFullName, $tblPrimaryKey, $db);
+	}
 	
 }

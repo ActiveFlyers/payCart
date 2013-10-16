@@ -13,11 +13,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /**
  * 
- * PaycartHelper Indexer
+ * PaycartHelper ProductIndex
  * @author manish
  *
  */
-class PaycartHelperIndexer
+class PaycartHelperProductIndex
 {
 	
 	/**
@@ -62,18 +62,20 @@ class PaycartHelperIndexer
 		$fields->product_id = $currentObject->getId();
 		
 		// get indexer model
-		$model = PaycartFactory::getModel('indexer');
+		$model = PaycartFactory::getModel('productindex');
 		
 		$record = $model->loadRecords(Array('product_id' => $fields->product_id ));
 		
 		// Check index already exist or insert new
 		$indexerId = null;
+		$new	= true;
 		if (!empty($record)) {
 			list($indexerId) = array_keys($record);
+			$new = false;
 		}
 		
 		// save indexed values
-		return $model->save($fields, $indexerId);
+		return $model->save($fields, $indexerId, $new);
 	}
 	
 }

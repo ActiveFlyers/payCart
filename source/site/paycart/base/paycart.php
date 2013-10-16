@@ -39,7 +39,7 @@ class Paycart
 	const IMAGE_FILE_DEFAULT_MAXIMUM_SIZE 	= 2; 	// 2MB
 	const IMAGE_FILE_DEFAULT_EXTENSION 		= '.png';
 
-	const FILTER_FIELD_PREFIX	= 'attr_';
+	const PRODUCT_FILTER_FIELD_PREFIX	= 'attr_';
 
 	// Cart Entity Status
 	const CART_STATUS_NONE 		= 	0;

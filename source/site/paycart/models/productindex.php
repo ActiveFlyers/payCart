@@ -15,5 +15,5 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 /** 
  * Indexer Model
  */
-class PaycartModelIndexer extends PaycartModel
+class PaycartModelProductIndex extends PaycartModel
 {	}
