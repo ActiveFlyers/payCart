@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_address` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_productfilter` (
   `product_id` int(11) NOT NULL,
-  UNIQUE KEY `product_id` (`product_id`)
+   PRIMARY KEY (`product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Filter Column Available here as Fields';
 
 
@@ -270,8 +270,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productfilter` (
 CREATE TABLE IF NOT EXISTS `#__paycart_productindex` (
   `product_id` int(11) NOT NULL COMMENT 'Product identification',
   `content` longtext CHARACTER SET utf8 NOT NULL COMMENT 'Use for keyword search',
-  UNIQUE KEY `product_id` (`product_id`),
-  FULLTEXT KEY `content` (`content`)
+   PRIMARY KEY (`product_id`),  
+   FULLTEXT KEY `content` (`content`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

@@ -48,7 +48,7 @@ class PaycartTest extends PayCartTestCase
 		$this->assertEquals(5006, PayCart::CART_STATUS_REVERSAL);
 		$this->assertEquals(5007, PayCart::CART_STATUS_COMPLETE);
 		
-		$this->assertEquals('attribute_', PayCart::PRODUCT_FILTER_FIELD_PREFIX);
+		$this->assertEquals('attr_', PayCart::PRODUCT_FILTER_FIELD_PREFIX);
 		
 		$reflaction  = new ReflectionClass('Paycart');
   		//Check number of attribute in class

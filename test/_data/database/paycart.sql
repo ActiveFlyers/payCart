@@ -95,8 +95,8 @@ CREATE TABLE `jos_paycart_category` (
 -- Table structure for table `jos_paycart_indexer`
 --
 
-CREATE TABLE `jos_paycart_indexer` (
-  `product_id` INTEGER NOT NULL UNIQUE,
+CREATE TABLE `jos_paycart_productindex` (
+  `product_id` INTEGER PRIMARY KEY,
   `content` TEXT
 );
 
@@ -104,6 +104,6 @@ CREATE TABLE `jos_paycart_indexer` (
 -- Table structure for table `jos_paycart_filter`
 --
 
-CREATE TABLE `jos_paycart_filter` (
-  `product_id` INTEGER NOT NULL UNIQUE
+CREATE TABLE `jos_paycart_productfilter` (
+  `product_id` INTEGER PRIMARY KEY
 );

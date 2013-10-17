@@ -46,7 +46,7 @@ class PaycartHelperProductFilter
 				continue;
 			}
 			
-			$column 	= Paycart::FILTER_FIELD_PREFIX.$attributeId;
+			$column 	= Paycart::PRODUCT_FILTER_FIELD_PREFIX.$attributeId;
 			$data		= $attributeValue[$attributeId]->toDatabase();
 			
 			// set field value
@@ -95,7 +95,7 @@ class PaycartHelperProductFilter
 	public function alterColumn($previousObject, $currentObject) 
 	{
 		// look like atribute_1, attribute_4 etc
-		$column	= Paycart::FILTER_FIELD_PREFIX.$currentObject->getId();
+		$column	= Paycart::PRODUCT_FILTER_FIELD_PREFIX.$currentObject->getId();
 		
 		//  Case 1:: if {$previousObject}attribute filterable AND {$currentObject}attribute non-filterable 
 		//	then remove column
