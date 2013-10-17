@@ -72,7 +72,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
   `type` varchar(11) NOT NULL COMMENT 'predefine types like text, numeric etc',
   `default` varchar(250) DEFAULT NULL COMMENT 'Attribute default value',
   `class` varchar(100) DEFAULT NULL,
-  `searchable` tinyint(1) DEFAULT '0',
+  `filterable` tinyint(1) NOT NULL COMMENT 'Treat as a filter',
+  `searchable` tinyint(1) DEFAULT '0' COMMENT 'Use for keyword search',
   `published` tinyint(1) DEFAULT '0',
   `visible` tinyint(1) DEFAULT '0',
   `ordering` int(11) DEFAULT '0',
@@ -250,6 +251,28 @@ CREATE TABLE IF NOT EXISTS `#__paycart_address` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_filter`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_productfilter` (
+  `product_id` int(11) NOT NULL,
+   PRIMARY KEY (`product_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Filter Column Available here as Fields';
+
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_indexer`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_productindex` (
+  `product_id` int(11) NOT NULL COMMENT 'Product identification',
+  `content` longtext CHARACTER SET utf8 NOT NULL COMMENT 'Use for keyword search',
+   PRIMARY KEY (`product_id`),  
+   FULLTEXT KEY `content` (`content`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 -- ------------------- DEFAULT VALUES ---------------------

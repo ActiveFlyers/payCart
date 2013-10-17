@@ -72,12 +72,11 @@ class PaycartModelAttributeValue extends PaycartModel
 							$this->_db->quoteName('value'), $this->_db->quoteName('order')
 						)
 					);
-		//@PCTODO :: Order must be check before save data	
-		//@PCTODO Discuss:: available data should be formated  		
+	
 		foreach ($data as $row) {
 			$query->values("
-							{$this->_db->quote($row['product_id'])},{$this->_db->quote($row['attribute_id'])},
-							{$this->_db->quote($this->_format($row['value']))},{$this->_db->quote($row['order'])}
+							{$this->_db->quote($row['product_id'])}, {$this->_db->quote($row['attribute_id'])},
+							{$this->_db->quote($row['value'])},	{$this->_db->quote($row['order'])}
 							");
 		}
 		
@@ -91,19 +90,5 @@ class PaycartModelAttributeValue extends PaycartModel
 		}
 		
 		return true;			
-	}
-	
-	/**
-	 * 
-	 * Format attribute value before save it
-	 * @param unknown_type $value
-	 */
-	protected function _format($value) 
-	{
-		if(is_array($value)) {
-			$value = implode(',', $value);
-		}
-		return $value;
-	}
-	
+	}	
 }

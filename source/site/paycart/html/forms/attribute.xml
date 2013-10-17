@@ -28,6 +28,16 @@
 				default=""
 			/>
 			
+			<field name="filterable" type="radio"
+				default="0"
+				description="COM_PAYCART_ATTRIBUTE_FILTERABLE_DESC"
+				label="COM_PAYCART_ATTRIBUTE_FILTERABLE_LABEL" 
+				class="btn-group"
+			>
+				<option value='0'>COM_PAYCART_NO</option>
+				<option value='1'>COM_PAYCART_YES</option>
+			</field>
+			
 			<field name="searchable" type="radio"
 				default="0"
 				description="COM_PAYCART_ATTRIBUTE_SEARCHABLE_DESC"

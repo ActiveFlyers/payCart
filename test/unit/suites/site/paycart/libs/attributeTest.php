@@ -26,7 +26,7 @@ class PaycartAttributeTest extends PayCartTestCaseDatabase
   		
   		$expectedProperty = Array ( 
 		  							'attribute_id', 'title', 'published', 'visible', 
-		  							'searchable',	'type','default', 
+		  							'filterable','searchable',	'type','default', 
 		  							'params', 'xml', 'class'
   								 );							 
   		//test class property
