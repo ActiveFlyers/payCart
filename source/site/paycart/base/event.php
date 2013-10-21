@@ -31,25 +31,47 @@ class PaycartEvent extends JEvent
 			case 'product' :
 				self::_onProductAfterSave($previousObject, $currentObject);
 				break;
+			case 'attribute' :
+				self::_onAttributeAfterSave($previousObject, $currentObject);
+				break;
+				
 		}
 	}
 
 	/**
 	 * 
-	 * Method invoke when Product will be save 
-	 * @param Product_Lib $previousObject, Before save
-	 * @param Product_Lib $currentObject, After save
+	 * Method invoke to perform set of operations when Product will be save 
+	 * @param Product_Lib $previousProduct, Before save
+	 * @param Product_Lib $currentProduct, After save
 	 */
-	protected static function _onProductAfterSave($previousObject, $currentObject) 
+	protected static function _onProductAfterSave($previousProduct, $currentProduct) 
 	{
+		// Set attribute in indexing table if applicable (if searchable)
+		PaycartFactory::getHelper('productindex')->indexing($previousProduct, $currentProduct);
+
+		// Set attribute on indexing table if applicable (if filterable)
+		PaycartFactory::getHelper('productfilter')->save($previousProduct, $currentProduct);
+
 		return true;
 	}
 	
-
+	/**
+	 * 
+	 * Method invoke to perform set of operations when Attribute will be save.
+	 * @param Product_Lib $previousObject, Before save
+	 * @param Product_Lib $currentObject, After save
+	 */
+	protected static function _onAttributeAfterSave($previousObject, $currentObject) 
+	{
+		// Add/remove attribute on indexing table if applicable
+		PaycartFactory::getHelper('productfilter')->alterColumn($previousObject, $currentObject);
+		
+		return true;
+	}
 }
 
 /**
  * Event Registeration here 
  */
-//$dispatcher = JDispatcher::getInstance();
-//$dispatcher->register('onPaycartAfterSave', 'PaycartEvent');
+$dispatcher = JDispatcher::getInstance();
+$dispatcher->register('onPaycartAfterSave', 'PaycartEvent');

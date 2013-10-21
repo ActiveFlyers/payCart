@@ -36,9 +36,34 @@ class PaycartFactory extends Rb_Factory
 		return parent::getInstance($name, $type, $prefix, $refresh);
 	}
 	
-	static function getHelper($name)
+	/**
+	 * 
+	 * Invoke to get Paycart Helper instance
+	 * @param string $name : Entity name
+	 */
+	public static function getHelper($name)
 	{
 		return self::getInstance($name, 'helper');
+	}
+	
+	/**
+	 * 
+	 * Invoke to get Paycart Model instance
+	 * @param string $name : Entity name
+	 */
+	public static function getModel($name)
+	{
+		return self::getInstance($name, 'model');
+	}
+	
+	/**
+	 * 
+	 * Invoke to get Paycart Table instance
+	 * @param string $name : Entity name
+	 */
+	public static function getTable($name)
+	{
+		return self::getInstance($name, 'table');
 	}
 	
 	/**

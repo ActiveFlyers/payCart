@@ -22,6 +22,7 @@ class PaycartAttribute extends PaycartLib
 	protected $title 		 =	null;
 	protected $published	 =	1;
 	protected $visible		 =	1;
+	protected $filterable	 = 	0;
 	protected $searchable	 =	0;
 	protected $type 		 =	0;
 	protected $default		 =  0;
@@ -38,6 +39,7 @@ class PaycartAttribute extends PaycartLib
 		$this->title 		 =	null;
 		$this->published	 =	1;
 		$this->visible		 =	1;
+		$this->filterable	 =	0;
 		$this->searchable	 =	0;
 		$this->type 		 =	null;
 		$this->default 		 =	null;
@@ -51,7 +53,7 @@ class PaycartAttribute extends PaycartLib
 		return $this;
 	}
 	
-	public static function getInstance($id = 0, $data = null, $cached = false, $dummy2 = null)
+	public static function getInstance($id = 0, $data = null, $dummy1 = null, $dummy2 = null)
 	{
 		return parent::getInstance('attribute', $id, $data);
 	}	
@@ -135,6 +137,6 @@ class PaycartAttribute extends PaycartLib
 	
 	public function formatValue($value)
 	{
-		return PaycartHelperAttribute::formatValue($this->type, $value);
+		return PaycartFactory::getHelper('attribute')->formatValue($this->type, $value);
 	}
 }

@@ -86,4 +86,20 @@ class PaycartAttributeValue extends PaycartLib
 	{
 		return $this->order;
 	}	
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::toDatabase()
+	 */
+	public function toDatabase()
+	{
+		$data = parent::toDatabase();
+		
+		// convert to string if value is an array
+		if( is_array($data['value']) ) {
+			$data['value'] = implode(',', $data['value']);
+		} 
+		//@PCTODO:: Manage Attribute ordering 
+		return $data;
+	}
 }

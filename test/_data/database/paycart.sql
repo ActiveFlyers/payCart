@@ -22,6 +22,7 @@ CREATE TABLE `jos_paycart_attribute` (
   `type` INTEGER NOT NULL ,
   `default` TEXT DEFAULT NULL,
   `class` TEXT DEFAULT NULL,
+  `filterable` INTEGER NOT NULL DEFAULT '0',
   `searchable` INTEGER NOT NULL DEFAULT '0',
   `published` INTEGER NOT NULL DEFAULT '1',
   `visible` INTEGER NOT NULL DEFAULT '0',
@@ -90,3 +91,19 @@ CREATE TABLE `jos_paycart_category` (
   `modified_date` TEXT NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ;
 
+--
+-- Table structure for table `jos_paycart_indexer`
+--
+
+CREATE TABLE `jos_paycart_productindex` (
+  `product_id` INTEGER PRIMARY KEY,
+  `content` TEXT
+);
+
+--
+-- Table structure for table `jos_paycart_filter`
+--
+
+CREATE TABLE `jos_paycart_productfilter` (
+  `product_id` INTEGER PRIMARY KEY
+);

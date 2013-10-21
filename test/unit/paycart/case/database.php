@@ -128,19 +128,44 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 * Compare Table
 	 * @param $actualTable
 	 * @param $excludeColumns
+	 * 
+	 * @deprecated Use compareTables
 	 */
 	protected function compareTable($actualTable, $expectedDataSet,  $excludeColumns = Array())
 	{
-		// get Current dataset 
-		$actualDataSet	= $this->getConnection()->createDataSet(Array($actualTable));
+		$this->compareTables(Array($actualTable), $expectedDataSet, Array($actualTable=>$excludeColumns));
+	}
+	
+	/**
+	 * 
+	 * Compare Tables
+	 * @param Array $actualTables
+	 * @param $expectedDataSets
+	 * @param Array $excludeColumns
+	 */
+	protected function compareTables(Array $actualTables, PHPUnit_Extensions_Database_DataSet_IDataSet $expectedDataSet,  $excludeColumns = Array())
+	{
+		if (!is_array($actualTables)) {
+			throwException(new InvalidArgumentException);
+		}
 		
+		// get Current dataset 
+		$actualDataSet	= $this->getConnection()->createDataSet($actualTables);
+	
 		//Exclude columns
 		if(!empty($excludeColumns)) {
          	$expectedDataSet	=	new PHPUnit_Extensions_Database_DataSet_DataSetFilter($expectedDataSet);
          	$actualDataSet  	=	new PHPUnit_Extensions_Database_DataSet_DataSetFilter($actualDataSet);
 	        
-         	$expectedDataSet->setExcludeColumnsForTable($actualTable, $excludeColumns);
-	        $actualDataSet->setExcludeColumnsForTable($actualTable, $excludeColumns);
+         	foreach ($excludeColumns as $table => $columns) {
+	         	
+         		if (!is_array($excludeColumns)) {
+					throwException(new InvalidArgumentException);
+				}
+		
+         		$expectedDataSet->setExcludeColumnsForTable($table, $columns);
+	        	$actualDataSet->setExcludeColumnsForTable($table, 	$columns);
+         	}
          }
 
          //Comapre Table   
