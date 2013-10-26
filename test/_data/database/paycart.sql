@@ -100,10 +100,3 @@ CREATE TABLE `jos_paycart_productindex` (
   `content` TEXT
 );
 
---
--- Table structure for table `jos_paycart_filter`
---
-
-CREATE TABLE `jos_paycart_productfilter` (
-  `product_id` INTEGER PRIMARY KEY
-);

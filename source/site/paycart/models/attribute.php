@@ -18,6 +18,41 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartModelAttribute extends PaycartModel
 {
 
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Model::_buildWhereClause()
+	 */
+	protected function _buildWhereClause(Rb_Query $query, Array $queryFilters) 
+	{
+		foreach($queryFilters as $key=>$value){
+			//support id too, replace with actual name of key
+			$key = ($key==='id')? $this->getTable()->getKeyName() : $key;
+			
+			// only one condition for this key
+			if(!is_array($value)){
+				$query->where("`tbl`.`$key` =".$this->_db->Quote($value));
+				continue;
+			}
+			
+			// multiple keys are there
+			foreach($value as $condition){
+				// not properly formatted
+				if(is_array($condition)==false){
+					continue;
+				}
+				// first value is condition, second one is value
+				$glue = 'AND';
+				list($operator, $val)= $condition;
+				
+				if (3 == count($condition)) {
+					list($operator, $val, $glue)= $condition;
+				}
+				
+				$query->where("`tbl`.`$key` $operator ".$val, $glue);
+			}
+		}
+	}
+	
 }
 
 class PaycartModelformAttribute extends PaycartModelform 
