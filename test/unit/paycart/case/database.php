@@ -26,7 +26,7 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 * @return  void
 	 */
 	private $_stashedPayCartState = array(
-				'paycartfactory' =>Array('_config' => null)
+				'paycartfactory' =>Array('_config' => null, '_mocks' => null)
 			);
 			
 			

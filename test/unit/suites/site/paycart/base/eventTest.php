@@ -19,15 +19,15 @@ class PaycartEventTest extends PayCartTestCaseDatabase
 	 */
 	public function test_onAttributeAfterSave()
 	{
-		// Dependency : Create Mock for PaycartHelperProductFilter 
+		// Dependency : Create Mock for PaycartHelperProductIndexer 
 		// Sqlite have diffrent column difinition so need to mock getColumnDefinition method 
-		$mock = $this->getMock('PaycartHelperProductFilter', Array('getColumnDefinition'));
+		$mock = $this->getMock('PaycartHelperProductIndex', Array('getColumnDefinition'));
 		$mock->expects($this->any())
 			 ->method('getColumnDefinition')
 			 ->will($this->returnCallback(array(__CLASS__, 'callback_onAttributeAfterSave')));
 
 		// Set Mockconfig
-	  	PayCartTestReflection::setValue('PaycartFactory', '_mocks', Array('paycarthelperproductfilter' => $mock));
+	  	PayCartTestReflection::setValue('PaycartFactory', '_mocks', Array('paycarthelperproductindex' => $mock));
 	  	
 	  	foreach ($this->stub_onAttributeAfterSave() as $value) {  		
 	  		
@@ -38,7 +38,7 @@ class PaycartEventTest extends PayCartTestCaseDatabase
 			$this->assertInstanceOf('PaycartAttribute', $paycartAttribute);
 			
 			// get table fields
-			$columns = PaycartFactory::getTable('productfilter')->getFields();
+			$columns = PaycartFactory::getTable('productindex')->getFields();
 			
 			foreach ($columnDefinition as $column=>$definition ) {
 				$this->assertArrayHasKey($column, $columns, " $column is missing in Product-Filter table");
@@ -122,15 +122,14 @@ class PaycartEventTest extends PayCartTestCaseDatabase
 		$this->assertInstanceOf('PaycartProduct', $product);
 		
 		// get au data
-		list($productIndexRow, $productFilterRow) = $this->auData_onProductAfterSave();
+		$productIndexRow = $this->auData_onProductAfterSave();
+		
 		// set au-data
-		$au_data = Array(	"jos_paycart_productindex" => Array ($productIndexRow[1]),
-							"jos_paycart_productfilter" => Array ($productFilterRow[1])
-						 );
+		$au_data = Array(	"jos_paycart_productindex" => Array ($productIndexRow[1]));
 		
 		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
 
-		$this->compareTables(Array('jos_paycart_productindex','jos_paycart_productfilter'), $expectedDataSet);
+		$this->compareTables(Array('jos_paycart_productindex'), $expectedDataSet);
 		
 		//CASE-2 : Update data into index and filter table
 		$attributes = Array(
@@ -148,13 +147,11 @@ class PaycartEventTest extends PayCartTestCaseDatabase
 		$this->assertInstanceOf('PaycartProduct', $product);
 		
 		// Set au data
-		$au_data = Array(	"jos_paycart_productindex" => Array ($productIndexRow[2]),
-							"jos_paycart_productfilter" => Array ($productFilterRow[2])
-						 );
+		$au_data = Array("jos_paycart_productindex" => Array ($productIndexRow[2]));
 		
 		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
 
-		$this->compareTables(Array('jos_paycart_productindex','jos_paycart_productfilter'), $expectedDataSet);
+		$this->compareTables(Array('jos_paycart_productindex'), $expectedDataSet);
 		
 		
 		
@@ -162,26 +159,21 @@ class PaycartEventTest extends PayCartTestCaseDatabase
 	
 	protected function auData_onProductAfterSave()
 	{
-		// Index data
+		// Indexed and filter data 
 		$productIndexTmpl 	=	include RBTEST_PATH_DATASET.'/productindex/tmpl.php';
+
+		$productIndexRow[1]	= array_replace($productIndexTmpl, Array( 'product_id'=>1, 'content' => '_MANISH_ option-C _RIM_',
+																	   Paycart::PRODUCT_FILTER_FIELD_PREFIX.'1' => '_MANISH_',
+																	   Paycart::PRODUCT_FILTER_FIELD_PREFIX.'2' => 'option-23',
+																	   Paycart::PRODUCT_FILTER_FIELD_PREFIX.'4' => '_PAYCART_'
+																	  ));
 		
-		$productIndexRow[1]	= array_replace($productIndexTmpl, Array('product_id'=>1, 'content' => '_MANISH_ option-C _RIM_'));
-		$productIndexRow[2]	= array_replace($productIndexTmpl, Array('product_id'=>1, 'content' => '_RIM_ option-B _MANI_'));
+		$productIndexRow[2]	= array_replace($productIndexTmpl, Array( 'product_id'=>1, 'content' => '_RIM_ option-B _MANI_',
+																	   Paycart::PRODUCT_FILTER_FIELD_PREFIX.'1' => '_RIM_',
+																	   Paycart::PRODUCT_FILTER_FIELD_PREFIX.'2' => 'option-24',
+																	   Paycart::PRODUCT_FILTER_FIELD_PREFIX.'4' => '_RBSL_'
+																	  ));		
 		
-		// filter data
-		$productFilterTmpl 	=	include RBTEST_PATH_DATASET.'/productfilter/tmpl.php';
-		
-		$productFilterRow[1]	= array_replace($productFilterTmpl, Array(	'product_id'=>1, 
-																			Paycart::PRODUCT_FILTER_FIELD_PREFIX.'1' => '_MANISH_',
-																			Paycart::PRODUCT_FILTER_FIELD_PREFIX.'2' => 'option-23',
-																			Paycart::PRODUCT_FILTER_FIELD_PREFIX.'4' => '_PAYCART_'
-																			));
-		$productFilterRow[2]	= array_replace($productFilterTmpl, Array(	'product_id'=>1, 
-																			Paycart::PRODUCT_FILTER_FIELD_PREFIX.'1' => '_RIM_',
-																			Paycart::PRODUCT_FILTER_FIELD_PREFIX.'2' => 'option-24',
-																			Paycart::PRODUCT_FILTER_FIELD_PREFIX.'4' => '_RBSL_'
-																			));
-																			
-		return Array($productIndexRow, $productFilterRow);
+		return $productIndexRow;
 	}
 }

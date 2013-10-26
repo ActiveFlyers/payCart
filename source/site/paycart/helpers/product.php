@@ -47,4 +47,40 @@ class PaycartHelperProduct extends PaycartHelper
 			  			
 		return $result;	
 	}
+	
+	/**
+	 * Enter description here ...
+	 * Array (	'keyword'	 => Keyword search data,
+	 *			'filter'	 =>	Filtered data,
+	 *			'limitstart' =>	Start limit,
+	 *			'limit'		 => end limit,
+	 *			'ordering'	 => Search Ordering (eithre asending or desending)
+	 * 		  )
+	 * 
+	 */
+	public function XXgetSearchData($data)
+	{
+		if(is_array($data)) {
+			$data = (Object)$data;
+		}
+		
+		$rows 	= Array();
+				
+		if (isset($data->keyword) && !empty($data->keyword)) {
+			$row[]	=	PaycartFactory::getHelper('productindex')->getData($data);
+		}
+		
+		if (isset($data->filter)) {
+			$row[]	=	PaycartFactory::getHelper('productfilter')->getData($data);
+		}
+		
+		$results = Rb_HelperPlugin::trigger('onPayCartProductSearch', $data);
+		
+		
+		foreach ($results as $result) {
+			$rows = array_merge((array) $rows, (array) $result);
+		}
+		
+		return $rows;
+	}
 }

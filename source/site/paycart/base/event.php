@@ -46,12 +46,8 @@ class PaycartEvent extends JEvent
 	 */
 	protected static function _onProductAfterSave($previousProduct, $currentProduct) 
 	{
-		// Set attribute in indexing table if applicable (if searchable)
+		// Set attribute in indexing table if applicable (if searchable & filterable)
 		PaycartFactory::getHelper('productindex')->indexing($previousProduct, $currentProduct);
-
-		// Set attribute on indexing table if applicable (if filterable)
-		PaycartFactory::getHelper('productfilter')->save($previousProduct, $currentProduct);
-
 		return true;
 	}
 	
@@ -64,7 +60,7 @@ class PaycartEvent extends JEvent
 	protected static function _onAttributeAfterSave($previousObject, $currentObject) 
 	{
 		// Add/remove attribute on indexing table if applicable
-		PaycartFactory::getHelper('productfilter')->alterColumn($previousObject, $currentObject);
+		PaycartFactory::getHelper('productindex')->alterColumn($previousObject, $currentObject);
 		
 		return true;
 	}
