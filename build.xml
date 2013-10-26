@@ -155,7 +155,7 @@
    		<format property="tstamped-file-name" pattern="dd_hhmm" locale="en,UK"/>
   	</tstamp> 
 	<exec executable="phing" dir="${basedir}/scripts">
-		<arg line=" -quiet -f setup.xml -Djoomla.now=${tstamped-file-name} -Dpkg.version=J3.0.1"/> 
+		<arg line=" -quiet -f setup.xml -Djoomla.now=${tstamped-file-name} -Dpkg.version=J3.1"/> 
 	</exec>
 	<exec executable="chmod" dir="/var/www/paycart${tstamped-file-name}" failonerror="true">
 	    <arg line="-R 777 ." />
