@@ -39,7 +39,7 @@ class PaycartHelperProductIndex
 		
 	}							
 	
-/**
+	/**
 	 * 
 	 * Method invoke to insert and update operation perform on PaycartIndexer table
 	 * @param $previousObject, Attribute Lib object
@@ -48,7 +48,8 @@ class PaycartHelperProductIndex
 	public function indexing($previousObject, $currentObject) 
 	{
 		// get all attributes which are filterable and searchable
-		$attributes = PaycartFactory::getModel('attribute')->loadrecords(Array('searchable' => Array('=', 1, 'OR'),'filterable' => 1));
+		$attributes = PaycartFactory::getModel('attribute')
+						->loadrecords(Array('searchable' => Array(Array('=', 1, 'OR')), 'filterable' => Array(Array('=', 1, 'OR'))));
 		
 		// return true if non-searchable and non-filterable attribute
 		if (!$attributes) {
@@ -59,7 +60,9 @@ class PaycartHelperProductIndex
 		
 		// collect filter stuff
 		$fields	 = new stdClass();
-		$content = Array();
+		
+		// Collect indexer stuff
+		$fields->content = '';
 		
 		foreach ($attributes as $attributeId=>$attribute) {
 			// if attribute not available on Product
@@ -81,17 +84,12 @@ class PaycartHelperProductIndex
 			//if attribute is searchable
 			if ($attribute->searchable) {
 				// set content column value / indexed data
-				$content[] 	= $data['value'];
+				$fields->content .= $data['value']. ' ';
 			}
 		}
-		
-		// Collect indexer stuff
-		$fields->content = '';
 
-		// searchable stuff available
-		if(!empty($content)) {
-			$fields->content = implode(' ', $content);
-		}
+		// trim start and last space
+		$fields->content= trim($fields->content);
 		
 		// set primary key value
 		$fields->product_id = $currentObject->getId();
@@ -109,68 +107,6 @@ class PaycartHelperProductIndex
 		
 		// save indexed values
 		return $this->model->save($fields, $indexerId, $new);
-	}
-	
-	
-	public function XX_getData($data)
-	{
-		if (!isset($data->keyword) || !is_array($data->keyword) ) {
-			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_INVALID_KEYWORD'));
-		}
-
-		if(isset($data->keyword['word'])) {
-			$this->keyword['word'] = $data->keyword['word'];
-		}
-		
-		if(isset($data->keyword['phrase']) && $data->keyword['phrase'] ) {
-			$this->keyword['phrase'] = $data->keyword['phrase'];
-		}
-		
-		//how to treat keyword search
-		$this->sentizeKeyWord();
-		
-		$this->model->getData(Array('index' => $this->keyword['word']));
-		
-	}
-	
-	/**
-	 * 
-	 * Sentize key-word according to predefine rules. 
-	 */
-	protected function sentizeKeyWord()
-	{
-		// trim bad char
-		$this->keyword['word'] 	= trim(JString::str_ireplace($this->badchars, '', $this->keyword['word']));
-		
-		// if searchword enclosed in double quotes, strip quotes and do exact match
-		if (substr($this->keyword['word'], 0, 1) == '"' && substr($this->keyword['word'], -1) == '"')
-		{
-			$this->keyword['word'] 		= JString::substr($this->keyword['word'], 1, -1);
-			$this->keyword['phrase']	= 'exact';
-		}
-		
-//		if ('any' == $this->keyword['phrase']) {
-//		    /**
-//		     * @PCTODO:: Break into multiple parts like word have "Samsung Mobile Phone" 
-//		     * then keyword string is
-//		     * Array(
-//		     * "Samsung", "Samsung mobile", "Samsung phone",
-//		     * "mobile", "mobile phone",
-//		     * "phone", 
-//		     * "phone mobile", "phone Samsung",
-//		     * "mobile samsung",
-//		     * "Samsung Mobile Phone", "Samsung Phone Mobile ",
-//		     * "Mobile Phone Samsung", "Mobile Samsung Phone",
-//		     * "Phone Mobile Samsung", "Phone Samsung Mobile"
-//		     *  )
-//		     */
-//		}
-//		
-//		// IMP: keyword-word must be an array at the end of this method
-//		if(!is_array($this->keyword['word'])) {
-//			$this->keyword['word'] = (array) $this->keyword['word'];
-//		}
-	
 	}
 	
 	/**

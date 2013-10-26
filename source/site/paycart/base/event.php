@@ -48,8 +48,6 @@ class PaycartEvent extends JEvent
 	{
 		// Set attribute in indexing table if applicable (if searchable & filterable)
 		PaycartFactory::getHelper('productindex')->indexing($previousProduct, $currentProduct);
-
-
 		return true;
 	}
 	
