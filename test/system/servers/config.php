@@ -45,7 +45,7 @@ class SeleniumConfig
 	
 	
 	// Installable kit
-	var $extension = RBTEST_EXTENSION_NAME; 	
+	var $extension = RBTEST_PACKAGE_NAME; 	
 	
 	// optional setting to install sample data
 	// If not set or true, sample data is installed. Set to false to not install sample data
