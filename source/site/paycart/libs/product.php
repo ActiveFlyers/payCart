@@ -141,6 +141,14 @@ class PaycartProduct extends PaycartLib
 		return $this->variation_of;
 	}
 	
+	/**
+	 * 
+	 * @return Product's amount
+	 */
+	public function getAmount() {
+		return $this->amount;
+	}
+	
 	
 	/**
 	 * We required media/image processing after Product save
