@@ -17,3 +17,8 @@ if (!defined('RBTEST_UNIT_BASE')) 	{ 	define('RBTEST_UNIT_BASE', 		RBTEST_BASE.'
 // System Constant
 if (!defined('RBTEST_SYSTEM_PAGES')) 			{ 	define('RBTEST_SYSTEM_PAGES', RBTEST_SYSTEM_BASE.'/Pages/'); }
 if (!defined('RBTEST_SYSTEM_SERVER_CONFIG')) 	{ 	define('RBTEST_SYSTEM_SERVER_CONFIG', RBTEST_SYSTEM_BASE.'/servers/config.php'); }
+
+
+// Load Joomla and Joomla Mock classes
+require_once __DIR__ . '/joomla.php';
+//require_once __DIR__ . '/reflection.php';

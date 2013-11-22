@@ -32,7 +32,8 @@ class InstallerPage extends AdminPage
 		$this->$install_by($installable);
 	}
 	
-	public function uninstall($kit_name) {
+	public function uninstall($kit_name) 
+	{
 		$this->clickMenu('Extension Manage');
 		$this->setField('Filter', $kit_name);
 		$this->clickButton("//button[@class='btn tip hasTooltip'][@type='submit'][@ data-original-title='Search']");
@@ -43,13 +44,14 @@ class InstallerPage extends AdminPage
 	}
 	
 	
-	protected function install_from_url($installable) {
+	protected function install_from_url($installable) 
+	{
 		$tabLink = $this->driver->findElement(By::xPath("//a[@href='#url']"));
 		$tabLink->click();
 		
 		$this->setField('Install URL', $installable);
 		$this->clickButton("//input[@class='btn btn-primary'][@type='button'][@onclick='Joomla.submitbutton4()']");
-		$this->driver->waitForElementUntilIsPresent(By::xPath("//a[@href='#upload']"));
+		$this->driver->waitForElementUntilIsPresent(By::xPath($this->waitForXpath));
 		
 		$this->test->assertFalse($this->checkForNotices());
 		//echo "\n ALERT::".$this->getAlertMessage()."\n";
@@ -94,5 +96,20 @@ class InstallerPage extends AdminPage
 		
 		$this->driver->findElement(By::id($id))->clear();
 		$this->driver->findElement(By::id($id))->sendKeys($value);
+	}
+	
+	/**
+	 * 
+	 * Set class property
+	 * @param $prop Property name
+	 * @param $value Property value
+	 * @return return previous value
+	 */
+	public function set($prop, $value) 
+	{
+		$previousValue = @$this->$prop;
+		$this->$prop = $value;
+		
+		return $previousValue;
 	}
 }

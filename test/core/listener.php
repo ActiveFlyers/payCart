@@ -33,11 +33,15 @@ class RbTestListener implements PHPUnit_Framework_TestListener
  
     public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
-//        printf("TestSuite ######## %s ######## started.\n", $suite->getName());
+    	if($suite->getName()) {
+        	printf("\n-------- STARTED :: %s --------", $suite->getName());
+    	}
     }
  
     public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
-//        printf("TestSuite ######## %s ######## ended.\n", $suite->getName());
+    	if($suite->getName()) {
+        	printf("\n-------- ENDED :: %s -------- \n", $suite->getName());
+    	}
     }
 }
