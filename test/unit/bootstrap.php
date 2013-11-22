@@ -30,6 +30,7 @@ if (!defined('RBTEST_PATH_DATASET')) 	{ 	define('RBTEST_PATH_DATASET', 	RBTEST_P
 
 //include our Testing Core 
 require_once realpath(dirname(__DIR__)).'/core/defines.php';
+
 // Load Joomla and Joomla Mock classes
 require_once __DIR__ . '/joomla/joomla.php';
 

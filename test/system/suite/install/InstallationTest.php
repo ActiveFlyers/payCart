@@ -23,29 +23,37 @@ class InstallationTest extends RbWebdriverTestCase
 	}
 	
 	
-	public function test_install_PayCart() {
+	public function testInstallPayCart() 
+	{
 		$this->_install_paycart();
-		//$this->assertTrue(false);
 		return true;
 	}
 	
 	/**
-	 *  @depends test_install_PayCart
+	 *  @depends testInstallPayCart
 	 */
-	public function test_uninstall_PayCart($return) {
+	public function testUninstallPayCart($return) 
+	{
 		$this->installerPage->uninstall('paycart');
 	}
 	
 	/**
-	 * @depends test_install_PayCart
+	 * @depends testInstallPayCart
 	 */	
-	public function test_upgrade_PayCart() {
+	public function testUpgradePayCart() 
+	{
 		$this->_install_paycart();
+		
+		//After Paycart installation, we need to come back on installer page 
+		$this->installerPage->clickMenu('Extension Manager', 'InstallerPage');
+		
 		$this->_install_paycart();
 	}
 	
-	private function _install_paycart() {
+	private function _install_paycart() 
+	{
 		$kit_name = $this->cfg->host .'/'.$this->cfg->path.'/'.$this->cfg->extension;
+		$this->installerPage->set('waitForXpath', '//a[contains(@href, "index.php?option=com_paycart&view=product&task=new")]');
 		$this->installerPage->install($kit_name);
 		$this->assertNotNull($this->driver->findElement(By::xPath("//a[@href='index.php?option=com_paycart']")));
 	}
