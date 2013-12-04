@@ -3,7 +3,15 @@
 
 use SeleniumClient\By;
 
-class InstallationTest extends RbWebdriverTestCase
+/**
+ * 
+ * Inherit from JoomlaWebdriverTestCase instead of RbWebdriverTestCase 
+ * otherwise paycart will not install on your actual joomla db
+ * 
+ * @author manish
+ *
+ */
+class InstallationTest extends JoomlaWebdriverTestCase
 {
 
 	public function setUp()

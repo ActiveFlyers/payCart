@@ -93,13 +93,13 @@ class RbWebdriverTestCase extends JoomlaWebdriverTestCase
 		self::$_stash_config 	= null;
     }
     
-    protected function setUp() 
+    public function setUp() 
     {
     	// TODO :: write code for test specific data
     	parent::setUp();
     }
     
-	protected function tearDown() 
+	public function tearDown() 
     {
     	// TODO :: write code for revert test specific data
     	parent::tearDown();
