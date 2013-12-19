@@ -68,6 +68,16 @@ class PaycartFactory extends Rb_Factory
 	
 	/**
 	 * 
+	 * Invoke to get query object
+	 * @return Rb_query object
+	 */
+	public static function getQuery() 
+	{
+		return new Rb_Query();
+	}
+	
+	/**
+	 * 
 	 * Method invoke to get {Paycart + Site global} configuration object
 	 * 
 	 * @return JRegistry object

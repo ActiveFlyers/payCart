@@ -41,7 +41,9 @@ Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/models',		'Modelform', 'P
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/tables',		'Table',	 'Paycart');
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/libs',			'',			 'Paycart');
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/helpers',		'Helper',	 'Paycart');
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/payment',		'',	 		 'Paycart');
+
+// AutoLoad TDS
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/discountrule',	'discountrule',	 'Paycart');
 
 //html
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/html/html',		'Html',		 'Paycart');
