@@ -6,6 +6,7 @@
 	<!-- ============================================  -->
 	<target name="copy_to_repo" description="copy target" depends="pre_config">
 		<phingcall target="copy_package" />
+		<phingcall target="copy_plugins" />
 		<phingcall target="copy_testcases" />
 		<!-- reverse build and delete xml	-->
 		<phingcall target="copy_extra_stuff" />
@@ -65,6 +66,18 @@
 			</fileset>			
 		</copy>
 	</target>
+	
+	<!-- ============================================  -->
+	<!-- Target: Copy Plugins, App, Processor          -->
+	<!-- ============================================  -->
+	<target name="copy_plugins">
+		<copy todir="${target}/source/plugins">
+			<fileset dir="${source}/plugins/paycart">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+	</target>
+	
 	
 	<!-- ============================================  -->
 	<!-- Target: Copy Test Cases   			           -->

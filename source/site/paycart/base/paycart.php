@@ -52,4 +52,12 @@ class Paycart
 	const CART_STATUS_REVERSAL	=	5006;
 	const CART_STATUS_COMPLETE	=	5007;
 	
+	// JOOMLA System Message Type
+	const MESSAGE_TYPE_MESSGAE	= 'message'; 
+	const MESSAGE_TYPE_WARNING	= 'warning';
+	const MESSAGE_TYPE_NOTICE	= 'notice';
+	const MESSAGE_TYPE_ERROR	= 'error';
+	
+	//Processor type
+	const PROCESSOR_TYPE_DISCOUNTRULE = 'discountrule';
 }

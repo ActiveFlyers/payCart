@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.1" type="plugin" group="system">
+	<name>PLG_PAYCART_DISCOUNTRULE_PROMOTION</name>
+	<author>Team ReadyBytes</author>
+	<creationDate>December 2013</creationDate>
+	<copyright>Copyright (C) 2005 - 2013 Open Source Matters. All rights reserved.</copyright>
+	<authorEmail>support+paycart@readybytes.in</authorEmail>
+	<authorUrl>www.readybytes.net</authorUrl>
+	<version>1.@global.version@</version>
+	<description>PLG_PAYCART_DISCOUNTRULE_PROMOTION_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="promotion">promotion.php</filename>
+		<filename>index.html</filename>
+	</files>
+<!--	<languages>-->
+<!--		<language tag="en-GB">en-GB.plg_paycart_promotion.ini</language>-->
+<!--		<language tag="en-GB">en-GB.plg_paycart_promotion.sys.ini</language>-->
+<!--	</languages>-->
+</extension>

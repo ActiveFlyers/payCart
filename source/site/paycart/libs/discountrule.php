@@ -39,14 +39,18 @@ class PaycartDiscountRule extends PaycartLib
 	protected $sequence;					// Priority of discount rule
 	protected $apply_on;					// entity on which discount rule will be applied. Either cart or Product 
 	
-	// Usage spacific
+	//Table fields : Usage spacific
 	protected $buyer_usage_limit;			//Total usage Counter per buyer default=1
 	protected $usage_limit;					//Total usage counter of discount-rule 
 		
 	//Table fields : Processor specific
-	protected $processor_type;				// Processor name, must be unique(processor class name) and small-caps
+	protected $processor_classname;				// Processor class name and should be small-caps
 	protected $processor_config;
 	
+	//Lib Specific Fields
+	protected $_stopFurtherRules = true; 		//multiple discount further process or not.  
+	protected $message;							// Have mapped data. (language id => message) 
+		
 	
 	public function reset() 
 	{		
@@ -70,8 +74,8 @@ class PaycartDiscountRule extends PaycartLib
 		$this->buyer_usage_limit =	1;
 		$this->usage_limit		 =	1;
 		
-		$this->processor_type	= Null;
-		$this->processor_config	= new Rb_Registry();
+		$this->processor_classname	= Null;
+		$this->processor_config		= new Rb_Registry();
 				
 		return $this;
 	}
@@ -94,88 +98,116 @@ class PaycartDiscountRule extends PaycartLib
 	
 	/**
 	 * 
-	 * Enter description here ...
-	 * @param $entity : @TODO:: $entity : entity-object either Product/cart-particulars or cart ?? 
+	 * Processo discount rule
+	 * @param $entity : @TODO:: $entity : entity-object  Product/cart-particulars,cart and shipping. 
 	 * 
-	 * @return 
+	 * @return DiscountRule lib object 
 	 */
 	public function process($entity)
 	{
 		// get Processor instanse. Processor should be autoloaded
-		$processor = new $this->processor_type;
+		$processor = PaycartFactory::getProcessor(Paycart::PROCESSOR_TYPE_DISCOUNTRULE, $this->processor_classname, $this->processor_config);
 		
-		//set processor configuration
-		$processor->set('config', $this->processor_config);
+		// create request and reponse object then process discount-rule
+		$request	= $this->createRequest($entity);
+		$response	= $this->createResponse();
 		
-		// BUILD request object
-		$request = $this->buildRequest($entity);
+		$processor->process($request, $response);
 		
-		// PROCESS discount-rule if core-applicability is ok
-		if ($processor->coreCheckup($request)) {
-			return false;
+		if ($response->message) {
+			//@PCTODO : Exception/Error/Message handling
+			return $this;
 		}
 		
-		$response = $processor->process($request);
+		$total 				= $entity->get('total');
+		$discountedAmount 	= $response->amount;
 		
-		if ($response->error) {
-			//@PCTODO : Exception/Error handling
-			return false;
-		}
+		// Stop next all-rule processing if meet following any one conditions in current rule
 		
-		// @PCTODO :: Check limit of discount or should not fall behind of minimum price limit.
-		$total = $entity->get('total');
-		
-		if($total-$response->amount < 0) {
+		// Check limit of discount 
+		if ($total-$discountedAmount < 0) {
+			$this->_stopFurtherRules = true;
 			// @PCTODO :: notify to user or Log it
-			return false;
+			return $this;
+		} 
+		// should not fall behind of minimum-price limit.
+		if ($total-$discountedAmount <= $entity->minimumPrice ) {
+			$this->_stopFurtherRules = true;
+			// @PCTODO :: notify to user or Log it
+			return $this;
 		}
 
-		$entity->set('total', $total-$response->amount);
-		
+		// apply discounted amount
+		$entity->set('total', $total-$discountedAmount);
 		//@PCTODO :: invoke method to track usage
 		
-		return true;
+		// not further-rules processing 
+		if ($response->stopFurtherRules){
+			$this->_stopFurtherRules = true;
+		}
+		
+		return $this;
 	}
 	
 	
 	/**
 	 * 
 	 * create build request object
-	 * @param unknown_type $entity
+	 * @param unknown_type $entity {product, cart, shipping}
 	 * 
 	 * @return PaycartDiscountRuleRequest object
 	 */
-	protected function buildRequest($entity)
+	protected function createRequest($entity)
 	{
 		$request 	= new PaycartDiscountRuleRequest();
 		
-		// discount data
-		$request->isPercentage 	= $this->is_percentage;
-		$request->isSuccessive	= $this->is_successive;
-		$request->amount		= $this->amount;
+		// rulespecific data
+		$request->rule_isPercentage 	= $this->is_percentage;
+		$request->rule_isSuccessive		= $this->is_successive;
+		$request->rule_amount			= $this->amount;
+		$request->rule_isClubbable		= $this->is_clubbable;
+		$request->rule_usageLimit		= $this->usage_limit;
+		$request->rule_buyerUsageLimit	= $this->buyer_usage_limit;
 		
-		//@PCTODO:: validation required,  $entity must be have total and basePrice
-		$request->total			= $entity->total;
-		$request->price			= $entity->price;	//basePrice = unitPrice * Quantity
+		//$entity must be have total and basePrice
+		$request->entity_total				 = $entity->total;
+		$request->entity_price				 = $entity->price;	//basePrice = unitPrice * Quantity
+		$request->entity_previousAppliedRule = $entity->previousDiscount;
 		
-		//set entity and rule object
-		$request->_entity 		= (object) $entity->toArray();
-		$request->_discountRule = (object) $this->toArray();
+		// usage specific data
+		//@PCTODO :: call to get used counter of Rule
+		$request->rule_consumption	= 50;
+		$request->buyer_consumption	= 0;
 		
 		return $request;
-	} 
-	
+	}
+
 	/**
 	 * 
+	 * create response object
+	 * 
+	 * @return PaycartDiscountRuleRequest object
+	 */
+	protected function createResponse()
+	{
+		return new PaycartDiscountRuleResponse();
+	}
+	
+	/**
+	 * @PCTODO :: TDS-Helper.php 
 	 * Before execution :: get all applicable ruleid
 	 * @param array $rulesId  : have all applicable discount rule id
 	 * @param unknown_type $entity : $entity data
 	 * @param unknown_type $entityType : aplicable on
 	 */
-	protected function _processDiscountRule(Array $ruleIds, $entity, $entityType)
+	protected function _processDiscountRule(Array $ruleIds, $entity, $appliedOn)
 	{
-		
-		$condition = '`dicountrule_id` IN ('.array_values($ruleIds).') AND `applied_on` LIKE '."'$entityType'" ;
+		//PCTODO :: move into model 
+		$condition = ' 	`discountrule_id` IN ('.array_values($ruleIds).') AND '.
+					 '	`published` = 1 AND '.
+					 '	`start_date` <= now() AND '.
+					 '	`end_date` >= now() AND '. 
+					 '	`applied_on` LIKE '."'$appliedOn'" ;
 		
 		// sort applicable rule as per sequence.
 		$records = PaycartFactory::getModel('discountrule')
@@ -186,33 +218,59 @@ class PaycartDiscountRule extends PaycartLib
 			return true;
 		}
 		
-		$flag = false;
 		foreach ($records as $id=>$record) {
 			
-			$discounRule = PaycartDiscountRule::getInstance($id, $record);
-			
-			// any-one discount is already applied. Now checking new discount is clubbable or not 
-			if($flag && !$discounRule->get(is_clubbable, true)) {
-				continue;
-			}
+			$discountRule = PaycartDiscountRule::getInstance($id, $record);
 			
 			// process discount
 			// entity have following stuff::
-			// # product / cart details
+			// # product/cart /shipping details(include minimumPrice of entity)
 			// # total and basePrice
 			// # buyerdetail like location, id etc
-			// # session : where save discount stuff
-			//@PCTODO :: get response and handle further processing 
+			// # previousDiscount : where save previous-discount stuff
 			$discounRule->process($entity);
 			
-			// No more furthe processing if its a first discount and its non-clubbale
-			if(!$flag && !$discounRule->get(is_clubbable, true)) {
-				break;
-			}
+			//$entity->previousdiscount[] = $discountRule; 
 			
-			$flag =true;
+			// no further process
+			if ($discountRule->get('_stopFurtherRules')) {
+				break;
+			}			
 		}
-		
 		return true;
 	}	
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
+	 */
+	protected function _save($previousObject) 
+	{
+		// save core table data
+		$id = parent::_save($previousObject);
+		
+		if(!id) {
+			return false;
+		}
+		
+		$data = Array();
+		
+		// Save multilanguage stuff
+		$modelLang = PaycartFactory::getModel('discountrulelang');
+		
+		foreach ($this->message as $langCode => $message) {
+			$data['discountrule_id'] = $id;
+			$data['lang_code'] 		 = $langCode;
+			$data['message'] 		 = $message;
+		}
+		
+		// Before save you need to delete previous data
+		$modelLang->deleteMany(Array('discountrule_id'=>$id));
+		
+		//@PCTODO:: notify to admin if save failed
+		// save language specific content
+		$modelLang->save($data);
+		
+		return $id;
+	}
 }

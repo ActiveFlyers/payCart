@@ -314,11 +314,11 @@ CREATE TABLE IF NOT EXISTS `#__paycart_discountrule` (
 CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_lang` (
   `discountrule_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `discountrule_id` int(11) NOT NULL,
-  `lang_id` int(11) NOT NULL,
+  `lang_code` varchar(10) NOT NULL,
   `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
   PRIMARY KEY (`discountrule_lang_id`),
   KEY `discountrule_id` (`discountrule_id`),
-  KEY `lang_id` (`lang_id`)
+  KEY `lang_code` (`lang_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -350,5 +350,7 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('image_render_url', NULL),
 ('image_thumb_height', '100'),
 ('image_thumb_width', '133'),
-('image_upload_directory', NULL);
+('image_upload_directory', NULL),
+('discountrule_issuccessive', 1);
+
 

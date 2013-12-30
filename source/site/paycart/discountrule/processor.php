@@ -21,7 +21,26 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 abstract class PaycartDiscountRuleProcessor extends JObject
 {
 	// processor config
-	protected $_config ;
+	protected $config ;
+	
+	public function __construct($config = Array())
+	{
+		parent::__construct();
+		$this->set('config', $config);
+		
+		return $this;
+	}
+	
+	/**
+	 * Method to invoke on Processor edit view
+	 * Render extra stuff which is used in processor config
+	 *  
+	 */
+	public function getProcessorHtml(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
+	{
+		$response->configHtml =  "<div></div>";
+		return $response;
+	}
 	
 	/**
 	 * 
@@ -31,7 +50,26 @@ abstract class PaycartDiscountRuleProcessor extends JObject
 	 * @return boolean type if applicable otherwise false
 	 */
 	protected function isApplicable(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
-	{
+	{	
+		// if discount is already applied and current discount is non-clubbale
+		// then return false 
+		if (!empty($request->entity_previousAppliedRule) && !$request->rule_isClubbable) {
+			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NON_CLUBBABLE');
+			return false; 
+		}
+				
+		// stop further rule-processing, if usage limit exceeded
+		if (count($request->rule_usageLimit) >= $request->rule_consumption) {
+			$response->message = Rb_Text::_('COM_PAYCART_DISCOUNTRULE_USAGE_LIMIT_EXCEEDED');
+			return false;
+		}
+		
+		// stop further processing, if rule's buyer-usage limit exceeded
+		if ($request->buyer_consumption >= $request->rule_buyerUsageLimit) {
+			$response->message = Rb_Text::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED');
+			return false;
+		}
+
 		return true;
 	}
 	
@@ -44,33 +82,38 @@ abstract class PaycartDiscountRuleProcessor extends JObject
 	 * 
 	 * @return PaycartDiscountRuleResponse
 	 */
-	public function process(PaycartDiscountRuleRequest $requestedData) 
+	public function process(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response) 
 	{
-		$response = new PaycartDiscountRuleResponse();
-		
 		try {
 				
 			// Step-1: check applicibility
-			if (!$this->isApplicable($requestedData, $response)) {
+			if (!$this->isApplicable($request, $response)) {
 				return $response;
 			}
 			
 			// Step-2: Get Price for discount
 			 
 			// Price on which discount will applied
-			$price = $requestedData->price;
+			$price = $request->entity_price;
 			
 			// If discount is successive/row total then applied on total amount.
 			// It will use on multi discount
-			if ($requestedData->isSuccessive) {
-				$price = $requestedData->total;
+			if ($request->rule_isSuccessive) {
+				$price = $request->entity_total;
 			}
 			
 			// Step-3: Calculate discount on Price
-			$response->amount =  $this->calculate($price, $requestedData->amount, $requestedData->isPercentage);
+			$response->amount =  $this->calculate($price, $request->rule_amount, $request->rule_isPercentage);
+			
+			// if applied discount is non-clubbable 
+			// then stop next all multiple rules
+			if (!$request->rule_isClubbable) {
+				$response->stopFurtherRules = true;
+			}
 						
 		} catch (Exception $e) {
-			$response->error = $e->getMessage();
+			$response->message 		= $e->getMessage();
+			$response->messageType	= Paycart::MESSAGE_TYPE_ERROR;
 		}
 		
 		return $response;
@@ -103,62 +146,70 @@ abstract class PaycartDiscountRuleProcessor extends JObject
 		}
 		
 		return $discountAmount;
-	}
+	}	
+}
+
+
+/**
+ * 
+ * DiscountRuleRequest class required for discounrule processing 
+ * @author mManishTrivedi
+ *
+ */
+class PaycartDiscountRuleRequest
+{
+	// Request Field : Discount speicifc
+	public $rule_isPercentage		=	1; 		 
+	public $rule_amount	  			=	0;
+	public $rule_isSuccessive 		=	1;
+	public $rule_isClubbable 		=	1;
+	public $rule_usageLimit			=	1;		// rule usage limit
+	public $rule_buyerUsageLimit	=	1;		// buyer usage limit as per rule
+	
+	// Request Field : Cart/Product/Shipping specific
+	public $entity_price	 		=	0;	// unitPrice * quantity
+	public $entity_total 			=	0;
+	public $entity_previousAppliedRule;
+	
+	// Request Field : Usage data
+	public $rule_consumption;				//	rule used counter
+	public $buyer_consumption;				//	rule used by buyer
+}
+
+
+/**
+ * 
+ * PaycartDiscountRuleResponse required after discount rule processing
+ * @author mManishTrivedi
+ *
+ */
+class PaycartDiscountRuleResponse
+{
+	// Response Field : Discounted-Amount
+	public $amount 				=	0;
+	
+	// Response Field : stop all next rules processing. 
+	public $stopFurtherRules 	=	false;
+	
+	// Response Field : need to display any kind of msg for user/admin 	
+	public $message				=	null;
+	
+	// Response Field : {'message', 'warning', 'notice', 'error' }	
+	public $messageType			=	null;
+	
+	// Response Field : Processor config html  	
+	public $configHtml				=	'';
 	
 	
 	/**
 	 * 
-	 * Check core applicable condition
-	 * @param PaycartDiscountRuleRequest $requestedData
-	 * 
-	 * @return (boolean) true if core accessibility is ok otherwise false
+	 * set default value here
 	 */
-	public function coreCheckup(PaycartDiscountRuleRequest $requestedData) 
+	public function __construct()
 	{
-		$discountRule = $requestedData->discountRule;
+		// default system message
+		$this->messageType = Paycart::MESSAGE_TYPE_MESSAGE;
 		
-		// discount rule should be published
-	//	if (!$discountRule->published) {
-	//		return false;
-	//	}
-		
-		$entity = $requestedData->entity;
-		// check precalculate discount exist
-		if ($entity->discount) {
-			//@PCTODO:: Check clubbale discount
-		}
-		
-		$now 		= Rb_Date::getInstance();
-		$startDate  = Rb_Date::getInstance($discountRule->start_date);
-		
-		// if discount rule is not published
-	//	if($startDate->toUnix() > $now->toUnix()) {
-	//		return false;
-	//	}
-
-	//	$endDate = Rb_Date::getInstance($discountRule->end_date);
-		
-		// exceeded to end date
-	//	if($endDate->toUnix() < $now->toUnix()){
-	//		return false;
-	//	}
-		
-		//@PCTODO:: get usage data
-		$usage = new stdClass();
-		
-		// stop further processing, if usage limit exceeded
-		if (count($usage) >= $discountRule->usage_limit) {
-			return false;
-		}
-		
-		//@PCTODO : get unique usage of this discount-rule on behalf of buyer  
-		$buyerUsage = 100;
-		// stop further processing, if buyer_usage limit exceeded
-		if (count($buyerUsage) >= $discountRule->usage_limit) {
-			return false;
-		}
-		
-		return true;
+		return $this;
 	}
-	
 }
