@@ -52,4 +52,9 @@ class Paycart
 	const CART_STATUS_REVERSAL	=	5006;
 	const CART_STATUS_COMPLETE	=	5007;
 	
+	//Processor type constants
+	const PROCESSOR_TYPE_TAX    = 'tax';
+	
+	//Message type constants
+	const MESSAGE_TYPE_MESSAGE  = "message";
 }

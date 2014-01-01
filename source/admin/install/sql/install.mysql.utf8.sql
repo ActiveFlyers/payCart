@@ -289,3 +289,52 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('image_thumb_width', '133'),
 ('image_upload_directory', NULL);
 
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_taxrule`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_taxrule` (
+  `taxrule_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `published` tinyint(1) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `amount` double(15,4) NOT NULL,
+  `apply_on` varchar(50) NOT NULL COMMENT 'entity name on which to apply rule',
+  `processor_classname` varchar(100) NOT NULL COMMENT 'Classname of processor in small-case',
+  `processor_config` text NOT NULL COMMENT 'processor configuration',
+  `created_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL,
+  `ordering` int(11) NOT NULL,
+  PRIMARY KEY (`taxrule_id`),
+  KEY `apply_on` (`apply_on`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_taxrule_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_lang` (
+  `taxrule_id` int(11) NOT NULL,
+  `lang_code` int(11) NOT NULL,
+  `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
+  PRIMARY KEY `taxrule_id` (`taxrule_id`),
+  KEY `lang_code` (`lang_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_taxrule_x_group`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_x_group` (
+  `taxrule_x_group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `taxrule_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  PRIMARY KEY (`taxrule_x_group_id`),
+  KEY `taxrule_id` (`taxrule_id`),
+  KEY `class_id` (`group_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mapping of taxrule and groups' AUTO_INCREMENT=1 ;
+
