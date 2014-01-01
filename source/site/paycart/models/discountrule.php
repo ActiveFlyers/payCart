@@ -14,11 +14,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /**
  * 
- * DiscountRule model
+ * Discountrule model
  * @author mManishTrivedi
  *
  */
-class PaycartModelDiscountRule extends PaycartModel
+class PaycartModelDiscountrule extends PaycartModel
 {
 //	var $filterMatchOpeartor = Array(
 //									'coupon' => array('LIKE')
@@ -27,7 +27,7 @@ class PaycartModelDiscountRule extends PaycartModel
 	
 	/**
 	 * 
-	 * get data from discountrule table  
+	 * get data from Discountrule table  
 	 * @param  $where
 	 * @param  $orderBy
 	 * 
@@ -60,16 +60,16 @@ class PaycartModelDiscountRule extends PaycartModel
 	}
 }
 
-class PaycartModelformDiscountRule extends PaycartModelform { }
+class PaycartModelformDiscountrule extends PaycartModelform { }
 
 
 /**
  * 
- * DiscountRule Lang model
+ * Discountrule Lang model
  * @author mManishTrivedi
  *
  */
-class PaycartModelDiscountRuleLang extends PaycartModel
+class PaycartModelDiscountruleLang extends PaycartModel
 {
 	/**
 	 * (non-PHPdoc)
@@ -124,9 +124,9 @@ class PaycartModelDiscountRuleLang extends PaycartModel
 
 /**
  * 
- * DiscountRule and class Mapper model
+ * Discountrule and class Mapper model
  * @author mManishTrivedi
  *
  */
-class PaycartModelDiscountRuleXclass extends PaycartModel
+class PaycartModelDiscountruleXGroup extends PaycartModel
 {}

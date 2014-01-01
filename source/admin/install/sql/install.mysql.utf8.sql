@@ -327,13 +327,11 @@ CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_lang` (
 -- Table structure for table `#__paycart_discountrule_x_class`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_x_class` (
-  `discountrule_x_class_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_x_group` (
   `discountrule_id` int(11) NOT NULL,
-  `class_id` int(11) NOT NULL,
-  PRIMARY KEY (`discountrule_x_class_id`),
+  `group_id` int(11) NOT NULL,
   KEY `discountrule_id` (`discountrule_id`),
-  KEY `class_id` (`class_id`)
+  KEY `group_id` (`group_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Discount-rule and class mapper table' AUTO_INCREMENT=1 ;
 
 

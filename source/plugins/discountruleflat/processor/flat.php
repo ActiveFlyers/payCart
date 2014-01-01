@@ -15,8 +15,7 @@ defined('_JEXEC') or die;
  *
  * @package     Paycart
  * @subpackage  Paycart.plugin
- * @since       3.0
  * @author 		manish
  *
  */
-class PaycartDiscountProcessorPromotion extends PaycartDiscountRuleProcessor {}
+class PaycartDiscountRuleProcessorFlat extends PaycartDiscountRuleProcessor {}

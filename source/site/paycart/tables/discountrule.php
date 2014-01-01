@@ -36,5 +36,5 @@ class PaycartTableDiscountRuleLang extends PaycartTable
  * @author mManishTrivedi
  *
  */
-class PaycartTableDiscountRuleXClass extends PaycartTable
+class PaycartTableDiscountRuleXGroup extends PaycartTable
 {}

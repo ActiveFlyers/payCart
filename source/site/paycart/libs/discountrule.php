@@ -168,10 +168,12 @@ class PaycartDiscountRule extends PaycartLib
 		$request->rule_isClubbable		= $this->is_clubbable;
 		$request->rule_usageLimit		= $this->usage_limit;
 		$request->rule_buyerUsageLimit	= $this->buyer_usage_limit;
+		$request->rule_coupon			= $this->coupon;
 		
 		//$entity must be have total and basePrice
 		$request->entity_total				 = $entity->total;
 		$request->entity_price				 = $entity->price;	//basePrice = unitPrice * Quantity
+		$request->entity_coupon				 = $entity->coupon;	// Posted coupon code
 		$request->entity_previousAppliedRule = $entity->previousDiscount;
 		
 		// usage specific data
@@ -202,7 +204,7 @@ class PaycartDiscountRule extends PaycartLib
 	 */
 	protected function _processDiscountRule(Array $ruleIds, $entity, $appliedOn)
 	{
-		//PCTODO :: move into model 
+		//@PCTODO :: move into model 
 		$condition = ' 	`discountrule_id` IN ('.array_values($ruleIds).') AND '.
 					 '	`published` = 1 AND '.
 					 '	`start_date` <= now() AND '.

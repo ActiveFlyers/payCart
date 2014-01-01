@@ -15,11 +15,10 @@ defined('_JEXEC') or die;
  *
  * @package     Paycart
  * @subpackage  Paycart.plugin
- * @since       3.0
  * @author 		manish
  *
  */
-class PlgPayCartPromotion extends Rb_Plugin
+class PlgPaycartDiscountruleflat extends Rb_Plugin
 {
 	/**
 	 * 
@@ -31,18 +30,17 @@ class PlgPayCartPromotion extends Rb_Plugin
 	{
 		parent::__construct($subject, $config);
 		
-		//Rb_HelperLoader::addAutoLoadFile($fileName, $className);
-		$fileLocation = _DIR_.'/processor/promotion.php';
+		$fileLocation = __FILE__.'/processor/flat.php';
 		
 		$processor = PaycartFactory::getHelper('processor');
 		
 		$processor->push( 	Paycart::PROCESSOR_TYPE_DISCOUNTRULE,
-							'PaycartDiscountProcessorPromotion',
-							Array( 'location'	 => $fileLocation,
-								   'title'		 => Rb_Text::_('PLG_PAYCART_PROMOTION_DISCOUNTRULE_PROMOTION_NAME'),
+							'PaycartDiscountruleProcessorFlat',
+							Array( 'filepath'	 => $fileLocation,
+								   'title'		 => Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_FLAT_NAME'),
 								   'icon'		 => '',
 								   'tooltip'	 =>	'',
-								   'description' => Rb_Text::_('PLG_PAYCART_PROMOTION_DESC')
+								   'description' => Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_FLAT_DESC')
 								));
 	}
 	

@@ -117,12 +117,13 @@
 		<reflexive>
 			<fileset dir="${target}/source">
 				<include name="**/*.xml"	/>
-				<include name="**/*.php"	/>
-				<include name="**/*.js"		/>
-				<include name="**/*.css"	/>
-				<include name="**/*.ini"	/>
-				<include name="**/*.html"	/>
-				<include name="**/*.sql"	/>
+				<include name="site/paycart/defines.php"	/>
+<!--				<include name="**/*.php"	/>-->
+<!--				<include name="**/*.js"		/>-->
+<!--				<include name="**/*.css"	/>-->
+<!--				<include name="**/*.ini"	/>-->
+<!--				<include name="**/*.html"	/>-->
+<!--				<include name="**/*.sql"	/>-->
 			</fileset>
 		 <filterchain>
 		 	    <replaceregexp>

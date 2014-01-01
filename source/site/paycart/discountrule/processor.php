@@ -18,16 +18,15 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @author mManishTrivedi
  *
  */
-abstract class PaycartDiscountRuleProcessor extends JObject
+abstract class PaycartDiscountRuleProcessor
 {
 	// processor config
 	protected $config ;
 	
 	public function __construct($config = Array())
 	{
-		parent::__construct();
-		$this->set('config', $config);
-		
+		$this->config = $config;
+
 		return $this;
 	}
 	
@@ -36,7 +35,7 @@ abstract class PaycartDiscountRuleProcessor extends JObject
 	 * Render extra stuff which is used in processor config
 	 *  
 	 */
-	public function getProcessorHtml(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
+	public function getConfigHtml(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
 	{
 		$response->configHtml =  "<div></div>";
 		return $response;
@@ -165,10 +164,13 @@ class PaycartDiscountRuleRequest
 	public $rule_isClubbable 		=	1;
 	public $rule_usageLimit			=	1;		// rule usage limit
 	public $rule_buyerUsageLimit	=	1;		// buyer usage limit as per rule
+	public $rule_coupon				=	null;	// If rule have coupon code then set it
+	
 	
 	// Request Field : Cart/Product/Shipping specific
-	public $entity_price	 		=	0;	// unitPrice * quantity
+	public $entity_price	 		=	0;		// unitPrice * quantity
 	public $entity_total 			=	0;
+	public $entity_coupon 			=	null;	// if user have entered any coupon code
 	public $entity_previousAppliedRule;
 	
 	// Request Field : Usage data
@@ -195,21 +197,9 @@ class PaycartDiscountRuleResponse
 	public $message				=	null;
 	
 	// Response Field : {'message', 'warning', 'notice', 'error' }	
-	public $messageType			=	null;
+	public $messageType			=	Paycart::MESSAGE_TYPE_MESSAGE;
 	
 	// Response Field : Processor config html  	
-	public $configHtml				=	'';
+	public $configHtml			=	'';
 	
-	
-	/**
-	 * 
-	 * set default value here
-	 */
-	public function __construct()
-	{
-		// default system message
-		$this->messageType = Paycart::MESSAGE_TYPE_MESSAGE;
-		
-		return $this;
-	}
 }
