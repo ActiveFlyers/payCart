@@ -104,12 +104,14 @@
 		<reflexive>
 			<fileset dir="${target}/source">
 				<include name="**/*.xml"	/>
+<!-- PCTODO: use it in proper way
 				<include name="**/*.php"	/>
 				<include name="**/*.js"		/>
 				<include name="**/*.css"	/>
 				<include name="**/*.ini"	/>
 				<include name="**/*.html"	/>
 				<include name="**/*.sql"	/>
+-->
 			</fileset>
 		 <filterchain>
 		 	    <replaceregexp>
