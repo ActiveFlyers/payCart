@@ -100,3 +100,45 @@ CREATE TABLE `jos_paycart_productindex` (
   `content` TEXT
 );
 
+--
+-- Table structure for table `jos_paycart_cart`
+--
+CREATE TABLE `jos_paycart_cart` (
+  `cart_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `buyer_id` INTEGER DEFAULT '0',
+  `address_id` INTEGER DEFAULT 0,
+  `subtotal` REAL NOT NULL DEFAULT '0.00000' ,
+  `total` REAL NOT NULL DEFAULT '0.00000' ,
+  `modifiers` TEXT,
+  `currency` TEXT DEFAULT NULL,
+  `status` INTEGER DEFAULT '0',
+  `created_date` TEXT NOT NULL,
+  `modified_date` TEXT NOT NULL,
+  `checkout_date` TEXT DEFAULT '0000-00-00 00:00:00',
+  `paid_date` TEXT DEFAULT '0000-00-00 00:00:00',
+  `complete_date` TEXT DEFAULT '0000-00-00 00:00:00',
+  `cancellation_date` TEXT DEFAULT '0000-00-00 00:00:00',
+  `refund_date` TEXT DEFAULT '0000-00-00 00:00:00',
+  `params` TEXT DEFAULT NULL
+) ;
+
+--
+-- Table structure for table `jos_paycart_cartparticulars`
+--
+CREATE TABLE `jos_paycart_cartparticulars` (
+  `cartparticulars_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `cart_id` INTEGER DEFAULT '0',
+  `buyer_id` INTEGER DEFAULT '0',
+  `product_id` INTEGER DEFAULT '0',
+  `title` TEXT DEFAULT NULL,
+  `quantity` INTEGER DEFAULT '0',
+  `unit_cost` REAL NOT NULL DEFAULT '0.00000' ,
+  `tax` REAL NOT NULL DEFAULT '0.00000' ,
+  `discount` REAL NOT NULL DEFAULT '0.00000' ,
+  `price` REAL NOT NULL DEFAULT '0.00000' ,
+  `shipment_date` TEXT DEFAULT '0000-00-00 00:00:00',
+  `reversal_date` TEXT DEFAULT '0000-00-00 00:00:00',
+  `delivery_date` TEXT DEFAULT '0000-00-00 00:00:00',
+  `params` TEXT COMMENT 'Include extra stuff like, Notes.'
+) ;
+

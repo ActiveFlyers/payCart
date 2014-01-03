@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+		<fieldset name="shippingrule">
+			<field 	
+				name="shippingrule_id" 
+				type="text"
+				default="0"
+				label="COM_PAYCART_SHIPPINGRULE_ID_LABEL"
+				description="COM_PAYCART_SHIPPINGRULE_ID_DESC"
+				readonly="true"/>
+			
+			<field 
+				name="processor_type" 
+				type="text"				
+				label="COM_PAYCART_SHIPPINGRULE_PROCESSOR_TYPE_LABEL"
+				description="COM_PAYCART_SHIPPINGRULE_PROCESSOR_TYPE_DESC"/>
+					
+		</fieldset>
+</form>
