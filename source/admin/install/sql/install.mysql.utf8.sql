@@ -275,6 +275,67 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productindex` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_discountrule`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_discountrule` (
+  `discountrule_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `apply_on` varchar(50) NOT NULL COMMENT 'entity-name, rule apply on',
+  `published` tinyint(1) NOT NULL,
+  `amount` double(15,4) NOT NULL COMMENT 'Discount amount',
+  `is_percentage` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'is percentage or flat discount',
+  `buyer_usage_limit` int(11) NOT NULL COMMENT 'usage Counter per buyer',
+  `usage_limit` int(11) NOT NULL COMMENT 'rule''s usage counter',
+  `coupon` varchar(100) NOT NULL,
+  `is_clubbable` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Clubbable with other discount or not',
+  `is_successive` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'calculate discounted amount on row-total or base-price',
+  `sequence` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Applied discount sequence/priority.',
+  `start_date` datetime NOT NULL COMMENT 'Discount started date (date with time)',
+  `end_date` datetime NOT NULL COMMENT 'Discount end date (date with time)',
+  `processor_type` varchar(100) NOT NULL COMMENT 'processor name in small-case',
+  `processor_config` text NOT NULL COMMENT 'processor configuration',
+  `created_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL,
+  `ordering` int(11) NOT NULL,
+  PRIMARY KEY (`discountrule_id`),
+  KEY `coupon` (`coupon`),
+  KEY `applied_on` (`apply_on`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='All available discountrule' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_discountrule_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_lang` (
+  `discountrule_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `discountrule_id` int(11) NOT NULL,
+  `lang_code` varchar(10) NOT NULL,
+  `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
+  PRIMARY KEY (`discountrule_lang_id`),
+  KEY `discountrule_id` (`discountrule_id`),
+  KEY `lang_code` (`lang_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_discountrule_x_class`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_x_group` (
+  `discountrule_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  KEY `discountrule_id` (`discountrule_id`),
+  KEY `group_id` (`group_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Discount-rule and class mapper table' AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
 -- ------------------- DEFAULT VALUES ---------------------
 -- --------------------------------------------------------
 
@@ -287,5 +348,7 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('image_render_url', NULL),
 ('image_thumb_height', '100'),
 ('image_thumb_width', '133'),
-('image_upload_directory', NULL);
+('image_upload_directory', NULL),
+('discountrule_issuccessive', 1);
+
 

@@ -68,6 +68,16 @@ class PaycartFactory extends Rb_Factory
 	
 	/**
 	 * 
+	 * Invoke to get query object
+	 * @return Rb_query object
+	 */
+	public static function getQuery() 
+	{
+		return new Rb_Query();
+	}
+	
+	/**
+	 * 
 	 * Method invoke to get {Paycart + Site global} configuration object
 	 * 
 	 * @return JRegistry object
@@ -94,4 +104,21 @@ class PaycartFactory extends Rb_Factory
 		self::$_config->loadArray($records);
 		return self::$config;
 	}
+		
+	/**
+	 * 
+	 * Invoke to get processor instanse
+	 * @param  string $type, Processor type {taxrule, discountrule, shippingrule}
+	 * @param  string $className, Processor class name 
+	 * @param  Array $config, Processor configuration
+	 * @throws RuntimeException
+	 * 
+	 * @return Processor Instance
+	 */
+	public static function getProcessor($type, $className, $config = Array()) 
+	{
+		return self::getHelper('processor')->getProcessorInstance($type, $className, $config);
+		
+	}
+		
 }
