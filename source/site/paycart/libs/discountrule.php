@@ -174,7 +174,7 @@ class PaycartDiscountRule extends PaycartLib
 		$request->entity_total				 = $entity->total;
 		$request->entity_price				 = $entity->price;	//basePrice = unitPrice * Quantity
 		$request->entity_coupon				 = $entity->coupon;	// Posted coupon code
-		$request->entity_previousAppliedRule = $entity->previousDiscount;
+		$request->entity_previousAppliedRules = $entity->previousDiscount;
 		
 		// usage specific data
 		//@PCTODO :: call to get used counter of Rule
@@ -232,7 +232,7 @@ class PaycartDiscountRule extends PaycartLib
 			// # previousDiscount : where save previous-discount stuff
 			$discounRule->process($entity);
 			
-			//$entity->previousdiscount[] = $discountRule; 
+			//$entity->previousAppliedRules[] = $discountRule; 
 			
 			// no further process
 			if ($discountRule->get('_stopFurtherRules')) {

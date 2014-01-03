@@ -31,13 +31,24 @@ abstract class PaycartDiscountRuleProcessor
 	}
 	
 	/**
-	 * Method to invoke on Processor edit view
+	 * Method to invoke on Processor edit view. Set configHtml property on response object
+	 * 
 	 * Render extra stuff which is used in processor config
 	 *  
 	 */
 	public function getConfigHtml(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
 	{
 		$response->configHtml =  "<div></div>";
+		return $response;
+	}
+	
+	
+	/**
+	 * Method to invoke on checkout flow. 
+	 * 
+	 */
+	public function getProcessorHtml(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
+	{
 		return $response;
 	}
 	
@@ -52,20 +63,23 @@ abstract class PaycartDiscountRuleProcessor
 	{	
 		// if discount is already applied and current discount is non-clubbale
 		// then return false 
-		if (!empty($request->entity_previousAppliedRule) && !$request->rule_isClubbable) {
+		if (!empty($request->entity_previousAppliedRules) && !$request->rule_isClubbable) {
 			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NON_CLUBBABLE');
+			$response->messageType	= Paycart::MESSAGE_TYPE_MESSAGE;
 			return false; 
 		}
 				
 		// stop further rule-processing, if usage limit exceeded
-		if (count($request->rule_usageLimit) >= $request->rule_consumption) {
-			$response->message = Rb_Text::_('COM_PAYCART_DISCOUNTRULE_USAGE_LIMIT_EXCEEDED');
+		if ($request->rule_consumption >= $request->rule_usageLimit) {
+			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_USAGE_LIMIT_EXCEEDED');
+			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
 			return false;
 		}
 		
 		// stop further processing, if rule's buyer-usage limit exceeded
 		if ($request->buyer_consumption >= $request->rule_buyerUsageLimit) {
-			$response->message = Rb_Text::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED');
+			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED');
+			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
 			return false;
 		}
 
@@ -111,8 +125,7 @@ abstract class PaycartDiscountRuleProcessor
 			}
 						
 		} catch (Exception $e) {
-			$response->message 		= $e->getMessage();
-			$response->messageType	= Paycart::MESSAGE_TYPE_ERROR;
+			$response->exception = $e;
 		}
 		
 		return $response;
@@ -132,12 +145,12 @@ abstract class PaycartDiscountRuleProcessor
 	{
 		// validation
 		if (!$price) {
-			throw new UnexpectedValueException(Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NOT_ON_ZERO')); 
+			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NOT_ON_ZERO')); 
 		}
 
 		// validation
 		if (!$discountAmount) {
-			throw new UnexpectedValueException(Rb_Text::_('COM_PAYCART_DISCOUNTRULE_IS_NOT_ZERO')); 
+			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_DISCOUNTRULE_IS_NOT_ZERO')); 
 		}
 		
 		if($isPercentage) {
@@ -171,7 +184,7 @@ class PaycartDiscountRuleRequest
 	public $entity_price	 		=	0;		// unitPrice * quantity
 	public $entity_total 			=	0;
 	public $entity_coupon 			=	null;	// if user have entered any coupon code
-	public $entity_previousAppliedRule;
+	public $entity_previousAppliedRules;
 	
 	// Request Field : Usage data
 	public $rule_consumption;				//	rule used counter
@@ -199,7 +212,13 @@ class PaycartDiscountRuleResponse
 	// Response Field : {'message', 'warning', 'notice', 'error' }	
 	public $messageType			=	Paycart::MESSAGE_TYPE_MESSAGE;
 	
+	// Response Field : Set this var, If any exception occurred 
+	public $exception			=	'';
+	
 	// Response Field : Processor config html  	
 	public $configHtml			=	'';
+	
+	// Response Field : Processor html  	
+	public $html				=	'';
 	
 }
