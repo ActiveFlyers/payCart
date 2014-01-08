@@ -17,7 +17,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  *  
  * @author Gaurav Jain
  */
-class PaycartShippingRule extends PaycartLib 
+class PaycartShippingrule extends PaycartLib 
 {	
 	protected $shippingrule_id	= 0;
 	protected $processor_type	= '';
@@ -38,7 +38,7 @@ class PaycartShippingRule extends PaycartLib
 	 */
 	public static function getInstance($id = 0, $bindData = null, $dummy1 = null, $dummy2 = null)
 	{
-		return parent::getInstance('shippingrule', $id, $bindData);
+		return parent::getInstance('Shippingrule', $id, $bindData);
 	}
 	
 	public function reset() 
@@ -52,7 +52,7 @@ class PaycartShippingRule extends PaycartLib
 		return $processor->request('confightml', new PaycartShippingruleRequest())->html;		
 	}
 	
-	public function getPackageShippingCost($product_list, $include_tax)
+	public function getPackageShippingCost($product_list)
 	{
 		$price = array(2 => 5, 3 => 10, 4 => 17, 5 =>1);
 		return $price[$this->shippingrule_id];

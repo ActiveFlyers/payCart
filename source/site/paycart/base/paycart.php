@@ -60,4 +60,10 @@ class Paycart
 	
 	//Processor type
 	const PROCESSOR_TYPE_DISCOUNTRULE = 'discountrule';
+
+	// shipping rule
+	const SHIPPINGRULE_LIST_ORDER_BY_PRICE 		= 'price';
+	const SHIPPINGRULE_LIST_ORDER_BY_ORDERING 	= 'ordering';
+	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
+	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
 }
