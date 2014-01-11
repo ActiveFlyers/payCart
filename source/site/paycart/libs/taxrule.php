@@ -101,11 +101,11 @@ class PaycartTaxrule extends PaycartLib
 		$request->buyerCountry     = '';
 		$request->buyerVatNumber   = '';
 		
-		$request->productBasePrice = 0;
+		//$request->productBasePrice = 0;
 		$request->productQuantity  = 0;
 			
-		$request->cartTax          = 0;
-		$request->cartShipping     = 0;
+		//$request->cartTax          = 0;
+		//$request->cartShipping     = 0;
 		
 		return $request;
 	}

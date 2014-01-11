@@ -25,7 +25,7 @@ abstract class PaycartTaxruleProcessor
 	 */
 	protected $config = null;
 	
-	public function __construct($config)
+	public function __construct($config = null)
 	{
 		// set configuration
 		$this->config = $config;
@@ -66,10 +66,8 @@ abstract class PaycartTaxruleProcessor
 		}
 		
 		try{
-			$taxableAmount = $request->taxableAmount;
-			$taxAmount = $this->_calculateTax($taxableAmount, $request->taxRate);
 			//set amount on response
-			$response->taxAmount = $taxAmount;
+			$response->taxAmount = $this->_calculateTax($request->taxableAmount, $request->taxRate);
 		}
 		catch (Exception $e){
 			$response->exception = $e;
@@ -85,6 +83,14 @@ abstract class PaycartTaxruleProcessor
 	 */
 	protected function _calculateTax($taxableAmount, $taxRate)
 	{
+		if(!$taxableAmount){
+			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_TAXRULE_CANT_BE_PROCESSED_ON_ZERO'));
+		}
+		
+		if(!$taxRate){
+			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_TAXRULE_RATE_CANT_BE_ZERO'));
+		}
+		
 		return ($taxableAmount * floatval($taxRate) / 100);
 	}	
 }
@@ -93,28 +99,28 @@ abstract class PaycartTaxruleProcessor
 class PaycartTaxruleRequest
 {
 	//taxrate to be applied 
-	protected $taxRate			= 0; 
+	public  $taxRate		  = 0; 
 	
 	//The amount on which to calculate and apply taxrate
-	protected $taxableAmount	= 0;
+	public $taxableAmount	  = 0;
 	
 	//country code of buyer
-	protected $buyerCountryCode	= '';
+	public $buyerCountryCode  = '';
 	
 	//vat number of buyer
-	protected $buyerVatNumber   = '';
+	public $buyerVatNumber    = '';
 	
 	//base price of product
-	protected $productBasePrice = 0;
+	//protected $productBasePrice = 0;
 	
 	//Quantity of current entity
-	protected $productQuantity  = 1;
+	public $productQuantity   = 1;
 	
 	//total tax applied on cart(on which duties can be applied)
-	protected $cartTax   		= 0;
+	//protected $cartTax   	  = 0;
 	
 	//total shipping amount of cart
-	protected $cartShipping		= 0;
+	//protected $cartShipping = 0;
 }
 
 
