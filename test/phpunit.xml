@@ -1,0 +1,52 @@
+<phpunit 
+		bootstrap="bootstrap.php" 
+		colors="true"
+		stopOnError="true"
+        stopOnFailure="true"
+	>
+	
+	<testsuites>
+
+		<!-- PayCart-Installation -->
+<!--		<testsuite>-->
+<!--			<directory>system/suite/install</directory>-->
+<!--		</testsuite>-->
+
+		<!-- PayCart-Unit Test Cases -->
+		<testsuite>
+			<directory>unit/suites</directory>
+		</testsuite>
+		
+		<!-- PayCart-Webdriver -->
+		<testsuite>
+			<directory>system/suite/admin</directory>
+		</testsuite>
+		
+	</testsuites>
+	
+	<listeners>
+		<listener class="RbTestListener" file="core/listener.php">
+		</listener>
+	</listeners>
+
+	<filter>
+	  <whitelist addUncoveredFilesFromWhitelist="true">
+	    <directory suffix=".php">../components/com_paycart/paycart</directory>
+	  </whitelist>
+	</filter>
+<!--	-->
+<!--	<logging>-->
+<!--	  <log type="coverage-html" target="report" charset="UTF-8"-->
+<!--	       yui="true" highlight="false"-->
+<!--	       lowUpperBound="35" highLowerBound="70"/>-->
+<!--	  <log type="coverage-clover" target="reportcoverage.xml"/>-->
+<!--	  <log type="coverage-php" target="report/coverage.serialized"/>-->
+<!--	  <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>-->
+<!--	  <log type="json" target="report/logfile.json"/>-->
+<!--	  <log type="tap" target="report/logfile.tap"/>-->
+<!--	  <log type="junit" target="report/logfile.xml" logIncompleteSkipped="false"/>-->
+<!--	  <log type="testdox-html" target="report/testdox.html"/>-->
+<!--	  <log type="testdox-text" target="report/testdox.txt"/>-->
+<!--	</logging>-->
+
+</phpunit>

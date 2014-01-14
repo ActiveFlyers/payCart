@@ -45,7 +45,7 @@ class SeleniumConfig
 	
 	
 	// Installable kit
-	var $extension = RBTEST_EXTENSION_NAME; 	
+	var $extension = RBTEST_PACKAGE_NAME; 	
 	
 	// optional setting to install sample data
 	// If not set or true, sample data is installed. Set to false to not install sample data
@@ -83,8 +83,13 @@ class SeleniumConfig
 	// optional setting to set the initial window dimensions (Webdriver only)
 	var $windowSize = array(1280, 1024);
 	
-	public function __construct() {
+	public function __construct() 
+	{
 		$this->baseURI = $this->folder . $this->path;
+		
+		// Customized by Team Readybytes
+		$this->db_name 		= RBTEST_DB_NAME.'_test';
+		$this->db_prefix 	= 'jos_';
 	}
 
 }

@@ -52,6 +52,20 @@ class Paycart
 	const CART_STATUS_REVERSAL	=	5006;
 	const CART_STATUS_COMPLETE	=	5007;
 	
+	// JOOMLA System Message Type
+	const MESSAGE_TYPE_MESSAGE	= 'message'; 
+	const MESSAGE_TYPE_WARNING	= 'warning';
+	const MESSAGE_TYPE_NOTICE	= 'notice';
+	const MESSAGE_TYPE_ERROR	= 'error';
+	
 	//Processor type
+	const PROCESSOR_TYPE_DISCOUNTRULE = 'discountrule';
+
+	// shipping rule
+	const SHIPPINGRULE_LIST_ORDER_BY_PRICE 		= 'price';
+	const SHIPPINGRULE_LIST_ORDER_BY_ORDERING 	= 'ordering';
+	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
+	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
+
 	const PROCESSOR_TYPE_TAX    = 'taxrule';
 }

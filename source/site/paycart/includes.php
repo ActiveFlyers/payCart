@@ -41,7 +41,9 @@ Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/models',		'Modelform', 'P
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/tables',		'Table',	 'Paycart');
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/libs',			'',			 'Paycart');
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/helpers',		'Helper',	 'Paycart');
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/payment',		'',	 		 'Paycart');
+
+// AutoLoad TDS
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/discountrule',	'discountrule',	 'Paycart');
 
 //html
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/html/html',		'Html',		 'Paycart');
@@ -54,6 +56,8 @@ Rb_HelperLoader::addAutoLoadViews(PAYCART_PATH_SITE.'/views', RB_REQUEST_DOCUMEN
 // admin
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_ADMIN.'/controllers',	'Controller',		'PaycartAdmin');
 Rb_HelperLoader::addAutoLoadViews(PAYCART_PATH_ADMIN.'/views', RB_REQUEST_DOCUMENT_FORMAT, 'PaycartAdmin');
+
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/shippingrule',		'Shippingrule',	 'Paycart');
 
 //taxrule
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/taxrule',  'taxrule',   'Paycart');

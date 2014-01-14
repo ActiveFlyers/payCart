@@ -1,145 +1,137 @@
 <?php
 
-use SeleniumClient\By;
-use SeleniumClient\SelectElement;
-use SeleniumClient\WebDriver;
-use SeleniumClient\WebDriverWait;
-use SeleniumClient\DesiredCapabilities;
-use SeleniumClient\Http\HttpFactory;
-use SeleniumClient\Http\HttpClient;
-use Pages\AdminLoginPage;
-use Pages\ControlPanelPage;
+// core joomla webdriver file
+require_once 'JoomlaWebdriverTestCase.php';
 
-class RbWebdriverTestCase extends PHPUnit_Framework_TestCase
+// our wrapper Class
+class RbWebdriverTestCase extends JoomlaWebdriverTestCase
 {
 
-	/**
-	 * @var SeleniumConfig
-	 */
-	public $cfg; // configuration so tests can get at the fields
+	
+	private static $_stash_db ;
+	private static $_stash_config ;
+	private static $_pdo;
+	
+    /**
+     * This method is called before the first test of this test class is run.
+     *
+     * @since Method available since Release 3.4.0
+     */
+    public static function setUpBeforeClass()
+    {
+    	// TODO:: need to clean-up
+    	$cfg = new SeleniumConfig();
+    	
+    	################## CREATE NEW DATABASE ##################
+    	// root access
+    	$root		 	= "root"; 
+		$root_password 	= "password"; 
+		
+		try {
+			
+	        self::$_pdo = new PDO("mysql:host=localhost", $root, $root_password);
+	        
+	        // create new testing DB
+	        self::$_pdo->exec(	
+	        			"CREATE DATABASE `{$cfg->db_name}`; ".
+	                	//"CREATE USER '{$cfg->db_user}'@'localhost' IDENTIFIED BY '{$cfg->db_pass}';
+	                	"GRANT ALL ON `{$cfg->db_name}`.* TO '{$cfg->db_user}'@'localhost'; ".
+	                	"FLUSH PRIVILEGES;"
+	        		) OR die("\n". print_r(self::$_pdo->errorInfo(), true));
 
+	       
+	       // set database
+	       self::$_pdo->query("use {$cfg->db_name}");
+	       
+	      // Get Joomla db schema and load it
+	      $schema  = file_get_contents(RBTEST_BASE . '/_data/database/database.mysql');
+	      self::$_pdo->exec($schema);
+	    } catch (PDOException $e) {
+	        die("\n DB ERROR: ". $e->getMessage());
+	    } catch (Exception $e) {
+	        die("\n DB ERROR: ". $e->getMessage());
+	    }
+   	
+	    ################## CREATE NEW Configuration ##################
+	    
+		// create custom config
+		$config = (Array)  new JConfig();
+		
+		//stash the config stat.
+		self::$_stash_config = $config;
+		 
+		// Setup the new config  
+		$config['debug'] 			=  1;
+		$config['error_reporting'] 	= 'maximum';
+		
+		$config['dbtype']			= $cfg->db_type;
+		//$config['host'] 			= 'localhost';
+		//$config['user'] 			= $cfg->db_user;
+		//$config['password'] 		= $cfg->db_pass;
+		$config['db']				= $cfg->db_name;
+		$config['dbprefix'] 		= $cfg->db_prefix;
+		
+		self::changeConfigFile($config);
+
+	}
+	
 	/**
+	 * This method is called after the last test of this test class is run.
 	 *
-	 * @var Webdriver
+	 * @return  void
 	 */
-	protected $driver = null; // Webdriver
-
-	/**
-	 *
-	 * @var string
-	 */
-	protected $testUrl = null; // URL from configuration file
-
-	public function setUp()
+	public static function tearDownAfterClass()
 	{
 		$cfg = new SeleniumConfig();
-		$this->cfg = $cfg; // save current configuration
-		$this->testUrl = $cfg->host . $cfg->path;
-		switch ($cfg->browser)
+
+		################## Revert testing stuff ##################
+		// reverse prev config
+		self::changeConfigFile(self::$_stash_config);
+		// Drop test suite's db
+		self::$_pdo->exec(	"DROP DATABASE `{$cfg->db_name}`; ");
+		
+		self::$_stash_config 	= null;
+    }
+    
+    public function setUp() 
+    {
+    	// TODO :: write code for test specific data
+    	parent::setUp();
+    }
+    
+	public function tearDown() 
+    {
+    	// TODO :: write code for revert test specific data
+    	parent::tearDown();
+    }
+    
+    /**
+     * 
+     * It will update joomla configuration file
+     * @param $args => key value pair
+     */
+    public static function changeConfigFile($args) 
+    {		
+		// formatter
+		$formatter = new JRegistryFormatPHP();
+		
+		//load prev config
+		$config = new JConfig();
+		
+		// update new config
+		foreach($args as $k=>$v)
 		{
-			case '*chrome':
-				$browser = 'firefox';
-				break;
-			case '*googlechrome':
-			default:
-				$browser = 'chrome';
-				break;
-		}
-
-		$desiredCapabilities = new DesiredCapabilities($browser);
-		$this->driver = new WebDriver($desiredCapabilities);
-		if (isset($this->cfg->windowSize) && is_array($this->cfg->windowSize))
-		{
-			$this->driver->setCurrentWindowSize($this->cfg->windowSize[0], $this->cfg->windowSize[1]);
-		}
-		else
-		{
-			$this->driver->setCurrentWindowSize(1280, 1024);
-		}
-	}
-
-	public function tearDown()
-	{
-		if($this->driver != null)
-		{
-			$this->driver->clearCurrentCookies();
-			$this->driver->quit();
-		}
-	}
-
-	/**
-	 *
-	 * @param string  $type             Class name for object to create.
-	 * @param bool    $checkForNotices  If true, check for notices after page load
-	 * @param string  $url              Optional URL to load
-	 *
-	 * @return AdminPage
-	 */
-	public function getPageObject($type, $checkForNotices = true, $url = null)
-	{
-		$pageObject =  new $type($this->driver, $this, $url);
-		if ($checkForNotices)
-		{
-			$this->assertFalse($pageObject->checkForNotices(), 'PHP Notice found on page ' . $pageObject);
-		}
-		return $pageObject;
-	}
-
-	public function doAdminLogin()
-	{
-		$d = $this->driver;
-		$d->clearCurrentCookies();
-		$url = $this->cfg->host . $this->cfg->path . 'administrator/index.php';
-		$loginPage = $this->getPageObject('AdminLoginPage', true, $url);
-		$cpPage = $loginPage->loginValidUser($this->cfg->username, $this->cfg->password);
-		$this->assertTrue(is_a($cpPage, 'ControlPanelPage'));
-		return $cpPage;
-	}
-
-	public function doAdminLogout()
-	{
-		// Clear cookies to force logout
-		$this->driver->clearCurrentCookies();
-		$url = $this->cfg->host . $this->cfg->path . 'administrator/index.php';
-		$loginPage = $this->getPageObject('AdminloginPage', true, $url);
-		$this->assertTrue(is_a($loginPage, 'AdminloginPage'));
-		return $loginPage;
-	}
-
-	/**
-	 * Takes screenshot of current screen, saves it in specified default directory or as specified in parameter
-	 * @param String $folder
-	 * @throws \Exception
-	 * @return string
-	 */
-	public function helpScreenshot($fileName, $folder = null)
-	{
-		$this->driver->setCurrentWindowSize(1280, 1024);
-		$screenshotsDirectory = null;
-		if (isset($folder)) {
-			$screenshotsDirectory = $folder;
-		}
-		else if ($this->driver->getScreenShotsDirectory()) {
-			$screenshotsDirectory = $this->driver->getScreenShotsDirectory();
-		}
-		else { throw new \Exception("Must Specify Screenshot Directory");
-		}
-
-		$command = "screenshot";
-		$urlHubFormatted = $this->driver->getHubUrl() . "/session/{$this->driver->getSessionId()}/{$command}";
-
-		$httpClient = HttpFactory::getClient($this->driver->getEnvironment());
-		$results = $httpClient->setUrl($urlHubFormatted)->setHttpMethod(HttpClient::GET)->execute();
-
-		if (isset($results["value"]) && trim($results["value"]) != "")
-		{
-			if (!file_exists($screenshotsDirectory)) {
-				mkdir($screenshotsDirectory, 0777, true);
+			if(isset($config->$k)) {
+				$config->$k = $v;
+		        //echo " Updating [$k |:::| $v]";
+		        continue;
 			}
-
-			file_put_contents($screenshotsDirectory . "/" .$fileName, base64_decode($results["value"]));
-
-			return $fileName;
+			//echo " ERROR **** Invalid config [$k |:::| $v]";
 		}
-	}
+		
+		$params = array('class' => 'JConfig', 'closingtag' => false);
+		$str = $formatter->objectToString($config, $params);
+		// write new config
+		file_put_contents(JPATH_BASE.'/configuration.php', $str);
+    }
 }

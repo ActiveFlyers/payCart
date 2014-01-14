@@ -7,7 +7,7 @@
 	
 	<target name="delete">
 		<if>
-			<equals arg1="os_name" arg2="unix" />
+			<equals arg1="${os_name}" arg2="unix" />
 			<then>
 				<exec command='sudo mysql -uroot -ppassword --execute="DROP DATABASE IF EXISTS @joomla.dbname@;"' passthru="true" />
 				<exec command='sudo mysql -uroot -ppassword --execute="DROP USER @joomla.dbuser@;"' passthru="true" />
