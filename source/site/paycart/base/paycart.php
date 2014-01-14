@@ -66,4 +66,6 @@ class Paycart
 	const SHIPPINGRULE_LIST_ORDER_BY_ORDERING 	= 'ordering';
 	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
 	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
+
+	const PROCESSOR_TYPE_TAX    = 'taxrule';
 }
