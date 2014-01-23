@@ -60,6 +60,15 @@ class Paycart
 	
 	//Processor type
 	const PROCESSOR_TYPE_DISCOUNTRULE = 'discountrule';
+	
+	//Paycart Status
+	const STATUS_PUBLISHED 		= 'published';		// Content publish for end-user
+	const STATUS_TRASHED 		= 'trashed';		// Trashed content 
+	const STATUS_UNPUBLISHED 	= 'unpublished';	// Unpublish content. Visible only backend
+	const STATUS_INVISIBLE		= 'invisible';		// Not listed in front-end, access by url
+	//@PCTODO :: admin or owner
+	const STATUS_ADMIN	 		= 'admin';			// visible only for admin-user (at front-end)
+		
 
 	// shipping rule
 	const SHIPPINGRULE_LIST_ORDER_BY_PRICE 		= 'price';
@@ -68,4 +77,5 @@ class Paycart
 	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
 
 	const PROCESSOR_TYPE_TAX    = 'taxrule';
+
 }

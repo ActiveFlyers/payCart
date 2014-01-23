@@ -33,4 +33,16 @@ class PaycartLib extends Rb_Lib
 	{
 		return PaycartFactory::getInstance($this->getName(), 'Model');
 	}
+
+	/**
+	 * 
+	 * Reload current object
+	 * 
+	 * @return PaycartLib instance
+	 */
+	public function reload()
+	{
+		$data = $this->getModel()->loadRecords(array('id'=>$this->getId()));
+		return $this->bind($data[$this->getId()]);
+	}
 }

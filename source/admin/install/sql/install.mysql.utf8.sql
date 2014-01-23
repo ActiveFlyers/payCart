@@ -121,6 +121,43 @@ CREATE TABLE IF NOT EXISTS `#__paycart_category` (
   PRIMARY KEY (`category_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='All products''s category will be store here ' AUTO_INCREMENT=1 ;
 
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_productcategory`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
+  `productcategory_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cover_media` varchar(255) DEFAULT NULL,
+  `parent` int(11) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `created_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL,
+  `ordering` int(11) NOT NULL,
+  PRIMARY KEY (`productcategory_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_productcategory_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_productcategory_lang` (
+  `productcategory_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `productcategory_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `alias` int(11) NOT NULL,
+  `lang_code` char(50) NOT NULL,
+  `description` text,
+  `metadata_title` varchar(255) DEFAULT NULL,
+  `metadata_keywords` varchar(255) DEFAULT NULL,
+  `metadata_description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`productcategory_lang_id`),
+  UNIQUE KEY `alias` (`alias`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 -- --------------------------------------------------------
 
 --

@@ -72,23 +72,35 @@ CREATE TABLE `jos_paycart_product` (
   `meta_data` TEXT DEFAULT NULL
 ) ;
 
---
--- Table structure for table `jos_paycart_category`
---
+-------------------------------------------------------------
+-- Table structure for table `jos_paycart_productcategory`
+-------------------------------------------------------------
 
-CREATE TABLE `jos_paycart_category` (
-  `category_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE `jos_paycart_productcategory` (
+  `productcategory_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `cover_media` TEXT DEFAULT NULL,
+  `parent` INTEGER  DEFAULT '0',
+  `status` TEXT DEFAULT '0',
+  `created_date` TEXT NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_date` TEXT NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `ordering` INTEGER NOT NULL DEFAULT '0'
+) ;
+
+
+-------------------------------------------------------------
+-- Table structure for table `jos_paycart_productcategory_lang`
+-------------------------------------------------------------
+
+CREATE TABLE `jos_paycart_productcategory_lang` (
+  `productcategory_lang_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `productcategory_id` INTEGER NOT NULL DEFAULT '0',  
   `title` TEXT NOT NULL,
   `alias` TEXT NOT NULL UNIQUE,
+  `lang_code` TEXT DEFAULT NULL,    
   `description` TEXT DEFAULT NULL,
-  `cover_image` TEXT DEFAULT NULL,
-  `parent` INTEGER  DEFAULT '0',
-  `ordering` INTEGER NOT NULL DEFAULT '0',
-  `published` INTEGER DEFAULT '0',
-  `params` TEXT DEFAULT NULL,
-  `created_by` INTEGER NOT NULL DEFAULT '0',
-  `created_date` TEXT NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_date` TEXT NOT NULL DEFAULT '0000-00-00 00:00:00'
+  `metadata_title` TEXT DEFAULT NULL,
+  `metadata_keywords` TEXT DEFAULT NULL,
+  `metadata_description` TEXT DEFAULT NULL
 ) ;
 
 --
