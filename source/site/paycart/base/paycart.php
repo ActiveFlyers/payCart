@@ -69,4 +69,13 @@ class Paycart
 	//@PCTODO :: admin or owner
 	const STATUS_ADMIN	 		= 'admin';			// visible only for admin-user (at front-end)
 		
+
+	// shipping rule
+	const SHIPPINGRULE_LIST_ORDER_BY_PRICE 		= 'price';
+	const SHIPPINGRULE_LIST_ORDER_BY_ORDERING 	= 'ordering';
+	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
+	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
+
+	const PROCESSOR_TYPE_TAX    = 'taxrule';
+
 }

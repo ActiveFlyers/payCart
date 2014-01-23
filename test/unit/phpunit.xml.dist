@@ -21,6 +21,7 @@
 	<filter>
 	  <whitelist addUncoveredFilesFromWhitelist="true">
 	    <directory suffix=".php">../../components/com_paycart/paycart</directory>
+	    <directory suffix=".php">../../plugins/paycart</directory>
 	  </whitelist>
 	</filter>
 	

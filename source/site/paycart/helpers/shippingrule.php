@@ -25,7 +25,7 @@ class PaycartHelperShippingRule extends JObject
 	 * 
 	 * @return array array($best_price_shippingrule, $best_grade_shippingrule, $shippingrules_price)
 	 */
-	public function _getBestShippingRule($shippingrule_list, $product_list)
+	public function getBestRule($shippingrule_list, $product_list)
 	{
 		$best_price = null;
 		$best_price_shippingrule = null;
@@ -38,8 +38,7 @@ class PaycartHelperShippingRule extends JObject
 			$shippingrule_instance = PaycartShippingrule::getInstance($id_shippingrule);
 
 			// TODO : can be combined below two function calls
-			$price_with_tax = $shippingrule_instance->getPackageShippingCost($product_list, true);
-			$price_without_tax = $shippingrule_instance->getPackageShippingCost($product_list, false);
+			list($price_without_tax, $price_with_tax) = $shippingrule_instance->getPackageShippingCost($product_list);			
 			if (is_null($best_price) || $price_with_tax < $best_price){
 				$best_price = $price_with_tax;
 				$best_price_shippingrule = $id_shippingrule;
@@ -59,9 +58,11 @@ class PaycartHelperShippingRule extends JObject
 		return array($best_price_shippingrule, $best_grade_shippingrule, $shippingrules_price);
 	}
 		
-	function _getBestPriceDeliveryOption($best_price_shippingrules, $shippingrules_price, $packages)
+	public function getBestPriceDeliveryOption($packages, $delivery_option_list, $best_price_shippingrules, $shippingrules_price)
 	{
-		// Reset $best_price_shippingrule, it's now an array
+		// $delivery_option_list is not being used ,
+		// but used to make common for all same function call
+
 		$best_price_shippingrule = array();
 		$key = '';
 
@@ -91,7 +92,7 @@ class PaycartHelperShippingRule extends JObject
 			));			
 	}
 	
-	function _getBestGradeDeliveryOption($best_grade_shippingrules, $shippingrules_price, $packages, $delivery_option_list)
+	public function getBestGradeDeliveryOption($packages, $delivery_option_list, $best_grade_shippingrules, $shippingrules_price)
 	{
 		// Reset $best_grade_shippingrule, it's now an array
 			$best_grade_shippingrule = array();
@@ -128,53 +129,85 @@ class PaycartHelperShippingRule extends JObject
 	}
 	
 	// Common Shippingrule
-	function _getUniqueDeliveryOption($common_shippingrules, $shippingrules_price, $packages, $delivery_option_list)
+	public function getUniqueDeliveryOption($packages, $delivery_option_list, $common_shippingrules, $shippingrules_price)
 	{
-	// Get all delivery options with a unique shippingrule
-			foreach ($common_shippingrules as $id_shippingrule)
+		// Get all delivery options with a unique shippingrule
+		foreach ($common_shippingrules as $id_shippingrule)
+		{
+			$price = 0;
+			$key = '';
+			$package_list = array();
+			$product_list = array();
+			$total_price_with_tax = 0;
+			$total_price_without_tax = 0;
+			$price_with_tax = 0;
+			$price_without_tax = 0;
+
+			foreach ($packages as $id_package => $package)
 			{
-				$price = 0;
-				$key = '';
-				$package_list = array();
-				$product_list = array();
-				$total_price_with_tax = 0;
-				$total_price_without_tax = 0;
-				$price_with_tax = 0;
-				$price_without_tax = 0;
+				$key .= $id_shippingrule.',';
+				$price_with_tax += $shippingrules_price[$id_package][$id_shippingrule]['with_tax'];
+				$price_without_tax += $shippingrules_price[$id_package][$id_shippingrule]['without_tax'];
+				$package_list[] = $id_package;
+				$product_list = array_merge($product_list, $package['product_list']);
+			}
 
-				foreach ($packages as $id_package => $package)
-				{
-					$key .= $id_shippingrule.',';
-					$price_with_tax += $shippingrules_price[$id_package][$id_shippingrule]['with_tax'];
-					$price_without_tax += $shippingrules_price[$id_package][$id_shippingrule]['without_tax'];
-					$package_list[] = $id_package;
-					$product_list = array_merge($product_list, $package['product_list']);
-				}
-
-				if (!isset($delivery_option_list[$key]))
-					$delivery_option_list[$key] = array(
-						'is_best_price' => false,
-						'is_best_grade' => false,
-						'unique_shippingrule' => true,
-						'shippingrule_list' => array(
-							$id_shippingrule => array(
-								'price_with_tax' => $price_with_tax,
-								'price_without_tax' => $price_without_tax,
-								'package_list' => $package_list,
-								'product_list' => $product_list,
-							)
+			if (!isset($delivery_option_list[$key]))
+				$delivery_option_list[$key] = array(
+					'is_best_price' => false,
+					'is_best_grade' => false,
+					'unique_shippingrule' => true,
+					'shippingrule_list' => array(
+						$id_shippingrule => array(
+							'price_with_tax' => $price_with_tax,
+							'price_without_tax' => $price_without_tax,
+							'package_list' => $package_list,
+							'product_list' => $product_list,
 						)
-					);
-				else
-					$delivery_option_list[$key]['unique_shippingrule'] = (count($delivery_option_list[$key]['shippingrule_list']) <= 1);
+					)
+				);
+			else
+				$delivery_option_list[$key]['unique_shippingrule'] = (count($delivery_option_list[$key]['shippingrule_list']) <= 1);
 			}
 			
 			return $delivery_option_list;
 	}
 
-	public function getDeliveryOptionList()
+	/**
+	 * user defined sorting option to overcome the issue http://stackoverflow.com/questions/20882691/sorting-with-arsort-not-stable
+	 * @param array $a
+	 * @param array $b
+	 */
+	public function ruleCounterSort($a, $b)
+	{
+		return $a[2] == $b[2] ? ($a[0] < $b[0]) : ($a[2] < $b[2] ? 1 : -1);	
+	}
+	
+	public function sortAccordingToCounter($shippingrule_counter)
+	{
+		//Construct a new array whose elements are the original array's keys, values, and also position
+		$temp = array();
+		$i = 0;
+		foreach ($shippingrule_counter as $key => $value) {
+  			$temp[] = array($i, $key, $value);
+  			$i++;
+		}
+				
+		// Then sort using a user-defined order that takes the original position into account:
+		uasort($temp, array($this, 'ruleCounterSort'));
+		
+		//Finally, convert it back to the original associative array:
+		$shippingrule_counter = array();
+		foreach ($temp as $val) {
+		  $shippingrule_counter[$val[1]] = $val[2];
+		}
+				
+		return $shippingrule_counter;		
+	}
+	
+	public function getDeliveryOptionList($product_grouped_by_address, $shippingrules_grouped_by_product)
 	{	
-		$package_list = $this->getPackageList();
+		$package_list = $this->getPackageList($product_grouped_by_address, $shippingrules_grouped_by_product);
 		// Foreach addresses
 		foreach ($package_list as $id_address => $packages)
 		{
@@ -209,17 +242,19 @@ class PaycartHelperShippingRule extends JObject
 				$best_grade_shippingrule = null;
 
 				// get best shipping rule according to price and grade
-				list($best_price_shippingrules[$id_package], $best_grade_shippingrules[$id_package], $shippingrules_price[$id_address][$id_package]) =  $this->_getBestShippingRule($package['shippingrule_list'], $package['product_list']);
+				list($best_price_shippingrules[$id_package], 
+						$best_grade_shippingrules[$id_package], 
+						$shippingrules_price[$id_address][$id_package]) =  $this->getBestRule($package['shippingrule_list'], $package['product_list']);
 			}
 
 			// LIST TYPE 1: Add the delivery option with best price as best price
-			$delivery_option_list[$id_address] = $this->_getBestPriceDeliveryOption($best_price_shippingrules, $shippingrules_price[$id_address], $packages);
+			$delivery_option_list[$id_address] = $this->getBestPriceDeliveryOption($packages, $delivery_option_list[$id_address], $best_price_shippingrules, $shippingrules_price[$id_address]);
 		
 			// LIST TYPE 2: Add the delivery option with best price as best grade
-			$delivery_option_list[$id_address] = $this->_getBestGradeDeliveryOption($best_grade_shippingrules, $shippingrules_price[$id_address], $packages, $delivery_option_list[$id_address]);
+			$delivery_option_list[$id_address] = $this->getBestGradeDeliveryOption($packages, $delivery_option_list[$id_address], $best_grade_shippingrules, $shippingrules_price[$id_address]);
 				
 			// LIST TYPE 3: Get all delivery options with a unique shippingrule
-			$delivery_option_list[$id_address] = $this->_getUniqueDeliveryOption($common_shippingrules, $shippingrules_price[$id_address], $packages, $delivery_option_list[$id_address]);
+			$delivery_option_list[$id_address] = $this->getUniqueDeliveryOption($packages, $delivery_option_list[$id_address], $common_shippingrules, $shippingrules_price[$id_address]);
 
 		}
 		
@@ -259,33 +294,31 @@ class PaycartHelperShippingRule extends JObject
 	/**
 	 * 
 	 * Sort list of option delivery by parameters define in the BO
+	 * VVVVVVVVVVV IMP : Key should be sorted in reverse order if values are same and sorting order is DESC
 	 * @param $option1
 	 * @param $option2
 	 * @return int -1 if $option 1 must be placed before and 1 if the $option1 must be placed after the $option2
 	 */
-	public static function sortDeliveryOptionList($option1, $option2)
+	public function sortDeliveryOptionList($option1, $option2)
 	{
-		static $order_by_price = null;
-		static $order_way = null;
-		if (is_null($order_by_price))
-			$order_by_price = true; // PCTODO : Load from configuration DEFAULT_SORT
-		if (is_null($order_way))
-			$order_way = true; 		// PCTODO : Load from configuration DEFAULT_ORDER
-			
-		if ($order_by_price){		
-			if ($order_way){
-				return ($option1['total_price_with_tax'] < $option2['total_price_with_tax']) * 2 - 1; // return -1 or 1
+		$config = PaycartFactory::getConfig();
+		
+		if ($config->shippingrule_list_order_by == Paycart::SHIPPINGRULE_LIST_ORDER_BY_PRICE){					
+			if ($config->shippingrule_list_order_in == Paycart::SHIPPINGRULE_LIST_ORDER_IN_ASC){
+				return ($option1['total_price_with_tax'] <= $option2['total_price_with_tax']) ? -1 : 1 ; // return -1 or 1
 			}
 			
-			return ($option1['total_price_with_tax'] >= $option2['total_price_with_tax']) * 2 - 1; // return -1 or 1
+			//IMP:  sort if in case of equal values (Descending order)
+			return ($option1['total_price_with_tax'] > $option2['total_price_with_tax']) ? -1 : 1; // return -1 or 1
 		}
 		
 		// else
-		if ($order_way){
-			return ($option1['ordering'] < $option2['ordering']) * 2 - 1; // return -1 or 1
+		if ($config->shippingrule_list_order_in == Paycart::SHIPPINGRULE_LIST_ORDER_IN_ASC){				// PCTODO : Use constant
+			return ($option1['ordering'] <= $option2['ordering']) ? -1 : 1 ; // return -1 or 1
 		}
 
-		return ($option1['ordering'] >= $option2['ordering']) * 2 - 1; // return -1 or 1
+		//IMP:  sort if in case of equal values (Descending order)
+		return ($option1['ordering'] > $option2['ordering']) ? -1 : 1 ; // return -1 or 1
 	}
 	
 	public function getPackageList($product_grouped_by_address, $shippingrules_grouped_by_product)
@@ -309,10 +342,16 @@ class PaycartHelperShippingRule extends JObject
 					$shippingrule_counter[$ruleid]++;
 				}
 			}
-			arsort($shippingrule_counter);
 			
+			$shippingrule_counter = $this->sortAccordingToCounter($shippingrule_counter);
 			
 			// step 3 : find minimum number of package
+			// loop for each product
+			// 		loop for each $shippingrule_counter in decreasing order or occurence
+			// 			if shipping rule is applicable for product
+			// 				then merge products
+			//				and find common shipping rule (if already has some)
+			//				break;			
 			$package_list[$address_id] = array();		
 			foreach($products as $product_id){
 				$rules = $product_shippingrules[$product_id];
