@@ -25,7 +25,7 @@ class PaycartHelperShippingRule extends JObject
 	 * 
 	 * @return array array($best_price_shippingrule, $best_grade_shippingrule, $shippingrules_price)
 	 */
-	public function getBestRule($shippingrule_list, $product_list)
+	public function getBestRule($shippingrule_list, $product_list, $delivery_address_id, $product_details)
 	{
 		$best_price = null;
 		$best_price_shippingrule = null;
@@ -38,7 +38,7 @@ class PaycartHelperShippingRule extends JObject
 			$shippingrule_instance = PaycartShippingrule::getInstance($id_shippingrule);
 
 			// TODO : can be combined below two function calls
-			list($price_without_tax, $price_with_tax) = $shippingrule_instance->getPackageShippingCost($product_list);			
+			list($price_without_tax, $price_with_tax) = $shippingrule_instance->getPackageShippingCost($product_list, $delivery_address_id, $product_details);			
 			if (is_null($best_price) || $price_with_tax < $best_price){
 				$best_price = $price_with_tax;
 				$best_price_shippingrule = $id_shippingrule;
@@ -243,8 +243,8 @@ class PaycartHelperShippingRule extends JObject
 
 				// get best shipping rule according to price and grade
 				list($best_price_shippingrules[$id_package], 
-						$best_grade_shippingrules[$id_package], 
-						$shippingrules_price[$id_address][$id_package]) =  $this->getBestRule($package['shippingrule_list'], $package['product_list']);
+						$best_grade_shippingrules[$id_package],           // IMP : Third argument is for sending details regarding product details
+						$shippingrules_price[$id_address][$id_package]) =  $this->getBestRule($package['shippingrule_list'], $package['product_list'], $id_address, $product_grouped_by_address[$id_address]);
 			}
 
 			// LIST TYPE 1: Add the delivery option with best price as best price
@@ -327,7 +327,7 @@ class PaycartHelperShippingRule extends JObject
 		foreach($product_grouped_by_address as $address_id => $products){
 			// step1 : get list of shipping rule, applicable for the products to be delivered on this address
 			$product_shippingrules = array();
-			foreach ($products as $product_id){
+			foreach ($products as $product_id => $product){
 				$product_shippingrules[$product_id] = $shippingrules_grouped_by_product[$product_id];
 			}		
 		
@@ -353,7 +353,7 @@ class PaycartHelperShippingRule extends JObject
 			//				and find common shipping rule (if already has some)
 			//				break;			
 			$package_list[$address_id] = array();		
-			foreach($products as $product_id){
+			foreach($products as $product_id => $product_details){
 				$rules = $product_shippingrules[$product_id];
 				foreach($shippingrule_counter as $rule => $counter){
 					if(!in_array($rule, $rules)){

@@ -39,8 +39,18 @@ abstract class PaycartShippingruleProcessor
 		return $content;
 	}
 	
-	public function getConfig()
+	public function getConfig($key = null, $defaultValue = null)
 	{
-		return true;
+		if($key === null){
+			return $this->config;
+		}
+		
+		if(isset($this->config->$key)){
+			return $this->config->$key;
+		}
+		
+		return $defaultValue;
 	}
+	
+	abstract public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response);
 }

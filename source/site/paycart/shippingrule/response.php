@@ -19,9 +19,20 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartShippingruleResponse
 {
-	/**
-	 * Set html if any html to be shown
-	 * @var String
-	 */
-	public $html = '';
+	public $amount;
+	
+	// Response Field : need to display any kind of msg for user/admin 	
+	public $message				=	null;
+	
+	// Response Field : {'message', 'warning', 'notice', 'error' }	
+	public $messageType			=	Paycart::MESSAGE_TYPE_MESSAGE;
+	
+	// Response Field : Set this var, If any exception occurred 
+	public $exception			=	'';
+	
+	// Response Field : Processor config html  	
+	public $configHtml			=	'';
+	
+	// Response Field : Processor html  	
+	public $html				=	'';
 }
