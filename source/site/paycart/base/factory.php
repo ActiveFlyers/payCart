@@ -118,7 +118,20 @@ class PaycartFactory extends Rb_Factory
 	public static function getProcessor($type, $className, $config = Array()) 
 	{
 		return self::getHelper('processor')->getProcessorInstance($type, $className, $config);
-		
 	}
-		
+	
+	/**
+	*	
+	* Get current enable Paycart-Language Tag	
+	*/
+	public static function getLanguageTag() 
+	{
+		//@PCTODO :: get current language tag, not from joomla
+		$langCode = '';
+		if(!$langCode) {
+			$langCode = self::getLanguage()->getTag();
+		}
+
+		return $langCode;
+	}
 }
