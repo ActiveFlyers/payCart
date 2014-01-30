@@ -78,4 +78,18 @@ class Paycart
 
 	const PROCESSOR_TYPE_TAX    = 'taxrule';
 
+	// Cart Particulars Type
+	const CART_PARTICULAR_TYPE_PRODUCT 			= 'product';
+	const CART_PARTICULAR_TYPE_PROMOTION	 	= 'promotion';
+	const CART_PARTICULAR_TYPE_DUTIES 			= 'duties';
+	const CART_PARTICULAR_TYPE_SHIPPING			= 'shipping';
+	// @Future Purpose
+//	const CART_PARTICULAR_TYPE_SHIPPING_PROMOTION	= 'shippingpromotion';
+	const CART_PARTICULAR_TYPE_ADJUSTMENT			= 'adjustment';
+
+	const CART_PARTICULAR_QUANTITY_MINIMUM = 1;
+
+	const CHECKOUT_SEQUENCE_OPTION_VALUE_TAX_DISCOUNT = 'td';
+	const CHECKOUT_SEQUENCE_OPTION_VALUE_DISCOUNT_TAX = 'dt';
+	
 }

@@ -18,19 +18,50 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartHelperCart extends PaycartHelper
 {	
 	/**
-	* @return array of availble product types.
-	*/
-	public static function getStatus() 
+	 * 
+	 * Apply Tax rule
+	 * @param PaycartCart $currentCart
+	 * @param PaycartCartparticular $cartParticular
+	 */
+	public function applyTaxrule(PaycartCart $currentCart, PaycartCartparticular $cartParticular) 
 	{
-		$status = array('NONE', 'CHECKOUT', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCEL', 'REFUND', 'REVERSAL', 'COMPLETE');
-		$data	= array();
+		// invoke discount helper to apply all apllicable tax rules
+		PaycartFactory::getHelper('taxrule')->applyTax($cartParticular, $currentCart);
+	}
+
+	/**
+	 * 
+	 * Apply Discount rule
+	 * @param PaycartCart $currentCart
+	 * @param PaycartCartparticular $cartParticular
+	 */
+	public function applyDiscountrule(PaycartCart $currentCart, PaycartCartparticular $cartParticular)  
+	{
+		// invoke discount helper to apply all apllicable discount rules
+		PaycartFactory::getHelper('discountrule')->applyDiscount($cartParticular, $currentCart);
+	}
+	
+	/**
+	 * 
+	 * Create hash key on cart-particular basis
+	 * @param PaycartCartparticular $cartParticular
+	 * 
+	 * @return retun hash-key
+	 */
+	public function getHash(PaycartCartparticular $cartParticular)
+	{
+		$cartId 		= $cartParticular->getCartId();
+		$particularId 	= $cartParticular->getParticularId();
+		$particularType	= $cartParticular->getType();
 		
-		foreach ($status as $value){
-			$key = 'Paycart::CART_STATUS_'.$value;
-			$key = constant($key);
-			$data[$key] = 'COM_PAYCART_CART_STATUS_'.$value;
-		}
+		/**
+		 * 
+		 * @NOTE:: 
+		 * 1#. Sequence must be "$cartId.$particularId.$particularType"  
+		 * 2#. Hash must be 16 digit (hex-code) (that why second arg is true)
+		 */
+		$hash	=	md5($cartId.$particularId.$particularType, true);
 		
-		return $data;
+		return $hash;
 	}
 }
