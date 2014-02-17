@@ -15,7 +15,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @since 1.0.0
  * @author Gaurav Jain
  */
-class PaycartHelperShippingRule extends JObject
+class PaycartHelperShippingRule extends PaycartHelper
 {	
 	/**
 	 * Find best shippingrule according to price and grade, in the given list of $shippingrule_list

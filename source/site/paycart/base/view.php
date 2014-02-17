@@ -38,4 +38,24 @@ class PaycartView extends PaycartViewbase
 		$this->input = PaycartFactory::getApplication()->input;
 		return $this;
 	}
+	
+	protected function _adminGridToolbar()
+	{
+		Rb_HelperToolbar::addNew('new');
+		Rb_HelperToolbar::editList();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::publish();
+		Rb_HelperToolbar::unpublish();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::deleteList();
+	}
+	
+	protected function _adminEditToolbar()
+	{
+		Rb_HelperToolbar::apply();
+		Rb_HelperToolbar::save();
+		Rb_HelperToolbar::save2new();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::cancel();
+	}
 }
