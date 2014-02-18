@@ -26,7 +26,7 @@ class PaycartHelperCart extends PaycartHelper
 	public function applyTaxrule(PaycartCart $currentCart, PaycartCartparticular $cartParticular) 
 	{
 		// invoke discount helper to apply all apllicable tax rules
-		PaycartFactory::getHelper('taxrule')->applyTax($cartParticular, $currentCart);
+		return PaycartFactory::getHelper('taxrule')->applyTax($cartParticular, $currentCart);
 	}
 
 	/**
@@ -38,7 +38,7 @@ class PaycartHelperCart extends PaycartHelper
 	public function applyDiscountrule(PaycartCart $currentCart, PaycartCartparticular $cartParticular)  
 	{
 		// invoke discount helper to apply all apllicable discount rules
-		PaycartFactory::getHelper('discountrule')->applyDiscount($cartParticular, $currentCart);
+		return PaycartFactory::getHelper('discountrule')->applyDiscount($cartParticular, $currentCart);
 	}
 	
 	/**

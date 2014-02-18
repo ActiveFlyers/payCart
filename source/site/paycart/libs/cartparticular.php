@@ -25,7 +25,7 @@ class PaycartCartparticular extends PaycartLib
 	protected $cart_id;
 	protected $buyer_id;
 	protected $particular_id;
-	protected $particular_type;
+	protected $type;
 	protected $unit_price;
 	protected $quantity;
 	protected $price;
@@ -62,7 +62,7 @@ class PaycartCartparticular extends PaycartLib
 		$this->buyer_id			 = 0;
 		$this->particular_id	 = 0;
 		
-		$this->particular_type   = '';
+		$this->type   = '';
 		$this->unit_price		 = 0;
 		$this->quantity			 = Paycart::CART_PARTICULAR_QUANTITY_MINIMUM;
 		
@@ -72,20 +72,36 @@ class PaycartCartparticular extends PaycartLib
 		
 		$this->total			 = ($this->price) + ($this->tax) + ($this->discount);
 		
-		$this->title			 = 0;
-		$this->message			 = 0;
+		$this->title			 = '';
+		$this->message			 = '';
 		
 		return $this;
 	}
 	
 	public function getTotal()
 	{
-		return ($this->price) + ($this->tax) + ($this->discount);
+		//@PCTODO:: don't do it if rules will update total
+		switch ($this->type) {
+			case Paycart::CART_PARTICULAR_TYPE_PROMOTION :
+				$this->total = $this->discount;
+				break;
+
+			case Paycart::CART_PARTICULAR_TYPE_DUTIES:
+				$this->total = $this->tax;
+				break;
+
+			case Paycart::CART_PARTICULAR_TYPE_PRODUCT :
+			default:
+				$this->total = ($this->price) + ($this->tax) + ($this->discount);
+				break;
+		}
+
+		return $this->total;
 	}
 	
 	public function getType()
 	{
-		return $this->particular_type;
+		return $this->type;
 	}
 	
 	public function getTax()
@@ -122,4 +138,37 @@ class PaycartCartparticular extends PaycartLib
 	{
 		return $this->discount;
 	}	
+	
+	public function getCartId()
+	{
+		return $this->cart_id ;
+	}
+	
+	public function setCartId($cartId)
+	{
+		$this->cart_id = $cartId;
+	}
+	
+	/**
+	 * 
+	 * set discount on cart
+	 * @param double $value
+	 * 
+	 * @TODO:: should be -ive number here 
+	 */
+	public function setDiscount($value)
+	{
+		$this->discount = $value;
+		
+		// discount must be -ive number or Zero
+		if ($this->discount > 0) {
+			$this->discount = -$this->discount;
+		}
+	}
+	
+	public function setTax($value)
+	{
+		$this->tax = $value;
+	}
+
 }

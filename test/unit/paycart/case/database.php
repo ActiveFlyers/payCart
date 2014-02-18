@@ -26,7 +26,8 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 * @return  void
 	 */
 	private $_stashedPayCartState = array(
-				'paycartfactory' =>Array('_config' => null, '_mocks' => null)
+				'paycartfactory'	=>	Array('_config' => null, '_mocks' => null),
+				'Rb_Lib' 			=>	Array('instance' => null)
 			);
 			
 			
@@ -265,5 +266,75 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 			}
 		}
 		$image = PaycartFactory::getHelper('image');
+	}
+
+	
+	/**
+	 * 
+	 * Get Mock object of lib
+	 * @param String $className : lib classname
+	 * @param Array  $mappedMethod => Array('_ORIGINAL_METHOD_NAME_' => Array('_STUB_CLASS_NAME','_STUB_CLASS_METHOD_NAME_'))
+	 * 
+	 * @return @return PHPUnit_Framework_MockObject_MockObject
+	 */
+	public function getMockLib($className, $mappedMethod = Array())
+	{
+		return $this->createMock($className, $mappedMethod);;
+	}
+	
+	/**
+	 * 
+	 * get mock object of paycart-helper
+	 * @param Array  $mappedMethod => Array('_ORIGINAL_METHOD_NAME_' => Array('_STUB_CLASS_NAME','_STUB_CLASS_METHOD_NAME_'))
+	 */
+	public function getMockHelper($className, $mappedMethod = Array())
+	{
+		return $this->createMock($className, $mappedMethod);;
+	}
+	
+	/**
+	 * 
+	 * get mock object of paycart-configuration
+	 * @param Array  $mappedMethod => Array('_ORIGINAL_METHOD_NAME_' => Array('_STUB_CLASS_NAME','_STUB_CLASS_METHOD_NAME_'))
+	 * 
+	 * * @return @return PHPUnit_Framework_MockObject_MockObject
+	 */
+	public function getMockPaycartConfig($mappedMethod = Array())
+	{
+		$className = 'jregistry';
+		
+		$mockObject = $this->createMock($className, $mappedMethod);
+		
+		//@PCTODO :: set all paycart global stuff with their default values
+		
+		return $mockObject;
+	}
+	
+	/**
+	 * 
+	 * Enter description here ...
+	 * @param unknown_type $className
+	 * @param unknown_type $mappedMethod
+	 * 
+	 * * @return @return PHPUnit_Framework_MockObject_MockObject
+	 */
+	protected function createMock($className, $mappedMethod = Array())
+	{
+		$className = strtolower($className);
+		
+		$methods = get_class_methods($className);
+		
+		// Create the mock.											
+		$mockObject = $this->getMockBuilder($className)
+						   ->setMethods($methods) 
+						   ->disableOriginalConstructor() 
+						   ->disableArgumentCloning() 
+						   ->getMock();
+		
+		if (!empty($mappedMethod)) {
+			$this->assignMockCallbacks($mockObject,$mappedMethod);
+		}
+		
+		return $mockObject;
 	}
 }

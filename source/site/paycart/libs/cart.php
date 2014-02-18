@@ -49,13 +49,11 @@ class PaycartCart extends PaycartLib
 	protected $modified_date;
 	
 	protected $session_id;
-	//protected $session_data;
-	
 	
 	// Related Table Fields: Array of cart-particulars
-	protected $_cartParticulars;
+	protected $_particulars;
 	
-	//
+	// Cart-total
 	protected $_total;
 	
 	/** 
@@ -63,6 +61,14 @@ class PaycartCart extends PaycartLib
 	 * @var PaycartHelperCart
 	 */
 	protected $_helper;
+	
+	public function __construct($config = Array())
+	{
+		//@Note:: we would not reset _helper in reset
+		$this->_helper = PaycartFactory::getHelper('cart');
+		
+		return parent::__construct($config);
+	}
 	
 	/**
 	 * 
@@ -76,11 +82,7 @@ class PaycartCart extends PaycartLib
 	 */
 	public static function getInstance($id = 0, $bindData = null, $dummy1 = null, $dummy2 = null)
 	{
-		parent::getInstance('cart', $id, $bindData);
-
-		//$this->_helper = PaycartFactory::getHelper('cart');
-
-		return $this; 
+		return parent::getInstance('cart', $id, $bindData);
 	}
 	
 	/**
@@ -93,7 +95,7 @@ class PaycartCart extends PaycartLib
 		$this->cart_id	 			= 0; 
 		$this->buyer_id 		 	= 0;
 		
-		$this->status				= Paycart::STATUS_CART_NONE;
+		$this->status				= Paycart::STATUS_CART_DRAFT;
 		$this->currency				= PaycartFactory::getConfig()->get('currency', '$');
 		$this->ip_address;
 		$this->billing_address_id	= 0;
@@ -111,21 +113,36 @@ class PaycartCart extends PaycartLib
 		$this->modified_date		= Rb_Date::getInstance();
 		
 		$this->session_id	= '';
-		//$this->session_data	= new Rb_Registry();
-	
+		
 		// Related Table Fields: cart particulars libs instance
-		$this->_cartParticulars		=	array();
+		$this->_particulars[Paycart::CART_PARTICULAR_TYPE_PRODUCT] 	 =	array();
+		$this->_particulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION] =	array();
+		$this->_particulars[Paycart::CART_PARTICULAR_TYPE_DUTIES] 	 =	array();
+		$this->_particulars[Paycart::CART_PARTICULAR_TYPE_SHIPPING]  =	array();
 		
 		return $this;
 	}
 	
 	/**
 	 * 
-	 * return table field value
+	 * Return Buyer-Lib instance Or buyer-Id
+	 * @param Boolean $instance : true, if you need buyer-lib instance. default buyer-Id 
+	 * 
+	 * @return Buyer-Lib instance Or buyer-Id
 	 */
-	public function getBuyerId()
+	public function getBuyer($instance = false)
 	{
-		return $this->buyer_id;
+		if(!$instance) {
+			return $this->buyer_id;
+		}
+
+		return PaycartBuyer::getInstance($this->buyer_id);
+	}
+
+
+	public function getTotal()
+	{
+		return $this->_total;
 	}
 	
 	/**
@@ -141,10 +158,7 @@ class PaycartCart extends PaycartLib
 		parent::bind($data, $ignore);
 		
 		// Bind : related table field
-		// if cartparticulars are available in data then bind with lib object 
-		//$cartParticulars = isset($data['_cartParticulars']) ? $data['_cartParticulars'] : Array();
-		
-		$this->loadCartParticulars();
+		$this->loadParticulars();
 		
 		return $this;
 	}
@@ -154,59 +168,63 @@ class PaycartCart extends PaycartLib
 	 * Set Cart-particulars on Lib object
 	 *  
 	 */
-	protected function loadCartParticulars()
+	protected function loadParticulars()
 	{
-		$cardId = $this->getId();
+		$cartId = $this->getId();
 
-		// if cart exist and cartparticulars are empty then load data from db
-		if ($cardId) {
-			$cartParticulars = PaycartFactory::getInstance('cartparticulars','model')
-												->loadRecords(array('cart_id' => $cartId));
+		// if cart is not exist then no need to load
+		if (!$cartId) {
+			return $this;
 		}
 
+		$particulars = PaycartFactory::getInstance('cartparticulars','model')
+									->loadRecords(array('cart_id' => $cartId));
+		
 		// bind data on cartParticulars
-		foreach ($cartParticulars as $key => $bindData) {		
-//			$bindData['buyer_id']		= $this->getBuyerId();
+		foreach ($particulars as $bindData) {		
+//			$bindData['buyer_id']		= $this->getBuyer();
 			
-			// no need to recalculation
+			//1#. Get cart-Particular
+			
 			if ($this->is_locked) {
-				$cartParticular 	= PaycartCartparticular::getInstance(0, $bindData);
-				continue;
+				// no need to recalculation
+				$particular 	= PaycartCartparticular::getInstance(0, $bindData);
 			} else {
-					switch ($bindData->particular_type) {
+				
+				switch ($bindData->type) {
+					case Paycart::CART_PARTICULAR_TYPE_PRODUCT :
+						$particular = $this->createProductParticular($bindData);
+						break;
+
+					case Paycart::CART_PARTICULAR_TYPE_DUTIES :
+						$particular = $this->createDutiesParticular($bindData);
+						break;
+							
+					case Paycart::CART_PARTICULAR_TYPE_PROMOTION :
+						$particular = $this->createPromotionParticular($bindData);
+						break;
 						
-						case Paycart::CART_PARTICULAR_TYPE_PRODUCT :
-							$cartParticular = $this->createParticularProduct($bindData);
-							break;
-							
-						case Paycart::CART_PARTICULAR_TYPE_DUTIES :
-							$cartParticular = $this->createParticularDuties($bindData);
-							break;
-							
-						case Paycart::CART_PARTICULAR_TYPE_PROMOTION :
-							$cartParticular = $this->createParticularPromotion($bindData);
-							break;
-							
-						case Paycart::CART_PARTICULAR_TYPE_SHIPPING :
-							$cartParticular = $this->createParticularShipping($bindData);
-							break;
-					/**
-					 *	@Future purpose
-					 *	case Paycart::CART_PARTICULAR_TYPE_SHIPPING_DUTIES :
-					 *	case Paycart::CART_PARTICULAR_TYPE_SHIPPING_PROMOTION :
-					 *	case Paycart::CART_PARTICULAR_TYPE_ADJUSTMENT :
-					 **/
-						default:
-							throw new RuntimeException(Rb_Text::_("COMA_PAYCART_CART_PARTICULAR_TYPE_INVALID"));
-					}
+					case Paycart::CART_PARTICULAR_TYPE_SHIPPING :
+						$particular = $this->createShippingParticular($bindData);
+						break;
+				/**
+				 *	@Future purpose
+				 *	case Paycart::CART_PARTICULAR_TYPE_SHIPPING_PROMOTION :
+				 *	case Paycart::CART_PARTICULAR_TYPE_ADJUSTMENT :
+				 **/
+					default:
+						throw new RuntimeException(Rb_Text::_("COMA_PAYCART_CART_PARTICULAR_TYPE_INVALID"));
+				}
 			}
 			
 			//2#. Cart-particular's changes should be reflected into cart 
-			$this->_total 	= ($this->_total) + ($cartParticular->getTotal());
+			$this->_total 	= ($this->_total) + ($particular->getTotal());
 			
 			//3#. Set cart-particular on cart
-			$hashKey 	= $this->_helper->getHash($cartParticular);
-			$this->_cartParticulars[$hashKey] 	= $cartParticular;
+			$hashKey 	= $this->_helper->getHash($particular);
+			$type		= $particular->getType();
+			
+			$this->_particulars[$type][$hashKey] 	= $particular;
 		}
 		
 		return $this;
@@ -231,7 +249,7 @@ class PaycartCart extends PaycartLib
 		$this->setId($id);
 
 		// Save :: releated table fields
-		$this->_saveCartParticulars();
+		$this->_saveParticulars();
 		
 		return $id;
 	}
@@ -239,28 +257,47 @@ class PaycartCart extends PaycartLib
 	/**
 	 * 
 	 * Save CartParticulrs
-	 */
-	protected function _saveCartParticulars()
+	*/
+	protected function _saveParticulars()
 	{	
 		// @PCTODO :: save all cartparticulars in one shot, If performance improvment required
-		foreach( $this->_cartParticulars as $key => $cartParticular) {
+		foreach( $this->getParticulars() as $key => $particular) {
+			/**
+			 * @var PaycartCartparticular $particular
+			 */
+			$type = $particular->getType();
 			
-			//Dont save if ((total of particular is 0) AND ( particular is dynamic created))
-			$type = $cartParticular->gettype();
-			if ( ($type == Paycart::CART_PARTICULAR_TYPE_DUTIES || $type == Paycart::CART_PARTICULAR_TYPE_PROMOTION) &&
-				 $cartParticular->getTotal()) 
-				{	continue; }
-				
+			//Don't save if ((total of particular is 0) AND ( particular is dynamic created))
+			if (($type == Paycart::CART_PARTICULAR_TYPE_DUTIES) && !($particular->getTotal())) {
+				continue;
+			} 
+			
+			if (($type == Paycart::CART_PARTICULAR_TYPE_PROMOTION) && !($particular->getTotal())) {
+				continue; 
+			}
+
+			// set cart id before save particular
+			$particular->setCartId($this->getId());
+			
 			// Save cart-particules one by one
-			$cartParticular->save();
+			$particular->save();
 		}
 		
 		return $this;
 	}
-	
-	public function getCartParticulars()
+ 
+	public function getParticulars($type = null)
 	{
-		return $this->_cartParticulars;
+		if ($type) {
+			if (!isset($this->_particulars[$type])) {
+				throw new RuntimeException(Rb_Text::_("COM_PAYCART_CART_PARTICULAR_TYPE_INVALID"));
+			}
+			
+			return $this->_particulars[$type];
+		} 
+		
+		return $this->_particulars;
+		
 	}
 	
 	/**
@@ -282,17 +319,23 @@ class PaycartCart extends PaycartLib
 		$request->particular_id = $product->product_id; 	// id or product_id
 		$request->quantity 		= $product->quantity; 		
 		
-		$cartParticular = $this->createParticularProduct($request);
+		$particular = $this->createProductParticular($request);
+		
+		// Set cart-particular on cart
+		$hashKey 	= $this->_helper->getHash($particular);
+		$type		= $particular->getType();
+
+		// If add same product (which is already exist in cart) 
+		// then update cart-total
+		if ($this->_particulars[$type][$hashKey]) {
+			$previoue_particular = $this->_particulars[$type][$hashKey];
+			$this->_total = ($this->_total) - ($previoue_particular->getTotal());
+		}
+		
+		$this->_particulars[$type][$hashKey] 	= $particular;
 		
 		// Cart-particular's changes should be reflected into cart 
-		$this->_total 	= ($this->_total) + $cartParticular->getTotal();
-		
-		// If product already exist then it will update
-		//@PCTODO:: If (old quantity is 2 and add same product)  then update quantity  
-		// Set cart-particular on cart
-		$hashKey 	= $this->_helper->getHash($cartParticular);
-		
-		$this->_cartParticulars[$hashKey] 	= $cartParticular;
+		$this->_total 	= ($this->_total) + $particular->getTotal();
 		
 		//2#. Calculation on Cart-particulars
 		$this->calculate();
@@ -313,14 +356,14 @@ class PaycartCart extends PaycartLib
 	public function calculate()
 	{
 		//Before start calculation
-		//1#. Reset existing dynamic created particulars like product {promotion,duties} etc
-		//2#. Reset Cart-Total
-		$this->resetParticulars();
+		//1#. Re-initialize all cart's Particulars
+		//2#. Re-initialize Cart-Total
+		$this->reinitializeParticulars();
 		
 		/**
 		 * Trigger before cart-calculation start
 		 * 1#. You can change here Product-Price (Unit-price) 
-		 * @PCTODO :: Clone {$this}, If required
+		 * @NOTE :: Clone {$this}, If required
 		 */ 
 		$args 			= Array();
 		$args['cart']	= $this;
@@ -329,29 +372,29 @@ class PaycartCart extends PaycartLib
 		Rb_HelperPlugin::trigger('onPaycartCartBeforeCalculate', $args);
 
 		//1#. Process Product-type cart-particulars
-		$this->calculateProducts();
+		$this->calculateProductsParticular();
 		
-		//@PCTODO  :: Dynamic change ordering if shipping required before {Product-promotion and Product-duties}  
+		/**
+		 * @NOTE :: Ordering(2# and 4#) should be dynamicaly changed 
+		 * if shipping required before {Product-promotion and Product-duties}
+		 */  
 		
-		// Get method sequence which one invoke first
-		// Build and Process Product{Promotion & Duties} type cart-particular 
+		// 2#  Get method sequence which one invoke first
+		// 	 Build and Process Product{Promotion & Duties} type cart-particular 
 		if ( Paycart::CHECKOUT_SEQUENCE_OPTION_VALUE_TAX_DISCOUNT ==  PaycartFactory::getConfig()->get('checkout_tax_discount_sequence', Paycart::CHECKOUT_SEQUENCE_OPTION_VALUE_DISCOUNT_TAX)) {
-			$this->calculateDuties();
-			$this->calculatePromotion();
+			$this->calculateDutiesParticular();
+			$this->calculatePromotionParticular();
 		} else {
-			$this->calculatePromotion();
-			$this->calculateDuties();
+			$this->calculatePromotionParticular();
+			$this->calculateDutiesParticular();
 		}
 		
 		//3# create and process shipping type cart-particulars
-		$this->calculateShipping();
-		
-		//4#. Build and Process Product{adjustment} type cart-particular
-		$this->calculateAdjustment();
+		$this->calculateShippingParticular();
 		
 		/**
 		 * Trigger After cart-calculation
-		 * @PCTODO :: Clone {$this}, If required
+		 * @NOTE :: Clone {$this}, If required
 		 */ 
 		$args['cart']	=	$this;
 		Rb_HelperPlugin::trigger('onPaycartCartAfterCalculate', $args);
@@ -361,12 +404,11 @@ class PaycartCart extends PaycartLib
 	
 	/**
 	 * 
-	 * Reset all cart particulares on cart
+	 * remove all calc and reset with latest update
 	 * @throws RuntimeException : when you will reset unknown type particular
 	 */
-	protected function resetParticulars()
-	{
-		
+	protected function reinitializeParticulars()
+	{	
 		// no need to re-calculation
 		if ($this->is_locked) {
 			return true;
@@ -374,92 +416,118 @@ class PaycartCart extends PaycartLib
 		
 		//@NOTE: When reset cart-particulars then need to reset cart total 
 		$this->_total = 0;
-		
-		foreach ($this->getCartParticulars() as $key => $cartParticular) {
-			
-			$bindData	=  new stdClass();
-			
-//			$bindData->buyer_id				= $this->getBuyerId();
-			
-			$bindData->cartparticular_id	= $cartParticular->getId();
-			$bindData->particular_id		= $cartParticular->getParticularId();
-			$bindData->quantity				= $cartParticular->getQuantity();
-//			$bindData->type 				= $cartParticular->getType();
-//			$bindData->unit_price			= $cartParticular->getPrice();
-//			$bindData->price 				= 0;
-			
-			// no need to recalculation
-			switch ($bindData->particular_type) 
-			{
-				case Paycart::CART_PARTICULAR_TYPE_PRODUCT :
-					$cartParticular 	= $this->createParticularProduct($bindData);
-					break;
-					
-				case Paycart::CART_PARTICULAR_TYPE_DUTIES :
-					$bindData->price = 0;
-					$cartParticular = $this->createParticularDuties($bindData);
-					break;
-					
-				case Paycart::CART_PARTICULAR_TYPE_PROMOTION :
-					$cartParticular = $this->createParticularPromotion($bindData);
-					break;
-					
-				case Paycart::CART_PARTICULAR_TYPE_SHIPPING :
-					$cartParticular = $this->createParticularShipping($bindData);
-					break;
-			/**
-			 *	@Future purpose
-			 *	case Paycart::CART_PARTICULAR_TYPE_SHIPPING_PROMOTION :
-			 *	case Paycart::CART_PARTICULAR_TYPE_ADJUSTMENT :
-			 **/
-				default:
-					throw new RuntimeException(Rb_Text::_("COMA_PAYCART_CART_PARTICULAR_TYPE_INVALID"));
-			}
-			
-			//2#. Cart-particular's changes should be reflected into cart 
-			//$this->_total 	= ($this->_total) + ($cartParticular->getTotal());
-			
-			//3#. Set cart-particular on cart
-			//$hashKey 	= $this->_helper->getHash($cartParticular);
-			$this->_cartParticulars[$key] 	= $cartParticular;
+				
+		$productParticulars 	= $this->getParticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		$promotionParticulars 	= $this->getParticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+		$dutiewParticulars 		= $this->getParticulars(Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		$shippingParticulars 	= $this->getParticulars(Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+				
+		/**
+		 * @NOTE:: Do not change following sequence
+		 * You can change {2#, 3#} after 4# if you need to shipping first before promotion and duties, Cart{discount, tax}
+		 */
+
+		//1#. Reinitialize: Product-Particular
+		foreach ($productParticulars as $key => $particular) {
+			$this->_reInitializeParticular($particular);
 		}
+		
+		//2#. Reinitialize: Promotion-Particular
+		foreach ($promotionParticulars as $key => $particular) {
+			$this->_reInitializeParticular($particular);
+		}
+		
+		//3#. Reinitialize: Duties-Particular
+		foreach ($dutiewParticulars as $key => $particular) {
+			$this->_reInitializeParticular($particular);
+		}
+		
+		//4#. Reinitialize: Shipping-Particular
+		foreach ($shippingParticulars as $key => $particular) {
+			$this->_reInitializeParticular($particular);
+		}
+		
 		return $this;
 	}
+	
+	/**
+	 * 
+	 * Re-initialize speicfic particular
+	 * @param PaycartCartparticular $particular
+	 * @throws RuntimeException
+	 * 
+	 */
+	private function _reInitializeParticular(PaycartCartparticular $particular)
+	{
+		$bindData	=  new stdClass();
+
+		// don't change following property on re-initialization
+		$bindData->cartparticular_id	= $particular->getId();
+		$bindData->particular_id		= $particular->getParticularId();
+		$bindData->quantity				= $particular->getQuantity();
+			
+		// no need to recalculation
+		switch ($particular->getType()) 
+		{
+			case Paycart::CART_PARTICULAR_TYPE_PRODUCT :
+				$particular 	= $this->createProductParticular($bindData);
+				break;
+				
+			case Paycart::CART_PARTICULAR_TYPE_DUTIES :
+				$particular = $this->createDutiesParticular($bindData);
+				break;
+				
+			case Paycart::CART_PARTICULAR_TYPE_PROMOTION :
+				$particular = $this->createPromotionParticular($bindData);
+				break;
+				
+			case Paycart::CART_PARTICULAR_TYPE_SHIPPING :
+				$particular = $this->createShippingParticular($bindData);
+				break;
+
+			default:
+				throw new RuntimeException(Rb_Text::_("COMA_PAYCART_CART_PARTICULAR_TYPE_INVALID"));
+		}
+		
+		//2#. Cart-particular's changes should be reflected into cart 
+		$this->_total 	= ($this->_total) + ($particular->getTotal());
+		
+		//3#. Set cart-particular on cart
+		$key 	= $this->_helper->getHash($particular);
+		$type	= $particular->getType();
+			
+		$this->_particulars[$type][$key] 	= $particular;
+		
+		return $this;
+	} 
+	
 	/**
 	 * Calculate {tax + Discount} on all product type Cart-Particulars
 	 * 
 	 * @return PaycartCart Lib Instance
 	 */
-	public function calculateProducts() 
+	public function calculateProductsParticular() 
 	{
 		$invoke1 ='applyDiscountrule';
 		$invoke2 ='applyTaxrule';
 		
-		//get sequence which one invoke first 
+		//1# Get sequence which one invoke first 
 		if ( Paycart::CHECKOUT_SEQUENCE_OPTION_VALUE_TAX_DISCOUNT ==  PaycartFactory::getConfig()->get('checkout_tax_discount_sequence', Paycart::CHECKOUT_SEQUENCE_OPTION_VALUE_DISCOUNT_TAX)) 
 		{
 			$invoke1 =	'applyTaxrule';
 			$invoke2 =	'applyDiscountrule';
 		}
 		
-		foreach ($this->_cartParticulars as $key => $cartParticular) {
+		foreach ($this->getParticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT) as $key => $particular) {
 			/**
-			 * @var $cartParticular PaycartCartparticular
-			 */
-			//Make sure, you are processing only Product type cart-particulars
-			if ( $cartParticular->getType() != Paycart::CART_PARTICULAR_TYPE_PRODUCT) {
-				continue;
-			}
-			
+			 * @var $particular PaycartCartparticular
+			 */			
 			//2#. Apply {Tax and discount} on each Product
-			$this->_helper->$invoke1($this, $cartParticular);
-			$this->_helper->$invoke2($this, $cartParticular);
+			$this->_helper->$invoke1($this, $particular);
+			$this->_helper->$invoke2($this, $particular);
 			
-			// Cart-particular's changes should be reflected into cart 
-			$this->_total 	 = ($this->_total) + ($cartParticular->getTotal());
-			
-			//3#. Set cart-particular on cart
-			$this->_cartParticulars[$key] 	= $cartParticular;
+			//3#. Cart-particular's changes should be reflected into cart  
+			$this->_total 	 = ($this->_total) + ($particular->getTotal());
 		}
 		
 		return $this;
@@ -473,45 +541,32 @@ class PaycartCart extends PaycartLib
 	 * 
 	 * @return PaycartLib Instance
 	 */
-	public function calculatePromotion()  
+	public function calculatePromotionParticular()  
 	{
-		//Since, We have already reseat Product-Promotion
+		//Since, We have already reset Product-Promotion
 		//Therefore, We need to re-build {product-promotion} type cart-particular. Hence-Proved  
 		$requestObject = new stdClass();
-		$requestObject->particular_id = 0;
 		
-		foreach ($this->_cartParticulars as $key => $cartParticular) {
-			/**
-			 * @var $cartParticular PaycartCartparticular
-			 */
-			//Make sure, you are processing only {Product-promotion} type cart-particulars
-			if ( $cartParticular->getType() == Paycart::CART_PARTICULAR_TYPE_PROMOTION) {
-				$requestObject->particular_id = $cartParticular->getId();
-				break;
-			}			
+		// Promotion have value array 
+		foreach ($this->getParticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION) as $key => $particular) {
+			//Already created Promotion type's cart-particulars
+			$requestObject->cartparticular_id = $particular->getId();
 		}
-			
-		//create product-promotion particular
-		$cartParticular = $this->createParticularPromotion($requestObject);
 		
-//		// before invoke Discount system
-//		$totalBeforePromotion  = $cartParticular->getTotal();
+		//create product-promotion particular
+		$particular = $this->createPromotionParticular($requestObject);
 		
 		//invoke tax system
-		$this->_helper->applyDiscountrule($this, $cartParticular);
+		$this->_helper->applyDiscountrule($this, $particular);
 		
 		//get hash key
-		$key = $this->_helper->getHash($cartParticular);
+		$key = $this->_helper->getHash($particular);
 		
-		$this->_cartParticulars[$key] 	= $cartParticular;
-		
-//		// Treat as cart-particular, if product-promotion will be applied
-//		if ($totalBeforePromotion != $cartParticular->getTotal()) {
-//			$this->_cartParticulars[$key] 	= $cartParticular;
-//		}else {
-//			unset($this->_cartParticulars[$key]);
-//		}
-		
+		$this->_particulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION][$key] 	= $particular;
+
+		// Cart-particular's changes should be reflected into cart  
+		$this->_total 	 = ($this->_total) + ($particular->getTotal());
+			
 		return $this;
 	}
 	
@@ -521,53 +576,35 @@ class PaycartCart extends PaycartLib
 	 * 
 	 * @return PaycartLib Instance
 	 */
-	public function calculateDuties() 
+	public function calculateDutiesParticular() 
 	{
 		$requestObject = new stdClass();
 		
-		foreach ($this->_cartParticulars as $key => $cartParticular) {
-			/**
-			 * @var $cartParticular PaycartCartparticular
-			 */
-			//Make sure, you are processing only {Product-duties} type cart-particulars
-			if ( $cartParticular->getType() == Paycart::CART_PARTICULAR_TYPE_DUTIES) {
-				$requestObject->cartparticular_id = $cartParticular->getId();
-				break;
-			}
+		// Duties have single value array 
+		foreach ($this->getParticulars(Paycart::CART_PARTICULAR_TYPE_DUTIES) as $key => $particular) {
+			//Already created Duties type cart-particulars
+			$requestObject->cartparticular_id = $particular->getId();
 		}
-			
-		//create duties particular
-		$cartParticular = $this->createParticularDuties($requestObject);
 		
-//		// before invoke TD system
-//		$totalBeforeDuties  = $cartParticular->getTotal();
+		//create duties particular
+		$particular = $this->createDutiesParticular($requestObject);
 		
 		//invoke tax system
-		$this->_helper->applyTax($this, $cartParticular);
+		$this->_helper->applyTax($this, $particular);
 		
 		//get hash key
-		//$key = $this->_helper->getHash($cartParticular);
+		$key = $this->_helper->getHash($particular);
 		
-		$this->_cartParticulars[$key] 	= $cartParticular;
+		$this->_particulars[Paycart::CART_PARTICULAR_TYPE_DUTIES][$key] = $particular;
 		
-		// Treat as cart-particular, if duties will be applied
-//		if ($totalBeforeDuties != $cartParticular->getTotal() ) {
-//			$this->_cartParticulars[] 	= $cartParticular;
-//		}else {
-//			unset($this->_cartParticulars[$key]);
-//		}
+		// Cart-particular's changes should be reflected into cart  
+		$this->_total 	 = ($this->_total) + ($particular->getTotal());
 
 		return $this;
 	}
 	
 	
-	public function calculateAdjustment() 
-	{
-		return $this;
-	}
-	
-	
-	public function calculateShipping() 
+	public function calculateShippingParticular() 
 	{
 		return $this;
 	}
@@ -585,7 +622,7 @@ class PaycartCart extends PaycartLib
 	 * 		}
 	 *		 
 	 */
-	public function createParticularProduct($requestedCartParticular = null) 
+	public function createProductParticular($requestedCartParticular = null) 
 	{
 		
 		/**
@@ -593,7 +630,7 @@ class PaycartCart extends PaycartLib
 		 */ 
 		//#Validation-1 : Paricular Id must exist
 		if (!isset($requestedCartParticular->particular_id) || !$requestedCartParticular->particular_id) {
-			throw new EmptyValueException('COM_PAYCART_CART_PARTICULAR_EMPTY_PRODUCT');
+			throw new InvalidArgumentException('COM_PAYCART_CART_PARTICULAR_EMPTY_PRODUCT');
 		}
 		
 		//#Validation-2 : if Quantity have then must be equal or greater than product-min. quantity 
@@ -611,7 +648,7 @@ class PaycartCart extends PaycartLib
 		
 		$bindData = new stdClass();
 		// initial data bind on Cart-particular
-		if (isset($requestedProduct->cartparticular_id) ) {
+		if (isset($requestedCartParticular->cartparticular_id) ) {
 			$bindData->cartparticular_id	= $requestedCartParticular->cartparticular_id;
 		}
 		
@@ -619,7 +656,8 @@ class PaycartCart extends PaycartLib
 		$bindData->quantity			= $requestedCartParticular->quantity;
 		$bindData->type 			= Paycart::CART_PARTICULAR_TYPE_PRODUCT;
 		$bindData->particular_id	= $product->getId();
-		$bindData->buyer_id			= $this->getBuyerId();
+		$bindData->buyer_id			= $this->getBuyer();
+		$bindData->cart_id			= $this->getId();
 		
 		$bindData->price 			= $bindData->unit_price * $bindData->quantity;
 		$bindData->tax				= isset($requestedCartParticular->tax) ? $requestedCartParticular->tax : 0;
@@ -629,9 +667,9 @@ class PaycartCart extends PaycartLib
 		$bindData->total 			= ($bindData->price) + ($bindData->tax) + ($bindData->discount);
 		
 		//2#. Build cart-particular
-		$cartParticular	= PaycartCartparticular::getInstance(0, $bindData);
+		$particular	= PaycartCartparticular::getInstance(0, $bindData);
 		
-		return $cartParticular;
+		return $particular;
 	}
 	
 	/**
@@ -644,21 +682,20 @@ class PaycartCart extends PaycartLib
 	 * 
 	 * @return PaycartCartparticular instance with Product-Promotion type
 	 */
-	public function createParticularPromotion($requestedCartParticular = null) 
+	public function createPromotionParticular($requestedCartParticular = null) 
 	{
 		$bindData = new stdClass();
 		// Set initial property of cart-paricular
-		
-		//@PCTODO:: useless $this->_total 
-		
+			
 		$bindData->cartparticular_id	= isset($requestedCartParticular->cartparticular_id) ? $requestedCartParticular->cartparticular_id :0;
 		$bindData->unit_price 	 		= isset($requestedCartParticular->unit_price) ? $requestedCartParticular->unit_price : $this->_total;
 		$bindData->price 				= isset($requestedCartParticular->price) ? $requestedCartParticular->price : $this->_total;
-		$bindData->total				= isset($requestedCartParticular->total) ? $requestedCartParticular->total : $this->_total;
+		$bindData->total				= isset($requestedCartParticular->total) ? $requestedCartParticular->total : 0;
 		$bindData->particular_id		= 0;
-		$bindData->buyer_id				= $this->getBuyerId();
-		$bindData->particular_type  	= Paycart::CART_PARTICULAR_TYPE_PROMOTION;
-		
+		$bindData->buyer_id				= $this->getBuyer();
+		$bindData->cart_id				= $this->getId();
+		$bindData->type				  	= Paycart::CART_PARTICULAR_TYPE_PROMOTION;
+
 		// Build cartparticular
 		return  PaycartCartparticular::getInstance(0, $bindData);
 	}
@@ -673,7 +710,7 @@ class PaycartCart extends PaycartLib
 	 * 
 	 * @return PaycartCartparticular instance with Product-Duties type
 	 */
-	public function createParticularDuties($requestedCartParticular = null) 
+	public function createDutiesParticular($requestedCartParticular = null) 
 	{
 		$bindData = new stdClass();
 		
@@ -684,28 +721,24 @@ class PaycartCart extends PaycartLib
 		if(isset($requestedCartParticular->price)) {
 			$bindData->price = $requestedCartParticular->price;
 		} else{
-			foreach ($this->_cartParticulars as $key => $cartParticular) {
-				/**
-				 * @var $cartParticular PaycartCartparticular
-				 */
+			foreach ($this->getParticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT) as $key => $particular) {
 				//@NOTE :: include only Product-type cart-particular taxes  
-				if ( $cartParticular->getType() == Paycart::CART_PARTICULAR_TYPE_PRODUCT) {
-					$bindData->price += $cartParticular->getTax();
-				}
+				$bindData->price += $particular->getTax();
 			}
 		}
 			
 		// Set initial property of cart-paricular
 		$bindData->unit_price 	 	= isset($requestedCartParticular->unit_price) ? $requestedCartParticular->unit_price : $bindData->price;
-		$bindData->total			= isset($requestedCartParticular->total) ? $requestedCartParticular->total : $bindData->price;
+		$bindData->total			= isset($requestedCartParticular->total) ? $requestedCartParticular->total : 0 ;
 		$bindData->particular_id	= 0;
-		$bindData->buyer_id			= $this->getBuyerId();
-		$bindData->particular_type  = Paycart::CART_PARTICULAR_TYPE_DUTIES;
+		$bindData->cart_id			= $this->getId();
+		$bindData->buyer_id			= $this->getBuyer();
+		$bindData->type  			= Paycart::CART_PARTICULAR_TYPE_DUTIES;
 		
 		// Build cartparticular
-		$cartParticular	= PaycartCartparticular::getInstance(0, $bindData);
+		$particular	= PaycartCartparticular::getInstance(0, $bindData);
 		
-		return $cartParticular;
+		return $particular;
 	}
 
 	/**
@@ -720,7 +753,7 @@ class PaycartCart extends PaycartLib
 	 * 		}
 	 *		 
 	 */
-	public function createParticularShipping($requestedCartParticular = null) 
+	public function createShippingParticular($requestedCartParticular = null) 
 	{
 		$bindData = new stdClass();
 		
@@ -730,12 +763,12 @@ class PaycartCart extends PaycartLib
 		//@PCTODO:: recalculate shipping like product
 		
 		// Set initial property of cart-paricular
-		$bindData->particular_type  = Paycart::CART_PARTICULAR_TYPE_SHIPPING;
+		$bindData->type  = Paycart::CART_PARTICULAR_TYPE_SHIPPING;
 		
 		// Build cartparticular
-		$cartParticular	= PaycartCartparticular::getInstance(0, $bindData);
+		$particular	= PaycartCartparticular::getInstance(0, $bindData);
 		
-		return $cartParticular;
+		return $particular;
 	}
 	
 }
