@@ -42,15 +42,12 @@ class Paycart
 	const PRODUCT_FILTER_FIELD_PREFIX	= 'attr_';
 
 	// Cart Entity Status
-	const CART_STATUS_NONE 		= 	0;
-	const CART_STATUS_CHECKOUT	=	5000;
-	const CART_STATUS_PAID		=	5001;
-	const CART_STATUS_SHIPPED	=	5002;
-	const CART_STATUS_DELIVERED	=	5003;
-	const CART_STATUS_CANCEL	=	5004;
-	const CART_STATUS_REFUND	=	5005;
-	const CART_STATUS_REVERSAL	=	5006;
-	const CART_STATUS_COMPLETE	=	5007;
+	const STATUS_CART_DRAFT		= 	'draft';		// none
+	const STATUS_CART_CHECKOUT	=	'checkout';
+	const STATUS_CART_PAID 		=	'paid';
+	const STATUS_CART_CANCEL 	=	'cancel';
+	const STATUS_CART_COMPLETE 	=	'complete';
+	
 	
 	// JOOMLA System Message Type
 	const MESSAGE_TYPE_MESSAGE	= 'message'; 
@@ -78,7 +75,25 @@ class Paycart
 	const SHIPPINGRULE_LIST_ORDER_BY_ORDERING 	= 'ordering';
 	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
 	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
+
+
+	const PROCESSOR_TYPE_TAX    = 'taxrule';
+
+	// Cart Particulars Type
+	const CART_PARTICULAR_TYPE_PRODUCT 			= 'product';
+	const CART_PARTICULAR_TYPE_PROMOTION	 	= 'promotion';
+	const CART_PARTICULAR_TYPE_DUTIES 			= 'duties';
+	const CART_PARTICULAR_TYPE_SHIPPING			= 'shipping';
+	// @Future Purpose
+//	const CART_PARTICULAR_TYPE_SHIPPING_PROMOTION	= 'shippingpromotion';
+	const CART_PARTICULAR_TYPE_ADJUSTMENT			= 'adjustment';
+
+	const CART_PARTICULAR_QUANTITY_MINIMUM = 1;
+
+	const CHECKOUT_SEQUENCE_OPTION_VALUE_TAX_DISCOUNT = 'td';
+	const CHECKOUT_SEQUENCE_OPTION_VALUE_DISCOUNT_TAX = 'dt';
 	
 	const GROUPRULE_TYPE_PRODUCT = 'product';
 	const GROUPRULE_TYPE_BUYER 	 = 'buyer';
+
 }

@@ -1,21 +1,21 @@
 <?php
  
-$date = Rb_Date::getInstance()->toSql();
-
- return Array( 				
-				'buyer_id' 			=> 0,
-				'address_id'		=> 0,
-				'modifiers'			=> '{}',
-				'subtotal' 			=> 0.00,
-				'total'				=> 0.00,
-			    'currency' 			=> null,
-				'status'			=> Paycart::CART_STATUS_NONE,
-				'created_date'  	=> $date,	
-				'modified_date' 	=> $date,
-				'checkout_date' 	=> '0000-00-00 00:00:00',
-				'paid_date'     	=> '0000-00-00 00:00:00',
-				'complete_date'  	=> '0000-00-00 00:00:00',
-				'cancellation_date' => '0000-00-00 00:00:00',
-				'refund_date'	 	=> '0000-00-00 00:00:00',
-				'params'			=> '{}'
+return Array( 				
+				'cart_id'				=> 0,
+				'buyer_id'				=> 0,
+				'session_id'			=> '',
+				'status'				=> Paycart::CART_STATUS_DRAFT,
+				'currency'				=> '',
+				'reversal_for'			=> 0,
+				'ip_address'			=> '',
+				'billing_address_id'	=> 0,
+				'shipping_address_id'	=> 0,
+				'secure_key'			=> 0,
+				'is_locked'				=> 0,
+				'created_date'			=> '0000-00-00 00:00:00',
+				'modified_date'			=> '0000-00-00 00:00:00',
+				'request_date'			=> '0000-00-00 00:00:00',
+				'payment_date'			=> '0000-00-00 00:00:00',
+				'cancellation_date'		=> '0000-00-00 00:00:00',
+				'complete_date'			=> '0000-00-00 00:00:00'
 			 ); 
