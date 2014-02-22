@@ -42,14 +42,14 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
     	
     	return array(
     			// with 1 address, 1 product, 1 shipping rule
-        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array())),
         				array(PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1)),
         				array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PACKAGE_0 =>	array(	
         																				'product_list' => array(PAYCART_TEST_PRODUCT_1), 
         																				'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1))))),
         				
         		// with 1 address, 1 product, 3 shipping rule
-        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array())),
         				array(PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1,
         															PAYCART_TEST_SHIPPING_RULE_2,
         															PAYCART_TEST_SHIPPING_RULE_3)),
@@ -60,9 +60,9 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
         																												PAYCART_TEST_SHIPPING_RULE_3))))),
         				
         		// with 1 address, 3 product, 1 shipping rule
-        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1,
-        															PAYCART_TEST_PRODUCT_2,
-        															PAYCART_TEST_PRODUCT_3)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array(),
+        															PAYCART_TEST_PRODUCT_2 => array(),
+        															PAYCART_TEST_PRODUCT_3 => array())),
         				array(	PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1), 
         					 	PAYCART_TEST_PRODUCT_2 	=> array(	PAYCART_TEST_SHIPPING_RULE_1), 
         					 	PAYCART_TEST_PRODUCT_3 	=> array(	PAYCART_TEST_SHIPPING_RULE_1)),
@@ -73,9 +73,9 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
         																				'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1))))),
         				
   				// with 1 address, 3 product, 3 shipping rule (un-common)
-        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1,
-        															PAYCART_TEST_PRODUCT_2,
-        															PAYCART_TEST_PRODUCT_3)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array(),
+        															PAYCART_TEST_PRODUCT_2 => array(),
+        															PAYCART_TEST_PRODUCT_3 => array())),
         				array(	PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1), 
         						PAYCART_TEST_PRODUCT_2 	=> array(	PAYCART_TEST_SHIPPING_RULE_2), 
         						PAYCART_TEST_PRODUCT_3 	=> array(	PAYCART_TEST_SHIPPING_RULE_3)),
@@ -90,9 +90,9 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
         									 											'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_3))))),
         								 
 				// with 1 address, 3 product, 3 shipping rule (with 2 for each product)
-        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1,
-        															PAYCART_TEST_PRODUCT_2,
-        															PAYCART_TEST_PRODUCT_3)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array(),
+        															PAYCART_TEST_PRODUCT_2 => array(),
+        															PAYCART_TEST_PRODUCT_3 => array())),
         				array(	PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1,
         															PAYCART_TEST_SHIPPING_RULE_2), 
         					 	PAYCART_TEST_PRODUCT_2 	=> array(	PAYCART_TEST_SHIPPING_RULE_2,
@@ -109,9 +109,9 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
         								 												'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_3))))),
         								         								 
    				// with 1 address, 3 product, 3 shipping rule (random)
-        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1,
-        															PAYCART_TEST_PRODUCT_2,
-        															PAYCART_TEST_PRODUCT_3)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array(),
+        															PAYCART_TEST_PRODUCT_2 => array(),
+        															PAYCART_TEST_PRODUCT_3 => array())),
         				array(	PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1, 
         															PAYCART_TEST_SHIPPING_RULE_2, 
         															PAYCART_TEST_SHIPPING_RULE_3), 
@@ -126,13 +126,13 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
         																				'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_3))))),  
         				
         		// with 1 address, 3 product, 3 shipping rule (random)
-        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1,PAYCART_TEST_PRODUCT_2,PAYCART_TEST_PRODUCT_3)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array(),PAYCART_TEST_PRODUCT_2 => array(),PAYCART_TEST_PRODUCT_3 => array())),
         				array(PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_2 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3), PAYCART_TEST_PRODUCT_3 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_3)),
         				array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_1), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1)),
         								 							PAYCART_TEST_PACKAGE_1 => array('product_list' => array(PAYCART_TEST_PRODUCT_2,PAYCART_TEST_PRODUCT_3), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_3))))),
         								 
         		// with 1 address, 3 product, 3 shipping rule (random)
-        		array(	array(	PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1,PAYCART_TEST_PRODUCT_2,PAYCART_TEST_PRODUCT_3)),
+        		array(	array(	PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array(),PAYCART_TEST_PRODUCT_2 => array(),PAYCART_TEST_PRODUCT_3 => array())),
         				array(	PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1), 
         						PAYCART_TEST_PRODUCT_2 	=> array(	PAYCART_TEST_SHIPPING_RULE_2), 
         						PAYCART_TEST_PRODUCT_3 	=> array(	PAYCART_TEST_SHIPPING_RULE_1,
@@ -141,49 +141,49 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
         								 							PAYCART_TEST_PACKAGE_1 => array('product_list' => array(PAYCART_TEST_PRODUCT_2), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_2))))),
         								 
 				// with 1 address, 3 product, 3 shipping rule (random)
-        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1,PAYCART_TEST_PRODUCT_2,PAYCART_TEST_PRODUCT_3)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array(),PAYCART_TEST_PRODUCT_2 => array(),PAYCART_TEST_PRODUCT_3 => array())),
         				array(PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_2 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3), PAYCART_TEST_PRODUCT_3 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3)),
         				array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_1), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1)),
         								 							PAYCART_TEST_PACKAGE_1 => array('product_list' => array(PAYCART_TEST_PRODUCT_2,PAYCART_TEST_PRODUCT_3), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3))))),
 
         		// with 3 address, 3 product, 1 shipping rule
-        		array(	array(PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PRODUCT_1), PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PRODUCT_2), PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PRODUCT_3)),
+        		array(	array(PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PRODUCT_1 => array()), PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PRODUCT_2 => array()), PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PRODUCT_3 => array())),
         				array(PAYCART_TEST_PRODUCT_1 => array(PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_2 => array(PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_3 => array(PAYCART_TEST_SHIPPING_RULE_1)),
         				array(PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_1), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1))),
         					  PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_2), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1))),
         					  PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_3), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1))))),
         		
         		// with 3 address, 3 product, 3 shipping rule (each)
-        		array(	array(	PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PRODUCT_1), 
-        						PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PRODUCT_2), 
-        						PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PRODUCT_3)),
+        		array(	array(	PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PRODUCT_1 => array()), 
+        						PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PRODUCT_2 => array()), 
+        						PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PRODUCT_3 => array())),
         				array(PAYCART_TEST_PRODUCT_1 => array(PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_2 => array(PAYCART_TEST_SHIPPING_RULE_2), PAYCART_TEST_PRODUCT_3 => array(PAYCART_TEST_SHIPPING_RULE_3)),
         				array(PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_1), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1))),
         					  PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_2), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_2))),
         					  PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_3), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_3))))),
         					  
 			    // with 3 address, 3 product, 3 shipping rule (each)
-        		array(	array(	PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PRODUCT_1), 
-        						PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PRODUCT_2), 
-        						PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PRODUCT_3)),
+        		array(	array(	PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PRODUCT_1 => array()), 
+        						PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PRODUCT_2 => array()), 
+        						PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PRODUCT_3 => array())),
         				array(PAYCART_TEST_PRODUCT_1 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_2), PAYCART_TEST_PRODUCT_2 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3), PAYCART_TEST_PRODUCT_3 => array(PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_1)),
         				array(PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_1), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_2))),
         					  PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_2), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3))),
         					  PAYCART_TEST_ADDRESS_3 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_3), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_1))))),
         		
         		// with 2 address, 3 product, 3 shipping rule (each)
-        		array(	array(	PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PRODUCT_1, PAYCART_TEST_PRODUCT_2), 
-        						PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PRODUCT_3)),
+        		array(	array(	PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PRODUCT_1 => array(), PAYCART_TEST_PRODUCT_2 => array()), 
+        						PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PRODUCT_3 => array())),
         				array(PAYCART_TEST_PRODUCT_1 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_2), PAYCART_TEST_PRODUCT_2 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3), PAYCART_TEST_PRODUCT_3 => array(PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_1)),
         				array(PAYCART_TEST_ADDRESS_1 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_1,PAYCART_TEST_PRODUCT_2), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_2))),
         					  PAYCART_TEST_ADDRESS_2 => array(PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_3), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_1))))),
         		
 				// with 5 address, 10 product, 5 shipping rule
-        		array(	array(	PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1, PAYCART_TEST_PRODUCT_2), 
-        						PAYCART_TEST_ADDRESS_2 	=> array(	PAYCART_TEST_PRODUCT_3,PAYCART_TEST_PRODUCT_4), 
-        						PAYCART_TEST_ADDRESS_3 	=> array(	PAYCART_TEST_PRODUCT_5,PAYCART_TEST_PRODUCT_6), 
-        						PAYCART_TEST_ADDRESS_4 	=> array(	PAYCART_TEST_PRODUCT_7,PAYCART_TEST_PRODUCT_8,PAYCART_TEST_PRODUCT_9), 
-        						PAYCART_TEST_ADDRESS_5 	=> array(	PAYCART_TEST_PRODUCT_10)),
+        		array(	array(	PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PRODUCT_1 => array(),PAYCART_TEST_PRODUCT_2 => array()), 
+        						PAYCART_TEST_ADDRESS_2 	=> array(	PAYCART_TEST_PRODUCT_3 => array(),PAYCART_TEST_PRODUCT_4 => array()), 
+        						PAYCART_TEST_ADDRESS_3 	=> array(	PAYCART_TEST_PRODUCT_5 => array(),PAYCART_TEST_PRODUCT_6 => array()), 
+        						PAYCART_TEST_ADDRESS_4 	=> array(	PAYCART_TEST_PRODUCT_7 => array(),PAYCART_TEST_PRODUCT_8 => array(),PAYCART_TEST_PRODUCT_9 => array()), 
+        						PAYCART_TEST_ADDRESS_5 	=> array(	PAYCART_TEST_PRODUCT_10 => array())),
         				array(PAYCART_TEST_PRODUCT_1 	=> array(	PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_4), PAYCART_TEST_PRODUCT_2 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_5), PAYCART_TEST_PRODUCT_3 => array(PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_4 => array(PAYCART_TEST_SHIPPING_RULE_5,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_4,PAYCART_TEST_SHIPPING_RULE_2), PAYCART_TEST_PRODUCT_5 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_5),
         					  PAYCART_TEST_PRODUCT_6 	=> array(	PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_4,PAYCART_TEST_SHIPPING_RULE_5,PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_7 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_5), PAYCART_TEST_PRODUCT_8 => array(PAYCART_TEST_SHIPPING_RULE_5), PAYCART_TEST_PRODUCT_9 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_4), PAYCART_TEST_PRODUCT_10 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_4)),
         				array(PAYCART_TEST_ADDRESS_1 	=> array(	PAYCART_TEST_PACKAGE_0 => array('product_list' => array(PAYCART_TEST_PRODUCT_1,PAYCART_TEST_PRODUCT_2), 'shippingrule_list' => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_3))),
@@ -454,7 +454,7 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
 
 		// Test
 		$helper = new PaycartHelperShippingRule();		
-		$this->assertEquals($output, $helper->getBestRule(array_keys($shipingrule_list), array()));  // second arg is not required for this case as it is used in another function in the called fucntion
+		$this->assertEquals($output, $helper->getBestRule(array_keys($shipingrule_list), array(), 0, array()));  // second and third arg is not required for this case as it is used in another function in the called fucntion
 
 		// clean up
 		$ref->setAccessible(true);
@@ -1037,9 +1037,10 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
     	
     	
     	return array(
+    			// #0
     			// case : 1 address, 1 product, 1 shipping rule
     			array(
-    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1)),
+    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1 => array())),
         			array(PAYCART_TEST_PRODUCT_1 		=> array(PAYCART_TEST_SHIPPING_RULE_1)),
     				array(PAYCART_TEST_SHIPPING_RULE_1	=> array(9, 1, 10, 10)),
     				array('shippingrule_list_order_by'  => Paycart::SHIPPINGRULE_LIST_ORDER_BY_PRICE, 'shippingrule_list_order_in' => Paycart::SHIPPINGRULE_LIST_ORDER_IN_ASC),
@@ -1058,9 +1059,10 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
     																						'ordering' => 1)))    				
     			),
     			
+    			// #1
     			// case : 1 address, 1 product, 3 shipping rule , sor by pice in ASC order
     			array(
-    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1)),
+    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1 => array())),
         			array(PAYCART_TEST_PRODUCT_1 		=> array(PAYCART_TEST_SHIPPING_RULE_1,
         														PAYCART_TEST_SHIPPING_RULE_2,
         														PAYCART_TEST_SHIPPING_RULE_3)),
@@ -1111,9 +1113,10 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
     																						'ordering' => 3)))		
     			),
     			
+    			// #2
     			// case : 1 address, 1 product, 3 shipping rule , sor by pice in DESC order
     			array(
-    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1)),
+    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1 => array())),
         			array(PAYCART_TEST_PRODUCT_1 		=> array(PAYCART_TEST_SHIPPING_RULE_1,
         														PAYCART_TEST_SHIPPING_RULE_2,
         														PAYCART_TEST_SHIPPING_RULE_3)),
@@ -1164,9 +1167,10 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
     																						'ordering' => 1)))						
     			),
     			
+    			// #3
     			// case : 1 address, 1 product, 3 shipping rule , sor by ordering in ASC order
     			array(
-    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1)),
+    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1 => array())),
         			array(PAYCART_TEST_PRODUCT_1 		=> array(PAYCART_TEST_SHIPPING_RULE_1,
         														PAYCART_TEST_SHIPPING_RULE_2,
         														PAYCART_TEST_SHIPPING_RULE_3)),
@@ -1217,10 +1221,10 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
     																						'ordering' => 3)))						
     			),
     			
-    			
+    			// #4
     			// case : 1 address, 1 product, 3 shipping rule , sor by ordering in DESC order
     			array(
-    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1)),
+    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1 => array())),
         			array(PAYCART_TEST_PRODUCT_1 		=> array(PAYCART_TEST_SHIPPING_RULE_1,
         														PAYCART_TEST_SHIPPING_RULE_2,
         														PAYCART_TEST_SHIPPING_RULE_3)),
@@ -1271,13 +1275,14 @@ class PaycartHelperShippingruleTest extends PayCartTestCase
     																						'ordering' => 1)))						
     			),
     			
+    			// #5
     			// case : 1 address, 1 product, 3 shipping rule , sor by ordering in DESC order
     			array(
-    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1, PAYCART_TEST_PRODUCT_2), 
-        				  PAYCART_TEST_ADDRESS_2 		=> array(PAYCART_TEST_PRODUCT_3,PAYCART_TEST_PRODUCT_4), 
-        				  PAYCART_TEST_ADDRESS_3 		=> array(PAYCART_TEST_PRODUCT_5,PAYCART_TEST_PRODUCT_6), 
-        				  PAYCART_TEST_ADDRESS_4 		=> array(PAYCART_TEST_PRODUCT_7,PAYCART_TEST_PRODUCT_8,PAYCART_TEST_PRODUCT_9), 
-        				  PAYCART_TEST_ADDRESS_5 		=> array(PAYCART_TEST_PRODUCT_10)),
+    				array(PAYCART_TEST_ADDRESS_1 		=> array(PAYCART_TEST_PRODUCT_1 => array(), PAYCART_TEST_PRODUCT_2 => array()), 
+        				  PAYCART_TEST_ADDRESS_2 		=> array(PAYCART_TEST_PRODUCT_3 => array(), PAYCART_TEST_PRODUCT_4 => array()), 
+        				  PAYCART_TEST_ADDRESS_3 		=> array(PAYCART_TEST_PRODUCT_5 => array(), PAYCART_TEST_PRODUCT_6 => array()), 
+        				  PAYCART_TEST_ADDRESS_4 		=> array(PAYCART_TEST_PRODUCT_7 => array(), PAYCART_TEST_PRODUCT_8 => array(),PAYCART_TEST_PRODUCT_9 => array()), 
+        				  PAYCART_TEST_ADDRESS_5 		=> array(PAYCART_TEST_PRODUCT_10 => array())),
         			array(PAYCART_TEST_PRODUCT_1 		=> array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_4), PAYCART_TEST_PRODUCT_2 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_5), PAYCART_TEST_PRODUCT_3 => array(PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_4 => array(PAYCART_TEST_SHIPPING_RULE_5,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_4,PAYCART_TEST_SHIPPING_RULE_2), PAYCART_TEST_PRODUCT_5 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_5),
         				  PAYCART_TEST_PRODUCT_6 		=> array(PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_4,PAYCART_TEST_SHIPPING_RULE_5,PAYCART_TEST_SHIPPING_RULE_1), PAYCART_TEST_PRODUCT_7 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_5), PAYCART_TEST_PRODUCT_8 => array(PAYCART_TEST_SHIPPING_RULE_5), PAYCART_TEST_PRODUCT_9 => array(PAYCART_TEST_SHIPPING_RULE_1,PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_3,PAYCART_TEST_SHIPPING_RULE_4), PAYCART_TEST_PRODUCT_10 => array(PAYCART_TEST_SHIPPING_RULE_2,PAYCART_TEST_SHIPPING_RULE_4)),
        				array(PAYCART_TEST_SHIPPING_RULE_1	=> array(7, 3, 10, 20),

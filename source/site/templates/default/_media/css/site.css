@@ -2,5 +2,137 @@
 * @copyright	Copyright (C) 2009-2012 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license		GNU/GPL, see LICENSE.php
 * @package		PAYCART
-* @contact 		team@readybytes.in
+* @contact 		support+paycart@readybytes.in
 */
+
+/*
+Every time component output is displayed we can safely assume three tier classes 
+	.paycart-wrap
+		.paycart
+			.paycart-component
+			.paycart-module
+
+
+We will use row-fluid to paycart-component to make it independent of bootstrap responsive
+*/
+
+
+/*=============================================
+ Catlogue Display
+ .pc-catlogue
+ 	.pc-categories
+ 		
+ 		.pc-category-wrapper
+ 			.pc-category
+				.pc-category-content
+ 	
+===============================================*/
+.paycart .pc-catlogue{
+	
+}
+
+.pc-categories-wrapper{
+	padding:4px;
+	border: 0px red dashed;
+}
+
+.pc-categories {
+	border: 0px black dashed;
+	margin: 0 auto;
+}
+
+.pc-category {
+	/*upper limit*/
+	max-width:200px;
+	max-height:200px;
+	
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.pc-category-outer{
+	padding:4px;
+}
+.pc-category-content{
+	height:100%;
+	margin:2px;
+}
+
+.pc-category a {
+	color : #fff;
+}
+
+
+.pc-size-xs #pc-categories[data-columns]::before {
+	content: '3 .pc-grid-4';
+}
+
+.pc-size-sm #pc-categories[data-columns]::before {
+	content: '4 .pc-grid-3';
+}
+
+.pc-size-lg #pc-categories[data-columns]::before {
+	content: '4 .pc-grid-3';
+}
+
+.pc-size-xl .pc-category {
+	width: 200px;
+	height:200px;
+}
+
+/* Also, don't forget to add this: */
+#pc-categories[data-columns]::before { 
+	display: none; 
+}
+
+
+/*
+Products Display
+*/
+.pc-products-wrapper{
+	border: 0px red dashed;
+}
+
+.pc-products{
+	border: 0px black dashed;
+	margin: 0 auto;
+}
+
+.pc-size-xl .pc-product {
+	width: 230px;
+}
+
+.pc-size-xs #pc-products[data-columns]::before {
+	content: '2 .pc-grid-6';
+}
+
+.pc-size-sm #pc-products[data-columns]::before {
+	content: '3 .pc-grid-4';
+}
+
+.pc-size-lg #pc-products[data-columns]::before {
+	content: '4 .pc-grid-3';
+}
+
+/* Also, don't forget to add this: */
+#pc-products[data-columns]::before { 
+	display: none; 
+}
+
+
+
+.pc-product-outer{
+	padding:4px;
+}
+
+.pc-product {
+	
+}
+
+.pc-product-content{
+	padding:2px;
+}
+
+.pc-product-content img{
+	width:100%;
+}

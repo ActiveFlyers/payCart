@@ -6,10 +6,148 @@
 * @contact 		team@readybytes.in
 */
 
-.paycart-wrap .spinner{
-	background: url("../images/spinner.gif") no-repeat;
-	height : 48px;
-	display:block;
-	background-position: center center;	
+/*
+	catlogue parent wrapper CATEGORIZATION
+*/
+.pc-size-xs{
+	min-width:320px;
+	max-width:479px;
 }
-	
+
+.pc-size-sm{
+	min-width:480px;
+	max-width:719px;
+}
+
+.pc-size-lg{
+	min-width:720px;
+	max-width:979px;
+}
+
+.pc-size-xl{
+	min-width:980px;
+}
+
+
+
+
+/*=============================================
+ Utilities and helpers
+===============================================*/
+
+/* Makes div's background-color black & transparent*/
+.paycart .blurground{
+  /* black for browsers which cannot support rgba */
+  background-color: #000;
+
+  /* 70% opacity for supported browsers */
+  background-color: rgba(0, 0, 0, 0.5);
+
+  /* IE 5.5+ support #BB000000 is ~70% opacity on black */
+  filter:progid:DXImageTransform.Microsoft.gradient(
+    startColorstr=#BB000000, endColorstr=#BB000000
+  );
+
+  /* IE 8 support */
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(
+    startColorstr=#BB000000, endColorstr=#BB000000
+  )";
+  
+ /* height & width should be setup to cover complete div*/
+ height: 100%;
+ 
+}
+
+/*---------Make content centered vertically----------
+  <div class="vertical-center-wrapper">
+  	<div class="vertical-center-content">
+  	</div>
+  </div>
+-------------------------------------------------*/
+.paycart .vertical-center-wrapper{
+	text-align: center;
+  	height: 100%;
+  	/* line-height: 200px; *setup via javascript in px */
+}
+
+.paycart .vertical-center-content{
+  display: inline-block;
+  vertical-align: middle;
+/*   line-height: normal; */
+}
+
+
+/* =============================================
+   TINY 960 Grid : 
+   Its required becuase bootstrap based 
+   span span4 changes to span12 in small devices
+================================================*/
+
+.pc-grid-1,
+.pc-grid-2,
+.pc-grid-3,
+.pc-grid-4,
+.pc-grid-5,
+.pc-grid-6,
+.pc-grid-7,
+.pc-grid-8,
+.pc-grid-9,
+.pc-grid-10,
+.pc-grid-11,
+.pc-grid-12 {
+	display:inline;
+	float: left;
+	position: relative;
+	margin-left: 1%;
+	margin-right: 1%;
+}
+
+
+.pc-grid-1 {
+	width:6.333%;
+}
+
+.pc-grid-2 {
+	width:14.667%;
+}
+
+.pc-grid-3 {
+	width:23.0%;
+}
+
+.pc-grid-4 {
+	width:31.333%;
+}
+
+.pc-grid-5 {
+	width:39.667%;
+}
+
+.pc-grid-6 {
+	width:48.0%;
+}
+
+.pc-grid-7 {
+	width:56.333%;
+}
+
+.pc-grid-8 {
+	width:64.667%;
+}
+
+.pc-grid-9 {
+	width:73.0%;
+}
+
+.pc-grid-10 {
+	width:81.333%;
+}
+
+.pc-grid-11 {
+	width:89.667%;
+}
+
+.pc-grid-12 {
+	width:98.0%;
+}
+

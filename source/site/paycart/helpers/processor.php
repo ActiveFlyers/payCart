@@ -74,7 +74,7 @@ class PaycartHelperProcessor extends JObject
 	 * 
 	 * @return Processor Instance
 	 */
-	public function getProcessorInstance($type, $className, $config = Array())
+	public function getInstance($type, $className, $config = Array())
 	{
 		$type 		= JString::strtolower($type);
 		$className 	= JString::strtolower($className);

@@ -127,4 +127,13 @@ class PaycartBuyer extends PaycartLib
 		return $this->params->toArray();
 	}
 	
+	public function getShippingAddress()
+	{
+		// @TODO :
+	}
+	
+	public function getBillingAddress()
+	{
+		// @TODO :
+	}
 }

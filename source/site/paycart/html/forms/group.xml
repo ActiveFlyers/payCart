@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+	<fieldset name="group">
+		<field 	
+			name="group_id" 
+			type="hidden"
+			default="0"/>
+		
+		<field 
+			name="title" 
+			type="text"	
+			labelclass="control-label"			
+			label="Title"
+			placeholder="asasa"
+			description="Enter the title of the group so that you can understand it by name. Like : Users who wants shipping in India."/>
+				
+		<field 
+			name="description" 
+			type="textarea"				
+			labelclass="control-label"
+			label="Description"
+			description="Enter the description of the group so that you can understand. This desription is have detailed knowledge about the group your are creating."/>
+			
+		<field
+			name="published"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"
+			label="Published"
+			description="Published"
+			default="1">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		
+		<field
+			name="type"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"
+			label="Type"
+			description="Type of group, like Product or Buyer."
+			default="1">
+			<option value="product">Product</option>
+			<option value="buyer">Buyer</option>
+		</field>
+			
+		<fields name="parmas">
+		</fields>		
+	</fieldset>
+</form>

@@ -57,6 +57,9 @@ class Paycart
 	
 	//Processor type
 	const PROCESSOR_TYPE_DISCOUNTRULE = 'discountrule';
+	// @PCTODO : TAX => TAXRULE
+	const PROCESSOR_TYPE_TAX   		  = 'taxrule';
+	const PROCESSOR_TYPE_SHIPPINGRULE = 'shippingrule';
 	
 	//Paycart Status
 	const STATUS_PUBLISHED 		= 'published';		// Content publish for end-user
@@ -72,6 +75,7 @@ class Paycart
 	const SHIPPINGRULE_LIST_ORDER_BY_ORDERING 	= 'ordering';
 	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
 	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
+
 
 	const PROCESSOR_TYPE_TAX    = 'taxrule';
 
@@ -89,4 +93,7 @@ class Paycart
 	const CHECKOUT_SEQUENCE_OPTION_VALUE_TAX_DISCOUNT = 'td';
 	const CHECKOUT_SEQUENCE_OPTION_VALUE_DISCOUNT_TAX = 'dt';
 	
+	const GROUPRULE_TYPE_PRODUCT = 'product';
+	const GROUPRULE_TYPE_BUYER 	 = 'buyer';
+
 }
