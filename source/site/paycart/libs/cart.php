@@ -182,7 +182,7 @@ class PaycartCart extends PaycartLib
 		
 		// bind data on cartParticulars
 		foreach ($particulars as $bindData) {		
-//			$bindData['buyer_id']		= $this->getBuyer();
+			$bindData['buyer_id']		= $this->getBuyer();
 			
 			//1#. Get cart-Particular
 			
@@ -302,6 +302,26 @@ class PaycartCart extends PaycartLib
 	
 	/**
 	 * 
+	 * Reinitialize cart total
+	 * 
+	 * @return PaycartCart
+	 */
+	public function reinitializeTotal()
+	{
+		$this->_total = 0 ;
+		
+		foreach ($this->getParticulars() as $key => $particulars) {
+			
+			foreach ($particulars as $hash => $particular) {
+				$this->_total = ($this->_total) + ($particular->getTotal());
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * 
 	 * Add product to cart
 	 * @param stdClass $product
 	 *		StdClass(
@@ -326,16 +346,14 @@ class PaycartCart extends PaycartLib
 		$type		= $particular->getType();
 
 		// If add same product (which is already exist in cart) 
-		// then update cart-total
+		//  Add previous product quantity with new 
 		if ($this->_particulars[$type][$hashKey]) {
 			$previoue_particular = $this->_particulars[$type][$hashKey];
-			$this->_total = ($this->_total) - ($previoue_particular->getTotal());
+			$quantity = $previoue_particular->getQuantity() + $particular->getQuantity();
+			$particular->setQuantity($quantity);
 		}
 		
 		$this->_particulars[$type][$hashKey] 	= $particular;
-		
-		// Cart-particular's changes should be reflected into cart 
-		$this->_total 	= ($this->_total) + $particular->getTotal();
 		
 		//2#. Calculation on Cart-particulars
 		$this->calculate();
@@ -355,6 +373,11 @@ class PaycartCart extends PaycartLib
 	 */
 	public function calculate()
 	{
+		// no need to re-calculation
+		if ($this->is_locked) {
+			return $this;
+		}
+		
 		//Before start calculation
 		//1#. Re-initialize all cart's Particulars
 		//2#. Re-initialize Cart-Total
@@ -411,7 +434,7 @@ class PaycartCart extends PaycartLib
 	{	
 		// no need to re-calculation
 		if ($this->is_locked) {
-			return true;
+			return $this;
 		}
 		
 		//@NOTE: When reset cart-particulars then need to reset cart total 
@@ -446,6 +469,9 @@ class PaycartCart extends PaycartLib
 		foreach ($shippingParticulars as $key => $particular) {
 			$this->_reInitializeParticular($particular);
 		}
+		
+		// After reinitialize particular update new cart total
+		$this->reinitializeTotal();
 		
 		return $this;
 	}
@@ -489,10 +515,7 @@ class PaycartCart extends PaycartLib
 				throw new RuntimeException(Rb_Text::_("COMA_PAYCART_CART_PARTICULAR_TYPE_INVALID"));
 		}
 		
-		//2#. Cart-particular's changes should be reflected into cart 
-		$this->_total 	= ($this->_total) + ($particular->getTotal());
-		
-		//3#. Set cart-particular on cart
+		// Set cart-particular on cart
 		$key 	= $this->_helper->getHash($particular);
 		$type	= $particular->getType();
 			
@@ -525,9 +548,6 @@ class PaycartCart extends PaycartLib
 			//2#. Apply {Tax and discount} on each Product
 			$this->_helper->$invoke1($this, $particular);
 			$this->_helper->$invoke2($this, $particular);
-			
-			//3#. Cart-particular's changes should be reflected into cart  
-			$this->_total 	 = ($this->_total) + ($particular->getTotal());
 		}
 		
 		return $this;
@@ -556,16 +576,14 @@ class PaycartCart extends PaycartLib
 		//create product-promotion particular
 		$particular = $this->createPromotionParticular($requestObject);
 		
-		//invoke tax system
-		$this->_helper->applyDiscountrule($this, $particular);
-		
 		//get hash key
 		$key = $this->_helper->getHash($particular);
 		
 		$this->_particulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION][$key] 	= $particular;
 
-		// Cart-particular's changes should be reflected into cart  
-		$this->_total 	 = ($this->_total) + ($particular->getTotal());
+		//invoke tax system
+		$this->_helper->applyDiscountrule($this, $particular);
+
 			
 		return $this;
 	}
@@ -589,16 +607,13 @@ class PaycartCart extends PaycartLib
 		//create duties particular
 		$particular = $this->createDutiesParticular($requestObject);
 		
-		//invoke tax system
-		$this->_helper->applyTax($this, $particular);
-		
 		//get hash key
 		$key = $this->_helper->getHash($particular);
 		
 		$this->_particulars[Paycart::CART_PARTICULAR_TYPE_DUTIES][$key] = $particular;
 		
-		// Cart-particular's changes should be reflected into cart  
-		$this->_total 	 = ($this->_total) + ($particular->getTotal());
+		//invoke tax system
+		$this->_helper->applyTaxrule($this, $particular);
 
 		return $this;
 	}
@@ -764,6 +779,8 @@ class PaycartCart extends PaycartLib
 		
 		// Set initial property of cart-paricular
 		$bindData->type  = Paycart::CART_PARTICULAR_TYPE_SHIPPING;
+		$bindData->cart_id			= $this->getId();
+		$bindData->buyer_id			= $this->getBuyer();
 		
 		// Build cartparticular
 		$particular	= PaycartCartparticular::getInstance(0, $bindData);

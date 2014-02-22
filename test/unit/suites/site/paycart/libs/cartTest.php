@@ -10,6 +10,7 @@
  * Test Cart Lib
  * @author rimjhim
  */
+require_once 'stubs/cartTest_product.php';
 class PaycartCartTest extends PayCartTestCaseDatabase
 {
 	
@@ -17,16 +18,349 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 	{
 		$this->markTestIncomplete();
 	}
-	
-	public function test_calculate() 
+
+	/**
+	 * 
+	 * Test Calculation
+	 * @param Paycart $cart
+	 * @param Paycart $cart_after_reinitialize
+	 * @dataProvider provider_test_calculate 
+	 */
+	public function test_calculate(PaycartCart $cart, PaycartCart $cart_after_reinitialize) 
 	{
-		$this->markTestIncomplete();
+		$this->assertEquals($cart_after_reinitialize, $cart->calculate());
 	}
 	
-	public function test_calculate_DutiesParticular() 
+	public function provider_test_calculate() 
 	{
-		$this->markTestIncomplete();
+		
+		// mock paycart config
+		$mappedMethod = Array('get' => Array( $this , 'stub_paycart_config'));
+		
+		$mockConfig = $this->getMockPaycartConfig($mappedMethod);
+		 
+		PayCartTestReflection::setValue('paycartfactory', '_config', $mockConfig);
+		
+		$cart1 = PaycartCart::getInstance();
+		
+		// Set dummy Product particulars on cart 
+		$bindData1 = Array(	'quantity' => 2, 'unit_price' => 10, 'price' => 20, 'particular_id' => 16,	//total =>32
+							'discount' => -2, 'tax'	=> 10 , 'type' => Paycart::CART_PARTICULAR_TYPE_PRODUCT); 
+
+		$bindData2 = Array(	'quantity' => 3, 'unit_price' => 30, 'price' => 90,   'particular_id' => 22,	//total =>107
+							'discount' => -3, 'tax'	=> 20 , 'type' => Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		
+		$bindData3 = Array(	'unit_price' => 107, 'price' => 107, 	// total => -7
+							'discount' 	=> -7, 'type' => Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+
+		$bindData4 = Array(	'unit_price' => 30, 'price' => 30, 	// total => 10
+							'tax'	=> 10 , 'type' => Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		
+		//@PCTODO:: Add Shipping Particular Data 
+		$bindData5 = Array(	'type' => Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+
+		PayCartTestReflection::setValue($cart1, 'is_locked', true);
+		PayCartTestReflection::setValue($cart1, '_total', 142);
+		
+		$productParticular1  = $this->getDummyParticular($bindData1);
+		$productParticular2	 = $this->getDummyParticular($bindData2);
+		
+		$promotionParticular = $this->getDummyParticular($bindData3);
+		$dutiesParticular	 = $this->getDummyParticular($bindData4);
+		
+		$shippingParticular	 = $this->getDummyParticular($bindData5);
+		
+		
+		$cartHelper = PaycartFactory::getHelper('cart'); 
+		
+		$particulars	= Array();
+	
+		$particulars[Paycart::CART_PARTICULAR_TYPE_PRODUCT] 	=	Array('_product1_'	=> $productParticular1, '_product2_' => $productParticular2);
+		$particulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION] 	=	Array('_promotion_'	=> $promotionParticular);
+		$particulars[Paycart::CART_PARTICULAR_TYPE_DUTIES] 	 	=	Array('_duties_' 	=> $dutiesParticular);
+		$particulars[Paycart::CART_PARTICULAR_TYPE_SHIPPING] 	=	Array('_shipping_' 	=> $shippingParticular );
+		
+		PayCartTestReflection::setValue($cart1, '_particulars', $particulars);
+		
+		$cart_after_reinitialize1 = $cart1->getClone();
+		
+		// Case-2 # when reinitialize everything
+		$cart2 = $cart1->getClone();
+		PayCartTestReflection::setValue($cart2, 'is_locked', false);
+
+		// stubbing product lib
+		$stubProduct1 = new CartTestProductStub;
+		$stubProduct1->setId(16);
+		$stubProduct2 = new CartTestProductStub;
+		$stubProduct2->setId(22);
+		
+		PaycartLib::$instance['paycartproduct'][16] = $stubProduct1;
+		PaycartLib::$instance['paycartproduct'][22] = $stubProduct2;
+		
+		$callback = array(get_called_class(), 'stub_paycart_carthelper_applyTaxrule');
+		// mock helper
+		$mockHelper = $this->getMockHelper('PaycartHelperCart', Array('getHash' => Array($this, 'stub_paycart_carthelper_getHash')));
+		
+		// apply Tax rule
+		$mockHelper->expects($this->exactly(3))		// call it 3 times. (Product16 + Product22 +Duties)
+				   ->method('applyTaxrule')
+				   ->will($this->returnCallback(array(get_called_class(), 'stub_paycart_carthelper_applyTaxrule')));
+		
+		// apply discount rule
+		$mockHelper->expects($this->exactly(3))		// call it 3 times. (Product16 + Product22 + Promotion)
+				   ->method('applyDiscountrule')
+				   ->will($this->returnCallback(array(get_called_class(), 'stub_paycart_carthelper_applyDiscountrule')));
+				   
+		PayCartTestReflection::setValue($cart2, '_helper', $mockHelper);
+		
+		
+		$cart_after_reinitialize2 = $cart2->getClone();
+		
+		// After reinitilaization changed values
+
+		$bindData1 = Array(	'quantity' => 2, 	'unit_price' => 10, 'price' => 20, 'particular_id' => 16, 'total' =>25,
+							'discount' => -10, 	'tax'	=> 15 , 'type' => Paycart::CART_PARTICULAR_TYPE_PRODUCT ); 
+
+		$bindData2 = Array(	'quantity' => 3, 'unit_price' => 40, 'price' => 120,   'particular_id' => 22, 'total' =>130,
+							'discount' => -15, 'tax'	=> 25 , 'type' => Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		
+		$bindData3 = Array(	'unit_price' => 155, 'price' => 155, 'total' => -10,
+							'discount' 	=> -10, 'type' => Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+
+		$bindData4 = Array(	'unit_price' => 40, 'price' => 40, 'total' => 35,
+							'tax'	=> 35 , 'type' => Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		
+		$bindData5 = Array(	'type' => Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+		
+		$particulars	= Array();
+		
+		$productParticular1  = $this->getDummyParticular($bindData1);
+		$productParticular2	 = $this->getDummyParticular($bindData2);
+		
+		$promotionParticular = $this->getDummyParticular($bindData3);
+		$dutiesParticular	 = $this->getDummyParticular($bindData4);
+		
+		$shippingParticular	 = $this->getDummyParticular($bindData5);
+		
+		$particulars[Paycart::CART_PARTICULAR_TYPE_PRODUCT] 	=	Array('_product1_'	=> $productParticular1, '_product2_' => $productParticular2);
+		$particulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION] 	=	Array('_promotion_'	=> $promotionParticular);
+		$particulars[Paycart::CART_PARTICULAR_TYPE_DUTIES] 	 	=	Array('_duties_' 	=> $dutiesParticular);
+		$particulars[Paycart::CART_PARTICULAR_TYPE_SHIPPING] 	=	Array('_shipping_' 	=> $shippingParticular );
+
+		PayCartTestReflection::setValue($cart_after_reinitialize2, '_particulars', $particulars);
+		PayCartTestReflection::setValue($cart_after_reinitialize2, '_total', 180);
+		// cart2 internally call and set _name property
+		$cart_after_reinitialize2->getName();
+		
+		return 	Array(
+						Array($cart1, $cart_after_reinitialize1),
+						Array($cart2, $cart_after_reinitialize2)
+					);
+		
 	}
+	
+	function stub_paycart_config($prop, $default)
+	{
+		switch($prop) 
+		{
+			case 'checkout_tax_discount_sequence' :
+				return $default;
+			case 'currency' :
+				return '$';
+            default:
+                return $default;	
+		}
+	}
+	
+	function stub_paycart_carthelper_applyTaxrule(PaycartCart $cart, PaycartCartparticular $particular)
+	{	
+		switch ($particular->getType()) 
+		{
+			case Paycart::CART_PARTICULAR_TYPE_PRODUCT : 	// if particule is product 
+				if ($particular->getParticularId() == 16) {
+					$particular->addTax(15);
+				}elseif ($particular->getParticularId() == 22) {
+					$particular->addTax(25);
+				}
+				break;
+			case Paycart::CART_PARTICULAR_TYPE_DUTIES :  	// if particule is Duties
+				$particular->addTax(35);
+				break;
+			case Paycart::CART_PARTICULAR_TYPE_SHIPPING :  	// if particule is Duties
+				//$particular->addTax(15);
+				break;
+			default :
+				throw new InvalidArgumentException('INVALID :: Particular Type');
+		}
+		
+		$cart->reinitializeTotal();
+	}
+
+	
+	function stub_paycart_carthelper_applyDiscountrule(PaycartCart $cart, PaycartCartparticular $particular)
+	{
+		switch ($particular->getType()) 
+		{
+			case Paycart::CART_PARTICULAR_TYPE_PRODUCT : 	// if particule is product 
+				if ($particular->getParticularId() == 16) {
+					$particular->addDiscount(-10);
+				}elseif ($particular->getParticularId() == 22) {
+					$particular->addDiscount(-15);
+				}
+				break;
+			case Paycart::CART_PARTICULAR_TYPE_PROMOTION :  	// if particule is promotion
+				$particular->addDiscount(-10);
+				break;
+			case Paycart::CART_PARTICULAR_TYPE_SHIPPING :  	// if particule is Duties
+				//$particular->addDiscount(-35);
+				break;
+			default :
+				throw new InvalidArgumentException('INVALID :: Particular Type');
+		}
+		$cart->reinitializeTotal();
+	}
+	
+	
+	function stub_paycart_carthelper_getHash(PaycartCartparticular $particular)
+	{
+		switch ($particular->getType()) 
+		{
+			case Paycart::CART_PARTICULAR_TYPE_PRODUCT : 	// if particule is product 
+				if ($particular->getParticularId() == 16) {
+					$hash = '_product1_';
+				}elseif ($particular->getParticularId() == 22) {
+					$hash = '_product2_';
+				}
+				break;
+			case Paycart::CART_PARTICULAR_TYPE_PROMOTION :  	// if particule is promotion
+				$hash = '_promotion_';
+				break;
+			case Paycart::CART_PARTICULAR_TYPE_DUTIES :  	// if particule is Duties
+				$hash = '_duties_';
+				break;
+			case Paycart::CART_PARTICULAR_TYPE_SHIPPING :  	// if particule is Duties
+				$hash = '_shipping_';
+				break;
+			default :
+				throw new InvalidArgumentException('INVALID :: Particular Type');
+		}
+		
+		return $hash;
+	}
+
+	
+	/**
+	 * 
+	 * Test Calculate Duties(cart-duties) on Cart
+	 * @param unknown_type $cart
+	 * @param unknown_type $changed_property
+	 * @param unknown_type $cart_total
+	 * @param unknown_type $expectedPromotion
+	 * 
+	 * @dataProvider provider_test_calculate_DutiesParticular
+	 */
+	public function test_calculate_DutiesParticular($cart, $changed_property, $cart_total, $expectedPromotion)  
+	{
+		// mock helper
+		$mockHelper = $this->getMockHelper('PaycartHelperCart');
+		// apply discount rule
+		$mockHelper->expects($this->exactly(1))
+				   ->method('applyTaxrule')
+				   ->will($this->returnCallback(
+				   			function ($currentCart, $dutiesParticular) use ($changed_property)
+				   			{
+				   				$dutiesParticular->addTax($changed_property['tax']);
+				   				$currentCart->reinitializeTotal();
+				   			}
+				   	));
+		
+		$key = '_MANISH_';
+		// get hash code
+		$mockHelper->expects($this->exactly(1))
+				   ->method('getHash')
+				   ->will($this->returnValue($key));
+
+		PayCartTestReflection::setValue($cart, '_helper', $mockHelper);
+		
+		//call calculation on promotion
+		$cart->calculateDutiesParticular();
+		
+		// check cart total
+		$this->assertEquals($cart_total, $cart->getTotal());
+		
+		// check particular set on cart
+		$actualParticular = $cart->getParticulars(Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		
+		$this->assertEquals($expectedPromotion, $actualParticular[$key]);		
+	}
+	
+	public function provider_test_calculate_DutiesParticular() 
+	{
+		$mockConfig 		= $this->getMockPaycartConfig();
+		$cartHelper = PaycartFactory::getHelper('cart');
+				
+		PayCartTestReflection::setValue('paycartfactory', '_config', $mockConfig);
+		
+		$cart1 = PaycartCart::getInstance();
+		
+		// Set dummy Product particulars on cart 
+		$bindData1 = Array(	'quantity' => 2, 'unit_price' => 10, 'price' => 20, 'total' => 30, 
+							'discount' => 0, 'tax'	=> 10 , 'type' => Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+
+		$productParticular1 = $this->getDummyParticular($bindData1);
+
+		$bindData2 = Array(	'quantity' => 3, 'unit_price' => 30, 'price' => 90, 'total' => 115, 
+							'discount' => 0, 'tax'	=> 25 , 'type' => Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		
+		$productParticular2 = $this->getDummyParticular($bindData2);
+		
+		$hash1 = $cartHelper->gethash($productParticular1);
+		$hash2 = $cartHelper->gethash($productParticular2);
+		
+		$particulars[Paycart::CART_PARTICULAR_TYPE_PRODUCT] 	=	Array($hash1 => $productParticular1, $hash2 = $productParticular2);
+		$particulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION] 	=	array();
+		$particulars[Paycart::CART_PARTICULAR_TYPE_DUTIES] 	 	=	array();
+		$particulars[Paycart::CART_PARTICULAR_TYPE_SHIPPING] 	=	array();
+		
+		//set product particular on cart
+		PaycartTestReflection::setValue($cart1, '_particulars', $particulars);
+		PaycartTestReflection::setValue($cart1, '_total', 110);
+
+		// change on particular
+		$changed_property1 	= Array('tax' => 15 );
+		$cart_total1		= 160; 
+		
+		$bindData 				= Array('price' =>35, 'unit_price' =>35, 
+										'tax' => 15, 'total' => 15, 
+										'type'=>Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		$dutiesParticular1 		= $this->getDummyParticular($bindData);
+		
+		$cart2 = $cart1->getClone();
+		$cart2->setId(5);		// set cart Id
+		PaycartTestReflection::setValue($cart2, 'buyer_id', 63);		// set buyer id
+		
+		$changed_property2 	= Array('tax' => 20 );
+		$cart_total2		= 165; 
+		
+		$particulars[Paycart::CART_PARTICULAR_TYPE_DUTIES] 	=	array('_MANISH_' => $this->getDummyParticular(Array('cartparticular_id'=>2)));
+		PaycartTestReflection::setValue($cart2, '_particulars', $particulars);
+		
+		$bindData['cartparticular_id']	= 2;
+		$bindData['tax']				= 20;
+		$bindData['total'] 				= 20;
+		$bindData['cart_id'] 			= 5;
+		$bindData['buyer_id'] 			= 63;
+		
+		$dutiesParticular2 	= $this->getDummyParticular($bindData);
+		 
+		
+		return Array(
+						 Array($cart1, $changed_property1, $cart_total1, $dutiesParticular1)
+						,Array($cart2, $changed_property2, $cart_total2, $dutiesParticular2)
+					);
+	}
+	
+	
 	
 	/**
 	 * 
@@ -48,8 +382,8 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 				   ->will($this->returnCallback(
 				   			function ($currentCart, $promotionParticular) use ($changed_property)
 				   			{
-				   				$promotionParticular->setDiscount($changed_property['discount']);
-				   				
+				   				$promotionParticular->addDiscount($changed_property['discount']);
+				   				$currentCart->reinitializeTotal();
 				   			}
 				   	));
 		
@@ -135,43 +469,8 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 		return Array(
 						 Array($cart1, $changed_property1, $cart_total1, $promotionParticular1)
 						,Array($cart2, $changed_property2, $cart_total2, $promotionParticular2)
-//						Array(Paycart::CHECKOUT_SEQUENCE_OPTION_VALUE_TAX_DISCOUNT)
 					);
 	}
-	
-	/**
-	 * Calculate Promotion(cart-discount) on Cart 
-	 * 
-	 * @return PaycartLib Instance
-	 */
-	public function calculatePromotionParticular()  
-	{
-		//Since, We have already reset Product-Promotion
-		//Therefore, We need to re-build {product-promotion} type cart-particular. Hence-Proved  
-		$requestObject = new stdClass();
-		$requestObject->particular_id = 0;
-		
-		// Product-Promotion have single value array 
-		foreach ($this->getParticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION) as $key => $particular) {
-			//Already created {Product-promotion} type cart-particulars
-			$requestObject->particular_id = $particular->getId();
-		}
-		
-		//create product-promotion particular
-		$particular = $this->createPromotionParticular($requestObject);
-		
-		//invoke tax system
-		$this->_helper->applyDiscountrule($this, $particular);
-		
-		//get hash key
-		$key = $this->_helper->getHash($particular);
-		
-		$this->_particulars[$key] 	= $particular;
-				
-		return $this;
-	}
-	
-	
 	
 	/**
 	 * Enter description here ...
@@ -279,40 +578,41 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 	
 	public function mock_ApplyDiscountrule(PaycartCart $cart, PaycartCartparticular $particular )
 	{	
-		$a=2;	
 		switch (self::$invokeCounter)
 		{
 			case 1 :
 			case 6 :	// for product-1		
-				$particular->setDiscount(5);
+				$particular->addDiscount(-5);
 				break;
 			case 3 :	// for product-2
 			case 8 :
-				$particular->setDiscount(-15);
-				break;
-			default:
-				$this->assertTrue(false, "Checkout sequence is not properly working for Product-particular");
-		}
-		self::$invokeCounter++;
-	}
-	
-	public function mock_ApplyTaxrule(PaycartCart $cart, PaycartCartparticular $particular )
-	{
-		$a = 4;
-		switch (self::$invokeCounter)
-		{
-			case 2 :
-			case 5 :	// for product-1
-				$particular->setTax(2);
-				break;
-			case 4 :	// for product-2
-			case 7 :
-				$particular->setTax(5);
+				$particular->addDiscount(-15);
 				break;
 			default:
 				$this->assertTrue(false, "Checkout sequence is not properly working for Product-particular");
 		}
 		
+		$cart->reinitializeTotal();
+		self::$invokeCounter++;
+	}
+	
+	public function mock_ApplyTaxrule(PaycartCart $cart, PaycartCartparticular $particular )
+	{
+		switch (self::$invokeCounter)
+		{
+			case 2 :
+			case 5 :	// for product-1
+				$particular->addTax(2);
+				break;
+			case 4 :	// for product-2
+			case 7 :
+				$particular->addTax(5);
+				break;
+			default:
+				$this->assertTrue(false, "Checkout sequence is not properly working for Product-particular");
+		}
+		
+		$cart->reinitializeTotal();
 		self::$invokeCounter++;
 	}
 	
@@ -417,7 +717,8 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 	{
 		$particular 	= new stdClass();
 		$actualMessage 	= 'ERROR';
-		$cart 			= PaycartCart::getInstance();
+
+		$cart = PaycartCart::getInstance();
 		
 		##Case-1# Particular id is not exist in args
 		try{

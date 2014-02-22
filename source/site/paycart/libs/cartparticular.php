@@ -78,10 +78,23 @@ class PaycartCartparticular extends PaycartLib
 		return $this;
 	}
 	
-	public function getTotal()
+	public function bind($data, $ignore= Array())
 	{
-		//@PCTODO:: don't do it if rules will update total
-		switch ($this->type) {
+		parent::bind($data, $ignore);
+		
+		$this->reinitializeTotal();
+		
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * Reinitialize Particular Total with updated values
+	 */
+	public function reinitializeTotal() 
+	{
+		switch ($this->type) 
+		{
 			case Paycart::CART_PARTICULAR_TYPE_PROMOTION :
 				$this->total = $this->discount;
 				break;
@@ -92,10 +105,14 @@ class PaycartCartparticular extends PaycartLib
 
 			case Paycart::CART_PARTICULAR_TYPE_PRODUCT :
 			default:
+				$this->price = $this->unit_price * $this->quantity;
 				$this->total = ($this->price) + ($this->tax) + ($this->discount);
 				break;
 		}
-
+	}
+	
+	public function getTotal()
+	{
 		return $this->total;
 	}
 	
@@ -139,6 +156,14 @@ class PaycartCartparticular extends PaycartLib
 		return $this->discount;
 	}	
 	
+	public function setQuantity($value)
+	{
+		$this->quantity = $value;
+		$this->reinitializeTotal();
+
+		return  $this;
+	}
+	
 	public function getCartId()
 	{
 		return $this->cart_id ;
@@ -147,28 +172,62 @@ class PaycartCartparticular extends PaycartLib
 	public function setCartId($cartId)
 	{
 		$this->cart_id = $cartId;
+		return $this;
 	}
 	
 	/**
 	 * 
-	 * set discount on cart
+	 * set discount on cart-particular
 	 * @param double $value
 	 * 
-	 * @TODO:: should be -ive number here 
 	 */
-	public function setDiscount($value)
+	public function addDiscount($value)
 	{
-		$this->discount = $value;
-		
 		// discount must be -ive number or Zero
-		if ($this->discount > 0) {
-			$this->discount = -$this->discount;
+		if ($value > 0) {
+			throw new InvalidArgumentException(Rb_Text::sprintf('COM_PAYCART_VALUE_MUST_BE_NEGETIVE', $value)); 
 		}
+		
+		// add value with current discount
+		$this->discount += $value;
+		
+		$this->reinitializeTotal();
+	
+		return $this;
 	}
 	
-	public function setTax($value)
+	/**
+	 * 
+	 * set discount on cart-particular
+	 * @param double $value
+	 */
+	public function addTax($value)
 	{
-		$this->tax = $value;
+		// Tax must be +ive number or Zero
+		if ($value < 0) {
+			throw new InvalidArgumentException(Rb_Text::sprintf('COM_PAYCART_VALUE_MUST_BE_POSITIVE', $value)); 
+		}
+		
+		// add value with current tax
+		$this->tax += $value;
+
+		$this->reinitializeTotal();
+
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * set unit price of particular
+	 * @param $value
+	 */
+	public function setUnitPrice($value)
+	{
+		$this->unit_price = $value;
+		
+		$this->reinitializeTotal();
+		
+		return $this;
 	}
 
 }
