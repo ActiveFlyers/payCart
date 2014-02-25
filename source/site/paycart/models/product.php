@@ -17,15 +17,12 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartModelProduct extends PaycartModel
 {
-	var $filterMatchOpeartor = Array(
-									'alias' => array('LIKE')
-									);
 	/**
 	 * 
 	 * Array of those column which are unique. It will be checked (uniqueness) before save Product object 
 	 * @var Array
 	 */
-	protected $uniqueColumns = Array( 'alias','sku');
+	protected $uniqueColumns = Array('sku');
 	
 	/**
 	 * 
@@ -88,4 +85,15 @@ class PaycartModelformProduct extends PaycartModelform
 		return $data;
 	}
 	
+}
+
+/**
+ * 
+ * Product Lang Model
+ * @author rimjhim
+ *
+ */
+class PaycartModelProductLang extends PaycartModel
+{
+	protected $uniqueColumns = Array('alias');
 }

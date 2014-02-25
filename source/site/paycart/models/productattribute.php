@@ -15,7 +15,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 /** 
  * Product Custom Attribute  Model
  */
-class PaycartModelAttribute extends PaycartModel
+class PaycartModelProductAttribute extends PaycartModel
 {
 
 	/**
@@ -55,17 +55,40 @@ class PaycartModelAttribute extends PaycartModel
 	
 }
 
-class PaycartModelformAttribute extends PaycartModelform 
+class PaycartModelformAttribute extends PaycartModelform {}
+
+class PaycartProductAttributeOption extends PaycartModel
 {
-	 
-	// Load specific atrribute type configuration xml
-	protected function preprocessForm($form, $data)
+	function loadOptions($attributeId, $languageCode)
 	{
-		if($data['type']) {
-			// @PCTODO :: Path should be injected from outside.
-			// All Attribute config will be availble with form object { params->attribute_config}
-			$form->loadFile(PAYCART_PATH_CUSTOM_ATTRIBUTES.'/'.$data['type'].'.xml', false);
-		}
-		return parent::preprocessForm($form, $data);
-	} 
+		$query = $this->_db->getQuery(true);
+		
+	 	return $query->select('*')
+		 		     ->from('#__paycart_productattribute_option as ao')
+		 		     ->join('INNER', '#__paycart_productattribute_option_lang as aol ON ao.productattribute_option_id = aol.productattribute_option_id')
+		 		     ->where('ao.attribute_id = '.$attributeId)
+		 		     ->where('aol.lang_code = '.$languageCode)
+		 		     ->order('ao.option_ordering')
+		 		     ->dbLoadQuery()
+		 		     ->loadAssocList();
+	}
+	
+	/**
+	 * delete options data from both option and option_lang table
+	 */
+	function deleteOptions($attributeId)
+	{
+		$query = $this->_db->getQuery(true);
+		
+		return $query->delete('a,b')
+					 ->from('#_paycart_productattribute_option_lang` as a')
+					 ->join('inner','#__paycart_productattribute_option as b on a.productattributeoption_id = b.productattributeoption_id')
+					 ->where('b.productattribute_id = '. $attributeId)
+					 ->dbLoadQuery()
+					 ->query();
+	}
+}
+
+class PaycartProductAttributeOptionLang extends PaycartModel
+{
 }

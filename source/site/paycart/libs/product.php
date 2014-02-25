@@ -17,32 +17,35 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartProduct extends PaycartLib
 {
-	protected $product_id	 =	0; 
-	protected $title 		 =	null;	
-	protected $alias 		 =	'';
-	protected $published		 =	1;
-	protected $type			 =	'';
-	protected $amount		 = 	0.00;
-	protected $quantity		 =	0;
-	protected $sku	;	
-	protected $variation_of	 =	0;  		// This product is variation of another product. 	
-	protected $category_id 	 =	0;
-	protected $params 		 =	null;
-	protected $cover_media	 =	null; 	
-	protected $teaser		 =	null;
-	protected $publish_up	 =	'';
-	protected $publish_down  =	'';	 	
-	protected $created_date  =	'';	
-	protected $modified_date =	''; 
-	protected $created_by 	 =	0;
-	protected $ordering		 =	0;
-	protected $featured		 =	0;	
-	protected $description	 =	null; 	
-	protected $hits			 =	0;
-	protected $meta_data	 = 	null;
+	protected $product_id	 	= 0; 
+	protected $status		 	= '';
+	protected $type			 	= '';
+	protected $price		 	= 0.00;
+	protected $quantity		 	= 0;
+	protected $sku			 	= '';	
+	protected $variation_of		= 0;  		// This product is variation of another product. 	
+	protected $cover_media		= null;
+	protected $created_date  	= '';	
+	protected $modified_date 	= ''; 
+	protected $ordering		 	= 0;
+	protected $featured			= 0;
+
+	protected $weight		 	= 0.00;
+	protected $height		 	= 0.00;
+	protected $length		 	= 0.00;
+	protected $depth		 	= 0.00;
+	protected $weight_unit	 	= '';
+	protected $dimension_unit	= '';
+	protected $stockout_limit	= 0;
+	protected $config			= '';
 	
-	//Extra fields (not realted to columm) 
-	protected $_upload_files   = Array();
+	//Extra fields (not related to columm) 
+	protected $_uploaded_files   = array();
+	protected $_media			 = array();
+	protected $_attributeValues  = array();
+	
+	//language specific data
+	protected $_language;
 	
 	/**
 	 * (non-PHPdoc)
@@ -50,32 +53,20 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function reset() 
 	{		
-		$this->product_id	 =	0; 
-		$this->title 		 =	'';	
-		$this->alias 		 =	'';
-		$this->published 	 =	1;
-		$this->type			 =	Paycart::PRODUCT_TYPE_PHYSICAL;
-		$this->amount		 = 	0;
-		$this->quantity		 =	0;
-		$this->sku			 =  '';	
-		$this->variation_of	 =	0;  		// This product is variation of another product. 	
-		$this->category_id 	 =	0;
-		$this->params 		 =	new Rb_Registry();
-		$this->cover_media	 =	null; 	
-		$this->teaser		 =	null;
-		$this->publish_up	 =	Rb_Date::getInstance();
-		$this->publish_down  =	Rb_Date::getInstance('0000-00-00 00:00:00');	 	
-		$this->created_date  =	Rb_Date::getInstance();	
-		$this->modified_date =	Rb_Date::getInstance(); 	
-		$this->created_by	 =	0;
-		$this->ordering		 =	0;
-		$this->featured		 =	0;	
-		$this->description	 =	null; 	
-		$this->hits			 =	0;
-		$this->meta_data	 = new Rb_Registry();
-		//Extra fields (not realted to columm) 
-		$this->_attributeValue   = Array();
-		$this->_upload_files   = Array();
+		$this->created_date  	= Rb_Date::getInstance();	
+		$this->modified_date 	= Rb_Date::getInstance(); 
+		
+		$this->_language = new stdClass();
+		$this->_language->product_lang_id	   = 0;
+		$this->_language->product_id 		   = 0;	
+		$this->_language->lang_code 		   = PaycartFactory::getLanguageTag(); //Current Paycart language Tag	
+		$this->_language->title	 			   = '';	
+		$this->_language->alias  			   = '';
+		$this->_language->teaser 			   = '';
+		$this->_language->description 		   = '';	
+		$this->_language->metadata_title  	   = '';
+		$this->_language->metadata_keywords	   = '';
+		$this->_language->metadata_description = '';	
 		
 		return $this;
 	}
@@ -91,19 +82,23 @@ class PaycartProduct extends PaycartLib
 	 * Formating here before save content
 	 */
 	public function save()
-	{
-		// Set Product owner
-		if (!$this->created_by) {
-			$this->created_by = PaycartFactory::getUser()->get('id');
+	{	
+		//title is mandatory
+		if(!$this->_language->title){
+			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_TITLE_REQUIRED', $this->getName()));
 		}
 		
-		// IMP :: It will be sliggify and unique into model validation
-		if (!$this->alias) {
-			$this->alias = $this->getTitle();
+		//set title if alias doesn't exist
+		if (!$this->_language->alias) {
+			$this->_language->alias = $this->_language->title;
 		}
-		// IMP :: It will be sliggify and unique into model validation		
+		
+		// alias must be unique
+		$this->_language->alias = PaycartFactory::getTable('Productlang')->getUniqueAlias($this->_language->alias, $this->_language->product_lang_id);
+
+	
 		if (!$this->sku) {
-			$this->sku = $this->getTitle();
+			$this->sku = $this->_language->alias;
 		}
 		
 		// @PCTODO :: Set default Image 
@@ -143,10 +138,10 @@ class PaycartProduct extends PaycartLib
 	
 	/**
 	 * 
-	 * @return Product's amount
+	 * @return Product's price
 	 */
-	public function getAmount() {
-		return $this->amount;
+	public function getPrice() {
+		return $this->price;
 	}
 	
 	
@@ -157,6 +152,8 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function _save($previousObject)
 	{
+		//PCTODO: First convert weight, height. depth, length into common storage : can be done in toDatabase function for each value
+		
 		$id = parent::_save($previousObject);
 		
 		// if save fail
@@ -172,6 +169,9 @@ class PaycartProduct extends PaycartLib
 			$this->_saveCoverMedia($previousObject);
 		}
 		
+		//save langauge data
+		$this->_saveLanguageData($previousObject);
+		
 		// Process Attribute Value
 		$this->_saveAttributeValue($previousObject);
 
@@ -181,6 +181,25 @@ class PaycartProduct extends PaycartLib
 		$this->reload();
 		
 		return $id;
+	}
+	
+	/**
+	 * Save langauge specific data
+	 */
+	protected function _saveLanguageData($previousObject)
+	{
+		//PCTODO: Handle it 
+		if(empty($this->_language)){
+			return false;
+		}
+		
+		$data = (array)$this->_language;
+		$data['product_id'] = $this->getId();
+		
+		//save data
+		$langModel = PaycartFactory::getInstance('productLang','model')->save($data, $data['product_lang_id']);;
+		
+		return $this;
 	}
 	
 	/**
@@ -205,29 +224,28 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function _saveAttributeValue($previousObject)
 	{
-		$attributeValueModel = PaycartFactory::getInstance('attributevalue', 'model');
+		$attributeValueModel = PaycartFactory::getInstance('productattributevalue', 'model');
+		$productId 			 =  $this->getId();
+		
 		//Delete all Custom attribute if exist on Previous object
-		if ( $previousObject && !empty($previousObject->_attributeValue) ) {
-			$attributeValueModel->deleteMany(Array('product_id'=>$this->getId()));
+		if ($previousObject && !empty($previousObject->_attributeValue) ) {
+			$attributeValueModel->deleteMany(Array('product_id'=>$productId));
 		} 
 		
 		// If any new custom attribute attached with new object then need to save it 
-		if(!empty($this->_attributeValue )) {
+		if(!empty($this->_attributeValue )){
 			$data = Array();
 			
 			foreach ($this->_attributeValue as $attributeId => $attributeValue) {
-				$data[$attributeId]['product_id']	= $this->getId();
-				$data[$attributeId]['attribute_id'] = $attributeId;
-				
-				// get formatted records
-				$record = $attributeValue->toDatabase();
-				
-				$data[$attributeId]['value'] 		= $record['value'];
-				$data[$attributeId]['order'] 		= $record['order'];
+				$data[]['product_id'] 		   = $productId;
+				$data[]['productattribute_id'] = $attributeId;
+				foreach ($attributeValue as $value){
+					//format value to be saved in database
+					$attrType = PaycartAttribute::getInstance($this->_attributes[$attributeId]->getType());
+					$data[]['productattribute_value'] = $attrType->toDatabase($this->_attributes[$attributeId], $value);
+				}
 			}
-			
-			// save new attrinutes
-			$attributeValueModel->save($data);
+			PaycartFactory::getInstance('productAttributeValue', 'model')->save($data);
 		}
 		
 		return $this;
@@ -273,7 +291,7 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * Override it due to set _upload_files variable
+	 * Override it due to set language and _upload_files variable
 	 * 
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 */
@@ -283,11 +301,24 @@ class PaycartProduct extends PaycartLib
 			$data = (array) ($data);
 		}
 		
+		//PCTODO: Change weight, height, depth, length etc in a format as per set weight/dimension unit
+		
 		parent::bind($data, $ignore);
 		
 		if( isset($data['_upload_files'])) {
 			$this->_upload_files = $data['_upload_files'];
 		}
+		
+		//media attribute related data 
+		if( isset($data['_media'])) {
+			$this->_media = PaycartHelperMedia::rearrangeMediaFiles($data['_media']['attributes']);
+		}
+		
+		//Collect langauge data
+		$language = (isset($data['_language']) && isset($data['_language']['lang_code'])) ? $data['_language']: array();
+		
+		//bind it to lib instance
+		$this->setLanguageData($language);
 		
 		// if custom Attributes available in data then bind with lib object 
 		$attributes = isset($data['attributes']) ? $data['attributes'] : Array();
@@ -295,6 +326,29 @@ class PaycartProduct extends PaycartLib
 		// Bind attributevalue-lib's instance on Product lib  
 		$this->setAttributeValues($attributes);
 
+		return $this;
+	}
+
+	public function setLanguageData(Array $langauge = Array())
+	{
+		//if langauge data is not available and its an existing record
+		if(empty($langauge) && $this->getId()){
+			$langauge = (array) PaycartFactory::getInstance('ProductLang')
+					                           ->loadRecords(Array('lang_code' => $this->_language->lang_code,
+																   'product_id' => $this->getId()));
+		}
+		
+		if(empty($langauge)) {
+			return false;
+		}
+		
+		// set language data
+		foreach ($this->_language as $key => $value) { 
+			if(isset($langauge[$key])) {
+				$this->_language->$key = $langauge[$key];
+			}
+		}
+		
 		return $this;
 	}
 	
@@ -307,9 +361,11 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function setAttributeValues(Array $attributeData = Array())
 	{
+		$tempData = $attributeData;
+		
 		// If attribute-data is empty and product exist then load attribute data from database
 		if ($this->getId() && empty($attributeData)) {
-			$attributeValueModel = PaycartFactory::getInstance('attributevalue', 'model');
+			$attributeValueModel = PaycartFactory::getInstance('productattributevalue', 'model');
 			$attributeData 	= $attributeValueModel->loadProductRecords($this->getid());
 		}
 		
@@ -319,19 +375,21 @@ class PaycartProduct extends PaycartLib
 		}
 		
 		//Get all attributes
-		$condition	= Array('attribute_id' => Array(Array('IN', '('.implode(',',array_keys($attributeData)).')')));
-		$attributes = PaycartFactory::getInstance('attribute','model')
+		$condition	= Array('productattribute_id' => Array(Array('IN', '('.implode(',',array_keys($attributeData)).')')));
+		$attributes = PaycartFactory::getInstance('productattribute','model')
 									->loadRecords($condition); 
 		
 		foreach ($attributes as $attributeId => $attribute) {
-			// Format data
-			$data['product_id'] 	=	$this->getId();
-			$data['attribute_id']	=	$attributeId;
-			$data['value']			=	$attributeData[$attributeId]['value'];
-			$data['order']			=	$attributeData[$attributeId]['order'];
-			$data['_attribute']		=	PaycartAttribute::getInstance($attributeId, $attribute);
-			// Set PaycartAttributeValue instance
-			$this->_attributeValue[$attributeId] = PaycartAttributeValue::getInstance(0, $data);
+			$this->_attributes[$attributeId] = PaycartProductAttribute::getInstance($attributeId, $attribute);
+			
+			//trigger 
+			if(!empty($tempData)){
+				$media = isset($this->_media[$attributeId])?$this->_media[$attributeId]:array();
+				$attributeData[$attributeId] = PaycartAttribute::getInstance($attribute->type)->setValue($tempData[$attributeId], $media );
+			}
+			
+			//array of attribute values
+			$this->_attributeValues->$attributeId = explode(',', $attributeData[$attributeId]);
 		}
 
 		return $this;
@@ -401,9 +459,7 @@ class PaycartProduct extends PaycartLib
 			$newProduct->_upload_files['cover_media'] = $this->getCoverMedia();
 		}		
 		
-		// Changable Property
-		$newProduct->publish_up	   =	Rb_Date::getInstance();
-		$newProduct->publish_down  =	Rb_Date::getInstance('0000-00-00 00:00:00');	 	
+		// Changable Property 	
 		$newProduct->created_date  =	Rb_Date::getInstance();	
 		$newProduct->modified_date =	Rb_Date::getInstance(); 
 		
@@ -411,16 +467,33 @@ class PaycartProduct extends PaycartLib
 		return $newProduct->save();	
 	}
 	
-	/**
-	 * We want to include _attribute variable.  
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::toArray()
-	 */
-	public  function toArray()
+	protected function _delete()
 	{
-
-		$arr['_attributeValue'] = $this->_attributeValue ;
-		$ret = parent::toArray();
-		return array_merge($arr, $ret);
+		//Delete product
+		if(!$this->getModel()->delete($this->getId())) {
+			return false;
+		}
 		
+		//delete product attributes
+		if(!$this->_deleteProductAttributes()){
+			return false;
+		}
+		
+		//Delete language related data
+		if (!$this->_deleteLanguageData()) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	protected function _deleteLanguageData()
+	{
+		return PaycartFactory::getModel('ProductLang')->deleteMany(array('product_id' => $this->getId()));
+	}
+	
+	protected function _deleteProductAttributes()
+	{
+		$attributeValueModel = PaycartFactory::getInstance('productattributevalue', 'model')->deleteMany(array('product_id' => $this->getId()));
 	}
 }

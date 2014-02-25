@@ -78,4 +78,5 @@ class Paycart
 
 	const PROCESSOR_TYPE_TAX    = 'taxrule';
 
+	const ATTRIBUTE_PATH_MEDIA	= '/media/com_paycart/media/';
 }
