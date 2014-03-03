@@ -20,7 +20,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartModelColor extends PaycartModel
 {
-	function getColors($languageCode)
+	function loadOptions($languageCode)
 	{
 		$query = new Rb_Query();
 		

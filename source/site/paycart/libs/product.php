@@ -5,7 +5,7 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Front-end
-* @contact		team@readybytes.in
+* @contact		support+paycart@readybytes.in
 * @author 		mManishTrivedi 
 */
 
@@ -18,6 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartProduct extends PaycartLib
 {
 	protected $product_id	 	= 0; 
+	protected $category_id		= 0;
 	protected $status		 	= '';
 	protected $type			 	= '';
 	protected $price		 	= 0.00;
@@ -96,7 +97,6 @@ class PaycartProduct extends PaycartLib
 		// alias must be unique
 		$this->_language->alias = PaycartFactory::getTable('Productlang')->getUniqueAlias($this->_language->alias, $this->_language->product_lang_id);
 
-	
 		if (!$this->sku) {
 			$this->sku = $this->_language->alias;
 		}
@@ -163,6 +163,13 @@ class PaycartProduct extends PaycartLib
 		
 		// Correct the id, for new records required
 		$this->setId($id);
+
+		//if variation_of parameter is still 0 then resave plan again 
+		// because every base plan should be a variation of itself
+		if(!$this->variation_of){
+			$this->variation_of = $id;
+			$this->save();
+		}
 		
 		// Process If Cover-media exist
 		if (!empty($this->cover_media)) {
@@ -197,7 +204,12 @@ class PaycartProduct extends PaycartLib
 		$data['product_id'] = $this->getId();
 		
 		//save data
-		$langModel = PaycartFactory::getInstance('productLang','model')->save($data, $data['product_lang_id']);;
+		$model = PaycartFactory::getInstance('productLang','model');
+		$productLangId = $model->save($data, $data['product_lang_id']);
+		
+		if(!$productLangId){
+			throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $model->getError());
+		}
 		
 		return $this;
 	}
@@ -240,9 +252,7 @@ class PaycartProduct extends PaycartLib
 				$data[]['product_id'] 		   = $productId;
 				$data[]['productattribute_id'] = $attributeId;
 				foreach ($attributeValue as $value){
-					//format value to be saved in database
-					$attrType = PaycartAttribute::getInstance($this->_attributes[$attributeId]->getType());
-					$data[]['productattribute_value'] = $attrType->toDatabase($this->_attributes[$attributeId], $value);
+					$data[]['productattribute_value'] = $value;
 				}
 			}
 			PaycartFactory::getInstance('productAttributeValue', 'model')->save($data);
@@ -361,8 +371,6 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function setAttributeValues(Array $attributeData = Array())
 	{
-		$tempData = $attributeData;
-		
 		// If attribute-data is empty and product exist then load attribute data from database
 		if ($this->getId() && empty($attributeData)) {
 			$attributeValueModel = PaycartFactory::getInstance('productattributevalue', 'model');
@@ -380,16 +388,12 @@ class PaycartProduct extends PaycartLib
 									->loadRecords($condition); 
 		
 		foreach ($attributes as $attributeId => $attribute) {
-			$this->_attributes[$attributeId] = PaycartProductAttribute::getInstance($attributeId, $attribute);
+			//$this->_attributes[$attributeId] = PaycartProductAttribute::getInstance($attributeId, $attribute);
 			
-			//trigger 
-			if(!empty($tempData)){
-				$media = isset($this->_media[$attributeId])?$this->_media[$attributeId]:array();
-				$attributeData[$attributeId] = PaycartAttribute::getInstance($attribute->type)->setValue($tempData[$attributeId], $media );
-			}
+			//PCTODO: Save media attribute at controller level, so that mediaId will be directly set from here 
 			
 			//array of attribute values
-			$this->_attributeValues->$attributeId = explode(',', $attributeData[$attributeId]);
+			$this->_attributeValues->$attributeId = $attributeData[$attributeId];
 		}
 
 		return $this;
@@ -449,6 +453,7 @@ class PaycartProduct extends PaycartLib
 		//### Attribute Changes in Variants
 		//1. Product id should be 0
 		$newProduct->product_id = 0 ;
+		
 		//2. New image file name save nd create new after save
 		if($this->getCoverMedia()) { 
 			$extension = PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
@@ -457,9 +462,12 @@ class PaycartProduct extends PaycartLib
 			$newProduct->cover_media = $this->getName().'/'.$newProduct->cover_media.$extension;
 			// set source path. It will required on image processing
 			$newProduct->_upload_files['cover_media'] = $this->getCoverMedia();
-		}		
+		}
 		
-		// Changable Property 	
+		//3. set attribute values
+		$newProduct->_attributeValues = $this->_attributeValues;
+		
+		//4. Changable Property 	
 		$newProduct->created_date  =	Rb_Date::getInstance();	
 		$newProduct->modified_date =	Rb_Date::getInstance(); 
 		
@@ -473,6 +481,9 @@ class PaycartProduct extends PaycartLib
 		if(!$this->getModel()->delete($this->getId())) {
 			return false;
 		}
+		
+		//PCTODO: Should we delete variants or not??
+		//if yes, then delete language and attributes also
 		
 		//delete product attributes
 		if(!$this->_deleteProductAttributes()){

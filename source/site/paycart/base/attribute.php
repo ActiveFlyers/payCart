@@ -5,7 +5,7 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Front-end
-* @contact		team@readybytes.in
+* @contact		support+paycart@readybytes.in
 * @author 		rimjhim 
 */
 
@@ -18,31 +18,30 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 class PaycartAttribute
 {
-	static $instance=array(); 
+	static $instance = array();
+
+	abstract function getEditHtml($attribute, $value=null);
 
 	static public function getInstance($type)
 	{
-		//generate class name
-		$className	= 'PaycartAttribute'.$type;
-
 		//if already there is an object and check for static cache
-		if(isset($instance[$type])){
-			return $instance[$type];
+		if(isset(self::$instance[$type])){
+			return self::$instance[$type];
 		}
+		
+		$className = JString::strtolower('PaycartAttribute'.$type);
+		return self::$instance[$type] = new $className;
 	}
 	
-	/**
-	 * get attribute's options
-	 */
 	function getOptions($attribute)
 	{
 		return PaycartFactory::getInstance('productattributeoption', 'model')->loadOptions($attribute->getId(), $attribute->getLanguageCode());
 	}
 	
 	/**
-	 * bind attribute specific data 
+	 * build attribute specific options 
 	 */
-	function bindConfig($attribute, $data)
+	function buildOptions($attribute, $data)
 	{	
 		$options = (isset($data['options'])) ? $data['options']: array();
 		
@@ -51,45 +50,50 @@ class PaycartAttribute
 					                           ->loadOptions($attribute->getId(), $attribute->getLangugeCode());
 		}
 		
-		$params = array();
+		$result = array();
 		foreach ($options as $id => $option){
-			$params[$id]->option_ordering = $option['option_ordering'];
-			$params[$id]->title			  = $option['title'];
-			$params[$id]->productattribute_option_id = $option['productattribute_option_id'];
+			$result[$id]->option_ordering = $option['option_ordering'];
+			$result[$id]->title			  = $option['title'];
+			$result[$id]->productattribute_option_id = $option['productattribute_option_id'];
 		}
-		return $params;
+		return $result;
 	}
 	
 	/**
-	 * Save attribute specific data
+	 * Save attribute specific options
 	 * @param	$attribute : instance of attribute lib
-	 * @param	$params : array of stdclass having attribute specif data 
 	 */
-	function saveConfig($attribute)
+	function saveOptions($attribute)
 	{ 
-		$params = $attribute->getParams();
+		$options = $attribute->getOptions();
 		
-		if(empty($params)){
+		if(empty($options)){
 			return false;
 		}
 		
 		$attrOptionModel 	 = PaycartFactory::getInstance('productattributeoption', 'model');
 		$attrOptionLangModel = PaycartFactory::getInstance('productattributeoptionlang', 'model');
 		
-		foreach ($params as $param){
+		foreach ($options as $option){
 			$data = array();
 			
 			//save option data
-			$data['option_ordering'] = $param->option_ordering;
-			$data['productattribute_id'] = $attribute->getId();
-			$optionid = $attrOptionModel->save($data, $param->productattribute_option_id);
+			$data['option_ordering'] = $option->option_ordering;
+			$data['productattribute_id'] = $option->getId();
+			$optionId = $attrOptionModel->save($data, $option->productattribute_option_id);
+			if(!$optionId){
+				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $attrOptionModel->getError());
+			}
 			
 			//save langauge specific data of options
 			$data = array();
-			$data['productattribute_option_id'] = $optionid;
+			$data['productattribute_option_id'] = $optionId;
 			$data['lang_code'] = $attribute->getLanguageCode();
 			$data['title']	   = $param->title;
-			$attrOptionLangModel->save($data,$param->productattribute_option_lang_id );
+			$optionLangId = $attrOptionLangModel->save($data,$param->productattribute_option_lang_id );
+			if(!$optionLangId){
+				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $attrOptionLangModel->getError());
+			}
 		}
 		return true;
 	}
@@ -97,7 +101,7 @@ class PaycartAttribute
 	/**
 	 * get config Html
 	 */
-	function renderConfigHtml($attribute)
+	function getConfigHtml($attribute)
 	{
 		$html = '';
 		
@@ -110,7 +114,7 @@ class PaycartAttribute
 			
 			$html .= "<div class='controls'><input type='text' name='options[$i][title]' id='title_".$i."' 
 			         value='".isset($options[$i]['title'])?$options[$i]['title']:''."' /></div>";
-			//$html .= "<div class='control-label'><label id='option_ordering_".$i."_lbl' title=''>".Rb_Text::_("COM_PAYCART_ATTRIBUTES_OPTION_ORDERING_LABEL")."</label></div>";
+			
 			$html .= "<input type='hidden' name='options[$i][option_ordering]' id='option_ordering_".$i."'  
 					  value='".isset($options[$i]['option_ordering'])?$options[$i]['option_ordering']:$i."' />";
 			
@@ -129,16 +133,16 @@ class PaycartAttribute
 	/**
 	 * delete options data from both option and option_lang table
 	 */
-	function deleteConfigData($attribute)
+	function deleteOptions($attribute)
 	{
 		$attrOptionModel = PaycartFactory::getInstance('productattributeoption', 'model');
-		return $attrOptionLangModel->deleteOptionData($attribute->getid());
+		return $attrOptionLangModel->deleteOptions($attribute->getid());
 	}
 	
 	/**
-	 * set value on saving product
+	 * save attribute specific data after/before saving product
 	 */
-	function setValue($data)
+	function save($data)
 	{
 		return $data;
 	}

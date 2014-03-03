@@ -5,7 +5,7 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Front-end
-* @contact		team@readybytes.in
+* @contact		support+paycart@readybytes.in
 * @author 		rimjhim 
 */
 
@@ -22,41 +22,84 @@ class PaycartAttributeColor extends PaycartAttribute
 	public $type = 'color';
 	
 	/**
-	 *  return display html that will be displayed on product edit screen
+	 *  return edit html that will be displayed on product edit screen
 	 */
-	function renderDisplayHtml($attribute, $value = null)
+	function getEditHtml($attribute, $value = null)
 	{
 		$html 	 = '';
-		$colors  = PaycartFactory::getModel('color')->getColors($attribute->getLanguageCode());
+		$colors  = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
 		
 		if( !empty($colors)){
-			$html .= "<div class='control-label'><label id='attribute".$attribute->getId()."_lbl' title=''>".$attribute->getTitle()."</label></div>";
-			$html .= "<div class='controls'><select id='attribute".$attribute->getId()."' name='attributes[".$attribute->getId()."]'>";
+			$html .= "<select id='attribute".$attribute->getId()."' name='attributes[".$attribute->getId()."]'>";
 			
 			foreach($colors as $color){
 				$selected = ($color['color_id'] == $value) ? "selected='selected'":'';
 				$html .= "<option value='".$color['color_id'] ."'".$selected.">".$color['title']."</option>";
 			}
-			$html.= '</select></div>';
+			$html.= '</select>';
 		}
 				
 		return $html;
 	}
-
 	/**
 	 * get config Html
 	 */
-	function renderConfigHtml($attribute)
+	function getConfigHtml($attribute)
 	{
+		static $js;
 		$html   = '';
 		
-		$colors = getColors($attribute->getLanguageCode());
+		//load required assets
+		$document = Rb_Factory::getDocument(); 
+
+		//PCTODO: add option to load minified js file 
+		$document->addScript(PAYCART_PATH_CORE.'/attributes/color/jquery.minicolors.js' );
+		$document->addStyleSheet(PAYCART_PATH_CORE.'/attributes/color/jquery.minicolors.css');
+		
+		// don't load it more than once
+		if(!isset($js)){
+			ob_start();
+			?>	
+			<script>
+				$(document).ready( function() {
+		            $('.wheel-color').each( function() {
+						$(this).minicolors({
+							control: $(this).attr('data-control') || 'hue',
+							defaultValue: $(this).attr('data-defaultValue') || '',
+							inline: $(this).attr('data-inline') === 'true',
+							letterCase: $(this).attr('data-letterCase') || 'lowercase',
+							opacity: $(this).attr('data-opacity'),
+							position: $(this).attr('data-position') || 'bottom left',
+							change: function(hex, opacity) {
+								var log;
+								try {
+									log = hex ? hex : 'transparent';
+									if( opacity ) log += ', ' + opacity;
+									console.log(log);
+								} catch(e) {}
+							},
+							theme: 'default'
+						});
+		                
+		            });
+					
+				});
+			</script>
+			<?php 
+			
+			$js .= ob_get_contents();
+			ob_end_clean();
+		}
+		
+		$html  .= $js;
+		
+		$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
 		$count  = (count($colors) > 0)?count($colors):1;
 
 		for($i=0; $i < $count ; $i++){
 			$html .= "<div class='control-label'><label id='hashcode_".$i."_lbl' title=''>".Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_HASHCODE_LABEL")."</label></div>";
-			$html .= "<div class='controls'><input type='color' id='hashcode_".$i."' name='colors[$i][hashcode]'  
-					  value='".isset($colors[$i]['hash_code'])?$colors[$i]['hash_code']:''."'/></div>";
+			$html .= "<div class='controls'><input type='text' id='hashcode_".$i."' name='colors[$i][hashcode]'  class='wheel-color' placeholder='#rrggbb'
+					  value='".isset($colors[$i]['hash_code'])?$colors[$i]['hash_code']:'none'."'/></div>";
 			
 			$html .= "<div class='control-label'><label id='title_".$i."_lbl' title=''>".Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_TITLE_LABEL")."</label></div>";
 			$html .= "<div class='controls'><input type='text' id='title_".$i."' name='colors[$i][title]' 
@@ -73,55 +116,59 @@ class PaycartAttributeColor extends PaycartAttribute
 	}
 	
 	/**
-	 * bind attribute specific data 
+	 * build attribute specific data
+	 * it will be required while saving
 	 */
-	function buildConfig($attribute, $data)
+	function buildOptions($attribute, $data)
 	{	
 		$colors = (isset($data['colors'])) ? $data['colors']: array();
 		
 		if(empty($colors) && $attribute->getId()){
 			$colors = PaycartFactory::getInstance('color')
-					                           ->getColors($attribute->getLangugeCode());
+					                           ->loadOptions($attribute->getLangugeCode());
 		}
 		
-		$params = array();
+		$result = array();
 		foreach ($colors as $id => $color){
-			$params[$id]->title 	= $color['title'];
-			$params[$id]->hash_code	= $color['hash_code'];
-			$params[$id]->color_id = $option['color_id'];
+			$result[$id]->title 	= $color['title'];
+			$result[$id]->hash_code	= $color['hash_code'];
+			$result[$id]->color_id  = $color['color_id'];
 		}
-		return $params;
+		return $result;
 	}
 	
 	/**
 	 * Save attribute specific data
-	 * @param	$attribute : instance of attribute lib
-	 * @param	$params : array of stdclass having attribute specif data 
+	 * @param	$attribute : instance of attribute lib 
 	 */
-	function saveConfig($attribute)
+	function saveOptions($attribute)
 	{ 
-		$params = $attribute->getParams();
+		$options = $attribute->getOptions();
 		
-		if(empty($params)){
+		if(empty($options)){
 			return false;
 		}
 		
-		$colorModel 	 = PaycartFactory::getInstance('color', 'model');
-		$colorLangModel  = PaycartFactory::getInstance('colorlang', 'model');
-		
-		foreach ($params as $param){
+		foreach ($options as $option){
 			$data = array();
 			
 			//save option data
-			$data['hash_code'] = $param->hash_code;
-			$colorid = $colorModel->save($data, $param->color_id);
-			
+			$data['hash_code'] = $option->hash_code;
+			$colorModel 	   = PaycartFactory::getInstance('color', 'model');
+			$colorId 		   = $colorModel->save($data, $option->color_id);
+			if(!$colorId){
+				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $colorModel->getError());
+			}
 			//save langauge specific data of options
 			$data = array();
-			$data['color_id']  = $colorid;
+			$data['color_id']  = $colorId;
 			$data['lang_code'] = $attribute->getLanguageCode();
-			$data['title']	   = $param->title;
-			$colorLangModel->save($data,$param->color_lang_id );
+			$data['title']	   = $option->title;
+			$colorLangModel    = PaycartFactory::getInstance('colorlang', 'model');
+			$colorLangId 	   = $colorLangModel->save($data,$option->color_lang_id );
+			if(!$colorLangId){
+				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $colorLangModel->getError());
+			}
 		}
 		return true;
 	}
@@ -129,9 +176,8 @@ class PaycartAttributeColor extends PaycartAttribute
 	/**
 	 * delete attribute specific data 
 	 */
-	function deleteConfig($attribute)
+	function deleteOptions($attribute)
 	{
-		//PCTODO: wether to delete data from color table or not
 		return true;
 	}
 }

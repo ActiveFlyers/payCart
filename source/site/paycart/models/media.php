@@ -20,7 +20,10 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartModelMedia extends PaycartModel
 {
-	function getConfig($languageCode, $mediaId)
+	/**
+	  * returns single record
+	  */
+	function loadRecord($languageCode, $mediaId)
 	{
 		$query = new Rb_Query();
 		

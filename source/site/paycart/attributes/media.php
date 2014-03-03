@@ -5,7 +5,7 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Front-end
-* @contact		team@readybytes.in
+* @contact		support+paycart@readybytes.in
 * @author 		rimjhim 
 */
 
@@ -23,7 +23,7 @@ class PaycartAttributeMedia extends PaycartAttribute
 	/**
 	 *  return edit html that will be displayed on product edit screen
 	 */
-	function renderEditHtml($attribute, $value= null)
+	function getEditHtml($attribute, $value= null)
 	{
 		$media = array();
 		$media['media_id']         = 0;
@@ -37,7 +37,7 @@ class PaycartAttributeMedia extends PaycartAttribute
 		
 		$attrId = $attribute->getId();
 		if(!is_null($media)){
-			$media = PaycartFactory::getModel('media')->getMediaConfig($attribute->getLanguageCode(),$value);
+			$media = PaycartFactory::getModel('media')->loadRecord($attribute->getLanguageCode(),$value);
 		}
 		
 		$html  = '';
@@ -94,33 +94,34 @@ class PaycartAttributeMedia extends PaycartAttribute
 	/**
 	 * get config html
 	 */
-	function renderConfigHtml($attribute)
+	function getConfigHtml($attribute)
 	{
 	 	return '';
 	} 
 	
-	function bindConfig($attribute, $data)
+	function buildOptions($attribute, $data)
 	{
-		// no data in that case
 		return array(); 
 	}
 	
 	/**
-	 * set value on saving product , on save
+	 * return mediaid after saving data in media table
 	 */
 	function save($data, $file)
 	{
 		$media = array();
-		$mediaLangModel    = PaycartFactory::getInstance('media','model');
 		$media['media_id'] = $data['media_id'];
 		$media['is_free']  = $data['is_free'];
+		
+		//upload file at proper location and get details like path and type
 		$details = PaycartHelperMedia::upload($file['path']);
 		$media['path']	   = isset($details['path'])?$details['path']:'';
 		$media['type']     = isset($details['extension'])?$details['extension']:'';
 
-		$mediaId = PaycartFactory::getInstance('media','model')->save($media,$media['media_id']);
+		$mediaModel = PaycartFactory::getInstance('media','model');
+		$mediaId 	= $mediaModel->save($media,$media['media_id']);
 		if(!$mediaId){
-			//PCTODO: throw exception and return
+			throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $mediaModel->getError());
 		}
 		
 		$media = array();
@@ -132,8 +133,10 @@ class PaycartAttributeMedia extends PaycartAttribute
 		$media['metadata_keyword'] 	   = $data['metadata_keyword'];
 		$media['metadata_description'] = $data['metadata_description'];
 		
-		if(!PaycartFactory::getInstance('medialang','model')->save($media,$media['media_lang_id'])){
-			//PCTODO: throw exception
+		$langModel = PaycartFactory::getInstance('medialang','model');
+		$mediaLangId = $langModel->save($media,$media['media_lang_id']);
+		if(!$mediaLangId){
+			throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $mediaModel->getError());
 		}
 		
 		return $mediaId;

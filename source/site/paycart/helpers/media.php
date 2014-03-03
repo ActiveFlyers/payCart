@@ -31,19 +31,17 @@ class PaycartHelperMedia extends PaycartHelper
 			$path 	 = Paycart::ATTRIBUTE_PATH_MEDIA;
 			
 			if(empty($filename))continue;	
-			
-
-			//joomla pathinfo
-			$info  = pathinfo($filename);			
-			//$extension = self::getExtension($filename);
-			$mediaFile = $path . PaycartHelper::getHash($filename) . $info['extension'];
+						
+			$info  	   = pathinfo($filename);
+			$extension = isset($info['extension']) ? $info['extension'] : null; 
+			$mediaFile = $path . PaycartHelper::getHash($filename) . $extension;
 			
 			if(!JFile::upload($file['tmp_name'][$id],$mediaFile)) {
 				throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $mediaFile));
 			}
 
 			$details['path'] = $mediaFile;
-			$details['type'] = isset($info['extension']) ? $info['extension'] : null;
+			$details['type'] = $extension;
 		}
 		
 		return $details;

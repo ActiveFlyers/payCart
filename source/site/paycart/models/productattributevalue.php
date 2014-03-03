@@ -27,20 +27,25 @@ class PaycartModelProductAttributeValue extends PaycartModel
 	{
 		// @PCTODO:: Should be cached 
 		$query = $this->_db->getQuery(true);
-		$query->select('GROUP_CONCAT(`value` SEPARATOR ',') AS `value`')
+		$query->select('*')
 			  ->from($this->getTable()->get('_tbl'))
-			  ->where($this->_db->quoteName('product_id') .' = '.$productId)
-			  ->group('attribute_id');
+			  ->where($this->_db->quoteName('product_id') .' = '.$productId);
 			  			  
 		try	{
-			$records =	$this->_db->setQuery($query)->loadAssocList('attribute_id');
+			$records =	$this->_db->setQuery($query)->loadAssocList();
 		}
 		catch (RuntimeException $e) {
 			//@PCTODO::proper message propagates
 			Rb_Error::raiseError(500, $e->getMessage());
 		}
 		
-		return $records;
+		$result = array();
+		//process records and create 
+		foreach ($records as $record){
+			$result[$record['productattribute_id']][] = $record['productattribute_value'];
+		}
+		
+		return $result;
 	}
 	
 	/**
