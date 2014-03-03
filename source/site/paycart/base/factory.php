@@ -117,7 +117,12 @@ class PaycartFactory extends Rb_Factory
 	 */
 	public static function getProcessor($type, $className, $config = Array()) 
 	{
-		return self::getHelper('processor')->getProcessorInstance($type, $className, $config);
+		return self::getHelper('processor')->getInstance($type, $className, $config);
+	}
+	
+	public static function getGrouprule($className, $config = Array()) 
+	{
+		return self::getHelper('group')->getInstance($className, $config);
 	}
 	
 	/**

@@ -52,69 +52,106 @@ class PaycartShippingrule extends PaycartLib
 		return $processor->request('confightml', new PaycartShippingruleRequest())->html;		
 	}
 	
-	public function getPackageShippingCost($product_list)
-	{
-		$price = array(2 => 5, 3 => 10, 4 => 17, 5 =>1);
-		return $price[$this->shippingrule_id];
-	}
-	
 	public function getOrdering()
 	{
-		$ordering = array(2 => 1, 3 => 2, 4 => 3, 5 => 4);
-		return $ordering[$this->shippingrule_id];
+		return $this->ordering;
 	}
 	
 	public function getGrade()
 	{
-		$grades = array(2 => 5, 3 => 9, 4 => 7,  5 =>1);
-		return $grades[$this->shippingrule_id];
-	}
+		return $this->grade;
+	}	
 	
-	protected function _createRequest($cart_id)
-	{		
-		// $cart
-		// $buyer
-		// array of products
+	/**
+	 * Gets shipping cost of package
+	 * @param Array $product_list
+	 * @param Int $delivery_address_id
+	 * @param Array $product_details : array(product_id => array(quantity, cart_id, buyer_id, address_id, unit_price, total), ...); 
+	 * @throws InvalidArgumentException if any product in $product_list does not exists in $product_details
+	 * 
+	 */	
+	public function getPackageShippingCost($product_list, $delivery_address_id, $product_details)
+	{
+		// create request object
+		$request 	= new PaycartShippingruleRequest();
 				
-		$request 		= new PaycartShippingruleRequest();
-		$request->cart 	= $this->_createCartRequestObject();
-		$request->buyer = $this->_createBuyerRequestObject();	
-		$request->product = $this->_createProductRequestObject();
-		// get applicable products : by using class checking
-	}
-	
-	protected function _createCartRequestObject()
-	{
-		$cart = new stdClass();
-		// total of cart
-		$cart->total = 100;
-		
-		return $cart;
-	}
-	
-	protected function _createBuyerRequestObject()
-	{
-		$buyer 				= new stdClass();
-		$buyer->username 	= 'username';
-		$buyer->name 		= 'name';
-		$buyer->email 		= 'email@email.com';
+		foreach($product_list as $id_product){
+			if(!isset($product_details[$id_product])){
+				throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_LIB_SHIPPINGRULE_PRODUCT_DETAIL_MISSING'), 404);
+			}
 
-		return $buyer;
+			$request->product[$id_product] = $this->_createProductRequestObject($id_product, $product_details[$id_product]);
+		}
+				
+		$request->config 			= $this->_createConfigRequestObject();
+		$request->delivery_address 	= $this->_createAddressRequestObject($delivery_address_id);
+		//IMP : Multiple warehouses are not supported yet
+		//@TODO :  load origin address id from global configuration
+		$origin_address_id = 0;
+		$request->origin_address 	= $this->_createAddressRequestObject($origin_address_id);
+		
+		// @PCTODO: Rmeove this code once autoloading to response classes is done  
+		$response  = new PaycartShippingruleResponse();
+		$processor = $this->getProcessor();
+		$response  = $processor->getPackageShippingCost($request, $response);
+		
+		//@ PCTODO : Trigger for gettin tax on shipping
+		
+		if($response->amount === false){
+			// @PCTODO : Log error if required
+			return array(false, false);
+		}
+		
+		//@PCTODO : Currently assuming price_ with_tax = price_without_tax
+		return array($response->cost, $response->cost);
 	}
 	
-	protected function _createProductRequestObject()
+	protected function _createConfigRequestObject()
 	{
-		$product 			= new stdClass();
-		$product->title 	= "Product";
-		$product->unitPrice = 5;
-		$product->quantity	= 5;
-		$product->price		= 25;
-		$product->discount	= -5;
-		$product->tax		= 5;
-		$product->total		= 25;
+		$config = new PaycartShippingruleRequestConfig();
+		$config->dimenssion_unit  = 'INCH'; //@TODO : get from global config
+		$config->weight_unit	  = 'KG';   //@TODO : get from global config
+		$config->packaging_weight = $this->getPackagingWeight();
+		$config->package_by		  = $this->getPackageBy(); // per item or per order
+		return $config;
+	}
+	
+	protected function _createProductRequestObject($id_product, $cart_product_details)
+	{
+		$product = new PaycartShippingruleRequestProduct();
+
+		// @TODO get Product Data  with caching 
+		$product->title 		= "Product";
+		$product->unit_price 	= $cart_product_details['unit_price'];
+		$product->quantity		= $cart_product_details['quantity'];
+		$product->price			= $cart_product_details['price'];
+		$product->discount		= 0; // @TODO : do when required
+		$product->tax			= 0; // @TODO : do when required
+		$product->total			= $cart_product_details['total'];
 		
-		// address
+		// dimenssion & weight
+		// @TODO get from product
+		$product->length 		= '';
+		$product->width 		= '';
+		$product->height 		= '';
+		$product->weight		= '';
 		
 		return $product;
+	}
+	
+	protected function _createAddressRequestObject($address_id)
+	{
+		// delivery address
+		// @TODO get from $cart_product_details['delivery_address_id']
+		$address = new PaycartShippingruleRequestAddress();
+		$address->line1 	= '';
+		$address->line2 	= '';
+		$address->city 		= '';
+		$address->state 	= '';
+		$address->country 	= '';
+		$address->zipcode	= '';
+		$address->phone 	= '';
+		
+		return $address;	
 	}
 }

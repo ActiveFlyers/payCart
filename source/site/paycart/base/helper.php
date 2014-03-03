@@ -53,7 +53,7 @@ class PaycartHelper extends Rb_Helper
 	 *
 	 * @return  string  A secure hash
 	 */
-	public static function getHash($seed = '', $limit = 16) 
+	public function getHash($seed = '', $limit = 16) 
 	{
 		return JString::substr( JApplication::getHash( $seed . time() ), 0, $limit);
 	}
