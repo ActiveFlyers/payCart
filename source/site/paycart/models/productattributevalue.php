@@ -16,7 +16,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * Attribute Value Table
  * @author mManishTrivedi
  */
-class PaycartModelAttributeValue extends PaycartModel
+class PaycartModelProductAttributeValue extends PaycartModel
 {
 	/**
 	 * 
@@ -27,18 +27,25 @@ class PaycartModelAttributeValue extends PaycartModel
 	{
 		// @PCTODO:: Should be cached 
 		$query = $this->_db->getQuery(true);
-		$query->select('*')->from($this->getTable()->get('_tbl'))
-			  			  ->where($this->_db->quoteName('product_id') .' = '.$productId)
-			  			  ->order($this->_db->quoteName('order'));		// Order is most important thing for position of attributes
+		$query->select('*')
+			  ->from($this->getTable()->get('_tbl'))
+			  ->where($this->_db->quoteName('product_id') .' = '.$productId);
+			  			  
 		try	{
-			$records =	$this->_db->setQuery($query)->loadAssocList('attribute_id');
+			$records =	$this->_db->setQuery($query)->loadAssocList();
 		}
 		catch (RuntimeException $e) {
 			//@PCTODO::proper message propagates
 			Rb_Error::raiseError(500, $e->getMessage());
 		}
 		
-		return $records;
+		$result = array();
+		//process records and create 
+		foreach ($records as $record){
+			$result[$record['productattribute_id']][] = $record['productattribute_value'];
+		}
+		
+		return $result;
 	}
 	
 	/**
@@ -58,25 +65,22 @@ class PaycartModelAttributeValue extends PaycartModel
 			return false;
 		}
 		
-		// 3#. Delete existing data
-		//$this->deleteMany(Array('product_id'=>$productId));
-		
-		// 4#. Insert new data
+		// 3#. Insert new data
 		$query = $this->_db->getQuery(true);
 		
 		// build inert query
 		$query->insert($this->getTable()->get('_tbl'))
 					->columns(
 						array(
-							$this->_db->quoteName('product_id'), $this->_db->quoteName('attribute_id'),
-							$this->_db->quoteName('value'), $this->_db->quoteName('order')
+							$this->_db->quoteName('product_id'), $this->_db->quoteName('productattribute_id'),
+							$this->_db->quoteName('productattribute_value')
 						)
 					);
 	
 		foreach ($data as $row) {
 			$query->values("
-							{$this->_db->quote($row['product_id'])}, {$this->_db->quote($row['attribute_id'])},
-							{$this->_db->quote($row['value'])},	{$this->_db->quote($row['order'])}
+							{$this->_db->quote($row['product_id'])}, {$this->_db->quote($row['productattribute_id'])},
+							{$this->_db->quote($row['productattribute_value'])}
 							");
 		}
 		

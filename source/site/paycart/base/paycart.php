@@ -79,6 +79,7 @@ class Paycart
 
 	const PROCESSOR_TYPE_TAX    = 'taxrule';
 
+
 	// Cart Particulars Type
 	const CART_PARTICULAR_TYPE_PRODUCT 			= 'product';
 	const CART_PARTICULAR_TYPE_PROMOTION	 	= 'promotion';
@@ -96,4 +97,5 @@ class Paycart
 	const GROUPRULE_TYPE_PRODUCT = 'product';
 	const GROUPRULE_TYPE_BUYER 	 = 'buyer';
 
+	const ATTRIBUTE_PATH_MEDIA	= '/media/com_paycart/media/';
 }

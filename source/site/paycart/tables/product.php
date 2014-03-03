@@ -20,3 +20,11 @@ class PaycartTableProduct extends PaycartTable
 {
 	
 }
+
+class PaycartTableProductlang extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_product_lang', $tblPrimaryKey='product_lang_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}
