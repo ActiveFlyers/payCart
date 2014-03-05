@@ -5,6 +5,7 @@ dir.root	=${project.basedir}/..
 dir.packages=${dir.root}/packages
 dir.tmp		=${dir.packages}/tmp
 dir.src		=${dir.root}/source
+dir.plugins	=${dir.root}/plugins
 dir.report	=${dir.root}/data/report
 
 # where to pick source code
@@ -39,3 +40,5 @@ script.tag			= <scriptfile>script.php</scriptfile>
 packageclass.name = Paycart
 redirect.url	  = index.php?option=com_paycart
 
+## Other settings
+releasebuild	= false
