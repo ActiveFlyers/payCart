@@ -57,8 +57,7 @@ class Paycart
 	
 	//Processor type
 	const PROCESSOR_TYPE_DISCOUNTRULE = 'discountrule';
-	// @PCTODO : TAX => TAXRULE
-	const PROCESSOR_TYPE_TAX   		  = 'taxrule';
+	const PROCESSOR_TYPE_TAXRULE   	  = 'taxrule';
 	const PROCESSOR_TYPE_SHIPPINGRULE = 'shippingrule';
 	
 	//Paycart Status
@@ -76,8 +75,6 @@ class Paycart
 	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
 	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
 
-
-	const PROCESSOR_TYPE_TAX    = 'taxrule';
 
 	// Cart Particulars Type
 	const CART_PARTICULAR_TYPE_PRODUCT 			= 'product';

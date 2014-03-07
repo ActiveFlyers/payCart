@@ -145,6 +145,21 @@ class PaycartCart extends PaycartLib
 		return $this->_total;
 	}
 	
+	public function getCurrency()
+	{
+		return $this->currency;
+	}
+
+	public function getPaymentDate()
+	{
+		return $this->payment_date;
+	}
+	
+	public function getReversalFor()
+	{
+		return $this->reversal_for;
+	}
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
