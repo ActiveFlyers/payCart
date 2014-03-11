@@ -28,6 +28,7 @@ class PaycartCart extends PaycartLib
 	protected $ip_address;
 	protected $billing_address_id;				// for invoicing
 	protected $shipping_address_id;	
+	protected $invoice_id;
 
 	/**
 	 * 
@@ -94,6 +95,7 @@ class PaycartCart extends PaycartLib
 		// Table fields	
 		$this->cart_id	 			= 0; 
 		$this->buyer_id 		 	= 0;
+		$this->invoice_id			= 0;
 		
 		$this->status				= Paycart::STATUS_CART_DRAFT;
 		$this->currency				= PaycartFactory::getConfig()->get('currency', '$');
@@ -143,6 +145,11 @@ class PaycartCart extends PaycartLib
 	public function getTotal()
 	{
 		return $this->_total;
+	}
+	
+	public function getInvoiceId()
+	{
+		return $this->invoice_id;
 	}
 	
 	public function getCurrency()

@@ -124,7 +124,7 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 		$testcase = $this->getName();
 		
 		// Test case (test_processPayment) is using dataprovider so test case name will be {test_processPayment with data set #0}  
-		if(strpos($testcase, 'test_processPayment') === 0) {
+		if(strpos($testcase, 'test_processPayment') === 0 || strpos($testcase, 'test_processNotification') === 0) {
 			return Array(
 							'_data/dataset/rb_ecommerce/rb_ecommerce-1.php' ,
 							'_data/dataset/rb_ecommerce/extensions-1.php'
@@ -137,9 +137,9 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 	/**
 	 * 
 	 * Test Payment Processing
-	 * @param $invoiceId 	: Collect payment on this Invoice id  
+	 * @param $invoiceId		 	: Collect payment on this invoice  
 	 * @param $paymentData 	: post data by Payment form
-	 * @param $data			: Array of Payment-Processor 
+	 * @param $processorData: Data-Array of Payment-Processor 
 	 *		 				  Array('processor_type' => _PAYMENT_PROCESSOR_NAME, 'processor_config' => _PAYMENT_PROCESSOR_CONFIG_)
 	 * @param $auData		: After payment compare tables	
 	 * @param $excludeColumns 
@@ -147,7 +147,7 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 	 * 
 	 * @dataProvider provider_test_processPayment
 	 */
-	public function test_processPayment($invoiceId, $paymentData, $data, $auData, $excludeColumns) 
+	public function test_processPayment($invoiceId, $paymentData, $processorData, $auData, $excludeColumns) 
 	{
 		global $_SERVER;
 		$_SERVER['REMOTE_ADDR'] ='10.0.0.5';
@@ -166,10 +166,16 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 		PaycartFactory::$session = $this->getMockSession($options);
 		
 		$paycartInvoice 	= PaycartFactory::getHelper('invoice');
-		/* var $paycartInvoice PaycartHelperInvoice */
-		$paycartInvoice->updateInvoice($invoiceId, $data);
 		
-		$response			= $paycartInvoice->processPayment($invoiceId, $paymentData) ;
+		/** 
+		 * @var PaycartHelperInvoice 
+		 */
+		// set processor data on invoice
+		PayCartTestReflection::invoke($paycartInvoice, '_updateInvoice', $invoiceId, $processorData);
+
+
+		//process payment
+		$response = PayCartTestReflection::invoke($paycartInvoice, '_processPayment', $invoiceId, $paymentData);
 
 		$this->compareTables(array_keys($auData), $auData, $excludeColumns);
 
@@ -180,21 +186,20 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 	
 	public function provider_test_processPayment()
 	{
-		//@PCTODO:: make sure stripe exist in system
-		
+		//make sure stripe exist in system
 		if(!JFile::exists(JPATH_ROOT.'/plugins/rb_ecommerceprocessor/stripe/stripe.php')) {
 			throwException(new RuntimeException("Stripe Payment Processor is not exist"));
 		}
 		
 		$invoiceId = 6;
 		
-		$stripe_data = Array(	'processor_type' => 'stripe', 
-								'processor_config' => '{"api_key":"sk_test_X13tGn9VbhcWDhfruzd8SLMN"}');
-		$stripe_paymentData = Array(
-									'card_number'		=> 	'4242424242424242',	
-									'expiration_month'	=> 	'01',	
-									'expiration_year'	=>	'2031',	
-									'card_code'			=>	'123'	
+		$stripe_processorData = Array(	'processor_type' => 'stripe', 
+										'processor_config' => '{"api_key":"sk_test_X13tGn9VbhcWDhfruzd8SLMN"}');
+		$stripe_paymentData 	= Array(
+										'card_number'		=> 	'4242424242424242',	
+										'expiration_month'	=> 	'01',	
+										'expiration_year'	=>	'2031',	
+										'card_code'			=>	'123'	
 								);
 						
 		$auData 	  = $this->get_auData_Stripe();
@@ -205,7 +210,8 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 							);
 						
 		return Array(
-					Array($invoiceId, $stripe_paymentData, $stripe_data, $auData, $excludeColumns )
+					// live testing with stripe
+					Array($invoiceId, $stripe_paymentData, $stripe_processorData, $auData, $excludeColumns )
 					);
 	}	
 	
@@ -276,4 +282,189 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 						);
 		return $auData;
 	}
+	
+	
+	
+	
+	/**
+	 * 
+	 * Test Notification Processing
+	 * @param $invoiceId		: Collect payment on this invoice  
+	 * @param $responseData		: notification data by Payment-gatway
+	 * @param $processorData	: Data-Array of Payment-Processor 
+	 *		 				  		Array('processor_type' => _PAYMENT_PROCESSOR_NAME, 'processor_config' => _PAYMENT_PROCESSOR_CONFIG_)
+	 * @param $auData			: After payment compare tables	
+	 * @param $excludeColumns	:
+	 * 
+	 * @dataProvider provider_test_processNotification
+	 */
+	public function test_processNotification($invoiceId, $responseData, $processorData, $auData, $excludeColumns) 
+	{
+		global $_SERVER;
+		$_SERVER['REMOTE_ADDR'] ='10.0.0.5';
+		
+		// Mock Dependancy
+		//$session = PaycartFactory::$session;
+		$options = Array(
+						'get.user.id' 		=>  490,
+						'get.user.name'		=> '_MANISH_TRIVEDI_',
+						'get.user.username' => 'mManishTrivedi',
+						'get.user.guest'	=>	0,
+						'get.user.email'	=>	'support+paycart@readybytes.in'
+						);
+						
+		// MockSession and set 490 user id in session
+		PaycartFactory::$session = $this->getMockSession($options);
+		
+		$paycartInvoice 	= PaycartFactory::getHelper('invoice');
+		
+		/** 
+		 * @var PaycartHelperInvoice 
+		 */
+		// set processor data on invoice
+		PayCartTestReflection::invoke($paycartInvoice, '_updateInvoice', $invoiceId, $processorData);
+		
+		//process payment
+		$response = PayCartTestReflection::invoke($paycartInvoice, '_processNotification', $responseData);
+
+		$this->compareTables(array_keys($auData), $auData, $excludeColumns);
+
+ 		//@PCTODO:: test date fields
+		
+		unset($_SERVER['REMOTE_ADDR']);
+	}
+	
+	public function provider_test_processNotification()
+	{
+		//make sure Payfast exist in system
+		if(!JFile::exists(JPATH_ROOT.'/plugins/rb_ecommerceprocessor/payfast/payfast.php')) {
+			throw new RuntimeException("PayFast Payment Processor is not exist");
+		}
+		
+		$invoiceId = 6;
+		
+		//change it if required
+		$baseUrl = 'http://5.kappa.readybytes.in/paycart/paycart4813/index.php';
+		  
+		$payfast_processorData = Array(
+						'currency' => 'ZAR',				// PayFast supports only South-African-Rand(ZAR) currency
+						'processor_type' 	=> 'payfast', 
+						'processor_config' 	=> Array(
+									'merchant_id' => '10000103', 						// test account details. Provided by PayFast
+									'merchant_key' => '479f49451e829', 
+									'sandbox' => '1', 
+									'proxy_server' => '0', 
+									'return_url' => $baseUrl.'?option=com_paycart&view=cart&task=complete&processor=payfast', 
+									'cancel_url' => $baseUrl.'?option=com_paycart&view=cart&task=cancel&processor=payfast', 
+									'notify_url' => $baseUrl.'?option=com_paycart&view=cart&task=notify&processor=payfast' 
+									)
+								);
+	
+		// dummy notification for check payment system is working properly
+		$get =	Array (	
+						'option' => 'com_paycart',	'view' => 'cart','task' => 'notify',
+						'processor' => 'payfast','m_payment_id' => '6771', 'payment_status' => 'COMPLETE',		
+						'pf_payment_id' => '99923',
+						'item_name' 	=> 'PayFast', 'item_description' => '',	'amount_gross' => '50.00',	'amount_fee' => '-0.57',
+						'amount_net' 	=> '49.43', 'custom_str1' => '', 'custom_str2' => '', 'custom_str3' => '',
+						'custom_str4' 	=> '','custom_str5' => '','custom_int1' => '','custom_int2' => '','custom_int3' => '',
+						'custom_int4' => '','custom_int5' => '',
+						'name_first' => 'Test',
+						'name_last' => 'User 01',
+						'email_address' => 'sbtu01@payfast.co.za',
+						'merchant_id' => '10000103',
+						'signature' => 'd9390f0bd3168b6791fa956f03a66568'	// md5-data
+					);
+		
+		// create signature
+		$array	= Array('merchant_id', 'merchant_key', 'return_url', 'cancel_url', 'notify_url', 'm_payment_id', 'amount', 'item_name');
+		$string = Array();
+		
+		foreach($get as $key => $val ) 
+        {
+            if($key == 'm_payment_id') $returnString = '';
+            if(! isset($returnString)) continue;
+            if($key == 'signature') continue;
+            $returnString[] = $key . '=' . urlencode($val);
+        }
+        
+        $string = implode('&', $returnString);
+        $md5	=	md5($string);
+        
+        $get['signature']	= $md5;
+        
+        $payfast_notifyData = new stdClass();
+		$payfast_notifyData->__get 	= $get;
+		$payfast_notifyData->__post	= $get;
+		$payfast_notifyData->data	= array_merge($payfast_notifyData->__get, $payfast_notifyData->__post);
+        
+        $auData 	  = $this->get_auData_PayFast();
+
+		$excludeColumns = Array(
+							'jos_rb_ecommerce_invoice' 		=> Array( 'created_date', 'modified_date', 'issue_date', 'paid_date', 'processor_data'),
+							'jos_rb_ecommerce_transaction' 	=> Array( 'gateway_txn_id', 'gateway_parent_txn', 'gateway_subscr_id', 'created_date', 'params')
+							);
+						
+		return Array(
+					Array($invoiceId, $payfast_notifyData, $payfast_processorData, $auData, $excludeColumns )
+					);
+	}	
+	
+	public function get_auData_PayFast()
+	{
+		$tmpl_invoice 	=  array_merge(Array('invoice_id'=>0), require RBTEST_BASE.'/_data/dataset/rb_ecommerce/tmpl_invoice.php');
+		
+		$rows_invoice 	=  Array();
+		// Piad invoice
+		$rows_invoice[]	=  array_replace($tmpl_invoice, 
+										Array (
+										    'invoice_id' => 6,	'object_id' => 6, 'object_type' => 'paycartcart',
+										    'buyer_id' => 490,	'master_invoice_id' => 0,	'currency' => 'ZAR',
+											'sequence' => '1',	'serial' => 'Inv-01-01',	'status' => PaycartHelperInvoice::STATUS_INVOICE_PAID,	
+											'title' => 'Invoice-1', 'expiration_type' => PaycartHelperInvoice::INVOICE_EXPIRATION_TYPE_FIXED, 
+											'time_price' => '{"time":["000000000000"],"price":["50.00000"]}',
+											'recurrence_count' => 1, 'subtotal' => 50.0, 'total' => 50.0,
+											'notes' => '', 'params' => '', 'refund_date' => 'NULL', 'due_date' => '-0001-11-30 00:00:00',
+											'processor_type' => 'payfast',
+  											'processor_config' => '{"merchant_id":"10000103","merchant_key":"479f49451e829","sandbox":"1","proxy_server":"0","return_url":"http:\\/\\/5.kappa.readybytes.in\\/paycart\\/paycart4813\\/index.php?option=com_paycart&view=cart&task=complete&processor=payfast","cancel_url":"http:\\/\\/5.kappa.readybytes.in\\/paycart\\/paycart4813\\/index.php?option=com_paycart&view=cart&task=cancel&processor=payfast","notify_url":"http:\\/\\/5.kappa.readybytes.in\\/paycart\\/paycart4813\\/index.php?option=com_paycart&view=cart&task=notify&processor=payfast"}',
+  											'processor_data' => '{}',
+											//    'created_date' => '2014-03-06 12:48:05',
+											//    'modified_date' => '2014-03-06 12:48:10',
+											//    'paid_date' => '2014-03-06 12:48:10',
+											//    'issue_date' => '2014-03-06 12:48:05',
+											//    'processor_data' => '{"profileId":"cus_3cFP0Nxq76gaY6"}',
+ 								));
+ 		
+		$tmpl_transaction 	=	array_merge(Array('transaction_id'=>0),require RBTEST_BASE.'/_data/dataset/rb_ecommerce/tmpl_transaction.php');
+		$rows_transaction 	=	Array();
+											
+		$rows_transaction[]	=  	array_replace($tmpl_transaction, 
+										Array(  
+											 'transaction_id' => 1,
+											    'buyer_id' => 490,
+											    'invoice_id' => 6,
+											    'processor_type' => 'payfast',
+											    'amount' => 50.0,
+											    'payment_status' => PaycartHelperInvoice::STATUS_TRANSACTION_PAYMENT_COMPLETE ,
+											    'message' => 'PLG_RB_ECOMMERCEPROCESSOR_PAYFAST_TRANSACTION_PAYFAST_PAYMENT_COMPLETED',
+											    'signature' => '',
+												'gateway_txn_id' => '99923',
+//											    'gateway_txn_id' => 'ch_103cFX2aIfD4Vi0EFSDLodJz',
+//											    'gateway_parent_txn' => '0',
+//											    'gateway_subscr_id' => 'cus_3cFX1Zyp0PfdKP',
+//											    'created_date' => '2014-03-06 12:55:43',
+//											    'params' => '{"option":"com_paycart","view":"cart","task":"notify","processor":"payfast","m_payment_id":"6771","payment_status":"COMPLETE","pf_payment_id":"99923","item_name":"PayFast","item_description":"","amount_gross":"25.00","amount_fee":"-0.57","amount_net":"24.43","custom_str1":"","custom_str2":"","custom_str3":"","custom_str4":"","custom_str5":"","custom_int1":"","custom_int2":"","custom_int3":"","custom_int4":"","custom_int5":"","name_first":"Test","name_last":"User 01","email_address":"sbtu01@payfast.co.za","merchant_id":"10000103","signature":"58d17d484a8879dba38c68772b000776"}',
+											));											
+											
+											
+	
+											
+ 								
+		$auData 	  = Array(
+							'jos_rb_ecommerce_invoice' 		=> $rows_invoice,
+							'jos_rb_ecommerce_transaction' 	=> $rows_transaction
+						);
+		return $auData;
+	}
+	
 }
