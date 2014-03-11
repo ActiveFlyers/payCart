@@ -71,11 +71,16 @@
 	<!-- Target: Copy Plugins, App, Processor          -->
 	<!-- ============================================  -->
 	<target name="copy_plugins">
-		<copy todir="${target}/source/plugins">
-			<fileset dir="${source}/plugins/paycart">
-				<include name="**/*.*" />
-			</fileset>
-		</copy>
+		<if>
+		    <available file='${source}/plugins/paycart' type='dir' />
+		    <then>
+		    	<copy todir="${target}/source/plugins">
+					<fileset dir="${source}/plugins/paycart">
+						<include name="**/*.*" />
+					</fileset>
+				</copy>
+		    </then>
+	  	</if>	
 	</target>
 	
 	

@@ -282,32 +282,49 @@ class PaycartCart extends PaycartLib
 	*/
 	protected function _saveParticulars()
 	{	
-		// @PCTODO :: save all cartparticulars in one shot, If performance improvment required
-		foreach( $this->getParticulars() as $key => $particular) {
-			/**
-			 * @var PaycartCartparticular $particular
-			 */
-			$type = $particular->getType();
+		foreach( $this->getParticulars() as $type => $particulars) {
 			
-			//Don't save if ((total of particular is 0) AND ( particular is dynamic created))
-			if (($type == Paycart::CART_PARTICULAR_TYPE_DUTIES) && !($particular->getTotal())) {
-				continue;
-			} 
-			
-			if (($type == Paycart::CART_PARTICULAR_TYPE_PROMOTION) && !($particular->getTotal())) {
-				continue; 
-			}
+			switch ($type) {
+				
+				case Paycart::CART_PARTICULAR_TYPE_DUTIES		: 
+				case Paycart::CART_PARTICULAR_TYPE_PROMOTION 	:
+					//@NOTE Don't save if ((total of particular is 0) AND ( particular is dynamic created))
+					// {Duties and prmotion} have only one particular
+					foreach ($particulars as $key => $particular) {
+						if($particular->getTotal()) {
+							unset($particulars[$key]);
+						}
+					}
 
-			// set cart id before save particular
-			$particular->setCartId($this->getId());
+					break;
+
+				case Paycart::CART_PARTICULAR_TYPE_SHIPPING:
+				case Paycart::CART_PARTICULAR_TYPE_PRODUCT:
+				default:
+				break;
+			}
 			
-			// Save cart-particules one by one
-			$particular->save();
+			// save particulars
+			foreach ($particulars as $key => $particular) {
+				// set cart id before save particular
+				$particular->setCartId($this->getId());
+				
+				// Save cart-particules one by one
+				$particular->save();
+			}
 		}
 		
 		return $this;
 	}
  
+	/**
+	 * 
+	 * Get Cart particular
+	 * @param $type : Particular Type {duties, product, promotion, shipping, adjustment}
+	 * @throws RuntimeException : is type is not exist
+	 * 
+	 * @return Array of specific $type particular array. Default return all particulars
+	 */
 	public function getParticulars($type = null)
 	{
 		if ($type) {

@@ -149,8 +149,6 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 	 */
 	public function test_processPayment($invoiceId, $paymentData, $processorData, $auData, $excludeColumns) 
 	{
-		global $_SERVER;
-		$_SERVER['REMOTE_ADDR'] ='10.0.0.5';
 		
 		// Mock Dependancy
 		//$session = PaycartFactory::$session;
@@ -181,7 +179,6 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 
  		//@PCTODO:: test date fields
 		
-		unset($_SERVER['REMOTE_ADDR']);
 	}
 	
 	public function provider_test_processPayment()
@@ -300,9 +297,7 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 	 */
 	public function test_processNotification($invoiceId, $responseData, $processorData, $auData, $excludeColumns) 
 	{
-		global $_SERVER;
-		$_SERVER['REMOTE_ADDR'] ='10.0.0.5';
-		
+
 		// Mock Dependancy
 		//$session = PaycartFactory::$session;
 		$options = Array(
@@ -324,14 +319,15 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 		// set processor data on invoice
 		PayCartTestReflection::invoke($paycartInvoice, '_updateInvoice', $invoiceId, $processorData);
 		
+		// get invoice id from response
+		$invoiceId = $paycartInvoice->getNotificationInvoiceId($responseData);
 		//process payment
-		$response = PayCartTestReflection::invoke($paycartInvoice, '_processNotification', $responseData);
+		$response = PayCartTestReflection::invoke($paycartInvoice, '_processNotification', $invoiceId, $responseData);
 
 		$this->compareTables(array_keys($auData), $auData, $excludeColumns);
 
  		//@PCTODO:: test date fields
 		
-		unset($_SERVER['REMOTE_ADDR']);
 	}
 	
 	public function provider_test_processNotification()

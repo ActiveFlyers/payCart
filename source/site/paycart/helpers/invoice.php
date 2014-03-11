@@ -76,7 +76,7 @@ class PaycartHelperInvoice
 		$invoiceId = Rb_EcommerceAPI::invoice_create($data, $is_master);
 		
 		if (!$invoiceId) {
-			throw new RuntimeException(Rb_Text::_('COM_PAYCART_INVOICE_CREATION_FAIL'), $code, $previous);
+			throw new RuntimeException(Rb_Text::_('COM_PAYCART_INVOICE_CREATION_FAIL'));
 		}
 		
 		return $invoiceId;
@@ -133,13 +133,12 @@ class PaycartHelperInvoice
 			$data->title 				= '';
 			$data->serial 				= $prefix.$cartId;		// like Rb-Invocie-524
 			
-//			$data->paid_date 			= $cart->getPaymentDate();
-			
+//			$data->paid_date 			= $cart->getPaymentDate();		
 //			$data->refund_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
 			$data->issue_date 			= Rb_Date::getInstance();
 			//@NOTE: due date must be greater than created date 
 			// And if have to "0000-00-00 00:00:00" then due-date means "infinite"   
-			// @PCTODO :: should be configurable
+			// @PCTODO :: issue#84
 			$data->due_date 			= Rb_Date::getInstance('0000-00-00 00:00:00');
 		}
 		
@@ -152,9 +151,9 @@ class PaycartHelperInvoice
 		$data->params 				= '';
 		
 		// if cart is reversing
-		if ($cart->getReversalFor()) {
-			$data->refund_date		= $cart->getPaymentDate();
-		}
+//		if ($cart->getReversalFor()) {
+//			$data->refund_date		= $cart->getPaymentDate();
+//		}
 		
 		// Hard-Coded Property
 		$data->sequence 			= 0;		// Invoice-Counter
@@ -254,8 +253,8 @@ class PaycartHelperInvoice
 	public function getBuildForm(Paycart $cart, $processorId) //$postData)
 	{
 		$invoiceId		= $cart->getInvoiceId();
-		$processor 		= PaycartProcessor::getInstance($processorId);
 		$invoiceData 	= $this->getInvoiceData($invoiceId);
+		$processor 		= PaycartProcessor::getInstance($processorId);
 		
 		// save the processor configuration on invoice
 		$invoiceData['processor_type'] 		= $processor->getType();
@@ -263,13 +262,12 @@ class PaycartHelperInvoice
 		
 		$this->_updateInvoice($invoiceId, $invoiceData);
 		
+		$processResponseData = '';
+		
 		// if processor is not selected then only update invoice with blank processor {type and config}   
 		if ($processorId) {
-			//@PCTODO::
-			return true;
+			$processResponseData = Rb_EcommerceApi::invoice_request('build', $invoiceId, array());
 		}
-		
-		$processResponseData = Rb_EcommerceApi::invoice_request('build', $invoiceId, array());
 		
 		//Create new response and set required cart's stuff. 
 		$response = new stdClass();
@@ -325,10 +323,8 @@ class PaycartHelperInvoice
 	 * 
 	 * @return stdClass 
 	 */
-	private function _processNotification($responseData) 
+	private function _processNotification($invoiceId, $responseData) 
 	{
-		$processorType   		= $responseData->data['processor'];
-		$invoiceId				= Rb_EcommerceAPI::invoice_get_from_response($processorType, $responseData);		
 		$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $responseData);
 
 		//Create new response and set required cart's stuff. 
@@ -336,6 +332,23 @@ class PaycartHelperInvoice
 		$response->processorResponse = $processResponseData;
 
 		return $response;
+	}
+	
+	/**
+	 * 
+	 * Get invoice id from notification
+	 * @param stdClass $responseData :Post/Get data from notification
+	 * 				$responseData->__get	: var {Get} data
+	 * 				$responseData->__post	: var {post} data
+	 * 				$responseData->data		: Contain actual data. (merge of {get and post} data)
+	 * 
+	 * @return integer invoice-id
+	 */
+	public function getNotificationInvoiceId($responseData) 
+	{
+		$invoiceId	= Rb_EcommerceAPI::invoice_get_from_response($responseData->data['processor'], $responseData);
+		
+		return $invoiceId;
 	}
 	
 	/**
@@ -366,8 +379,7 @@ class PaycartHelperInvoice
 			
 			case 'notify':
 				// Process Notification data
-				//@PCTODO::  Invoice id should be pass
-				$this->_processNotification($data);
+				$this->_processNotification($invoiceId, $data);
 				break;
 				
 			//case 'complete':
@@ -468,11 +480,11 @@ class PaycartHelperInvoice
 		// @PCTODO :: Create new cart  
 		// 1#. change stuff which are depends on invoice
 		// change cart status, payment date (its a reversal cart so same treatment will apply like OnInvoicePaid)
-		$cart->status(Paycart::STATUS_CART_PAID);	
-		$cart->setPaymentdate(Rb_Date::getInstance());
+		//$cart->status(Paycart::STATUS_CART_PAID);	
+		//$cart->setPaymentdate(Rb_Date::getInstance());
 		
 		// 2#. save cart
-		$cart->save();
+		//$cart->save();
 		
 		return true;
 	}
