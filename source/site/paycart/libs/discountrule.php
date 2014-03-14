@@ -16,7 +16,14 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * 
  * PaycartDiscountRule
  * @author mManishTrivedi
- *
+ * 
+ * Assumptions: 
+ *	1#. Always applied on cart-particulars.
+ * 	2#. Multiple-DiscountRule on one Particular :
+ * 			## All Discountrules process either "Before-Taxrules" Or "After-Taxrules"
+ *	 		## Rule-Priority decides by sequence field
+ * 			## Discount calculate on row-total or actual-price, will be dicided by is_successive field
+ * 	 
  */
 class PaycartDiscountRule extends PaycartLib
 {
@@ -98,70 +105,105 @@ class PaycartDiscountRule extends PaycartLib
 	
 	/**
 	 * 
-	 * Processo discount rule
-	 * @param $entity : @TODO:: $entity : entity-object  Product/cart-particulars,cart and shipping. 
+	 * Process discountrule
+	 * @param Paycartcart $cart
+	 * @param PaycartCartparticular $particular
+	 * @throws InvalidArgumentException
 	 * 
-	 * @return DiscountRule lib object 
+	 * @return DiscountRule lib object
 	 */
-	public function process($entity)
+	public function process(Paycartcart $cart, PaycartCartparticular $particular)
 	{
 		// get Processor instanse. Processor should be autoloaded
 		$processor = PaycartFactory::getProcessor(Paycart::PROCESSOR_TYPE_DISCOUNTRULE, $this->processor_classname, $this->processor_config);
 		
 		// create request and reponse object then process discount-rule
-		$request	= $this->createRequest($entity);
+		$request	= $this->createRequest($cart, $particular);
 		$response	= $this->createResponse();
 		
 		$processor->process($request, $response);
 		
-		if ($response->message) {
-			//@PCTODO : Exception/Error/Message handling
+		// check if exception is occured
+		if ($response->exception && $response->exception instanceof Exception) {
+			//@PCTODO : Exception handling. better if we will introduce our discount type exception
+			//$this->_errors = $response->exception->getMessage();
 			return $this;
 		}
 		
-		$total 				= $entity->get('total');
-		$discountedAmount 	= $response->amount;
-		
-		// Stop next all-rule processing if meet following any one conditions in current rule
-		
-		// Check limit of discount 
-		if ($total-$discountedAmount < 0) {
-			$this->_stopFurtherRules = true;
-			// @PCTODO :: notify to user or Log it
+		// notify to admin
+		if ( Paycart::MESSAGE_TYPE_ERROR == $response->messageType) {
+			//@PCTODO : Error propagate to admin and log it 
+			//$this->_errors = $response->exception->getMessage();
 			return $this;
-		} 
-		// should not fall behind of minimum-price limit.
-		if ($total-$discountedAmount <= $entity->minimumPrice ) {
-			$this->_stopFurtherRules = true;
-			// @PCTODO :: notify to user or Log it
-			return $this;
+		}
+		
+		// show system message to end user 
+		if ( Paycart::MESSAGE_TYPE_NOTICE == $response->messageType || Paycart::MESSAGE_TYPE_WARNING == $response->messageType || Paycart::MESSAGE_TYPE_MESSAGE == $response->messageType) {
+			//@PCTODO:: Show msg to end user with msgtype
 		}
 
+		$total 	= $particular->getTotal();
+		
+		// @NOTE: Stop next all-rule processing for $particular if meet following any one conditions in current rule
+		
+		// Check limit of discount 
+		if ($total+($response->amount) < 0) {
+			$this->_stopFurtherRules = true;
+			//@PCTODO :: notify to user or Log it
+			return $this;
+		} 
+		
+		// @NOTE: should not fall behind of minimum-price limit.
+//		if ($total+($response->amount) <= $particular->getMinimumPrice() ) {
+//			$this->_stopFurtherRules = true;
+//			// @PCTODO :: notify to user or Log it
+//			return $this;
+//		}
+
 		// apply discounted amount
-		$entity->set('total', $total-$discountedAmount);
-		//@PCTODO :: invoke method to track usage
+		$particular->addDiscount($response->amount);
+		
+		//@PCTODO :: auto reinitailize cart price  when add discount
+		
+		//create usage data
+		$usage = new stdClass();
+		
+		$usage->rule_type			=	Paycart::PROCESSOR_TYPE_DISCOUNTRULE;
+		$usage->rule_id				=	$this->getId();
+		$usage->cart_id				=	$cart->getId();
+		$usage->buyer_id			=	$cart->getBuyer();
+		$usage->carparticular_id	=	$particular->getId();
+		$usage->price				=	$response->amount;
+		$usage->applied_date		=	Rb_Date::getInstance();
+		$usage->realized_date		=	'';
+		$usage->message				=	'';
+		$usage->title				=	'';
+		
+		//invoke method to track usage
+		PaycartFactory::getModel('usage')->save((array)$usage);
+		
 		
 		// not further-rules processing 
-		if ($response->stopFurtherRules){
+		if ($response->stopFurtherRules) {
 			$this->_stopFurtherRules = true;
 		}
 		
 		return $this;
 	}
 	
-	
 	/**
 	 * 
-	 * create build request object
-	 * @param unknown_type $entity {product, cart, shipping}
+	 * create request object 
+	 * @param PaycartCart $cart
+	 * @param PaycartCartparticular $particular
 	 * 
 	 * @return PaycartDiscountRuleRequest object
 	 */
-	protected function createRequest($entity)
+	protected function createRequest(PaycartCart $cart, PaycartCartparticular $particular)
 	{
-		$request 	= new PaycartDiscountRuleRequest();
+		$request 	= new PaycartDiscountruleRequest();
 		
-		// rulespecific data
+		// rule specific data
 		$request->rule_isPercentage 	= $this->is_percentage;
 		$request->rule_isSuccessive		= $this->is_successive;
 		$request->rule_amount			= $this->amount;
@@ -170,16 +212,27 @@ class PaycartDiscountRule extends PaycartLib
 		$request->rule_buyerUsageLimit	= $this->buyer_usage_limit;
 		$request->rule_coupon			= $this->coupon;
 		
-		//$entity must be have total and basePrice
-		$request->entity_total				 = $entity->total;
-		$request->entity_price				 = $entity->price;	//basePrice = unitPrice * Quantity
-		$request->entity_coupon				 = $entity->coupon;	// Posted coupon code
-		$request->entity_previousAppliedRules = $entity->previousDiscount;
+		// Particular specific data
+		$request->particular_unit_price				= $particular->getUnitPrice();
+		$request->particular_quantity				= $particular->getQuantity();
+		$request->particular_price					= $particular->getPrice();		//basePrice = unitPrice * Quantity
+		$request->particular_total				 	= $particular->getTotal();
+		$request->particular_coupon				 	= $cart->coupon;				// @PCTODO: get Posted coupon code from cart  
+		$request->particular_previousAppliedRules 	= $particular->_appliedDiscountRules;
+		
+		//@PCTODO:: set following stuff
+		$request->cart_particular_quantity	=	10;
+		$request->cart_total				=	$cart->getTotal();
+		$request->cart_shipping_address_id	=	$cart->getShippingAddress();
+		$request->cart_billing_address_id	=	$cart->getBillingAddress();
+		
+		//@PCTODO:: set following stuff
+		$request->buyer_id			=	$cart->getBuyer();
 		
 		// usage specific data
 		//@PCTODO :: call to get used counter of Rule
-		$request->rule_consumption	= 50;
-		$request->buyer_consumption	= 0;
+		$request->usage_rule_consumption	= 50;
+		$request->usage_buyer_consumption	= 0;
 		
 		return $request;
 	}
@@ -188,23 +241,29 @@ class PaycartDiscountRule extends PaycartLib
 	 * 
 	 * create response object
 	 * 
-	 * @return PaycartDiscountRuleRequest object
+	 * @return PaycartDiscountRuleResponse object
 	 */
 	protected function createResponse()
 	{
-		return new PaycartDiscountRuleResponse();
+		return new PaycartDiscountruleResponse();
 	}
 	
 	/**
-	 * @PCTODO :: TDS-Helper.php 
-	 * Before execution :: get all applicable ruleid
-	 * @param array $rulesId  : have all applicable discount rule id
-	 * @param unknown_type $entity : $entity data
-	 * @param unknown_type $entityType : aplicable on
+	 * @PCTODO :: Discountrule-Helper.php 
+	 * @param PayacartCart $cart
+	 * @param PaycartCartparticular $particular
+	 * @param array $ruleIds Applicable rules
+	 * 
+	 * @return bool value
 	 */
-	protected function _processDiscountRule(Array $ruleIds, $entity, $appliedOn)
+	protected function _processDiscountRule(PayacartCart $cart, PaycartCartparticular $particular, Array $ruleIds)
 	{
+		//@PCTODO : define constant for applicable_on
+		// {product_price, shipping_price, cart-price}
+		$appliedOn = 'product_price';
+		
 		//@PCTODO :: move into model 
+		// get applicable rules
 		$condition = ' 	`discountrule_id` IN ('.array_values($ruleIds).') AND '.
 					 '	`published` = 1 AND '.
 					 '	`start_date` <= now() AND '.
@@ -225,20 +284,17 @@ class PaycartDiscountRule extends PaycartLib
 			$discountRule = PaycartDiscountRule::getInstance($id, $record);
 			
 			// process discount
-			// entity have following stuff::
-			// # product/cart /shipping details(include minimumPrice of entity)
-			// # total and basePrice
-			// # buyerdetail like location, id etc
-			// # previousDiscount : where save previous-discount stuff
-			$discounRule->process($entity);
+			$discounRule->process($cart, $particular);
 			
-			//$entity->previousAppliedRules[] = $discountRule; 
+			//@PCTODO:: set previous applied rules on particular
+			$particular->_appliedDiscountRules[] = $discountRule; 
 			
 			// no further process
 			if ($discountRule->get('_stopFurtherRules')) {
 				break;
 			}			
 		}
+		
 		return true;
 	}	
 	

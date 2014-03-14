@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `ordering` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`product_id`),
   KEY `productcategory_id` (`productcategory_id`),
-  UNIQUE KEY `sku` (`sku`),
+  UNIQUE KEY `sku` (`sku`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Table have all PayCart Products and thier core element.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -228,25 +228,28 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product_lang` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
-  `cart_id` 		int(11)		NOT NULL	AUTO_INCREMENT,
-  `buyer_id` 		int(11) 				DEFAULT '0',
-  `address_id` 		int(11) 				DEFAULT '0',
-  `subtotal` 		decimal(15,5)	 		DEFAULT '0.00000',
-  `total` 			decimal(15,5) 			DEFAULT '0.00000', 
-  `modifiers` 		text,
-  `currency` 		char(3) 				DEFAULT NULL,
-  `status` 			int(5) 					DEFAULT '0',
-  `created_date` 	datetime 	NOT NULL,
-  `modified_date` 	datetime 	NOT NULL,
-  `checkout_date` 	datetime 				DEFAULT '0000-00-00 00:00:00',
-  `paid_date` 		datetime 				DEFAULT '0000-00-00 00:00:00',
-  `complete_date` 		datetime 			DEFAULT '0000-00-00 00:00:00',
-  `cancellation_date` 	datetime 			DEFAULT '0000-00-00 00:00:00',
-  `refund_date` 	datetime 				DEFAULT '0000-00-00 00:00:00',
-  `params` 			text,
+  `cart_id` 		int(11) NOT NULL AUTO_INCREMENT,
+  `buyer_id` 		int(11) DEFAULT '0',
+  `session_id` 		varchar(200) DEFAULT '',
+  `invoice_id` 		int(11) DEFAULT '0' COMMENT 'mapped invoice id with rb_ecommerce_invoice table',
+  `status` 			enum('drafted','checkedout','paid','cancelled','completed') NOT NULL,
+  `currency` 		char(3) NOT NULL COMMENT 'isocode 3',
+  `reversal_for` 	int(11) DEFAULT '0' COMMENT 'reversal of cart (parent) : When cart is reversal then new entry is created into cart and set here cart_id which is reversed  (might be cart partial refunded)',
+  `ip_address` 		varchar(255) DEFAULT '0' COMMENT 'cart created from',
+  `billing_address_id` 	int(11) DEFAULT '0',
+  `shipping_address_id` int(11) DEFAULT '0' COMMENT 'Cart will shipp only one address',
+  `secure_key`		varchar(255) NOT NULL COMMENT 'used for url security',
+  `is_locked` 		int(11)  NOT NULL COMMENT 'Stop re-calculation',
+  `created_date` 	datetime DEFAULT '0000-00-00 00:00:00',
+  `modified_date` 	datetime DEFAULT '0000-00-00 00:00:00',
+  `checkedout_date` 	datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Date of either cart is checked out or reversal is created',
+  `paid_date` 		datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Payment Completion date.',
+  `cancelled_date` 	datetime DEFAULT '0000-00-00 00:00:00',
+  `completed_date` 	datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'when final status done (paid+shipped)',
   PRIMARY KEY (`cart_id`),
-  INDEX `idx_buyer_id` (`buyer_id`),
-  INDEX `idx_status` (`status`)
+  KEY `invoice_id` (`invoice_id`),
+  KEY `buyer_id` (`buyer_id`),
+  KEY `status` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
@@ -447,7 +450,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_lang` (
   `taxrule_id` int(11) NOT NULL,
   `lang_code` int(11) NOT NULL,
   `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
-  PRIMARY KEY ('taxrule_lang_id'),
+  PRIMARY KEY (`taxrule_lang_id`),
   KEY `taxrule_id` (`taxrule_id`),
   KEY `lang_code` (`lang_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
