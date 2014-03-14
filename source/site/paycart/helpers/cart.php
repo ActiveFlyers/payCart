@@ -64,4 +64,22 @@ class PaycartHelperCart extends PaycartHelper
 		
 		return $hash;
 	}
+	
+	/**
+	 * 
+	 * Return All available Paycart status
+	 * 
+	 * @return Array()
+	 */
+	public function getStatus()
+	{
+		return 
+			Array(
+					Paycart::STATUS_CART_DRAFT,
+					Paycart::STATUS_CART_CHECKOUT,
+					Paycart::STATUS_CART_PAID,
+					Paycart::STATUS_CART_CANCEL,
+					Paycart::STATUS_CART_COMPLETE
+				)	;
+	}
 }
