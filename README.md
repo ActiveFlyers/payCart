@@ -16,6 +16,6 @@ Setup
 
 1. Clone repo at your end
 2. **rbpackage** : to build Paycart Package
-3. **rbsetup** to setuo Joomla Kit in your "/var/www/" folder
+3. **rbsetup** to setup Joomla Kit in your "/var/www/" folder
 
 

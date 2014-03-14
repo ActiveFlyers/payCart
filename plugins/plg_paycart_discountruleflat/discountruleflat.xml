@@ -7,7 +7,7 @@
 	<authorEmail>support+paycart@readybytes.in</authorEmail>
 	<license>GNU General Public License version 2 or later; see	LICENSE.txt</license>
 	<authorUrl>www.readybytes.net</authorUrl>
-	<version>1.@global.version@</version>
+	<version>1.0.0</version>
 	<description>PLG_PAYCART_DISCOUNTRULE_FLAT_XML_DESC</description>
 	<files>
 		<filename plugin="discountruleflat">discountruleflat.php</filename>

@@ -1,0 +1,156 @@
+<?xml version="1.0" ?>
+<project name="Package Builder" default="build" description="Phing build script for package.">
+
+	<target name="config" description="Load configuration file">
+	    <php expression="(PHP_OS == 'WINNT') ? 'win/' :'unix/'" returnProperty="IF_OS"/>
+<echo msg="${IF_OS}" />
+		<property file="${IF_OS}build.prop" override="false" />
+	</target>
+
+	
+	<target name="build" description="build installable package only" depends="config">
+		<if>
+		   	<equals arg1="${releasebuild}" arg2="true" />			
+			<then>
+				<foreach param="dirname" absparam="absname" target="versioning">
+					<fileset dir="${dir.plugins}">
+						<type type="dir" />
+						<depth max="0" min="0" />
+				  	</fileset>
+				</foreach>
+			</then>	
+		</if>
+
+
+		<!-- If package directory is not exists then create it -->
+		<if>
+			<available file='${dir.packages}' type='dir' />
+			<then>
+				<echo>Package file already exists.</echo>
+			</then>
+			<else>
+				<mkdir dir="${dir.packages}" />		   		
+			</else>
+		</if>
+
+		<!-- Delete and create plugins package folder -->
+		<delete dir="${dir.packages}/plugins" includeemptydirs="true" />
+		<mkdir dir="${dir.packages}/plugins" />
+
+		<!-- Delete and create tmp folder -->
+		<delete dir="${dir.tmp}" includeemptydirs="true" />
+		<mkdir dir="${dir.tmp}" />
+
+		<!-- Copy Source Code -->
+		<copy todir="${dir.tmp}" >
+			<fileset dir="${dir.plugins}">
+				<exclude name="**/md5.txt" />
+		  	</fileset>
+		</copy>		
+		
+		<foreach param="dirname" absparam="absname" target="zip_plugin">
+			<fileset dir="${dir.tmp}">
+				<type type="dir" />
+				<depth max="0" min="0" />
+		  	</fileset>
+		</foreach>
+
+		<!-- Delete tmp folder after building zip files -->
+		<delete dir="${dir.tmp}" includeemptydirs="true" />
+	</target>
+
+	<target name="zip_plugin">
+
+		<echo msg="${dirname}" />
+		<zip destfile="${dir.packages}/plugins/${dirname}.zip" 
+		     basedir="${absname}" />		
+	</target>
+
+	<adhoc-task name="appversion" ><![CDATA[
+		class AppversionTask extends Task {
+			function main() {			    
+			    $path = $this->project->getProperty('plugin_dir');
+				foreach(glob($path.'/*.xml') as $file){
+					$content = file_get_contents($file);
+					
+					// Search for this tag in the content
+					$regex = "#<version>(.*?)</version>#s";
+					$content = preg_replace_callback( $regex, array($this, 'processVersion'), $content );
+
+					// Search for this tag in the content
+					$regex = "#<version_number>(.*?)</version_number>#s";
+					$content = preg_replace_callback( $regex, array($this, 'processVersionNumber'), $content );
+					file_put_contents($file, $content);
+				}
+			}
+
+			public function processVersionNumber($match)
+			{
+				$ret = '';
+				if(!isset($match[1])){
+					return $ret;
+				}
+
+				$versions = explode(".", $match[1]);
+				$versions[2]++;
+				$versions = implode(".", $versions);
+				return '<version_number>'.$versions.'</version_number>';
+			}
+
+			public function processVersion($match)
+			{
+				$ret = '';
+				if(!isset($match[1])){
+					return $ret;
+				}
+
+				$versions = explode(".", $match[1]);
+				$versions[2]++;
+				$versions = implode(".", $versions);
+				return '<version>'.$versions.'</version>';
+			}
+		}
+		]]>
+	</adhoc-task>
+
+	<target name="versioning">
+				<!-- Generate new MD5 -->
+			<exec command="find ${absname} -type f -regex '.*\(php\|xml\|png\|js\|css\|html\|json\)$' -exec md5sum {} + | awk '{print $1}' | sort  | md5sum | awk '{print $1}'" escape="false" outputProperty="new_md5"/>
+
+			<!-- Get old MD5 -->
+			<if>
+				<available file='${absname}/md5.txt' type='file' />
+				<then>
+					<loadfile property="old_md5" srcFile="${absname}/md5.txt"/>
+				</then>
+				<else>
+					<property name='old_md5' value=""  override="true" />
+					<touch file="${absname}/md5.txt" />		
+				</else>
+			</if>
+
+			<if>
+			   	<equals arg1="${old_md5}" arg2="${new_md5}" />			
+				<then>
+				</then>	
+				<else>
+					<property name='plugin_dir' value="${absname}"  override="true" />
+					<appversion />
+
+					<property name='old_md5' value="${new_md5}"  override="true" />
+					<exec command="find ${absname} -type f -regex '.*\(php\|xml\|png\|js\|css\|html\|json\)$' -exec md5sum {} + | awk '{print $1}' | sort | md5sum | awk '{print $1}'" escape="false" outputProperty="new_md5"/>
+
+					<reflexive>
+						<fileset dir="${absname}">
+							<include pattern="md5.txt" />
+						</fileset>
+						<filterchain>
+							<replaceregexp>
+								<regexp pattern="${old_md5}" replace="${new_md5}"/>
+							</replaceregexp>
+						</filterchain>
+					</reflexive>
+				</else>
+			</if>		
+	</target>
+</project>

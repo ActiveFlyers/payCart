@@ -63,41 +63,51 @@ CREATE TABLE IF NOT EXISTS `#__paycart_rating` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_attribute`
+-- Table structure for table `#__paycart_productattribute`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_attribute` (
-  `attribute_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `#__paycart_productattribute` (
+  `productattribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
-  `type` varchar(11) NOT NULL COMMENT 'predefine types like text, numeric etc',
-  `default` varchar(250) DEFAULT NULL COMMENT 'Attribute default value',
-  `class` varchar(100) DEFAULT NULL,
+  `type` varchar(11) NOT NULL COMMENT 'Type of attribute',
+  `css_class` varchar(100) DEFAULT NULL,
   `filterable` tinyint(1) NOT NULL COMMENT 'Treat as a filter',
   `searchable` tinyint(1) DEFAULT '0' COMMENT 'Use for keyword search',
-  `published` tinyint(1) DEFAULT '0',
-  `visible` tinyint(1) DEFAULT '0',
+  `status` enum('published','invisible','unpublished','trashed') NOT NULL ,
+  `config` text,
   `ordering` int(11) DEFAULT '0',
-  `params` text,
-  `xml` text,
-  PRIMARY KEY (`attribute_id`)
+  PRIMARY KEY (`productattribute_id`),
+  KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All attributes and their configuration param will store here.' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_productattribute_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_lang` (
+  `productattribute_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `productattribute_id` int(11) NOT NULL,
+  `lang_code` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL COMMENT 'attribute name',
+  PRIMARY KEY (`productattribute_lang_id`),
+  KEY `productattribute_id` (`productattribute_id`),
+  KEY `lang_code` (`lang_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_attribute_value`
+-- Table structure for table `#__paycart_productattribute_value`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_attributevalue` (
-  `attributevalue_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_value` (
   `product_id` int(11) NOT NULL,
-  `attribute_id` int(11) NOT NULL,
-  `value` text,
-  `order` int(50) NOT NULL COMMENT 'Attribute''s order on Product Window',
-  PRIMARY KEY (`attributevalue_id`),
+  `productattribute_id` int(11) NOT NULL,
+  `productattribute_value` int(11) NOT NULL,
   INDEX `idx_product_id` (`product_id`),
-  INDEX `idx_attribute_id` (`attribute_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' AUTO_INCREMENT=1 ;
+  INDEX `idx_productattribute_id` (`productattribute_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' ;
 
 -- --------------------------------------------------------
 
@@ -166,33 +176,50 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory_lang` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `product_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique identification of product',
-  `title` varchar(255) NOT NULL COMMENT 'Product name',
-  `alias` varchar(255) NOT NULL COMMENT 'useful for sef urls',
-  `published` tinyint(1) NOT NULL DEFAULT '1',
-  `type` int(4) DEFAULT NULL COMMENT 'Store pre-defined constant valuestypes like digital,physical etc',
-  `amount` decimal(15,5) NOT NULL DEFAULT '0.00000' COMMENT 'Product base price',
-  `quantity` int(10) NOT NULL DEFAULT '0' COMMENT 'Quantity of Physical Product',
-  `file` varchar(250) DEFAULT NULL COMMENT 'File path for digital product',
-  `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
+  `productcategory_id` int(11) DEFAULT 0,
+  `status` enum('published','invisible','unpublished','trashed') NOT NULL,
   `variation_of` int(11) NOT NULL DEFAULT '0' COMMENT 'This product is variation of another product. ',
-  `category_id` int(11) DEFAULT '0',
-  `params` text,
+  `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
+  `price` double(15,4) NOT NULL,
+  `quantity` int(10) NOT NULL DEFAULT '0' COMMENT 'Quantity of Product',
+  `featured` tinyint(1) NOT NULL DEFAULT '0',
   `cover_media` varchar(250) DEFAULT NULL,
-  `teaser` varchar(250) DEFAULT NULL COMMENT 'Product short description',
-  `publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `stockout_limit`int NOT NULL DEFAULT '0' COMMENT 'out-of-stock limit of Product',
+  `weight` decimal(12,4) DEFAULT '0.0000',
+  `weight_unit` varchar(50) DEFAULT NULL,
+  `height` decimal(12,4) DEFAULT '0.0000',
+  `length` decimal(12,4) DEFAULT '0.0000',
+  `depth` decimal(12,4) DEFAULT '0.0000',
+  `dimension_unit`varchar(50) DEFAULT NULL,
+  `config` text COMMENT 'Store layouts',
   `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created_by` int(11) NOT NULL DEFAULT '0',
   `ordering` int(11) NOT NULL DEFAULT '0',
-  `featured` tinyint(1) NOT NULL DEFAULT '0',
-  `description` text,
-  `hits` int(11) NOT NULL DEFAULT '0',
-  `meta_data` text COMMENT 'Here you can store meta title, tag and description.',
   PRIMARY KEY (`product_id`),
-  UNIQUE KEY `sku` (`sku`),
-  UNIQUE KEY `alias` (`alias`)
+  KEY `productcategory_id` (`productcategory_id`),
+  UNIQUE KEY `sku` (`sku`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Table have all PayCart Products and thier core element.' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_product_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_product_lang` (
+  `product_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `lang_code` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL COMMENT 'Product name',
+  `alias` varchar(100) NOT NULL COMMENT 'useful for sef urls',
+  `description` text,
+  `teaser` varchar(255) DEFAULT NULL COMMENT 'Product short description',
+  `metadata_title` varchar(255) COMMENT 'Here you can store meta title.',
+  `metadata_keywords` varchar(255) COMMENT 'Here you can store meta tag.',
+  `metadata_description` varchar(255) COMMENT 'Here you can store meta description.',
+  PRIMARY KEY (`product_lang_id`),
+  KEY `product_id` (`product_id`),
+  KEY `lang_code` (`lang_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -419,10 +446,12 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_lang` (
+  `taxrule_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `taxrule_id` int(11) NOT NULL,
   `lang_code` int(11) NOT NULL,
   `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
-  PRIMARY KEY `taxrule_id` (`taxrule_id`),
+  PRIMARY KEY (`taxrule_lang_id`),
+  KEY `taxrule_id` (`taxrule_id`),
   KEY `lang_code` (`lang_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -441,3 +470,88 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_x_group` (
   KEY `class_id` (`group_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mapping of taxrule and groups' AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_media`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_media` (
+  `media_id` int(11) NOT NULL AUTO_INCREMENT,
+  `path` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `is_free` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`media_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_media_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_media_lang` (
+  `media_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `media_id` int(11) NOT NULL,
+  `lang_code` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL COMMENT 'media name',
+  `description` text,
+  `metadata_title` varchar(255) DEFAULT NULL,
+  `metadata_keywords` varchar(255) DEFAULT NULL,
+  `metadata_description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`media_lang_id`),
+  KEY `media_id` (`media_id`),
+  KEY `lang_code` (`lang_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_color`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_color` (
+  `color_id` int(11) NOT NULL AUTO_INCREMENT,
+  `hash_code` varchar(50) NOT NULL,
+  PRIMARY KEY (`color_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_color_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_color_lang` (
+  `color_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `color_id` varchar(255) NOT NULL,
+  `lang_code` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL COMMENT 'name of color',
+  PRIMARY KEY (`color_lang_id`),
+  KEY `color_id` (`color_id`),
+  KEY `lang_code` (`lang_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_productattribute_option`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_option` (
+  `productattribute_option_id` int(11) NOT NULL AUTO_INCREMENT,
+  `productattribute_id` int(11) NOT NULL,
+  `option_ordering` int(11) NOT NULL,
+  PRIMARY KEY (`productattribute_option_id`),
+  KEY `productattribute_id` (`productattribute_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_productattribute_option_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_option_lang` (
+  `productattribute_option_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `productattribute_option_id` int(11) NOT NULL,
+  `lang_code` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  PRIMARY KEY (`productattribute_option_lang_id`),
+  KEY `productattribute_option_id` (`productattribute_option_id`),
+  KEY `lang_code` (`lang_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
