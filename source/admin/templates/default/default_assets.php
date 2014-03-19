@@ -24,3 +24,5 @@ Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/paycart.css');
 
 Rb_Html::script(dirname(__FILE__).'/_media/js/admin.js');
 Rb_Html::stylesheet(dirname(__FILE__).'/_media/css/admin.css');
+
+Rb_Html::_('formbehavior.chosen', 'select');

@@ -3,8 +3,8 @@
 /**
 * @copyright        Copyright (C) 2009 - 2012 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license          GNU/GPL, see LICENSE.php
-* @package          PacartShippngrule.Processor
-* @subpackage       FlatRate
+* @package          PacartGrouprule.Buyer
+* @subpackage       BuyerJusergroup
 * @contact          support+paycart@readybytes.in
 */
 
@@ -57,5 +57,30 @@ class PaycartGroupruleBuyerjusergroup extends PaycartGrouprule
 		}
 
 		return false;		
+	}
+	
+	/**
+	 * Gets the html and js script call of parameteres 
+	 * @return array() Array of Html and JavaScript functions to be called
+	 */
+	public function getParamsHtml($namePrefix = '')
+	{
+		// @TODO : Use paycart helper
+		$usergroups = Rb_HelperJoomla::getJoomlaGroups();
+		$params 	= $this->params->toArray();
+		
+		ob_start();
+		include dirname(__FILE__).'/tmpl/params.php';
+		$contents = ob_get_contents();
+		ob_end_clean();
+		
+		$scripts 	= array();
+		static $scriptAdded = false;
+		if(!$scriptAdded){			
+			$scripts[] 	= 'paycart.jQuery("select.paycart-grouprule-buyerjusergroup-groups").chosen({disable_search_threshold : 10, allow_single_deselect : true });';
+			$scriptAdded = true;
+		}
+		
+		return array($contents, $scripts);
 	}
 }

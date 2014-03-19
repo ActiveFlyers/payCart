@@ -2,10 +2,10 @@
 
 /**
 * @copyright        Copyright (C) 2009 - 2012 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
-* @license                GNU/GPL, see LICENSE.php
-* @package                 Joomla.Plugin
-* @subpackage        Paycart
-* @contact                support+paycart@readybytes.in
+* @license          GNU/GPL, see LICENSE.php
+* @package          PacartGrouprule.Buyer
+* @subpackage       BuyerJusergroup
+* @contact          support+paycart@readybytes.in
 */
 
 // no direct access
@@ -21,7 +21,7 @@ class PlgPaycartGroupruleBuyerjusergroup extends RB_Plugin
     	parent::__construct($subject, $config);
 
 		$helper = PaycartFactory::getHelper('group');		                      
-         $helper->push('PaycartGroupruleBuyerJusergroup',
+         $helper->push(Paycart::GROUPRULE_TYPE_BUYER, 'PaycartGroupruleBuyerJusergroup',
 						array(
 							'filepath' 	=> dirname(__FILE__).'/rules/buyerjusergroup/buyerjusergroup.php',
 							'type'		=> paycart::GROUPRULE_TYPE_BUYER,

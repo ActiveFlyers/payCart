@@ -71,7 +71,7 @@
 	<!-- Target: Copy Plugins, App, Processor          -->
 	<!-- ============================================  -->
 	<target name="copy_plugins">
-		<copy todir="${target}/source/plugins">
+		<copy todir="${target}/plugins">
 			<fileset dir="${source}/plugins/paycart">
 				<include name="**/*.*" />
 			</fileset>

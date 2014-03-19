@@ -16,6 +16,22 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author Gaurav Jain
  */
 class PaycartAdminControllerGroup extends PaycartController 
-{	
+{
+	public function addRule()
+	{		
+		return true;
+	}
+	
+	public function _save(array $data, $itemId=null)
+	{
+		// if $pramas is not set then initialize
+		if(!isset($data['params'])){
+			$data['params'] = array();
+		}
 		
+		// reaarange params
+		array_values($data['params']);
+		
+		return parent::_save($data, $itemId);
+	}
 }

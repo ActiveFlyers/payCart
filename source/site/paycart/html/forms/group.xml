@@ -36,17 +36,15 @@
 		
 		<field
 			name="type"
-			type="radio"
+			type="text"
 			labelclass="control-label"
 			class="btn-group"
+			readonly="true"
 			label="Type"
 			description="Type of group, like Product or Buyer."
-			default="1">
-			<option value="product">Product</option>
-			<option value="buyer">Buyer</option>
-		</field>
-			
-		<fields name="parmas">
+			default="" />
+				
+		<fields name="params">
 		</fields>		
 	</fieldset>
 </form>
