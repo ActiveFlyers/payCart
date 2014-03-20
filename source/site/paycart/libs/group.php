@@ -29,10 +29,10 @@ class PaycartGroup extends PaycartLib
 	/**
 	 * @var Rb_Registry
 	 */
-	protected $params 		= null;	
+	protected $config 		= null;	
 	
 	/**
-	 * @var PaycartHelperShippingRule
+	 * @var PaycartHelperGroup
 	 */
 	protected $_helper = null;
 	
@@ -50,9 +50,34 @@ class PaycartGroup extends PaycartLib
 		return parent::getInstance('group', $id, $bindData);
 	}
 	
+	public function bind($data, $ignore=array())
+	{
+		if(is_array($data)){
+			$data = (object) $data;	
+		}
+
+		// reset config, previous config should be replaced with new config
+		if(isset($data->config)){
+			$this->config = new Rb_Registry() ;
+		}
+
+		return parent::bind($data, $ignore);
+	}
+	
 	public function reset() 
 	{	
-		$this->params = new Rb_Registry();
+		$this->group_id 	= 0;
+		$this->type 		= '';
+		$this->title 		= '';
+		$this->description 	= '';
+		$this->published 	= 1;
+		$this->ordering 	= 0;
+		$this->config 		= new Rb_Registry();
 		return $this;
+	}
+	
+	public function getType()
+	{
+		return $this->type;
 	}
 }

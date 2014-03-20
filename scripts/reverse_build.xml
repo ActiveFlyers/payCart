@@ -74,7 +74,7 @@
 		<if>
 		    <available file='${source}/plugins/paycart' type='dir' />
 		    <then>
-		    	<copy todir="${target}/source/plugins">
+				<copy todir="${target}/plugins">
 					<fileset dir="${source}/plugins/paycart">
 						<include name="**/*.*" />
 					</fileset>

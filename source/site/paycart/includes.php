@@ -61,3 +61,6 @@ Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/shippingrule',		'Shipping
 
 //taxrule
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/taxrule',  'taxrule',   'Paycart');
+
+// at the end load PaycartType of Plugins
+Rb_HelperPlugin::loadPlugins('paycart');

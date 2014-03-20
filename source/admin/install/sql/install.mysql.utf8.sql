@@ -555,3 +555,20 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_option_lang` (
   KEY `productattribute_option_id` (`productattribute_option_id`),
   KEY `lang_code` (`lang_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_group`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_group` (
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `published` tinyint(4) NOT NULL DEFAULT '1',
+  `ordering` int(11) NOT NULL,
+  `config` text,
+  PRIMARY KEY (`group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

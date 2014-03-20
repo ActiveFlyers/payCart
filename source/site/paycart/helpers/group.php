@@ -36,15 +36,16 @@ class PaycartHelperGroup extends JObject
 	 * 							'description' => GROUP_RULE_DESC
 	 * 						  )
 	 */
-	public function push($className, $data)
+	public function push($type, $className, $data)
 	{		
 		$className 	= JString::strtolower($className);
+		$type		= JString::strtolower($type);
 		
 		if (!is_object($data)) {
 			$data = (object)$data;
 		}
 
-		$this->_rules[$className] = $data;
+		$this->_rules[$type][$className] = $data;
 	} 
 	
 	/**
@@ -66,18 +67,23 @@ class PaycartHelperGroup extends JObject
 	 * 
 	 * @return PaycartGrouprule Rule Instance
 	 */
-	public function getInstance($className, $config = Array())
+	public function getInstance($type, $className, $config = Array())
 	{
 		$className 	= JString::strtolower($className);
+		$type		= JString::strtolower($type);
 		
 		// get all loaded group rules
-		if(!isset($this->_rules[$className])) {
+		if(!isset($this->_rules[$type])){
+			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_GROUP_RULE_TYPE_NOT_EXIST'), $type);
+		}
+
+		if(!isset($this->_rules[$type][$className])) {
 			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_GROUP_RULE_NOT_EXIST'), $className);
 		}
 		
 		if(!class_exists($className)) {
 			// if instance is not exist then need to autoload
-			require_once $processorList[$className]['filepath'];
+			require_once $this->_rules[$type][$className]->filepath;
 		}
 		
 		// create rule instance 

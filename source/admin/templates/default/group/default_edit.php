@@ -9,6 +9,30 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 ?>
+<script>
+paycart.admin.group = {};
+
+// will be used to maintain the counter of grouprule added
+paycart.admin.group.ruleCounter = <?php echo $ruleCounter;?>;
+
+(function($){	
+	paycart.admin.group.addrule = function(ruleType){
+		var ruleClass = $('#paycart-grouprule-list	').val();		
+		var url = 'index.php?option=com_paycart&view=group&task=addRule&ruleType='+ruleType+'&ruleClass='+ruleClass+'&counter='+paycart.admin.group.ruleCounter;
+
+		//@PCTODO : add one more parametere in url to escape from caching of browser
+
+		paycart.ajax.go(url, {});
+	};	
+
+	$(document).ready(function(){
+		<?php foreach($ruleScripts as $script):?>
+			<?php echo $script;?>
+		<?php endforeach;?>
+	});
+})(paycart.jQuery);
+</script>
+
 <div class="row-fluid">	
 	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
 		<div class="span6">
@@ -22,7 +46,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 				</div>
 				
 				<div class="control-group">
-					<?php echo $form->getLabel('desciption'); ?>
+					<?php echo $form->getLabel('description'); ?>
 					<div class="controls"><?php echo $form->getInput('description'); ?></div>	
 				</div>
 				
@@ -33,10 +57,37 @@ defined('_JEXEC') or die( 'Restricted access' );
 				
 				<div class="control-group">
 					<?php echo $form->getLabel('type'); ?>
-					<div class="controls"><?php echo $form->getInput('type'); ?></div>	
+					<div class="controls"><?php echo $form->getInput('type'); ?></div>						
 				</div>	
 			</fieldset>
 		</div>
+		
+		<div class="span6">
+			<div class="control-group">
+				<?php echo JText::_('COM_PAYCART_GROUP_TYPE') ?>
+				<div class="controls">
+					<select id="paycart-grouprule-list">
+						<option value=""><?php echo Rb_Text::_('JSELECT');?></option>
+						<?php foreach($group_rules as $class => $rule):?>
+							<option value="<?php echo $class;?>"><?php echo $rule->title;?></option>
+						<?php endforeach;?>
+					</select>
+					
+					<button class="btn btn-primary" id="paycart-grouprule-add" type="button" onClick="paycart.admin.group.addrule('<?php echo $form->getvalue('type');?>');">
+						<?php echo Rb_Text::_('Add New');?>
+					</button>
+				</div>	
+			</div>
+			
+			<fieldset class="form-horizontal">
+				<div id="paycart-grouprule-config">
+					<?php echo $ruleHtml;?>
+				</div>
+			</fieldset>
+		</div>
+		
+		<?php echo $form->getInput('group_id'); ?>
+		<input type="hidden" name="task" value="" />
 	</form>
 </div>
 <?php 
