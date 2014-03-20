@@ -29,7 +29,7 @@ class PaycartGroup extends PaycartLib
 	/**
 	 * @var Rb_Registry
 	 */
-	protected $params 		= null;	
+	protected $config 		= null;	
 	
 	/**
 	 * @var PaycartHelperGroup
@@ -56,9 +56,9 @@ class PaycartGroup extends PaycartLib
 			$data = (object) $data;	
 		}
 
-		// reset params, previous params should be replaced with new params
-		if(isset($data->params)){
-			$this->params = new Rb_Registry() ;
+		// reset config, previous config should be replaced with new config
+		if(isset($data->config)){
+			$this->config = new Rb_Registry() ;
 		}
 
 		return parent::bind($data, $ignore);
@@ -72,7 +72,7 @@ class PaycartGroup extends PaycartLib
 		$this->description 	= '';
 		$this->published 	= 1;
 		$this->ordering 	= 0;
-		$this->params 		= new Rb_Registry();
+		$this->config 		= new Rb_Registry();
 		return $this;
 	}
 	

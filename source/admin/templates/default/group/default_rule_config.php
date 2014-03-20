@@ -15,6 +15,6 @@ defined('_JEXEC') or die( 'Restricted access' );
 	<a href="#" onClick="paycart.jQuery(this).parent().remove(); return false;">
 		<i class="icon icon-delete"> </i>
 	</a>
-	<?php echo $paramsHtml;?>		
+	<?php echo $configHtml;?>		
 	<input type="hidden" name="<?php echo $namePrefix;?>[ruleClass]" value="<?php echo $ruleClass;?>" />		
 </div>

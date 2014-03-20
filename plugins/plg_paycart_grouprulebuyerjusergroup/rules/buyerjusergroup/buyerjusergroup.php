@@ -23,9 +23,9 @@ class PaycartGroupruleBuyerjusergroup extends PaycartGrouprule
 		// Entity id will be buyer_id
 		$buyer_id = $entity_id;		
 			
-		$params_jusergroup_assignment = $this->params->get('jusergroup_assignment', 'any');
+		$config_jusergroup_assignment = $this->config->get('jusergroup_assignment', 'any');
 		
-		if('any' == $params_jusergroup_assignment){
+		if('any' == $config_jusergroup_assignment){
 			return true;
 		}
 				
@@ -37,10 +37,10 @@ class PaycartGroupruleBuyerjusergroup extends PaycartGrouprule
 			$user_group = array(JComponentHelper::getParams('com_users')->get('guest_usergroup', 1));
 		}				
 		
-		$params_jusergroup = $this->params->get('jusergroups', array());		
-		$common_usergroups = array_intersect($user_group, $params_jusergroup);
+		$config_jusergroup = $this->config->get('jusergroups', array());		
+		$common_usergroups = array_intersect($user_group, $config_jusergroup);
 		
-		if('selected' == $params_jusergroup_assignment){
+		if('selected' == $config_jusergroup_assignment){
 			if(count($common_usergroups) > 0){
 				return true;
 			}
@@ -48,7 +48,7 @@ class PaycartGroupruleBuyerjusergroup extends PaycartGrouprule
 			return false;
 		}
 		
-		if('except' == $params_jusergroup_assignment){
+		if('except' == $config_jusergroup_assignment){
 			if(count($common_usergroups) > 0){
 				return false;
 			}
@@ -63,14 +63,14 @@ class PaycartGroupruleBuyerjusergroup extends PaycartGrouprule
 	 * Gets the html and js script call of parameteres 
 	 * @return array() Array of Html and JavaScript functions to be called
 	 */
-	public function getParamsHtml($namePrefix = '')
+	public function getConfigHtml($namePrefix = '')
 	{
 		// @TODO : Use paycart helper
 		$usergroups = Rb_HelperJoomla::getJoomlaGroups();
-		$params 	= $this->params->toArray();
+		$config 	= $this->config->toArray();
 		
 		ob_start();
-		include dirname(__FILE__).'/tmpl/params.php';
+		include dirname(__FILE__).'/tmpl/config.php';
 		$contents = ob_get_contents();
 		ob_end_clean();
 		

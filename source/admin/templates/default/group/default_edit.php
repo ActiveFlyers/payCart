@@ -46,7 +46,7 @@ paycart.admin.group.ruleCounter = <?php echo $ruleCounter;?>;
 				</div>
 				
 				<div class="control-group">
-					<?php echo $form->getLabel('desciption'); ?>
+					<?php echo $form->getLabel('description'); ?>
 					<div class="controls"><?php echo $form->getInput('description'); ?></div>	
 				</div>
 				

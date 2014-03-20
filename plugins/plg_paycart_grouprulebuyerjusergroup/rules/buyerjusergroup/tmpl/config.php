@@ -18,14 +18,14 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	</label>
 	<div class="controls">
 		<select class="paycart-grouprule-buyerjusergroup-groups" name="<?php echo $namePrefix;?>[jusergroup_assignment]">
-			<option value="any" <?php echo isset($params['jusergroup_assignment']) && $params['jusergroup_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Any');?></option>
-			<option value="selected" <?php echo isset($params['jusergroup_assignment']) && $params['jusergroup_assignment'] == 'selected' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Selected');?></option>
-			<option value="except" <?php echo isset($params['jusergroup_assignment']) && $params['jusergroup_assignment'] == 'except' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Except');?></option>
+			<option value="any" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Any');?></option>
+			<option value="selected" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'selected' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Selected');?></option>
+			<option value="except" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'except' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Except');?></option>
 		</select>
 		
 		<select class="paycart-grouprule-buyerjusergroup-groups" name="<?php echo $namePrefix;?>[jusergroups][]" multiple="true">
 			<?php foreach($usergroups as $group_id => $group):?>
-				<option value="<?php echo $group_id;?>" <?php echo isset($params['jusergroups']) && in_array($group_id, $params['jusergroups']) ? 'selected="selected"' : '';?>><?php echo $group->name;?></option>
+				<option value="<?php echo $group_id;?>" <?php echo isset($config['jusergroups']) && in_array($group_id, $config['jusergroups']) ? 'selected="selected"' : '';?>><?php echo $group->name;?></option>
 			<?php endforeach;?>
 		</select>
 	</div>

@@ -46,32 +46,32 @@ class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
 		}
 		else{
 			$type 		= $item->getType();			
-			$params 	= $item->getParams();			
+			$config 	= $item->getParams(true, 'config');			
 			  
-			foreach($params as $rule){
-				$namePrefix = $this->_component->getNameSmall().'_form[params]['.$ruleCounter.']';
+			foreach($config as $rule){
+				$namePrefix = $this->_component->getNameSmall().'_form[config]['.$ruleCounter.']';
 				
 				// get instance of rule
 				$groupRule = PaycartFactory::getGrouprule($type, $rule->ruleClass, (array)$rule);
-				$result = $groupRule->getParamsHtml($namePrefix);
-				$paramsHtml = '';
+				$result = $groupRule->getConfigHtml($namePrefix);
+				$configHtml = '';
 				$scripts 	= '';
 				if(!is_array($result)){
-					$paramsHtml = $result;
+					$configHtml = $result;
 				}
 				else{
-					$paramsHtml = array_shift($result);
+					$configHtml = array_shift($result);
 					// if is is still array
 					if(is_array($result))
 					$scripts = array_shift($result);
 				}
 		
-				$this->assign('paramsHtml', $paramsHtml);
+				$this->assign('configHtml', $configHtml);
 				$this->assign('namePrefix', $namePrefix);
 				$this->assign('ruleClass',  $rule->ruleClass);
 				$this->assign('ruleType',   $type);	
 				
-				$rulehtml .= $this->loadTemplate('rule_params');
+				$rulehtml .= $this->loadTemplate('rule_config');
 				$ruleScripts = array_merge($ruleScripts, $scripts);	
 				$ruleCounter++;
 			}

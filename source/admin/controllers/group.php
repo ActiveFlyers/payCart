@@ -25,12 +25,12 @@ class PaycartAdminControllerGroup extends PaycartController
 	public function _save(array $data, $itemId=null)
 	{
 		// if $pramas is not set then initialize
-		if(!isset($data['params'])){
-			$data['params'] = array();
+		if(!isset($data['config'])){
+			$data['config'] = array();
 		}
 		
-		// reaarange params
-		array_values($data['params']);
+		// reaarange config
+		array_values($data['config']);
 		
 		return parent::_save($data, $itemId);
 	}

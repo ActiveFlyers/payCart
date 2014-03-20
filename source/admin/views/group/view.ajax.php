@@ -29,30 +29,30 @@ class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
 			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_ERROR_INVALID_ARGUMENT'), 1);  //@PCTODO : Decide Error Code
 		}
 		
-		$namePrefix = $this->_component->getNameSmall().'_form[params]['.$counter.']';
+		$namePrefix = $this->_component->getNameSmall().'_form[config]['.$counter.']';
 		
 		// get instance of rule
 		$groupRule = PaycartFactory::getGrouprule($ruleType, $ruleClass, array());
-		$result = $groupRule->getParamsHtml($namePrefix);
+		$result = $groupRule->getConfigHtml($namePrefix);
 		
-		$paramsHtml = '';
+		$configHtml = '';
 		$scripts 	= '';
 		if(!is_array($result)){
-			$paramsHtml = $result;
+			$configHtml = $result;
 		}
 		else{
-			$paramsHtml = array_shift($result);
+			$configHtml = array_shift($result);
 			// if is is still array
 			if(is_array($result))
 			$scripts = array_shift($result);
 		} 
 		
-		$this->assign('paramsHtml', $paramsHtml);
+		$this->assign('configHtml', $configHtml);
 		$this->assign('namePrefix', $namePrefix);
 		$this->assign('ruleClass',  $ruleClass);
 		$this->assign('ruleType',   $ruleType);
 
-		$html = $this->loadTemplate('rule_params');
+		$html = $this->loadTemplate('rule_config');
 		
 		$ajaxResponse = PaycartFactory::getAjaxResponse();
 		// first ste is to add html in the document, in targeted DOM
