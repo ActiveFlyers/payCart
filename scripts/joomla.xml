@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!-- $Id: build.xml shyam $ -->
-<project name="Joomla Setup" default="j_setup" description="IJoomla Installation">
+<project name="Joomla Setup" default="j_setup" description="Joomla Installation">
 
 	<!-- ============================================  -->
 	<!-- (DEFAULT)Target: Joomla Setup                 -->
@@ -13,18 +13,41 @@
 	<!-- Target: copy_files                            -->
 	<!-- ============================================  -->
 	<target name="copy_files">
+
 		<echo msg="Installing Joomla Files..." />
 		<!-- Copy Joomla Folder to ROOT // FOLDERNAME  -->
 		<mkdir dir="${joomla.rootpath}/${joomla.folder}" />
+
+		<php expression="strpos('${pkg.location}', 'http')" returnProperty="is_url" />
+		<if>
+			<equals arg1="${is_url}" arg2='false' />
+			<then>
+				<!-- Copy Joomla kit-->
+				<copy file="${pkg.location}/${pkg.version}/Joomla.tar.gz" tofile="${joomla.rootpath}/${joomla.folder}/Joomla.tar.gz" overwrite="true"/>		   	
+				
+				<!-- Copy Joomla Databse and configuration file to ROOT/FOLDERNAME  -->
+				<copy file="${pkg.location}/${pkg.version}/database.sql" tofile="${joomla.rootpath}/${joomla.folder}/database.sql" overwrite="true"/>
+				<copy file="${pkg.location}/${pkg.version}/configuration.php" tofile="${joomla.rootpath}/${joomla.folder}/configuration.php" overwrite="true"/>
+			</then>
+
+			<else>
+		
+				<!-- Copy Joomla kit from URL -->
+				<httpget url="${pkg.location}/${pkg.version}/Joomla.tar.gz" dir="${joomla.rootpath}/${joomla.folder}"/>
+				
+				<!-- Copy Joomla Databse and configuration file to ROOT/FOLDERNAME  -->
+<!--				<httpget url="${pkg.location}/${pkg.version}/database.sql" 	dir="${joomla.rootpath}/${joomla.folder}/"/>-->
+<!--				<httpget url="${pkg.location}/${pkg.version}/configuration.sql" dir="${joomla.rootpath}/${joomla.folder}/"/>-->
+			 </else>
+		</if>
+
 		<!-- Extract Joomla kit-->
 		<untar todir="${joomla.rootpath}/${joomla.folder}">
-			<fileset dir="${pkg.location}/${pkg.version}">
+			<fileset dir="${joomla.rootpath}/${joomla.folder}">
 				<include name="Joomla.tar.gz"/>
 			</fileset>
 		</untar>
-		<!-- Copy Joomla Databse and configuration file to ROOT/FOLDERNAME  -->
-		<copy file="${pkg.location}/${pkg.version}/database.sql" tofile="${joomla.rootpath}/${joomla.folder}/database.sql" overwrite="true"/>
-		<copy file="${pkg.location}/${pkg.version}/configuration.php" tofile="${joomla.rootpath}/${joomla.folder}/configuration.php" overwrite="true"/>
+
 
 	</target>
 	

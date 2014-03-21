@@ -55,6 +55,15 @@
 		</if>
 		<!-- Load Prop files		-->	
 		<property file="${build.prop.file}"	override="true" />	
+
+		<!-- Override Prop-Property		-->	
+		<if>
+			<available file='override_property.prop' type='file' />
+	  	        <then>
+				<property file="override_property.prop"	override="true" />		
+			</then>
+		</if>
+
 	</target>
 	
 	<!-- ============================================  -->
@@ -72,11 +81,22 @@
 	<!-- ===========================================================  -->
 
 	<target name="fetch_rbframework">
-		<copy todir="${dir.packages}">
-			<fileset dir="${rbframework.location}">
-				<include name="${rbframework.name}.${rbframework.build.version}.${file.extension}" />				
-			</fileset>
-		</copy>
+	
+		<php expression="strpos('${rbframework.location}', 'http')" returnProperty="is_url"/>
+		<if>
+			<equals arg1="${is_url}" arg2='false' />
+			<then>
+			   	<copy todir="${dir.packages}">
+					<fileset dir="${rbframework.location}">
+						<include name="${rbframework.name}.${rbframework.build.version}.${file.extension}" />				
+					</fileset>
+				</copy>
+			</then>
+		<else>
+			<echo message="Framework fetching from url : ${rbframework.location} " />			
+			<httpget url="${rbframework.location}/${rbframework.name}.${rbframework.build.version}.${file.extension}" dir="${dir.packages}"/>
+		 </else>
+		</if>
 
 	</target>
 
