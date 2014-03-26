@@ -105,8 +105,23 @@
 	<!-- ====================================================== -->
 
 	<target name="copy_pkg_xml">
-		<copy file="${build.package.location}/pkg.xml" tofile="${dir.packages}/pkg_${project.shortform}.xml" overwrite="true"/>
-		<copy file="${build.package.location}/script.php" tofile="${dir.packages}/script.php" overwrite="true"/>
+		
+		<php expression="strpos('${build.package.location}', 'http')" returnProperty="is_url"/>
+		<if>
+			<equals arg1="${is_url}" arg2='false' />
+			<then>
+
+			   	<copy file="${build.package.location}/pkg.xml" tofile="${dir.packages}/pkg_${project.shortform}.xml" overwrite="true"/>
+				<copy file="${build.package.location}/script.php" tofile="${dir.packages}/script.php" overwrite="true"/>
+
+			</then>
+		<else>
+			<echo message="XML and script file fetching from url : ${build.package.location} " />			
+			<httpget url="${build.package.location}/pkg.xml" dir="${dir.packages}" filename="pkg_${project.shortform}.xml" />
+			<httpget url="${build.package.location}/script.php.txt" dir="${dir.packages}" filename="script.php" />
+		 </else>
+		</if>
+
 		
 		<!-- Apply the version change to all files. -->
 		<reflexive>
