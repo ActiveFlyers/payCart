@@ -45,7 +45,7 @@
 		
 		<!-- execute setup script		-->
 		<exec executable="phing" dir="${basedir}/scripts">
-			<arg line=" -quiet -f setup.xml -Djoomla.now=${tstamped-file-name} -Dpkg.version=J3.1"/> 
+			<arg line=" -quiet -f setup.xml -Djoomla.now=${tstamped-file-name} -Dpkg.version=Joomla3.1.1"/> 
 		</exec>
 		
 		<!-- Chmod to new Joomla setup -->
