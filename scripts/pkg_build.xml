@@ -62,6 +62,9 @@
 	  	        <then>
 				<property file="override_property.prop"	override="true" />		
 			</then>
+			<else>
+		   		<echo message="############## Override file is not exist" />
+		 	</else>
 		</if>
 
 	</target>
