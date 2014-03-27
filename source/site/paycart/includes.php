@@ -57,10 +57,9 @@ Rb_HelperLoader::addAutoLoadViews(PAYCART_PATH_SITE.'/views', RB_REQUEST_DOCUMEN
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_ADMIN.'/controllers',	'Controller',		'PaycartAdmin');
 Rb_HelperLoader::addAutoLoadViews(PAYCART_PATH_ADMIN.'/views', RB_REQUEST_DOCUMENT_FORMAT, 'PaycartAdmin');
 
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/requests',		'Request',	 'Paycart');
+
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/shippingrule',		'Shippingrule',	 'Paycart');
 
 //taxrule
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/taxrule',  'taxrule',   'Paycart');
-
-// at the end load PaycartType of Plugins
-Rb_HelperPlugin::loadPlugins('paycart');

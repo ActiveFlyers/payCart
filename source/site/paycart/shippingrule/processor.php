@@ -23,6 +23,20 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 abstract class PaycartShippingruleProcessor
 {
+	/**
+	 * @var PaycartShippingruleRequestGlobalconfig
+	 */
+	public $global_config = null;
+	
+	/**
+	 * @var PaycartShippingruleRequestRuleconfig
+	 */
+	public $rule_config = null;
+	
+	/**
+	 * @var stdclass
+	 */
+	public $processor_config = null;
 	
 	protected function _requestConfightml(PaycartShippingruleRequest $request)
 	{
