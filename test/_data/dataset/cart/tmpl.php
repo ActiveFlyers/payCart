@@ -4,6 +4,7 @@ return Array(
 				'cart_id'				=> 0,
 				'buyer_id'				=> 0,
 				'session_id'			=> '',
+				'invoice_id'			=> 0,
 				'status'				=> Paycart::CART_STATUS_DRAFT,
 				'currency'				=> '',
 				'reversal_for'			=> 0,

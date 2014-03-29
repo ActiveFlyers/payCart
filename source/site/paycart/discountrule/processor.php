@@ -168,7 +168,7 @@ abstract class PaycartDiscountRuleProcessor
  * @author mManishTrivedi
  *
  */
-class PaycartDiscountRuleRequest
+class PaycartDiscountruleRequest
 {
 	// Request Field : Discount speicifc
 	public $rule_isPercentage		=	1; 		 
@@ -179,16 +179,27 @@ class PaycartDiscountRuleRequest
 	public $rule_buyerUsageLimit	=	1;		// buyer usage limit as per rule
 	public $rule_coupon				=	null;	// If rule have coupon code then set it
 	
+	// Request Field : Particular Cart/Product/Shipping specific
+	public $particular_unit_price	 		=	0;			// unitPrice * quantity
+	public $particular_quantity		 		=	1;			// quantity
+	public $particular_price		 		=	0;			// (unitPrice * quantity)
+	public $particular_total		 		=	0;			// (unitPrice * quantity)+(-Applied discount)
+//	public $particular_coupon	 			=	NULL;		// @PCTODO: cart or particular. if user have entered any coupon code
+	public $particular_previousAppliedRules	=	Array();	// used when checking clubbale 
+
+	// Request Field : cart data
+	public $cart_particular_quantity	=	0;
+	public $cart_total					=	0;
+	public $cart_shipping_address_id	=	0;
+	public $cart_billing_address_id		=	0;
 	
-	// Request Field : Cart/Product/Shipping specific
-	public $entity_price	 		=	0;		// unitPrice * quantity
-	public $entity_total 			=	0;
-	public $entity_coupon 			=	null;	// if user have entered any coupon code
-	public $entity_previousAppliedRules;
+	// Request Field : buyer data
+	public $buyer_id			=	0;
+//	public $buyer_address_id	=	0;
 	
 	// Request Field : Usage data
-	public $rule_consumption;				//	rule used counter
-	public $buyer_consumption;				//	rule used by buyer
+	public $usage_rule_consumption;				//	rule used counter
+	public $usage_buyer_consumption;			//	rule used by buyer
 }
 
 
@@ -198,7 +209,7 @@ class PaycartDiscountRuleRequest
  * @author mManishTrivedi
  *
  */
-class PaycartDiscountRuleResponse
+class PaycartDiscountruleResponse
 {
 	// Response Field : Discounted-Amount
 	public $amount 				=	0;

@@ -8,3 +8,79 @@
 */
 
 defined('_JEXEC') or die( 'Restricted access' );
+?>
+<ul id="paycartAdminGroupTabs" class="nav nav-tabs">
+	<li class="active">
+		<a data-toggle="tab" href="#paycartAdminGroupTabsType"><?php echo Rb_Text::_('Type');?></a>
+	</li>
+	<li class="">
+		<a data-toggle="tab" href="#paycartAdminGroupTabsInstances"><?php echo Rb_Text::_('Instances');?></a>
+	</li>
+</ul>
+
+<div id="paycartAdminGroupTabsContent" class="tab-content">
+	<div class="tab-pane active" id="paycartAdminGroupTabsType">
+		<?php echo $this->loadTemplate('select_type');?>
+	</div>
+	
+	<!-- Grid TAB -->
+	<div class="tab-pane" id="paycartAdminGroupTabsInstances">			
+		<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
+		
+			<?php // echo $this->loadTemplate('filter'); ?>
+			
+			<table class="table table-condensed ">
+				<thead>
+				<!-- TABLE HEADER START -->
+					<tr>
+					
+						<th  width="1%">
+							<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" />
+						</th>
+						<th >
+							<?php echo Rb_Html::_('grid.sort', "ID", 'group_id', $filter_order_Dir, $filter_order);?>
+						</th>
+					    				
+						<th ><?php echo Rb_Html::_('grid.sort', "Title", 'title', $filter_order_Dir, $filter_order);?></th>
+						<th ><?php echo Rb_Text::_('Description');?></th>
+						<th ><?php echo Rb_Html::_('grid.sort', "Published", 'amount', $filter_order_Dir, $filter_order);?></th>			
+					</tr>
+				<!-- TABLE HEADER END -->
+				</thead>
+				
+				<tbody>
+				<!-- TABLE BODY START -->
+					<?php $count= $limitstart;
+					$cbCount = 0;
+					foreach ($records as $record):?>
+						<tr class="<?php echo "row".$count%2; ?>">								
+							<th>
+						    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->group_id ); ?>
+						    </th>				
+							<td><?php echo $record->group_id;?></td>
+							<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=group&task=edit&group_id='.$record->group_id, $record->title);?></td>
+							<td><?php echo $record->description;?></td>
+							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+						</tr>
+					<?php $count++;?>
+					<?php endforeach;?>
+				<!-- TABLE BODY END -->
+				</tbody>
+				
+				<tfoot>
+					<tr>
+						<td colspan="7">
+							<?php echo $pagination->getListFooter(); ?>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		
+			<input type="hidden" name="filter_order" value="<?php echo $filter_order;?>" />
+			<input type="hidden" name="filter_order_Dir" value="<?php echo $filter_order_Dir;?>" />
+			<input type="hidden" name="task" value="" />
+			<input type="hidden" name="boxchecked" value="0" />
+		</form>
+	</div>
+</div>
+<?php 

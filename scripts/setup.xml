@@ -44,7 +44,16 @@
 		
 		<!-- Load Prop files		-->	
 		<property file="${build.prop.file}"	override="true" />
-		<property file="${setup.prop.file}"	override="true" />		
+		<property file="${setup.prop.file}"	override="true" />
+
+		<!-- Override Prop-Property			-->	
+		<if>
+			<available file='override_property.prop' type='file' />
+	  	        <then>
+				<property file="override_property.prop"	override="true" />		
+			</then>
+		</if>
+
 	</target>
 	
 	<!-- ============================================  -->

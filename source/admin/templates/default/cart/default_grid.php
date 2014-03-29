@@ -43,7 +43,7 @@ defined('_JEXEC') OR die();
 			$cbCount = 0;
 			foreach ($records as $record):
 				$class = '';
-				if($record->status == Paycart::CART_STATUS_PAID){
+				if($record->status == Paycart::STATUS_CART_PAID){
 					$class = 'success';
 				}
 			?>

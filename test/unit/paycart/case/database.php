@@ -28,6 +28,7 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	private $_stashedPayCartState = array(
 				'paycartfactory'	=>	Array('_config' => null, '_mocks' => null),
 				'Rb_Lib' 			=>	Array('instance' => null),
+				'JPluginHelper'		=>	Array('plugins' => null),
 				'PaycartAttribute'	=>	Array('instance' => null)
 			);
 			
@@ -56,9 +57,12 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 
 			// Create a new PDO instance for an SQLite memory database and load the test schema into it.
 			$pdo = new PDO('sqlite::memory:'); 
+			
 			// Get Joomla and Paycart db schema
-			$schema  = file_get_contents(RBTEST_BASE . '/_data/database/ddl.sql');
-			$schema .= file_get_contents(RBTEST_BASE . '/_data/database/paycart.sql');
+			$schema = '';
+			foreach (static::getDBFiles() as $file) {
+				$schema .= file_get_contents($file);
+			}
 			$pdo->exec($schema);
 
 			// Set the PDO instance to the driver using reflection whizbangery.
@@ -80,6 +84,20 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 		JFactory::$database = self::$driver;		
 	}
 	
+	
+	/**
+	 * 
+	 * @return Array of db files
+	 */
+	protected static function getDBFiles()
+	{
+		return 
+			Array(
+					RBTEST_BASE . '/_data/database/ddl.sql', 
+					RBTEST_BASE . '/_data/database/paycart.sql'
+				);
+		;
+	}
 	/**
 	 * This method is called after the last test of this test class is run.
 	 *
@@ -101,10 +119,10 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 		// it will clean existing data and reset schema
 		$files		= Array('_data/dataset/paycart.php');
 		
-		$testCase 	= $this->getName();
-		// get test case specific db-content  
-		if (isset($this->{$testCase})) {
-			$files = array_merge($files, $this->{$testCase});
+		$testCase_Specific_Files = $this->getDataSetFile();
+		
+		if ($testCase_Specific_Files) {
+			$files = array_merge($files, $testCase_Specific_Files);
 		}
 		
 		
@@ -122,6 +140,24 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 
 		// return Composit db
 		return new PayCart_Database_DataSet_CompositeDataSet($dataSet);
+	}
+	
+	/**
+	 * 
+	 * @return Array of loaded files
+	 */
+	protected function getDataSetFile()
+	{
+		
+		$testCase 	= $this->getName();
+		
+		// get test case specific db-content
+		$files = Array();  
+		if (isset($this->{$testCase})) {
+			$files = $this->{$testCase};
+		}
+		
+		return $files;
 	}
 	
 	
@@ -145,7 +181,7 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 * @param $expectedDataSets
 	 * @param Array $excludeColumns
 	 */
-	protected function compareTables(Array $actualTables, Array $expectedDataSet, $excludeColumns = Array())
+	protected function compareTables(Array $actualTables, Array $expectedDataSet,  $excludeColumns = Array())
 	{
 		if (!is_array($actualTables)) {
 			throwException(new InvalidArgumentException);
@@ -300,7 +336,7 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 * get mock object of paycart-configuration
 	 * @param Array  $mappedMethod => Array('_ORIGINAL_METHOD_NAME_' => Array('_STUB_CLASS_NAME','_STUB_CLASS_METHOD_NAME_'))
 	 * 
-	 * * @return @return PHPUnit_Framework_MockObject_MockObject
+	 * @return PHPUnit_Framework_MockObject_MockObject
 	 */
 	public function getMockPaycartConfig($mappedMethod = Array())
 	{
@@ -319,7 +355,7 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 * @param unknown_type $className
 	 * @param unknown_type $mappedMethod
 	 * 
-	 * * @return @return PHPUnit_Framework_MockObject_MockObject
+	 * @return PHPUnit_Framework_MockObject_MockObject
 	 */
 	protected function createMock($className, $mappedMethod = Array())
 	{

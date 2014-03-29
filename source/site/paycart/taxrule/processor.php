@@ -98,36 +98,30 @@ abstract class PaycartTaxruleProcessor
 
 class PaycartTaxruleRequest
 {
-	//taxrate to be applied 
-	public  $taxRate		  = 0; 
+	// Request Field : Discount speicifc
+	public $rule_amount	  			=	0;
 	
-	//The amount on which to calculate and apply taxrate
-	public $taxableAmount	  = 0;
+	// Request Field : Particular Cart/Product/Shipping specific
+	public $particular_unit_price	 		=	0;			// unitPrice * quantity
+	public $particular_quantity		 		=	1;			// quantity
+	public $particular_price		 		=	0;			// (unitPrice * quantity)
+	public $particular_total		 		=	0;			// (unitPrice * quantity)+(Applied Tax)
 	
-	//country code of buyer
-	public $buyerCountryCode  = '';
+	// Request Field : cart data
+	public $cart_total					=	0;
+	public $cart_shipping_address_id	=	0;
+	public $cart_billing_address_id		=	0;
 	
-	//vat number of buyer
-	public $buyerVatNumber    = '';
-	
-	//base price of product
-	//protected $productBasePrice = 0;
-	
-	//Quantity of current entity
-	public $productQuantity   = 1;
-	
-	//total tax applied on cart(on which duties can be applied)
-	//protected $cartTax   	  = 0;
-	
-	//total shipping amount of cart
-	//protected $cartShipping = 0;
+	// Request Field : buyer data
+	public $buyer_id			=	0;
+	public $buyer_vatnumber		=	0;
 }
 
 
 class PaycartTaxruleResponse
 {
 	// actual tax amount 
-	public $taxAmount   = 0;
+	public $amount   = 0;
 	
 	// message that will be displayed to users 
 	public $message     = '';

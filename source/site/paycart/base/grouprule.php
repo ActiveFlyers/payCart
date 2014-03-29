@@ -22,12 +22,12 @@ abstract class PaycartGrouprule
 	/**
 	 * @var Rb_Registry
 	 */
-	protected $params = null;
+	protected $config = null;
 	
-	public function __construct($params = array())
+	public function __construct($config = array())
 	{
-		$this->params = new Rb_Registry();
-		$this->params->loadArray($params);
+		$this->config = new Rb_Registry();
+		$this->config->loadArray($config);
 	}
 	
 	abstract public function isApplicable($entity_id);

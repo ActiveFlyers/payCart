@@ -109,6 +109,8 @@ class PaycartCartparticular extends PaycartLib
 				$this->total = ($this->price) + ($this->tax) + ($this->discount);
 				break;
 		}
+		
+		//@PCTODO:: change cart total when particular total is updating
 	}
 	
 	public function getTotal()
@@ -185,7 +187,7 @@ class PaycartCartparticular extends PaycartLib
 	{
 		// discount must be -ive number or Zero
 		if ($value > 0) {
-			throw new InvalidArgumentException(Rb_Text::sprintf('COM_PAYCART_VALUE_MUST_BE_NEGETIVE', $value)); 
+			throw new InvalidArgumentException(Rb_Text::sprintf('COM_PAYCART_DISCOUNT_VALUE_MUST_BE_NEGETIVE', $value)); 
 		}
 		
 		// add value with current discount
@@ -205,7 +207,7 @@ class PaycartCartparticular extends PaycartLib
 	{
 		// Tax must be +ive number or Zero
 		if ($value < 0) {
-			throw new InvalidArgumentException(Rb_Text::sprintf('COM_PAYCART_VALUE_MUST_BE_POSITIVE', $value)); 
+			throw new InvalidArgumentException(Rb_Text::sprintf('COM_PAYCART_TAX_VALUE_MUST_BE_POSITIVE', $value)); 
 		}
 		
 		// add value with current tax
