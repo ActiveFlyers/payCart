@@ -48,7 +48,7 @@ class PaycartHelperProductIndex
 	public function indexing($previousObject, $currentObject) 
 	{
 		// get all attributes which are filterable and searchable
-		$attributes = PaycartFactory::getModel('attribute')
+		$attributes = PaycartFactory::getModel('productattribute')
 						->loadrecords(Array('searchable' => Array(Array('=', 1, 'OR')), 'filterable' => Array(Array('=', 1, 'OR'))));
 		
 		// return true if non-searchable and non-filterable attribute

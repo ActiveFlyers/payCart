@@ -27,7 +27,8 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 */
 	private $_stashedPayCartState = array(
 				'paycartfactory'	=>	Array('_config' => null, '_mocks' => null),
-				'Rb_Lib' 			=>	Array('instance' => null)
+				'Rb_Lib' 			=>	Array('instance' => null),
+				'PaycartAttribute'	=>	Array('instance' => null)
 			);
 			
 			
@@ -144,11 +145,13 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	 * @param $expectedDataSets
 	 * @param Array $excludeColumns
 	 */
-	protected function compareTables(Array $actualTables, PHPUnit_Extensions_Database_DataSet_IDataSet $expectedDataSet,  $excludeColumns = Array())
+	protected function compareTables(Array $actualTables, Array $expectedDataSet, $excludeColumns = Array())
 	{
 		if (!is_array($actualTables)) {
 			throwException(new InvalidArgumentException);
 		}
+		
+		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($expectedDataSet);
 		
 		// get Current dataset 
 		$actualDataSet	= $this->getConnection()->createDataSet($actualTables);

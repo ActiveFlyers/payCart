@@ -1,60 +1,72 @@
 <?php
 
-
 // get schema of attribute table 
-$tmpl = include 'tmpl.php';
+list($tmpl,$tmpl_lang) = include 'tmpl.php';
 
-$row 	=	Array();
+$row 	 = Array();
+$rowLang = Array();
 
-$row[] 	= 	array_replace($tmpl, Array( 
-									'title'=>'Product-1',
-									'alias'=>'product-1',
+$row[] 	= 	array_replace($tmpl, Array( 'product_id'=>1,
 									'sku'=>'product-1',
-									'publish_up'=>'2013-09-19 09:46:09',
-									'publish_down'=>'0000-00-00 00:00:00',
 									'created_date'=>'2013-09-19 09:47:12',
 									'modified_date'=>'2013-09-19 10:33:07',
-									'created_by'=>489,
-									'ordering'=>1
+									'ordering'=>1,
+									'variation_of'=>1
 									));
+							
+$rowLang[] = array_replace($tmpl_lang, Array('product_id'=>1,'product_lang_id'=>1,
+									'title' => 'Product-1',
+									'alias'=>'Product-1',
+									'lang_code'=>'en-GB'
+									));	
+//									
+//$rowLang[] = array_replace($tmpl_lang, Array('product_id'=>1,'product_lang_id'=>2,
+//									'title' => 'Pro-1',
+//									'alias'=>'pro-1',
+//									'lang_code'=>'fr-FR'
+//									));	
 
-$row[] 	= 	array_replace($tmpl, Array(  
-									'title'=>'product-2',
-									'alias'=>'product-2',
+$row[] 	= 	array_replace($tmpl, Array(  'product_id'=>2,
 									'sku'=>'product-2',
-									'publish_up'=>'2013-09-19 09:49:17',
-									'publish_down'=>'0000-00-00 00:00:00',
 									'created_date'=>'2013-09-19 09:49:36',
 									'modified_date'=>'2013-09-19 10:34:15',
-									'created_by'=>489,
-									'ordering'=>2
+									'ordering'=>2,
+									'variation_of'=>2
+									));
+
+$rowLang[] = array_replace($tmpl_lang, Array('product_id'=>2,'product_lang_id'=>3,
+									'title'=>'Product-2',
+									'alias'=>'product-2',
+									));	
+									
+$row[] 	= 	array_replace($tmpl, Array(  'product_id'=>3,
+									'sku'=>'product-3',
+									'price' => '200',
+									'created_date'=>'2013-09-19 09:49:36',
+									'modified_date'=>'2013-09-19 10:34:15',
+									'ordering'=>3,
+									'variation_of'=>3
 									));
 									
-$row[] 	= 	array_replace($tmpl, Array(  
+$rowLang[] = array_replace($tmpl_lang, Array('product_id'=>3,'product_lang_id'=>4,
 									'title'=>'Product-3',
-									'alias'=>'Product-3',
-									'sku'=>'Product-3',
-									'amount' => '200',
-									'publish_up'=>'2013-09-19 09:49:17',
-									'publish_down'=>'0000-00-00 00:00:00',
-									'created_date'=>'2013-09-19 09:49:36',
-									'modified_date'=>'2013-09-19 10:34:15',
-									'created_by'=>489,
-									'ordering'=>3
+									'alias'=>'product-3',
 									));	
 
-$row[] 	= 	array_replace($tmpl, Array(  
-									'title'=>'Product-4',
-									'alias'=>'Product-4',
-									'sku'=>'Product-4',
-									'amount' => '250',
-									'publish_up'=>'2013-09-19 09:49:17',
-									'publish_down'=>'0000-00-00 00:00:00',
+$row[] 	= 	array_replace($tmpl, Array(  'product_id'=>4,
+									'sku'=>'product-4',
+									'price' => '250',
 									'created_date'=>'2013-09-19 09:49:36',
 									'modified_date'=>'2013-09-19 10:34:15',
-									'created_by'=>489,
-									'ordering'=>4
-									));										
+									'ordering'=>4,
+									'variation_of'=>4
+									));				
 
-return  Array('jos_paycart_product' => $row );
+$rowLang[] = array_replace($tmpl_lang, Array('product_id'=>4,'product_lang_id'=>5,
+									'title'=>'Product-4',
+									'alias'=>'product-4',
+									));	
+
+return  Array('jos_paycart_product' => $row,
+			  'jos_paycart_product_lang' => $rowLang );
 	
