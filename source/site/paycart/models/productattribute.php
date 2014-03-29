@@ -55,22 +55,22 @@ class PaycartModelProductAttribute extends PaycartModel
 	
 }
 
-class PaycartModelformAttribute extends PaycartModelform {}
+class PaycartModelformProductAttribute extends PaycartModelform {}
 
-class PaycartProductAttributeOption extends PaycartModel
+class PaycartModelProductAttributeOption extends PaycartModel
 {
 	function loadOptions($attributeId, $languageCode)
 	{
 		$query = $this->_db->getQuery(true);
-		
-	 	return $query->select('*')
-		 		     ->from('#__paycart_productattribute_option as ao')
-		 		     ->join('INNER', '#__paycart_productattribute_option_lang as aol ON ao.productattribute_option_id = aol.productattribute_option_id')
-		 		     ->where('ao.attribute_id = '.$attributeId)
-		 		     ->where('aol.lang_code = '.$languageCode)
-		 		     ->order('ao.option_ordering')
-		 		     ->dbLoadQuery()
-		 		     ->loadAssocList();
+
+		$query->select('*')
+ 		      ->from('#__paycart_productattribute_option as ao')
+ 		      ->join('INNER', '#__paycart_productattribute_option_lang as aol ON ao.productattribute_option_id = aol.productattribute_option_id')
+ 		      ->where('ao.productattribute_id = '.$attributeId)
+ 		      ->where('aol.lang_code = "'.$languageCode.'"')
+ 		      ->order('ao.option_ordering');
+
+		 return $this->_db->setQuery($query)->loadAssocList();
 	}
 	
 	/**
@@ -80,15 +80,15 @@ class PaycartProductAttributeOption extends PaycartModel
 	{
 		$query = $this->_db->getQuery(true);
 		
-		return $query->delete('a,b')
-					 ->from('#_paycart_productattribute_option_lang` as a')
-					 ->join('inner','#__paycart_productattribute_option as b on a.productattributeoption_id = b.productattributeoption_id')
-					 ->where('b.productattribute_id = '. $attributeId)
-					 ->dbLoadQuery()
-					 ->query();
+		$query->delete('a,b')
+			  ->from('#_paycart_productattribute_option_lang` as a')
+			  ->join('inner','#__paycart_productattribute_option as b on a.productattributeoption_id = b.productattributeoption_id')
+			  ->where('b.productattribute_id = '. $attributeId);
+					 
+	   return $this->_db->setQuery($query)->query();
 	}
 }
 
-class PaycartProductAttributeOptionLang extends PaycartModel
-{
-}
+class PaycartModellangProductAttribute extends PaycartModel{}
+
+class PaycartModellangProductAttributeOption extends PaycartModel{}

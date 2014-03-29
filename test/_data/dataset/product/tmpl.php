@@ -3,29 +3,40 @@
 $date = Rb_Date::getInstance()->toSql();
 
 return  Array(
-//				'product_id'	=>	0, 
-				'title'			=> 	null,	
-				'alias'			=>	null,
-				'published'		=>	1,
-				'type'			=>	Paycart::PRODUCT_TYPE_PHYSICAL,
-				'amount'		=> 	0,
+           Array( 
+           //sequence should be same as actual the table fields
+           		'type'			=>	Paycart::PRODUCT_TYPE_PHYSICAL,
+				'productcategory_id'	=> 	0,	
+				'status'		=>	'',
+           		'variation_of'	=>	0,
+           		'sku'			=>  '',
+				'price'			=> 	0.00,
 				'quantity'		=>	0,
-				'file'			=>	null,
-				'sku'			=>  null,	
-				'variation_of'	=>	0,  	
-				'category_id'	=>	0,
-				'params'		=>	'{}',
-				'cover_media'	=>	null, 	
-				'teaser'		=>	null,
-				'publish_up'	=>	$date,
-				'publish_down'	=>	'0000-00-00 00:00:00',	 	
+           		'featured'		=>	0,
+           		'cover_media'	=>	null,
+           		'stockout_limit'=>  0,
+					
+				'weight'		=> 0.00,
+				'weight_unit'	=> '',	
+           		'height'	 	=> 0.00,
+				'length'		=> 0.00,
+				'depth'		 	=> 0.00,
+				
+				'dimension_unit'=> '',
+           		'config'		=> '',
 				'created_date'	=>	$date,	
 				'modified_date'	=>	$date, 	
-				'created_by'	=>	0,
-				'ordering'		=>	0,
-				'featured'		=>	0,	
-				'description'	=>	null, 	
-				'hits'			=>	0,
-				'meta_data'		=>	'{}' 		//"{'title':'','descriprion':'','keyword':''}"
-			);
-				
+				'ordering'		=>	0
+			), 
+			Array(
+				'product_id'			=>	0,
+				'lang_code'				=>	PaycartFactory::getLanguageTag(),
+				'title'					=> 	'',
+				'alias'					=>	'',
+				'description'			=>	'',
+				'teaser'				=>	'',	
+				'metadata_title'		=>	'',
+				'metadata_keywords'		=>	'', 
+				'metadata_description'	=>	'' 
+			)
+		);

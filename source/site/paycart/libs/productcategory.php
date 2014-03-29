@@ -46,7 +46,7 @@ class PaycartProductcategory extends PaycartLib
 		
 		// use only by system 
 		$this->_language->productcategory_lang_id	= 0;
-		
+		$this->_language->productcategory_id	    = 0;
 		$this->_language->lang_code 	= PaycartFactory::getLanguageTag(); //Current Paycart language Tag	
 		$this->_language->title			= '';
 		$this->_language->alias			= '';
@@ -91,15 +91,16 @@ class PaycartProductcategory extends PaycartLib
 		//2#. Bind related table fields (language specific)
 		
 		//@PCTODO :: improve condition as per your requirment
-		if(isset($data['_language']) && isset($data['_language']['lang_code']) && $data['_language']['lang_code']) {
+		if(isset($data['_language'])){
 			// like data is Posted
 			$records = $data['_language'];
 		} else if($this->getId()){
 			//@PCTODO :: move to helper and array_shift record
-			$records	 = PaycartFactory::getModel('ProductcategoryLang')
+			$records	 = PaycartFactory::getModelLang('Productcategory')
 										->loadRecords(Array('lang_code' => $this->_language->lang_code,
 															'productcategory_id' => $this->getId()
 															));
+			$records = (array)array_shift($records);															
 		}
 		
 		$this->setLanguageData($records);
@@ -161,7 +162,7 @@ class PaycartProductcategory extends PaycartLib
 		}
 		
 		// alias must be unique
-		$this->_language->alias = PaycartFactory::getTable('Productcategorylang')->getUniqueAlias($this->_language->alias, $this->_language->productcategory_lang_id);
+		$this->_language->alias = PaycartFactory::getTableLang('Productcategory')->getUniqueAlias($this->_language->alias, $this->_language->productcategory_lang_id);
 		
 		//@PCTODO :: before parent save. Create cover_media path and set on $this
 		
@@ -192,13 +193,13 @@ class PaycartProductcategory extends PaycartLib
 		$languageData['productcategory_id'] = $saveId;
 				
 		// store new data
-		if(!PaycartFactory::getModel('ProductcategoryLang')->save($languageData,$this->_language->productcategory_lang_id)) {
+		if(!PaycartFactory::getModelLang('Productcategory')->save($languageData,$this->_language->productcategory_lang_id)) {
 			//@PCTODO :: notify to admin
 		}
 		
 		// few class properties might be changed by model validation or might be chage related fields
 		// so we need to reflect these kind of changes to lib object
-		//$this->reload();
+		$this->reload();
 		
 		return $saveId;
 	}
@@ -238,6 +239,11 @@ class PaycartProductcategory extends PaycartLib
 //			$condition['lang_code'] = $langCode;
 //		}
 		
-		return PaycartFactory::getModel('ProductcategoryLang')->deleteMany($condition);
+		return PaycartFactory::getModelLang('Productcategory')->deleteMany($condition);
+	}
+	
+	function getLanguage()
+	{
+		return $this->_language;
 	}
 }

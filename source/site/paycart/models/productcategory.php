@@ -27,9 +27,9 @@ class PaycartModelProductcategory extends PaycartModel
  * @author manish
  *
  */
-class PaycartModelProductcategorylang extends PaycartModel
+class PaycartModellangProductcategory extends PaycartModel
 {
 	protected $uniqueColumns = Array('alias');
 }
 
-class PaycartModelformCategory extends PaycartModelform { }
+class PaycartModelformProductCategory extends PaycartModelform { }
