@@ -9,4 +9,12 @@
 */
 
 defined('_JEXEC') or die( 'Restricted access' );
-echo $this->loadTemplate('select_type');
+
+?>
+<div>
+	<a href="#" onClick="paycart.jQuery(this).parent().remove(); return false;">
+		<i class="icon icon-delete"> </i>
+	</a>
+	<?php echo $configHtml;?>		
+	<input type="hidden" name="<?php echo $namePrefix;?>[ruleClass]" value="<?php echo $ruleClass;?>" />		
+</div>

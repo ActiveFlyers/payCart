@@ -21,7 +21,7 @@ class PaycartTableProduct extends PaycartTable
 	
 }
 
-class PaycartTableProductlang extends PaycartTable
+class PaycartTableLangProduct extends PaycartTable
 {
 	function __construct($tblFullName='#__paycart_product_lang', $tblPrimaryKey='product_lang_id', $db=null)
 	{

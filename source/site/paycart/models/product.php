@@ -36,7 +36,7 @@ class PaycartModelProduct extends PaycartModel
 		// 1#. No need to create variant of variant
 		if ($data['variation_of']) {
 			$product  = PaycartProduct::getInstance($data['variation_of']);
-			if(!$product || $product->getVariationOf()) {
+			if(!$product || ($product->getVariationOf() && $product->getVariationOf() != $product->getId())) {
 				// PCTODO :: Dont need to fire exception juts set variation_of property    
 				// Notify to user we dont support multi-level variation
 				throw new UnexpectedValueException(Rb_Text::_('COM_PAYCART_NOT_SUPPORT_MULTILEVEL_VARIATION'));
@@ -93,7 +93,7 @@ class PaycartModelformProduct extends PaycartModelform
  * @author rimjhim
  *
  */
-class PaycartModelProductLang extends PaycartModel
+class PaycartModellangProduct extends PaycartModel
 {
 	protected $uniqueColumns = Array('alias');
 }

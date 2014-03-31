@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_rating` (
 CREATE TABLE IF NOT EXISTS `#__paycart_productattribute` (
   `productattribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
-  `type` varchar(11) NOT NULL COMMENT 'Type of attribute',
+  `type` varchar(50) NOT NULL COMMENT 'Type of attribute',
   `css_class` varchar(100) DEFAULT NULL,
   `filterable` tinyint(1) NOT NULL COMMENT 'Treat as a filter',
   `searchable` tinyint(1) DEFAULT '0' COMMENT 'Use for keyword search',
@@ -177,6 +177,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory_lang` (
 CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `product_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique identification of product',
   `productcategory_id` int(11) DEFAULT 0,
+  `type` varchar(50) NOT NULL COMMENT 'Type of Product',
   `status` enum('published','invisible','unpublished','trashed') NOT NULL,
   `variation_of` int(11) NOT NULL DEFAULT '0' COMMENT 'This product is variation of another product. ',
   `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
@@ -555,3 +556,20 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_option_lang` (
   KEY `productattribute_option_id` (`productattribute_option_id`),
   KEY `lang_code` (`lang_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_group`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_group` (
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `published` tinyint(4) NOT NULL DEFAULT '1',
+  `ordering` int(11) NOT NULL,
+  `config` text,
+  PRIMARY KEY (`group_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

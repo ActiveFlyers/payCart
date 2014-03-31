@@ -58,12 +58,32 @@ class PaycartFactory extends Rb_Factory
 	
 	/**
 	 * 
+	 * Invoke to get Paycart Modellang instance
+	 * @param string $name : Entity name
+	 */
+	public static function getModelLang($name)
+	{
+		return self::getInstance($name, 'modellang');
+	}
+	
+	/**
+	 * 
 	 * Invoke to get Paycart Table instance
 	 * @param string $name : Entity name
 	 */
 	public static function getTable($name)
 	{
 		return self::getInstance($name, 'table');
+	}
+	
+	/**
+	 * 
+	 * Invoke to get Paycart Table instance
+	 * @param string $name : Entity name
+	 */
+	public static function getTableLang($name)
+	{
+		return self::getInstance($name, 'tablelang');
 	}
 	
 	/**
@@ -120,9 +140,9 @@ class PaycartFactory extends Rb_Factory
 		return self::getHelper('processor')->getInstance($type, $className, $config);
 	}
 	
-	public static function getGrouprule($className, $config = Array()) 
+	public static function getGrouprule($type, $className, $config = Array()) 
 	{
-		return self::getHelper('group')->getInstance($className, $config);
+		return self::getHelper('group')->getInstance($type, $className, $config);
 	}
 	
 	/**

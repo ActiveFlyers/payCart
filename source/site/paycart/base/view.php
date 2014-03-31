@@ -58,4 +58,13 @@ class PaycartView extends PaycartViewbase
 		Rb_HelperToolbar::divider();
 		Rb_HelperToolbar::cancel();
 	}
+	
+	public function getHelper($name = '')
+	{
+		if(empty($name)){
+			$name = $this->getName();
+		}
+		
+		return PaycartFactory::getHelper($name);
+	}
 }

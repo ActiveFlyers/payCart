@@ -28,7 +28,8 @@ abstract class PayCartTestCaseDatabase extends TestCaseDatabase
 	private $_stashedPayCartState = array(
 				'paycartfactory'	=>	Array('_config' => null, '_mocks' => null),
 				'Rb_Lib' 			=>	Array('instance' => null),
-				'JPluginHelper'		=>	Array('plugins' => null)
+				'JPluginHelper'		=>	Array('plugins' => null),
+				'PaycartAttribute'	=>	Array('instance' => null)
 			);
 			
 			

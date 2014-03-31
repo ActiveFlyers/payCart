@@ -60,6 +60,11 @@ class PaycartHelperProcessor extends JObject
 	{
 		$type 		= JString::strtolower($type);
 		
+		// if any processor of this type is not available yet then return fasle
+		if(!isset($this->_processors[$type])){
+			return false;
+		}
+		
 		//load specific type plugins
 		return $this->_processors[$type];
 	}

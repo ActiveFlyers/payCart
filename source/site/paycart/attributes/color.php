@@ -124,7 +124,7 @@ class PaycartAttributeColor extends PaycartAttribute
 		$colors = (isset($data['colors'])) ? $data['colors']: array();
 		
 		if(empty($colors) && $attribute->getId()){
-			$colors = PaycartFactory::getInstance('color')
+			$colors = PaycartFactory::getInstance('color','model')
 					                           ->loadOptions($attribute->getLangugeCode());
 		}
 		

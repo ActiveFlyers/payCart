@@ -21,7 +21,7 @@ class PlgPaycartGroupruleBuyeraddress extends RB_Plugin
     	parent::__construct($subject, $config);
 
 		$helper = PaycartFactory::getHelper('group');
-		$helper->push('PaycartGroupruleBuyeraddress',
+		$helper->push(Paycart::GROUPRULE_TYPE_BUYER, 'PaycartGroupruleBuyeraddress',
 						array(
 							'filepath' 	=> dirname(__FILE__).'/rules/buyeraddress/buyeraddress.php',
 							'type'		=> paycart::GROUPRULE_TYPE_BUYER,

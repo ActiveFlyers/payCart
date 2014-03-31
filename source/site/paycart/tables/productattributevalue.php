@@ -6,15 +6,21 @@
 * @package 		PAYCART
 * @subpackage	Front-end
 * @contact		support+paycart@readybytes.in
-* @author 		mManishTrivedi 
+* @author 		rimjhim 
 */
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /** 
- * AttributeValue Table
- * @author mManishTrivedi
+ * ProductAttributeValue Table
+ * @author rimjhim
  */
-class PaycartTableAttributeValue extends PaycartTable
-{}
+class PaycartTableProductAttributeValue extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_productattribute_value', $tblPrimaryKey='', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}
+

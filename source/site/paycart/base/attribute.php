@@ -20,17 +20,24 @@ class PaycartAttribute
 {
 	static $instance = array();
 
-	abstract function getEditHtml($attribute, $value=null);
+	public function getEditHtml($attribute, $value=null)
+	{
+		return true;
+	}
 
 	static public function getInstance($type)
 	{
+		$type = JString::strtolower($type);
+		
 		//if already there is an object and check for static cache
 		if(isset(self::$instance[$type])){
 			return self::$instance[$type];
 		}
 		
-		$className = JString::strtolower('PaycartAttribute'.$type);
-		return self::$instance[$type] = new $className;
+		$className = 'paycartattribute'.$type;
+		self::$instance[$type] = new $className;
+		
+		return self::$instance[$type];
 	}
 	
 	function getOptions($attribute)
@@ -46,8 +53,8 @@ class PaycartAttribute
 		$options = (isset($data['options'])) ? $data['options']: array();
 		
 		if(empty($options) && $attribute->getId()){
-			$options = PaycartFactory::getInstance('productattribute_option')
-					                           ->loadOptions($attribute->getId(), $attribute->getLangugeCode());
+			$options = PaycartFactory::getInstance('productattributeoption','model')
+					                           ->loadOptions($attribute->getId(), $attribute->getLanguageCode());
 		}
 		
 		$result = array();

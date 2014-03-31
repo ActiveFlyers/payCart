@@ -36,9 +36,11 @@ include_once PAYCART_PATH_CORE.'/base/event.php';
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/base',		     '',		 'Paycart');
 
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/models',		'Model',	 'Paycart');
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/models',		'Modellang',	 'Paycart');
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/models',		'Modelform', 'Paycart');
 
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/tables',		'Table',	 'Paycart');
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/tables',		'Tablelang',	 'Paycart');
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/libs',			'',			 'Paycart');
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/helpers',		'Helper',	 'Paycart');
 
@@ -61,3 +63,9 @@ Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/shippingrule',		'Shipping
 
 //taxrule
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/taxrule',  'taxrule',   'Paycart');
+
+// at the end load PaycartType of Plugins
+Rb_HelperPlugin::loadPlugins('paycart');
+
+//attributes
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/attributes',  'attribute',   'Paycart');

@@ -58,10 +58,14 @@
 
 		<!-- Override Prop-Property		-->	
 		<if>
-			<available file='override_property.prop' type='file' />
+			<available file='${dir.root}/scripts/override_property.prop' type='file' />
 	  	        <then>
 				<property file="override_property.prop"	override="true" />		
 			</then>
+
+			<else>
+		   		<echo message="============== Override file is not exist : ${dir.root}/scripts/override_property.prop" />
+		 	</else>
 		</if>
 
 	</target>
