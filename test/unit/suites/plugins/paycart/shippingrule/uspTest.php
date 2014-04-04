@@ -8,11 +8,20 @@
  * @contact		team@readybytes.in 
 */
 
-require_once JPATH_SITE.'/plugins/paycart/shippingruleusps/processors/usps/usps.php';
+
+$file = JPATH_SITE.'/plugins/paycart/shippingruleusps/processors/usps/usps.php';
+
+if(file_exists($file)) {
+	require_once $file;
+	function PaycartPluginsShippingruleUspsTest(){};
+}
+
+
 /**
  * 
  * Shipping Rule USPS Processor Test
  * @author Gaurav Jain
+ * @requires function PaycartPluginsShippingruleUspsTest
  */
 class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
 {

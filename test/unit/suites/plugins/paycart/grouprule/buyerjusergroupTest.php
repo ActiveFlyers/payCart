@@ -8,11 +8,19 @@
  * @contact		team@readybytes.in 
 */
 
-require_once JPATH_SITE.'/plugins/paycart/grouprulebuyerjusergroup/rules/buyerjusergroup/buyerjusergroup.php';
+//require_once JPATH_SITE.'/plugins/paycart/grouprulebuyerjusergroup/rules/buyerjusergroup/buyerjusergroup.php';
+$file = JPATH_SITE.'/plugins/paycart/grouprulebuyerjusergroup/rules/buyerjusergroup/buyerjusergroup.php';
+
+if(file_exists($file)) {
+	require_once $file;
+	function PaycartPluginsGroupruleBuyerJusergroupTest(){};
+}
+
 /**
  * 
  * Group Rule Buyer JUsergroup Test 
  * @author Gaurav Jain
+ * @requires function PaycartPluginsGroupruleBuyerJusergroupTest
  */
 class PaycartPluginsGroupruleBuyerJusergroupTest extends PayCartTestCase
 {

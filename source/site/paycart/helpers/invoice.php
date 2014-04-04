@@ -18,15 +18,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 
 
-// require_once  only rb_ecommerce api. Avoid to load rb-ecmmoerce whole Package
-$file = JPATH_ROOT."/plugins/system/rbsl/rb/pkg/ecommerce/api.php";
-if (!JFile::exists($file)) {
-	// fire exception
-	throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_PACKAGE_NOT_EXIST', 'ECOMMERCE'));
-}
-include_once $file;
 
-//rb_import('ecommerce');
+// load rb-ecommerce pkg
+rb_import('ecommerce');
 
 class PaycartHelperInvoice
 {
