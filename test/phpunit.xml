@@ -1,8 +1,8 @@
 <phpunit 
 		bootstrap="bootstrap.php" 
 		colors="true"
-		stopOnError="true"
-        stopOnFailure="true"
+		stopOnError="false"
+        stopOnFailure="false"
 	>
 	
 	<testsuites>
@@ -18,9 +18,9 @@
 		</testsuite>
 		
 		<!-- PayCart-Webdriver -->
-		<testsuite>
-			<directory>system/suite/admin</directory>
-		</testsuite>
+<!--		<testsuite>-->
+<!--			<directory>system/suite/admin</directory>-->
+<!--		</testsuite>-->
 		
 	</testsuites>
 	

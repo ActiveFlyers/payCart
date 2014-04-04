@@ -8,11 +8,18 @@
  * @contact		team@readybytes.in 
 */
 
-require_once JPATH_SITE.'/plugins/paycart/grouprulebuyeraddress/rules/buyeraddress/buyeraddress.php';
+$file = JPATH_SITE.'/plugins/paycart/grouprulebuyeraddress/rules/buyeraddress/buyeraddress.php';
+
+if(file_exists($file)) {
+	require_once $file;
+	function PaycartGroupruleBuyeraddress(){};
+}
+
 /**
  * 
  * Group Rule Buyer Address Test 
  * @author Gaurav Jain
+ * @requires function PaycartGroupruleBuyeraddress
  */
 class PaycartPluginsGroupruleBuyeraddressTest extends PayCartTestCase
 {
