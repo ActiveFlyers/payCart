@@ -8,21 +8,26 @@
 * @author 		rimjhim
 */
 
+$file = JPATH_PLUGINS . '/paycart/taxruleflat/processors/flatamount/flatamount.php';
+
+if(file_exists($file)) {
+	require_once $file;
+	class PaycartTaxruleProcessorFlatAmountStub extends PaycartTaxruleProcessorFlatAmount{}
+
+	function PaycartTaxruleProcessorFlatAmountStub(){};
+	
+}
+
+// independently load request and response classes
+require_once JPATH_ROOT.'/components/com_paycart/paycart/taxrule/processor.php';
+
+
+
 /**
  * 
  * stub for class PaycartTaxruleProcessorEuvat
  * @author rimjhim
- *
- */
-require_once JPATH_PLUGINS . '/paycart/taxruleflat/processors/flatamount/flatamount.php';
-
-class PaycartTaxruleProcessorFlatAmountStub extends PaycartTaxruleProcessorFlatAmount{}
-
-
-/**
- * 
- * Test case for flat amount processor
- * @author rimjhim
+ * @requires function PaycartTaxruleProcessorFlatAmountStub
  *
  */
 
