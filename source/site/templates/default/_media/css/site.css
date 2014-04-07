@@ -82,7 +82,11 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 
 /* Also, don't forget to add this: */
 #pc-categories[data-columns]::before { 
-	display: none; 
+	display: block;
+	width:0;
+	height:0;
+	visibility: hidden;
+	 
 }
 
 
@@ -116,7 +120,10 @@ Products Display
 
 /* Also, don't forget to add this: */
 #pc-products[data-columns]::before { 
-	display: none; 
+	display: block; 
+	width:0;
+	height:0;
+	visibility: hidden;
 }
 
 

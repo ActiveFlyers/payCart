@@ -8,23 +8,27 @@
 * @author 		rimjhim
 */
 
-/**
- * 
- * stub for class PaycartTaxruleProcessorEuvat
- * @author rimjhim
- *
- */
-require_once JPATH_PLUGINS . '/paycart/taxruleeuvat/processors/euvat.php';
 
-class PaycartTaxruleProcessorEuvatStub extends PaycartTaxruleProcessorEuvat{}
+
+$file = JPATH_PLUGINS . '/paycart/taxruleflat/processors/euvat.php';
+
+if(file_exists($file)) {
+	require_once $file;
+	//stub for class PaycartTaxruleProcessorEuvat
+	class PaycartTaxruleProcessorEuvatStub extends PaycartTaxruleProcessorEuvat{}
+	function PaycartTaxruleProcessorEuvatTest(){};
+}
+
+// independently load request and response classes
+require_once JPATH_ROOT.'/components/com_paycart/paycart/taxrule/processor.php';
 
 /**
  * 
  * Test case euvat processor
  * @author rimjhim
+ * @requires function PaycartTaxruleProcessorEuvatTest
  *
  */
-
 class PaycartTaxruleProcessorEuvatTest extends PayCartTestCase
 {
 	/**

@@ -8,16 +8,29 @@
  * @contact		team@readybytes.in 
 */
 
-require_once JPATH_SITE.'/plugins/paycart/shippingruleflatrate/processors/flatrate/flatrate.php';
+
+$file = JPATH_SITE.'/plugins/paycart/shippingruleflatrate/processors/flatrate/flatrate.php';
+
+if(file_exists($file)) {
+	require_once $file;
+	function PaycartPluginsShippingruleFlatrateTest(){};
+}
+
+
 /**
  * 
  * Shipping Rule Flat Rate Processor Test
  * @author Gaurav Jain
+ * @requires function PaycartPluginsShippingruleFlatrateTest
  */
 class PaycartPluginsShippingruleFlatrateTest extends PayCartTestCase
 {
 	public static function providerTestGetPackageShippingCostByWeight()
     {
+    	//@DataProvider execute first than @requires  (see in beginning of the class)
+    	if(!file_exists(JPATH_SITE.'/plugins/paycart/shippingruleflatrate/processors/flatrate/flatrate.php')) {
+    		throw new RuntimeException("FlatRate Shipping Processor is not available");
+    	}
     	// arg format :: array($processor_config, $processor_request, $response);
     	
     	// Weight, no range given
@@ -150,6 +163,11 @@ class PaycartPluginsShippingruleFlatrateTest extends PayCartTestCase
 	
 	public static function providerTestGetPackageShippingCostByPrice()
     {
+    	//@DataProvider execute first than @requires  (see in beginning of the class)
+    	if(!file_exists(JPATH_SITE.'/plugins/paycart/shippingruleflatrate/processors/flatrate/flatrate.php')) {
+    		throw new RuntimeException("FlatRate Shipping Processor is not available");
+    	}
+    	
     	// price, no range given
     	$case[] = array(
     					array('billing_price' 	=> PaycartShippingruleProcessorFlatRate::PRICE, 

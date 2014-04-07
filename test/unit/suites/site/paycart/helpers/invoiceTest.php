@@ -185,7 +185,7 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 	{
 		//make sure stripe exist in system
 		if(!JFile::exists(JPATH_ROOT.'/plugins/rb_ecommerceprocessor/stripe/stripe.php')) {
-			throwException(new RuntimeException("Stripe Payment Processor is not exist"));
+			throw new RuntimeException("Stripe Payment Processor is not exist");
 		}
 		
 		$invoiceId = 6;
