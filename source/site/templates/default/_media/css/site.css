@@ -63,7 +63,6 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 	color : #fff;
 }
 
-
 .pc-size-xs #pc-categories[data-columns]::before {
 	content: '3 .pc-grid-4';
 }
@@ -125,20 +124,27 @@ Products Display
 	visibility: hidden;
 }
 
-
-
 .pc-product-outer{
-	padding:4px;
+	/* seperate products with this padding */
+	padding	:	5px;	
 }
 
 .pc-product {
-	
+	/*required for a proper white border around product content */
+	padding:5px;
+	background-color: #fff;
+}
+
+/* primiary border when hover */
+.pc-product:hover{
+	border : 1px solid #00f;
 }
 
 .pc-product-content{
-	padding:2px;
+	
 }
 
 .pc-product-content img{
 	width:100%;
+
 }
