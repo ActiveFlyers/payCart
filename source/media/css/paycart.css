@@ -76,6 +76,24 @@
 /*   line-height: normal; */
 }
 
+/**
+	Generate a simple separator line consume 2px bandwidth  
+*/
+.pc-separator{
+	height:1px;
+	border-bottom: 1px solid #EEE;
+}
+
+/**
+ *	When text overflow happens it will mark it as ...  
+ */
+.pc-ellipsis {
+  text-overflow: ellipsis;
+  max-width:98%;
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
+}
 
 /* =============================================
    TINY 960 Grid : 

@@ -59,6 +59,7 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 }
 
 .pc-category a {
+.pc-category a:hover {
 	color : #fff;
 }
 
