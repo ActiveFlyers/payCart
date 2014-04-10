@@ -32,7 +32,7 @@ class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
 		
 		$buyer_id	=  $this->getModel()->getState('id');
 		$buyer		=  PaycartBuyer::getInstance($buyer_id);
-		$addresses	= PaycartHelperBuyer::getAddresses($buyer_id);
+		$addresses	= Array();//PaycartHelperBuyer::getAddresses($buyer_id);
 		
 		$this->assign('form',  $buyer->getModelform()->getForm($buyer));
 		$this->assign('addresses', $addresses);

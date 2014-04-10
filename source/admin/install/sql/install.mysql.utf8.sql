@@ -287,35 +287,38 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cartparticulars` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_buyer` (
- `buyer_id` 		INT 		NOT NULL	AUTO_INCREMENT,
- `mobile`		VARCHAR(20)						DEFAULT '0',
- `params`  		TEXT 							DEFAULT '',
- PRIMARY KEY (`buyer_id`)
+  `buyer_id` int(11) NOT NULL AUTO_INCREMENT,
+  `is_registered_by_guestcheckout` tinyint(4) NOT NULL DEFAULT '0',
+  `billing_address_id` int(11) DEFAULT NULL,
+  `shipping_address_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`buyer_id`),
+  KEY `billing_address` (`billing_address`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_address`
+-- Table structure for table `#__paycart_buyeraddress`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_address` (
- `address_id` 	INT 		NOT NULL	AUTO_INCREMENT,
- `buyer_id` 		INT 		NOT NULL			DEFAULT '0',
- `address` 		VARCHAR(255)		 			DEFAULT '',
- `city` 		VARCHAR(255) 					DEFAULT '',
- `state` 		VARCHAR(255) 					DEFAULT '',
- `country` 		INT  		NOT NULL 			DEFAULT '0',
- `zipcode` 		VARCHAR(10) NOT NULL 			DEFAULT '',
- `longitude`	VARCHAR(20)						DEFAULT '',
- `latitude`		VARCHAR(20)						DEFAULT '',
- `preferred`	TINYINT							DEFAULT '0',
- PRIMARY KEY (`address_id`),
- INDEX `idx_buyer_id` (`buyer_id`),
- INDEX `idx_state` (`state`),
- INDEX `idx_country` (`country`)
-
+CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
+  `buyeraddress_id` int(11) NOT NULL AUTO_INCREMENT,
+  `buyer_id` int(11) NOT NULL DEFAULT '0',
+  `Name` varchar(100) NOT NULL,
+  `address1` varchar(255) DEFAULT NULL,
+  `address2` varchar(255) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `state` char(3) NOT NULL COMMENT 'State ISO code3',
+  `country` char(3) NOT NULL COMMENT 'Country ISO code3',
+  `zipcode` varchar(10) NOT NULL DEFAULT '',
+  `vat_number` varchar(100) NOT NULL,
+  `telephone_number1` int(20) NOT NULL,
+  `telephone_number2` int(20) NOT NULL,
+  PRIMARY KEY (`buyeraddress_id`),
+  KEY `buyer_id` (`buyer_id`),
+  KEY `state` (`state`),
+  KEY `country` (`country`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -404,21 +407,37 @@ CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_x_group` (
 
 
 -- --------------------------------------------------------
--- ------------------- DEFAULT VALUES ---------------------
+
+--
+-- Table structure for table `#__paycart_country`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_country` (
+  `isocode3` char(3) NOT NULL,
+  `isocode2` char(2) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `call_prefix` varchar(10) NOT NULL,
+  `zip_format` varchar(12) NOT NULL,
+  `status` enum('published','unpublished','trashed') NOT NULL DEFAULT 'published',
+  `ordering` int(11) NOT NULL,
+  PRIMARY KEY (`isocode3`),
+  KEY `isocode2` (`isocode2`,`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_config`
+-- Table structure for table `#__paycart_state`
 --
-INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
-('image_extension', '.png'),
-('image_maximum_upload_limit', '2'),
-('image_render_url', NULL),
-('image_thumb_height', '100'),
-('image_thumb_width', '133'),
-('image_upload_directory', NULL),
-('discountrule_issuccessive', 1);
 
+CREATE TABLE IF NOT EXISTS `#__paycart_state` (
+  `isocode3` char(3) NOT NULL,
+  `isocode2` char(2) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `country` char(3) NOT NULL,
+  `status` enum('published','unpublished','trashed') NOT NULL,
+  `ordering` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 --
@@ -573,3 +592,23 @@ CREATE TABLE IF NOT EXISTS `#__paycart_group` (
   `config` text,
   PRIMARY KEY (`group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+
+-- --------------------------------------------------------
+-- ------------------- DEFAULT VALUES ---------------------
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_config`
+--
+INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
+('image_extension', '.png'),
+('image_maximum_upload_limit', '2'),
+('image_render_url', NULL),
+('image_thumb_height', '100'),
+('image_thumb_width', '133'),
+('image_upload_directory', NULL),
+('discountrule_issuccessive', 1);
+
+

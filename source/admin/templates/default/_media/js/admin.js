@@ -154,6 +154,21 @@ paycart.admin.attribute =
 
 
 
+// @PCTODO : Move it proper location so we can utilize it for front end
+paycart.admin.buyer =
+{
+	address  :
+	{
+		add : function()
+		{
+			// domObject, use for element id which will be changed.  
+			var link  = 'index.php?option=com_paycart&task=addAddress&view=buyer&domObject=rbWindowBody';
+			paycart.url.modal(link, null);
+		}
+	}
+
+};
+
 /*--------------------------------------------------------------
   on Document ready 
 --------------------------------------------------------------*/

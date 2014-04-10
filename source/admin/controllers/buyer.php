@@ -12,6 +12,11 @@
 // no direct access
 defined( '_JEXEC' ) or	die( 'Restricted access' );
 
-class PaycartAdminControllerBuyer extends PaycartController {
+class PaycartAdminControllerBuyer extends PaycartController 
+{
 		
+	public function addAddress() 
+	{
+		return true;
+	}
 }

@@ -45,8 +45,6 @@ class PaycartModelBuyer extends PaycartModel
     			   ->select(' joomlausertbl.`email` AS email ')
     			   ->select(' joomlausertbl.`registerDate` AS registerDate ')
     			   ->select(' joomlausertbl.`lastvisitDate` AS lastvisitDate ')
-    			   ->select(' t.`mobile` ')
-    			   ->select(' t.`params` ')
     			   ->leftJoin($join);
     			   
     			   

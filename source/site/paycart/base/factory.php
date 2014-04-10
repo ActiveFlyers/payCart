@@ -58,6 +58,18 @@ class PaycartFactory extends Rb_Factory
 	
 	/**
 	 * 
+	 * Invoke to get Paycart Modelform instance
+	 * @param string $name : Entity name
+	 */
+	public static function getModelForm($name)
+	{
+		// Make sure $name Model is already loaded otherwise it will generate issue  
+		return self::getInstance($name, 'modelform');
+	}
+	
+	
+	/**
+	 * 
 	 * Invoke to get Paycart Modellang instance
 	 * @param string $name : Entity name
 	 */
