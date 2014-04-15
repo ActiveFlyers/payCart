@@ -39,7 +39,7 @@ class PaycartTaxruleProcessorEuvatTest extends PayCartTestCase
         
         // handle dependency if required
 		  if(!empty($functionName)){
-        	$stub = $this->getMock('PaycartTaxruleProcessorEuvatStub', $functionName, Array($countryCode, $vatNumber, $response));
+        	$stub = $this->getMock('PaycartTaxruleProcessorEuvatStub', $functionName);
         	
         	foreach ($functionName as $function){
 		        $stub->expects($this->once())

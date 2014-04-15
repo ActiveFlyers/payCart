@@ -102,6 +102,87 @@ class PaycartDiscountRule extends PaycartLib
 		return parent::getInstance('discountrule', $id, $data);
 	}	
 	
+	/**
+	 * @return PaycartDiscountRuleProcessor
+	 */
+	public function getProcessor()
+	{
+		// get Processor instanse. Processor should be autoloaded
+		$processor = PaycartFactory::getProcessor(Paycart::PROCESSOR_TYPE_DISCOUNTRULE, $this->processor_classname, $this->processor_config);
+		/* @var $processor PaycartDiscountRuleProcessor */ 
+		
+		$processor->processor_config = $this->getProcessorConfig();
+		$processor->rule_config 	 = $this->_createRuleconfigRequestObject();
+		$processor->global_config 	 = $this->_createGlobalconfigRequestObject();
+		
+		return $processor;
+	}
+	
+	/**
+	 * Get processor config
+	 */
+	function getProcessorConfig($inArray = false)
+	{		
+		if($inArray){
+			return $this->processor_config->toArray();			
+		}
+		
+		return $this->processor_config->toObject();
+	}
+		
+	public function getAlreadyAppliedRules()
+	{
+		return array(); //@PCTODO :
+	}
+	
+	public function getTotalConsumption()
+	{
+		return 0; //@PCTODO :
+	}
+	
+	public function getTotalConsumptionByBuyer($buyer_id)
+	{
+		return 0; //@PCTODO :
+	}
+	
+	/**
+	 * 
+	 * Applicability check  
+	 * @param PaycartDiscountRuleRequest $discountRule
+	 * 
+	 * @return boolean type if applicable otherwise false
+	 */
+	public function isApplicable(Paycartcart $cart, PaycartCartparticular $particular)
+	{		
+		$response = new stdClass();
+		$response->error = true;
+		
+		// if discount is already applied and current discount is non-clubbale
+		// then return false 
+		$appliedRules = $this->getAlreadyAppliedRules();
+		if (!empty($appliedRules) && !$this->is_clubbable) {
+			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NON_CLUBBABLE');
+			$response->messageType	= Paycart::MESSAGE_TYPE_MESSAGE;
+			return $response; 
+		}
+				
+		// stop further rule-processing, if usage limit exceeded		
+		if ($this->getTotalConsumption() >= $this->usage_limit) { // @PCTODO: what about unlimited 
+			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_USAGE_LIMIT_EXCEEDED');
+			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
+			return $response;
+		}
+		
+		// stop further processing, if rule's buyer-usage limit exceeded
+		if ($this->getTotalConsumptionByBuyer() >= $this->buyer_usage_limit) {
+			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED');
+			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
+			return $response;
+		}
+
+		$response->error = false;
+		return $response;
+	}
 	
 	/**
 	 * 
@@ -114,11 +195,18 @@ class PaycartDiscountRule extends PaycartLib
 	 */
 	public function process(Paycartcart $cart, PaycartCartparticular $particular)
 	{
-		// get Processor instanse. Processor should be autoloaded
-		$processor = PaycartFactory::getProcessor(Paycart::PROCESSOR_TYPE_DISCOUNTRULE, $this->processor_classname, $this->processor_config);
+		// first check its applicabiliy
+		$isApplicableResponse = $this->isApplicable($cart, $particular);
+		
+		if($isApplicableResponse->error === true){
+			// $isApplicableResponse contains the messgage, 
+		}
+		
+		// get Processor instanse. 
+		$processor = $this->getProcessor();
 		
 		// create request and reponse object then process discount-rule
-		$request	= $this->createRequest($cart, $particular);
+		$request	= $this->_createRequestObject($cart, $particular);
 		$response	= $this->createResponse();
 		
 		$processor->process($request, $response);
@@ -132,8 +220,7 @@ class PaycartDiscountRule extends PaycartLib
 		
 		// notify to admin
 		if ( Paycart::MESSAGE_TYPE_ERROR == $response->messageType) {
-			//@PCTODO : Error propagate to admin and log it 
-			//$this->_errors = $response->exception->getMessage();
+			//@PCTODO : Error propagate to admin and log it			
 			return $this;
 		}
 		
@@ -142,28 +229,31 @@ class PaycartDiscountRule extends PaycartLib
 			//@PCTODO:: Show msg to end user with msgtype
 		}
 
+		// if response amount is not set or less than equal to zero then do nothing
+		if(!isset($response->amount) && $response->amount <= 0){
+			//@PCTODO: 
+			return $this;
+		} 
+		
 		$total 	= $particular->getTotal();
 		
 		// @NOTE: Stop next all-rule processing for $particular if meet following any one conditions in current rule
 		
 		// Check limit of discount 
-		if ($total+($response->amount) < 0) {
+		if ($total+($response->amount) < 0) { // @NOTE: should not fall behind of minimum-price limit.
 			$this->_stopFurtherRules = true;
 			//@PCTODO :: notify to user or Log it
 			return $this;
-		} 
+		}
 		
-		// @NOTE: should not fall behind of minimum-price limit.
-//		if ($total+($response->amount) <= $particular->getMinimumPrice() ) {
-//			$this->_stopFurtherRules = true;
-//			// @PCTODO :: notify to user or Log it
-//			return $this;
-//		}
-
+		// if applied discount is non-clubbable 
+		// then stop next all multiple rules
+		if (!$this->is_clubbable) {
+			$this->_stopFurtherRules = true;
+		}			
+			
 		// apply discounted amount
 		$particular->addDiscount($response->amount);
-		
-		//@PCTODO :: auto reinitailize cart price  when add discount
 		
 		//create usage data
 		$usage = new stdClass();
@@ -181,13 +271,6 @@ class PaycartDiscountRule extends PaycartLib
 		
 		//invoke method to track usage
 		PaycartFactory::getModel('usage')->save((array)$usage);
-		
-		
-		// not further-rules processing 
-		if ($response->stopFurtherRules) {
-			$this->_stopFurtherRules = true;
-		}
-		
 		return $this;
 	}
 	
@@ -199,42 +282,56 @@ class PaycartDiscountRule extends PaycartLib
 	 * 
 	 * @return PaycartDiscountRuleRequest object
 	 */
-	protected function createRequest(PaycartCart $cart, PaycartCartparticular $particular)
+	protected function _createRequestObject(PaycartCart $cart, PaycartCartparticular $particular)
 	{
-		$request 	= new PaycartDiscountruleRequest();
+		$helperRequest 			= PaycartFactory::getHelper('request');
+		/* @var $helperRequest PaycartHelperRequest */
 		
-		// rule specific data
-		$request->rule_isPercentage 	= $this->is_percentage;
-		$request->rule_isSuccessive		= $this->is_successive;
-		$request->rule_amount			= $this->amount;
-		$request->rule_isClubbable		= $this->is_clubbable;
-		$request->rule_usageLimit		= $this->usage_limit;
-		$request->rule_buyerUsageLimit	= $this->buyer_usage_limit;
-		$request->rule_coupon			= $this->coupon;
+		$request 							= new PaycartDiscountruleRequest();		
+		$request->particular 				= $helperRequest->getParticularObject($particular);
+		$request->shipping_address			= $helperRequest->getAddressObject($cart->getShippingAddress());
+		$request->billing_address			= $helperRequest->getAddressObject($cart->getBillingAddress());
+		$request->buyer						= $helperRequest->getBuyerObject($cart->getBuyer());
 		
-		// Particular specific data
-		$request->particular_unit_price				= $particular->getUnitPrice();
-		$request->particular_quantity				= $particular->getQuantity();
-		$request->particular_price					= $particular->getPrice();		//basePrice = unitPrice * Quantity
-		$request->particular_total				 	= $particular->getTotal();
-		$request->particular_coupon				 	= $cart->coupon;				// @PCTODO: get Posted coupon code from cart  
-		$request->particular_previousAppliedRules 	= $particular->_appliedDiscountRules;
+		//@ PCTODO : verify in isApplicable function
+		$request->particular->coupon		= $cart->coupon;// @PCTODO: get Posted coupon code from cart
 		
-		//@PCTODO:: set following stuff
-		$request->cart_particular_quantity	=	10;
-		$request->cart_total				=	$cart->getTotal();
-		$request->cart_shipping_address_id	=	$cart->getShippingAddress();
-		$request->cart_billing_address_id	=	$cart->getBillingAddress();
-		
-		//@PCTODO:: set following stuff
-		$request->buyer_id			=	$cart->getBuyer();
-		
-		// usage specific data
-		//@PCTODO :: call to get used counter of Rule
-		$request->usage_rule_consumption	= 50;
-		$request->usage_buyer_consumption	= 0;
+		// amount on which discount should be applied
+		$request->discountable_amount = $request->particular->price;
+		// If discount is successive/row total then applied on total amount.
+		// It will use on multi discount
+		if ($this->is_successive) {
+			$request->discountable_amount = $request->particular->total;
+		}
 		
 		return $request;
+	}
+	
+	/**
+	 * @return PaycartDiscountruleRequestRuleconfig
+	 */
+	protected function _createRuleconfigRequestObject()
+	{
+		$object = new PaycartDiscountruleRequestRuleconfig();
+		// rule specific data
+		$object->is_percentage 		= $this->is_percentage;
+		$object->is_successive 		= $this->is_successive;
+		$object->amount				= $this->amount;
+		$object->is_clubbable		= $this->is_clubbable;
+		$object->usage_limit		= $this->usage_limit;
+		$object->buyer_usage_limit 	= $this->buyer_usage_limit;
+		$object->coupon				= $this->coupon;
+		
+		return $object;
+	}
+	
+	/**
+	 * @return PaycartDiscountruleRequestGlobalconfig	 
+	 */
+	protected function _createGlobalconfigRequestObject()
+	{
+		$object = new PaycartDiscountruleRequestGlobalconfig();		
+		return $object;
 	}
 
 	/**

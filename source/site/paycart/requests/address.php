@@ -15,11 +15,13 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartRequestAddress
 {
-	public $line1;
-	public $line2;
+	public $to;
+	public $address;
 	public $city;
 	public $state;
 	public $country;
 	public $zipcode;
-	public $phone;
+	public $phone1;
+	public $phone2;
+	public $vat_number;
 }

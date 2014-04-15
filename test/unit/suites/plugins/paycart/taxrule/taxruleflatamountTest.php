@@ -32,7 +32,7 @@ class PaycartTaxruleProcessorFlatAmountTest extends PayCartTestCase
 	 * testing process 
 	 * @dataProvider providerProcess
 	 */
-	public function testProcess($taxRequest, $taxResponse, $isApplicable = true)
+	public function testProcess($taxRequest, $ruleConfig, $taxResponse, $isApplicable = true)
 	{
 		// create mock
 		$mock      = new PaycartTaxruleProcessorFlatAmountStub();
@@ -40,12 +40,14 @@ class PaycartTaxruleProcessorFlatAmountTest extends PayCartTestCase
         
         // handle dependency if required
         if(!$isApplicable){
-	        $mock = $this->getMock('PaycartTaxruleProcessorFlatAmountStub', Array('isApplicable'), Array($taxRequest, $response));
+	        $mock = $this->getMock('PaycartTaxruleProcessorFlatAmountStub', Array('isApplicable'));
 	        $mock->expects($this->once())
 	             ->method('isApplicable')
 	             ->will($this->returnValue($isApplicable));
         }
 
+        $mock->rule_config = $ruleConfig;
+        
         // process tax
         $response = $mock->process($taxRequest, $response);
         
@@ -70,39 +72,47 @@ class PaycartTaxruleProcessorFlatAmountTest extends PayCartTestCase
 		 * Case1 : Nothing set in request and Taxrate is zero
 		 */
 		$request1  = new PaycartTaxruleRequest();
-		$response1 = new PaycartTaxruleResponse();
+		$ruleConfig1 = new PaycartTaxruleRequestRuleconfig();
+		$response1 = new PaycartTaxruleResponse();		
 		$response1->exception = new InvalidArgumentException(Rb_Text::_('COM_PAYCART_TAXRULE_RATE_CANT_BE_ZERO'));
 		
 		/**
 		 * case2 : Everything ok
 		 */
-		$request2  = new PaycartTaxruleRequest();
-		$request2->taxRate		= 10;
+		$request2  	= new PaycartTaxruleRequest();
+		$request2->particular = new PaycartRequestParticular();
+		
+		$ruleConfig2= new PaycartTaxruleRequestRuleconfig();
+		$ruleConfig2->tax_rate	= 10;
 		
 		$response2 = new PaycartTaxruleResponse();
-		$response2->taxAmount 	= 10;
+		$response2->amount 	= 10;
 		
 		/**
 		 * case3 : Everything ok and quatity is set
 		 */
 		$request3  = new PaycartTaxruleRequest();
-		$request3->taxRate	       = 5;
-		$request3->productQuantity = 5;
+		$request3->particular = new PaycartRequestParticular();		
+		$request3->particular->quantity = 5;
+		
+		$ruleConfig3= new PaycartTaxruleRequestRuleconfig();
+		$ruleConfig3->tax_rate	= 5;
 		
 		$response3 = new PaycartTaxruleResponse();
-		$response3->taxAmount 	   = 25;
+		$response3->amount 	   = 25;
 		
 		/**
 		 * Case4 : When taxrule is not applicable
 		 */
 		$request4  = new PaycartTaxruleRequest();
-		$response4 = new PaycartTaxruleResponse();
+		$ruleConfig4= new PaycartTaxruleRequestRuleconfig();
+		$response4 = new PaycartTaxruleResponse();		
 		
 		return array(
-						array($request1, $response1),
-						array($request2, $response2),
-						array($request3, $response3),
-						array($request4, $response4, false)
+						array($request1, $ruleConfig1, $response1),
+						array($request2, $ruleConfig2, $response2),
+						array($request3, $ruleConfig3, $response3),
+						array($request4, $ruleConfig4, $response4, false)
 					);
 	}
 }

@@ -65,6 +65,14 @@ class PaycartTaxrule extends PaycartLib
 	}
 	
 	/**
+	 * @return PaycartTaxruleProcessor
+	 */
+	public function getProcessor()
+	{
+		return PaycartFactory::getProcessor(paycart::PROCESSOR_TYPE_TAXRULE, $this->processor_classname);
+	}
+	
+	/**
 	 * 
 	 * Do start processing tax request
 	 * @param Paycartcart $cart
@@ -75,10 +83,13 @@ class PaycartTaxrule extends PaycartLib
 	 */
 	public function process(Paycartcart $cart, PaycartCartparticular $particular)
 	{
-		$request   = $this->createRequest($cart, $particular);
+		$request   = $this->_createRequestObject($cart, $particular);
 		$response  = $this->createResponse();
 		
-		$processor = PaycartFactory::getProcessor(paycart::PROCESSOR_TYPE_TAX, $this->processor_classname, $this->getProcessorConfig());
+		$processor = $this->getProcessor();
+		$processor->processor_config = $this->getProcessorConfig();
+		$processor->rule_config 	 = $this->_createRuleconfigRequestObject();
+		$processor->global_config 	 = $this->_createGlobalconfigRequestObject();
 		
 		//process current request
 		$processor->process($request, $response);
@@ -111,7 +122,7 @@ class PaycartTaxrule extends PaycartLib
 		//create usage data
 		$usage = new stdClass();
 		
-		$usage->rule_type			=	Paycart::PROCESSOR_TYPE_DISCOUNTRULE;
+		$usage->rule_type			=	Paycart::PROCESSOR_TYPE_TAXRULE;
 		$usage->rule_id				=	$this->getId();
 		$usage->cart_id				=	$cart->getId();
 		$usage->buyer_id			=	$cart->getBuyer();
@@ -136,29 +147,34 @@ class PaycartTaxrule extends PaycartLib
 	 * 
 	 * @return PaycartTaxruleRequest object
 	 */
-	protected function createRequest(PaycartCart $cart, PaycartCartparticular $particular)
-	{
+	protected function _createRequestObject(PaycartCart $cart, PaycartCartparticular $particular)
+	{		
+		$helperRequest 			= PaycartFactory::getHelper('request');
+		/* @var $helperRequest PaycartHelperRequest */
+		
 		$request 	= new PaycartTaxruleRequest();
 		
 		//rule specific data
-		$request->rule_amount			= $this->amount;
-		
-		//particular specific stuff
-		$request->particular_unit_price		= $particular->getUnitPrice();
-		$request->particular_quantity		= $particular->getQuantity();
-		$request->particular_price			= $particular->getPrice();		//basePrice = unitPrice * Quantity
-		$request->particular_total			= $particular->getTotal();
-		
-		//cart specific stuff
-		$request->cart_total				=	$cart->getTotal();
-		$request->cart_shipping_address_id	=	$cart->getShippingAddress();
-		$request->cart_billing_address_id	=	$cart->getBillingAddress();
-		
-		//@PCTODO:: Buyer specific stuff
-		$request->buyer_id			=	$cart->getBuyer();
-		$request->buyer_vatnumber	=	'';
+		$request->taxable_amount		= $this->amount;
+		$request->particular 			= $helperRequest->getParticularObject($particular);
+		$request->shipping_address		= $helperRequest->getAddressObject($cart->getShippingAddress());
+		$request->billing_address		= $helperRequest->getAddressObject($cart->getBillingAddress());
+		$request->buyer					= $helperRequest->getBuyerObject($cart->getBuyer());
 		
 		return $request;
+	}
+	
+	protected function _createRuleconfigRequestObject()
+	{
+		$object = new PaycartTaxruleRequestRuleconfig();
+		$object->tax_rate = $this->amount;
+		return $object;
+	}
+	
+	protected function _createGlobalconfigRequestObject()
+	{
+		$object = new PaycartTaxruleRequestGlobalconfig();
+		return $object;
 	}
 	
 	/**
