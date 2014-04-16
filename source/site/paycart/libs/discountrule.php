@@ -112,8 +112,8 @@ class PaycartDiscountRule extends PaycartLib
 		/* @var $processor PaycartDiscountRuleProcessor */ 
 		
 		$processor->processor_config = $this->getProcessorConfig();
-		$processor->rule_config 	 = $this->_createRuleconfigRequestObject();
-		$processor->global_config 	 = $this->_createGlobalconfigRequestObject();
+		$processor->rule_config 	 = $this->getRuleconfigRequestObject();
+		$processor->global_config 	 = $this->getGlobalconfigRequestObject();
 		
 		return $processor;
 	}
@@ -121,12 +121,8 @@ class PaycartDiscountRule extends PaycartLib
 	/**
 	 * Get processor config
 	 */
-	function getProcessorConfig($inArray = false)
+	function getProcessorConfig()
 	{		
-		if($inArray){
-			return $this->processor_config->toArray();			
-		}
-		
 		return $this->processor_config->toObject();
 	}
 		
@@ -148,11 +144,11 @@ class PaycartDiscountRule extends PaycartLib
 	/**
 	 * 
 	 * Applicability check  
-	 * @param PaycartDiscountRuleRequest $discountRule
-	 * 
+	 * @param Paycartcart $cart
+	 * @param PaycartCartparticular $cartparticular
 	 * @return boolean type if applicable otherwise false
 	 */
-	public function isApplicable(Paycartcart $cart, PaycartCartparticular $particular)
+	public function isApplicable(Paycartcart $cart, PaycartCartparticular $cartparticular)
 	{		
 		$response = new stdClass();
 		$response->error = true;
@@ -188,15 +184,15 @@ class PaycartDiscountRule extends PaycartLib
 	 * 
 	 * Process discountrule
 	 * @param Paycartcart $cart
-	 * @param PaycartCartparticular $particular
+	 * @param PaycartCartparticular $cartparticular
 	 * @throws InvalidArgumentException
 	 * 
 	 * @return DiscountRule lib object
 	 */
-	public function process(Paycartcart $cart, PaycartCartparticular $particular)
+	public function process(Paycartcart $cart, PaycartCartparticular $cartparticular)
 	{
 		// first check its applicabiliy
-		$isApplicableResponse = $this->isApplicable($cart, $particular);
+		$isApplicableResponse = $this->isApplicable($cart, $cartparticular);
 		
 		if($isApplicableResponse->error === true){
 			// $isApplicableResponse contains the messgage, 
@@ -206,7 +202,7 @@ class PaycartDiscountRule extends PaycartLib
 		$processor = $this->getProcessor();
 		
 		// create request and reponse object then process discount-rule
-		$request	= $this->_createRequestObject($cart, $particular);
+		$request	= $this->getRequestObject($cart, $cartparticular);
 		$response	= $this->createResponse();
 		
 		$processor->process($request, $response);
@@ -235,9 +231,9 @@ class PaycartDiscountRule extends PaycartLib
 			return $this;
 		} 
 		
-		$total 	= $particular->getTotal();
+		$total 	= $cartparticular->getTotal();
 		
-		// @NOTE: Stop next all-rule processing for $particular if meet following any one conditions in current rule
+		// @NOTE: Stop next all-rule processing for $cartparticular if meet following any one conditions in current rule
 		
 		// Check limit of discount 
 		if ($total+($response->amount) < 0) { // @NOTE: should not fall behind of minimum-price limit.
@@ -253,7 +249,7 @@ class PaycartDiscountRule extends PaycartLib
 		}			
 			
 		// apply discounted amount
-		$particular->addDiscount($response->amount);
+		$cartparticular->addDiscount($response->amount);
 		
 		//create usage data
 		$usage = new stdClass();
@@ -262,7 +258,7 @@ class PaycartDiscountRule extends PaycartLib
 		$usage->rule_id				=	$this->getId();
 		$usage->cart_id				=	$cart->getId();
 		$usage->buyer_id			=	$cart->getBuyer();
-		$usage->carparticular_id	=	$particular->getId();
+		$usage->carparticular_id	=	$cartparticular->getId();
 		$usage->price				=	$response->amount;
 		$usage->applied_date		=	Rb_Date::getInstance();
 		$usage->realized_date		=	'';
@@ -275,33 +271,28 @@ class PaycartDiscountRule extends PaycartLib
 	}
 	
 	/**
-	 * 
-	 * create request object 
-	 * @param PaycartCart $cart
-	 * @param PaycartCartparticular $particular
-	 * 
 	 * @return PaycartDiscountRuleRequest object
 	 */
-	protected function _createRequestObject(PaycartCart $cart, PaycartCartparticular $particular)
+	public function getRequestObject(PaycartCart $cart, PaycartCartparticular $cartparticular)
 	{
-		$helperRequest 			= PaycartFactory::getHelper('request');
 		/* @var $helperRequest PaycartHelperRequest */
+		$helperRequest 			= PaycartFactory::getHelper('request');		
 		
 		$request 							= new PaycartDiscountruleRequest();		
-		$request->particular 				= $helperRequest->getParticularObject($particular);
-		$request->shipping_address			= $helperRequest->getAddressObject($cart->getShippingAddress());
-		$request->billing_address			= $helperRequest->getAddressObject($cart->getBillingAddress());
+		$request->cartparticular 			= $helperRequest->getCartparticularObject($cartparticular);
+		$request->shipping_address			= $helperRequest->getBuyeraddressObject($cart->getShippingAddress());
+		$request->billing_address			= $helperRequest->getBuyeraddressObject($cart->getBillingAddress());
 		$request->buyer						= $helperRequest->getBuyerObject($cart->getBuyer());
 		
 		//@ PCTODO : verify in isApplicable function
-		$request->particular->coupon		= $cart->coupon;// @PCTODO: get Posted coupon code from cart
+		$request->cartparticular->coupon		= $cart->coupon;// @PCTODO: get Posted coupon code from cart
 		
 		// amount on which discount should be applied
-		$request->discountable_amount = $request->particular->price;
+		$request->discountable_amount = $request->cartparticular->price;
 		// If discount is successive/row total then applied on total amount.
 		// It will use on multi discount
 		if ($this->is_successive) {
-			$request->discountable_amount = $request->particular->total;
+			$request->discountable_amount = $request->cartparticular->total;
 		}
 		
 		return $request;
@@ -310,7 +301,7 @@ class PaycartDiscountRule extends PaycartLib
 	/**
 	 * @return PaycartDiscountruleRequestRuleconfig
 	 */
-	protected function _createRuleconfigRequestObject()
+	public function getRuleconfigRequestObject()
 	{
 		$object = new PaycartDiscountruleRequestRuleconfig();
 		// rule specific data
@@ -328,7 +319,7 @@ class PaycartDiscountRule extends PaycartLib
 	/**
 	 * @return PaycartDiscountruleRequestGlobalconfig	 
 	 */
-	protected function _createGlobalconfigRequestObject()
+	public function getGlobalconfigRequestObject()
 	{
 		$object = new PaycartDiscountruleRequestGlobalconfig();		
 		return $object;
@@ -348,12 +339,12 @@ class PaycartDiscountRule extends PaycartLib
 	/**
 	 * @PCTODO :: Discountrule-Helper.php 
 	 * @param PayacartCart $cart
-	 * @param PaycartCartparticular $particular
+	 * @param PaycartCartparticular $cartparticular
 	 * @param array $ruleIds Applicable rules
 	 * 
 	 * @return bool value
 	 */
-	protected function _processDiscountRule(PayacartCart $cart, PaycartCartparticular $particular, Array $ruleIds)
+	protected function _processDiscountRule(PayacartCart $cart, PaycartCartparticular $cartparticular, Array $ruleIds)
 	{
 		//@PCTODO : define constant for applicable_on
 		// {product_price, shipping_price, cart-price}
@@ -381,10 +372,10 @@ class PaycartDiscountRule extends PaycartLib
 			$discountRule = PaycartDiscountRule::getInstance($id, $record);
 			
 			// process discount
-			$discounRule->process($cart, $particular);
+			$discounRule->process($cart, $cartparticular);
 			
 			//@PCTODO:: set previous applied rules on particular
-			$particular->_appliedDiscountRules[] = $discountRule; 
+			$cartparticular->_appliedDiscountRules[] = $discountRule; 
 			
 			// no further process
 			if ($discountRule->get('_stopFurtherRules')) {

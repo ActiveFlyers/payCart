@@ -18,9 +18,9 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartHelperRequest extends PaycartHelper
 {	
 	/**
-	 * @return PaycartRequestAddress
+	 * @return PaycartRequestBuyeraddress
 	 */
-	public function getAddressObject($address)
+	public function getBuyeraddressObject($address)
 	{
 		//@PCTODO:
 		// if its numeric then get instance of address
@@ -28,7 +28,7 @@ class PaycartHelperRequest extends PaycartHelper
 			$address = PaycartBuyeraddress::getInstance($address);
 		}
 		
-		$object = new PaycartRequestAddress();
+		$object = new PaycartRequestBuyeraddress();
 		
 		$object->to			= $address->getTo();
 		$object->address 	= $address->getAddress();
@@ -62,16 +62,16 @@ class PaycartHelperRequest extends PaycartHelper
 	}
 	
 	/**
-	 * @return PaycartRequestParticular
+	 * @return PaycartRequestCatparticular
 	 */
-	public function getParticularObject($particular)
+	public function getCartparticularObject($cartparticular)
 	{
 		// if its numeric then get instance of cart particular
-		if(is_numeric($particular)){
-			$particular = PaycartCartparticular::getInstance($particular);
+		if(is_numeric($cartparticular)){
+			$particular = PaycartCartparticular::getInstance($cartparticular);
 		}
 		
-		$object = new PaycartRequestParticular();
+		$object = new PaycartRequestCartparticular();
 		
 		// core
 		$object->title			= $particular->getTitle();

@@ -13,20 +13,15 @@ defined('_JEXEC') or die( 'Restricted access' );
  *  
  * @author Gaurav Jain
  */
-class PaycartRequestParticular 
+class PaycartRequestBuyeraddress
 {
-	public $type;
-	public $title;
-	public $unit_price;
-	public $quantity;
-	public $price;
-	public $discount;
-	public $tax;
-	public $total;
-	
-	//Required for shipping rule processor
-	public $length;
-	public $width;
-	public $height;
-	public $weight;
+	public $to;
+	public $address;
+	public $city;
+	public $state;
+	public $country;
+	public $zipcode;
+	public $phone1;
+	public $phone2;
+	public $vat_number;
 }

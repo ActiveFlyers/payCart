@@ -80,7 +80,7 @@ class PaycartTaxruleProcessorFlatAmountTest extends PayCartTestCase
 		 * case2 : Everything ok
 		 */
 		$request2  	= new PaycartTaxruleRequest();
-		$request2->particular = new PaycartRequestParticular();
+		$request2->particular = new PaycartRequestCartparticular();
 		
 		$ruleConfig2= new PaycartTaxruleRequestRuleconfig();
 		$ruleConfig2->tax_rate	= 10;
@@ -92,7 +92,7 @@ class PaycartTaxruleProcessorFlatAmountTest extends PayCartTestCase
 		 * case3 : Everything ok and quatity is set
 		 */
 		$request3  = new PaycartTaxruleRequest();
-		$request3->particular = new PaycartRequestParticular();		
+		$request3->particular = new PaycartRequestCartparticular();		
 		$request3->particular->quantity = 5;
 		
 		$ruleConfig3= new PaycartTaxruleRequestRuleconfig();

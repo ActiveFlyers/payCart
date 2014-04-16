@@ -249,7 +249,7 @@ class PaycartPluginsShippingruleFlatrateTest extends PayCartTestCase
 		   	
     	
     	foreach($products as $product){
-    		$req_product = new PaycartRequestParticular();
+    		$req_product = new PaycartRequestCartparticular();
     		
     		foreach($product as $key => $value){
     			$req_product->$key = $value;

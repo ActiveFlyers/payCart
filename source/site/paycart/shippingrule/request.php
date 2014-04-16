@@ -17,17 +17,17 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartShippingruleRequest
 {
 	/**
-	 * @var PaycartRequestParticular[]
+	 * @var PaycartRequestCartparticular[]
 	 */
-	public $particulars = array();
+	public $cartparticulars = array();
 	
 	/**
-	 * @var PaycartRequestAddress
+	 * @var PaycartRequestBuyeraddress
 	 */
 	public $delivery_address;
 	
 	/**
-	 * @var PaycartRequestAddress
+	 * @var PaycartRequestBuyeraddress
 	 */
 	public $origin_address;
 }

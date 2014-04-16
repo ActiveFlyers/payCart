@@ -76,18 +76,18 @@ class PaycartShippingrule extends PaycartLib
 	 */
 	public function getProcessor()
 	{
-		return PaycartFactory::getProcessor(paycart::PROCESSOR_TYPE_SHIPPINGRULE, $this->processor_classname);
+		$processor = PaycartFactory::getProcessor(paycart::PROCESSOR_TYPE_SHIPPINGRULE, $this->processor_classname);
+		$processor->processor_config = $this->getProcessorConfig();
+		$processor->rule_config 	 = $this->getRuleconfigRequestObject();
+		$processor->global_config 	 = $this->getGlobalconfigRequestObject();
+		return $processor;
 	}
 	
 	/**
 	 * Get processor config
 	 */
-	function getProcessorConfig($inArray = false)
+	function getProcessorConfig()
 	{		
-		if($inArray){
-			return $this->processor_config->toArray();			
-		}
-		
 		return $this->processor_config->toObject();
 	}
 	
@@ -112,20 +112,20 @@ class PaycartShippingrule extends PaycartLib
 				throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_LIB_SHIPPINGRULE_PRODUCT_DETAIL_MISSING'), 404);
 			}
 
-			$request->product[$id_product] = $helperRequest->getParticularObject($product_details[$id_product]);
+			$request->cartparticulars[$id_product] = $helperRequest->getCartparticularObject($product_details[$id_product]);
 		}
 
 		//IMP : Multiple warehouses are not supported yet
 		//@TODO :  load origin address id from global configuration
 		$origin_address_id = 0;
-		$request->origin_address 	= $helperRequest->getAddressObject($origin_address_id);
-		$request->delivery_address 	= $helperRequest->getAddressObject($delivery_address_id);
+		$request->origin_address 	= $helperRequest->getBuyeraddressObject($origin_address_id);
+		$request->delivery_address 	= $helperRequest->getBuyeraddressObject($delivery_address_id);
 		
 		// get processor instance and set some parameters
 		$processor = $this->getProcessor();
-		$processor->global_config  	  = $this->_createGlobalconfigRequestObject();
-		$processor->rule_config  	  = $this->_createRuleconfigRequestObject();
-		$processor->processor_config  = $this->getProcessorConfig()->toObject;
+		$processor->global_config  	  = $this->getGlobalconfigRequestObject();
+		$processor->rule_config  	  = $this->getRuleconfigRequestObject();
+		$processor->processor_config  = $this->getProcessorConfig();
 		
 		$response  = new PaycartShippingruleResponse();
 		$response  = $processor->getPackageShippingCost($request, $response);
@@ -138,10 +138,10 @@ class PaycartShippingrule extends PaycartLib
 		}
 		
 		//@PCTODO : Currently assuming price_ with_tax = price_without_tax
-		return array($response->cost, $response->cost);
+		return array($response->amount, $response->amount);
 	}
 	
-	protected function _createGlobalconfigRequestObject()
+	public function getGlobalconfigRequestObject()
 	{
 		$config = new PaycartShippingruleRequestGlobalconfig();
 		$config->dimenssion_unit  = 'INCH'; //@TODO : get from global config
@@ -149,7 +149,7 @@ class PaycartShippingrule extends PaycartLib
 		return $config;
 	}
 	
-	protected function _createRuleconfigRequestObject()
+	public function getRuleconfigRequestObject()
 	{
 		$config = new PaycartShippingruleRequestRuleconfig();
 		$config->packaging_weight = $this->getPackagingWeight();

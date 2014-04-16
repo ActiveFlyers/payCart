@@ -136,7 +136,7 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
 		   	
     	
     	foreach($processor_request['products'] as $product){
-    		$req_product = new PaycartRequestParticular();
+    		$req_product = new PaycartRequestCartparticular();
     		
     		foreach($product as $key => $value){
     			$req_product->$key = $value;
@@ -146,13 +146,13 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
 		}
 		
 		// delivery address
-    	$request->delivery_address = new PaycartRequestAddress();    		
+    	$request->delivery_address = new PaycartRequestBuyeraddress();    		
     	foreach($processor_request['delivery_address'] as $key => $value){
     		$request->delivery_address->$key = $value;
     	}
     		
 		// origin address
-    	$request->origin_address = new PaycartRequestAddress();    		
+    	$request->origin_address = new PaycartRequestBuyeraddress();    		
     	foreach($processor_request['origin_address'] as $key => $value){
     		$request->origin_address->$key = $value;
     	}

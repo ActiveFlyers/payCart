@@ -18,17 +18,17 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartDiscountruleRequest
 {
 	/**
-	 * @var PaycartRequestParticular
+	 * @var PaycartRequestCartparticular
 	 */
-	public $particular;
+	public $cartparticular;
 	
 	/**
-	 * @var PaycartRequestAddress
+	 * @var PaycartRequestBuyeraddress
 	 */
 	public $shipping_address;
 	
 	/**
-	 * @var PaycartRequestAddress
+	 * @var PaycartRequestBuyeraddress
 	 */
 	public $billing_address;
 	
@@ -36,12 +36,6 @@ class PaycartDiscountruleRequest
 	 * @var PaycartRequestBuyer
 	 */
 	public $buyer;
-	
-	/**
-	 * @var float
-	 */
-	public $cart_total = 0.00;
-	public $cart_particular_quantity	=	0;
 	
 	public $previous_applied_rules	=	Array();	// used when checking clubbale 
 	
