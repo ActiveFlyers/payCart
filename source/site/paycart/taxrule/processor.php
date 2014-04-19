@@ -21,16 +21,19 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 abstract class PaycartTaxruleProcessor
 {
 	/**
-	 * @var config
+	 * @var PaycartTaxruleRequestGlobalconfig
 	 */
-	protected $config = null;
+	public $global_config = null;
 	
-	public function __construct($config = null)
-	{
-		// set configuration
-		$this->config = $config;
-		return $this;
-	}
+	/**
+	 * @var PaycartTaxruleRequestRuleconfig
+	 */
+	public $rule_config = null;
+	
+	/**
+	 * @var stdclass
+	 */
+	public $processor_config = null;
 	
 	/**
 	 * 
@@ -67,7 +70,7 @@ abstract class PaycartTaxruleProcessor
 		
 		try{
 			//set amount on response
-			$response->taxAmount = $this->_calculateTax($request->taxableAmount, $request->taxRate);
+			$response->amount = $this->_calculateTax($request->taxable_amount, $this->rule_config->tax_rate);
 		}
 		catch (Exception $e){
 			$response->exception = $e;
@@ -93,45 +96,4 @@ abstract class PaycartTaxruleProcessor
 		
 		return ($taxableAmount * floatval($taxRate) / 100);
 	}	
-}
-
-
-class PaycartTaxruleRequest
-{
-	// Request Field : Discount speicifc
-	public $rule_amount	  			=	0;
-	
-	// Request Field : Particular Cart/Product/Shipping specific
-	public $particular_unit_price	 		=	0;			// unitPrice * quantity
-	public $particular_quantity		 		=	1;			// quantity
-	public $particular_price		 		=	0;			// (unitPrice * quantity)
-	public $particular_total		 		=	0;			// (unitPrice * quantity)+(Applied Tax)
-	
-	// Request Field : cart data
-	public $cart_total					=	0;
-	public $cart_shipping_address_id	=	0;
-	public $cart_billing_address_id		=	0;
-	
-	// Request Field : buyer data
-	public $buyer_id			=	0;
-	public $buyer_vatnumber		=	0;
-}
-
-
-class PaycartTaxruleResponse
-{
-	// actual tax amount 
-	public $amount   = 0;
-	
-	// message that will be displayed to users 
-	public $message     = '';
-	
-	// type of message like error, warning or acknowledgement message
-	public $messageType = Paycart::MESSAGE_TYPE_MESSAGE;
-	
-	// stores exception object
-	public $exception   = null;
-	
-	//store configuration html of rule
-	public $configHtml  = '';
 }

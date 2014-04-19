@@ -23,7 +23,7 @@ class PaycartTaxruleProcessorEuvat extends PaycartTaxruleProcessor
 	
 	public function process(PaycartTaxruleRequest $request, PaycartTaxruleResponse $response)
 	{
-		$result = $this->isVatValid($request->buyerCountryCode, $request->buyerVatNumber, $response);
+		$result = $this->isVatValid($request->billing_address->country_isocode2, $request->billing_address->vat_number, $response);
 		
 		if($result){
 			return parent::process($request, $response);

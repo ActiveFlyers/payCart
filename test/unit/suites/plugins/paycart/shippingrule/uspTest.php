@@ -36,10 +36,9 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
     							'packaging_type' 	=> 'VARIABLE',
     							'packaging_size' 	=> 'REGULAR',
     							'machinable'		=> true),
-    					array('config' 				=> array(
-    													'packaging_weight' 	=> 0,
-    													'handling_charge'	=> 0),
-    						  'delivery_address'	=> array('zipcode' => '27892'),
+    					array('packaging_weight' 	=> 0,
+    							'handling_charge'	=> 0),
+    					array('delivery_address'	=> array('zipcode' => '27892'),
     					      'origin_address'		=> array('zipcode' => '98001'),
     						  'products'			=> array(
     													'1' => array(
@@ -59,10 +58,9 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
     							'packaging_type' 	=> 'VARIABLE',
     							'packaging_size' 	=> 'REGULAR',
     							'machinable'		=> true),
-    					array('config' 				=> array(
-    													'packaging_weight' 	=> 0,
-    													'handling_charge'	=> 0),
-    						  'delivery_address'	=> array('zipcode' => '27892'),
+    					array('packaging_weight' 	=> 0,
+    							'handling_charge'	=> 0),
+    					array('delivery_address'	=> array('zipcode' => '27892'),
     					      'origin_address'		=> array('zipcode' => '98001'),
     						  'products'			=> array(
     													'1' => array(
@@ -88,10 +86,9 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
     							'packaging_type' 	=> 'VARIABLE',
     							'packaging_size' 	=> 'REGULAR',
     							'machinable'		=> true),
-    					array('config' 				=> array(
-    													'packaging_weight' 	=> 0,
-    													'handling_charge'	=> 5),
-    						  'delivery_address'	=> array('zipcode' => '27892'),
+    					array('packaging_weight' 	=> 0,
+    							'handling_charge'	=> 5),
+    					array('delivery_address'	=> array('zipcode' => '27892'),
     					      'origin_address'		=> array('zipcode' => '98001'),
     						  'products'			=> array(
     													'1' => array(
@@ -116,9 +113,9 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
     /**
      * @dataProvider providerTestGetPackageShippingCost
      */	
-	public function testGetPackageShippingCost($processor_config, $processor_request, $response) 
+	public function testGetPackageShippingCost($processor_config, $rule_config, $processor_request, $response) 
 	{		
-		list($processor, $request) = $this->_getProcessorXrequest($processor_config, $processor_request);
+		list($processor, $request) = $this->_getProcessorXrequest($processor_config, $rule_config, $processor_request);
 		 
 		// @PCTODO: Rmeove this code once autoloading to response classes is done  
 		$r = new PaycartShippingruleResponse();
@@ -127,27 +124,28 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
 		$this->assertEquals($response, $result->amount);		
 	}		
 	
-	private function _getProcessorXrequest($processor_config, $processor_request)
+	private function _getProcessorXrequest($processor_config, $rule_config, $processor_request)
 	{
 		$processor = new PaycartShippingruleProcessorUsps();
 		
+		$processor->processor_config = new stdClass();
 		// load processor config
 		foreach($processor_config as $key => $value){
-			$processor->config->$key = $value;	
+			$processor->processor_config->$key = $value;	
 		}
 				
 		// create request 
 		$request = new PaycartShippingruleRequest();
 		
 		// load request config
-    	$request->config = new PaycartShippingruleRequestConfig();
-		foreach($processor_request['config'] as $key => $value){
-			$request->config->$key = $value;	
+    	$processor->rule_config = new PaycartShippingruleRequestRuleconfig();
+		foreach($rule_config as $key => $value){
+			$processor->rule_config->$key = $value;	
 		}
 		   	
     	
     	foreach($processor_request['products'] as $product){
-    		$req_product = new PaycartShippingruleRequestProduct();
+    		$req_product = new PaycartRequestCartparticular();
     		
     		foreach($product as $key => $value){
     			$req_product->$key = $value;
@@ -157,13 +155,13 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
 		}
 		
 		// delivery address
-    	$request->delivery_address = new PaycartShippingruleRequestAddress();    		
+    	$request->delivery_address = new PaycartRequestBuyeraddress();    		
     	foreach($processor_request['delivery_address'] as $key => $value){
     		$request->delivery_address->$key = $value;
     	}
     		
 		// origin address
-    	$request->origin_address = new PaycartShippingruleRequestAddress();    		
+    	$request->origin_address = new PaycartRequestBuyeraddress();    		
     	foreach($processor_request['origin_address'] as $key => $value){
     		$request->origin_address->$key = $value;
     	}

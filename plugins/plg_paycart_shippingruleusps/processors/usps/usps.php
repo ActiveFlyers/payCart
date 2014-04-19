@@ -124,7 +124,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 			'shipper_postalcode' => $request->origin_address->zipcode
 		);
 		
-		if($this->getConfig('calculation_mode') == 'ONEPACKAGE'){
+		if(empty($this->processor_config->calculation_mode) || $this->processor_config->calculation_mode == 'ONEPACKAGE'){
 			$req_params = $this->_getOnepackageRequestParams($request, $req_params);
 		}else{
 			$req_params = $this->_getPeritemRequestParams($request, $req_params);
@@ -140,7 +140,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 			return $response;
 		}
 		
-		$response->amount = $result['rate'] + $request->config->handling_charge;		
+		$response->amount = $result['rate'] + $this->rule_config->handling_charge;		
 		return $response;
 	}
 	
@@ -153,7 +153,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 		$weight = 0;
 
 		foreach ($request->products as $product){
-			/* @var $product PaycartShippingruleRequestProduct */
+			/* @var $product PaycartRequestParticular */
 			if ($product->width && $product->width > $width){ 
 				$width = $product->width;
 			}
@@ -171,18 +171,18 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 			}
 		}
 		
-		$weight += $request->config->packaging_weight;
+		$weight += $this->rule_config->packaging_weight;
 		
-		$req_params['service'] = $this->getConfig('service_code', '');
+		$req_params['service'] = isset($this->processor_config->service_code) ? $this->processor_config->service_code : '';
 		$req_params['package_list'] = array();
 		$req_params['package_list'][] = array(
 			'width' => ($width > 0 ? $width : 1),
 			'height' => ($height > 0 ? $height : 1),
 			'length' => ($length > 0 ? $length : 1),
 			'weight' => ($weight > 0 ? $weight : 0.5), // ????
-			'packaging_type' => $this->getConfig('packaging_type', 'VARIABLE'),
-			'packaging_size' =>  $this->getConfig('packaging_size', 'REGULAR'),
-			'machinable' => $this->getConfig('machinable', false),
+			'packaging_type' => !empty($this->processor_config->packaging_type) ? $this->processor_config->packaging_type : 'VARIABLE',
+			'packaging_size' =>  !empty($this->processor_config->packaging_size)? $this->processor_config->packaging_size : 'REGULAR',
+			'machinable' => isset($this->processor_config->machinable) ? $this->processor_config->machinable :  false,
 		);
 		
 		return $req_params;		
@@ -191,7 +191,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 	protected function _getPeritemRequestParams(PaycartShippingruleRequest $request, $req_params)
 	{
 		// Load param product
-		$req_params['service'] = $this->getConfig('service_code', '');
+		$req_params['service'] = isset($this->processor_config->service_code) ? $this->processor_config->service_code : '';
 		
 		$cost = 0;
 		// Getting shipping cost for each product
@@ -202,9 +202,9 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 					'height' => ($product->height 	? $product->height : 1),
 					'depth' => ($product->length 	? $product->length : 1),
 					'weight' => ($product->weight > 0 ? $product->weight : 0.5),
-					'packaging_type' => $this->getConfig('packaging_type', 'VARIABLE'),
-					'packaging_size' =>  $this->getConfig('packaging_size', 'REGULAR'),
-					'machinable' => $this->getConfig('machinable', false),
+					'packaging_type' => !empty($this->processor_config->packaging_type) ? $this->processor_config->packaging_type : 'VARIABLE',
+					'packaging_size' =>  !empty($this->processor_config->packaging_size)? $this->processor_config->packaging_size : 'REGULAR',
+					'machinable' => isset($this->processor_config->machinable) ? $this->processor_config->machinable :  false,
 				);
 			}
 		}
@@ -315,7 +315,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 			$count++;
 			if ($count == 25){
 				// Template Xml
-				$xmlTemplate 	= '<RateV4Request USERID="'.$this->getConfig('user_id', '').'">
+				$xmlTemplate 	= '<RateV4Request USERID="'.(isset($this->processor_config->user_id) ? $this->processor_config->user_id : '').'">
 										<Revision>2</Revision>
 										'.$xmlPackageList.'
 									</RateV4Request>';			
@@ -328,7 +328,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 		// Template Xml
 		if ($count > 0){
 			// Template Xml
-			$xmlTemplate 	= '<RateV4Request USERID="'.$this->getConfig('user_id', '').'">
+			$xmlTemplate 	= '<RateV4Request USERID="'.(isset($this->processor_config->user_id) ? $this->processor_config->user_id : '').'">
 									<Revision>2</Revision>
 									'.$xmlPackageList.'
 								</RateV4Request>';			

@@ -33,6 +33,8 @@ class PaycartBuyer extends PaycartLib
 	 * @param $bindData
 	 * @param $dummy1
 	 * @param $dummy2
+	 * 
+	 * @return PaycartBuyer
 	 */
 	public static function getInstance($id = 0, $bindData = null, $dummy1 = null, $dummy2 = null)
 	{
