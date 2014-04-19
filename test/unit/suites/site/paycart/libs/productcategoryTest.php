@@ -71,14 +71,13 @@ class PaycartProductcategoryTest extends PayCartTestCaseDatabase
  		
  		$language = new stdClass();
  		$language->productcategory_lang_id	= 0;
- 		
- 		$language->lang_code 			= PaycartFactory::getLanguageTag(); //Current Paycart language Tag	
-		$language->title				= '';
+ 		$language->productcategory_id	= 0;
+ 		$language->title				= '';
 		$language->alias				= '';
 		$language->description			= ''; 	
-
-		$language->metadata_title		 = '';
-		$language->metadata_keywords	 = '';
+ 		$language->lang_code 			= PaycartFactory::getLanguageTag(); //Current Paycart language Tag	
+		$language->metadata_title		= '';
+		$language->metadata_keywords	= '';
 		$language->metadata_description = '';
 		
  		
@@ -145,18 +144,20 @@ class PaycartProductcategoryTest extends PayCartTestCaseDatabase
 							'_language' => Array('title' => 'testing_title_hi', 'lang_code'	=>'hi-IN', 'alias'=>'cat-3',
 												 'description'=>'description41',	'metadata_title' => 'metadata_title4', 
 												 'metadata_keywords' => 'keyword41, keyword42',	
-												 'metadata_description'=> 'description4' )
+												 'metadata_description'=> 'description4', 'productcategory_lang_id' => 0 )
 						);
-		$this->assertInstanceOf('PaycartProductcategory', $new_instance->bind($data)->save());
+						
+
+
+		$new_instance = PaycartProductcategory::getInstance(3);
 		
+		$this->assertInstanceOf('PaycartProductcategory', $new_instance->bind($data)->save());
 		
 		// Expected data
 		$au_data = $this->auData_testSave();
-		
-		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
 
 		$this->compareTables(	Array(	'jos_paycart_productcategory','jos_paycart_productcategory_lang'), 
-								$expectedDataSet,
+								$au_data,
 								Array('jos_paycart_productcategory' => Array( 'created_date','modified_date','cover_media'))
 							);
 		
@@ -230,12 +231,9 @@ class PaycartProductcategoryTest extends PayCartTestCaseDatabase
 		unset($au_data['jos_paycart_productcategory'][2]);
 		unset($au_data['jos_paycart_productcategory_lang'][2]);
 		unset($au_data['jos_paycart_productcategory_lang'][3]);
-		
-		
-		$expectedDataSet = new PHPUnit_Extensions_Database_DataSet_Specs_Array($au_data);
 
 		$this->compareTables(	Array(	'jos_paycart_productcategory','jos_paycart_productcategory_lang'), 
-								$expectedDataSet,
+								$au_data,
 								Array('jos_paycart_productcategory' => Array( 'created_date','modified_date','cover_media'))
 							);
 		

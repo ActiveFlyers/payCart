@@ -282,6 +282,10 @@ class PaycartProduct extends PaycartLib
 			$data = Array();
 			$count = 0;
 			foreach ($this->_attributeValues as $attributeId => $attributeValue) {
+				if(!is_array($attributeValue)){
+					$attributeValue = (array)$attributeValue;
+				}
+				
 				foreach ($attributeValue as $value){
 					$data[++$count]['product_id'] 		 = $productId;
 					$data[$count]['productattribute_id'] = $attributeId;
@@ -306,7 +310,7 @@ class PaycartProduct extends PaycartLib
 	{
 		try {
 			// Create new product or re-save existing product
-			// IMP :: Don't check here isset otherwise it will true (In < PHP 5.4) (for $this->_upload_files['cover_media']['name'])
+			// IMP :: Don't check here isset otherwise it will true (In < PHP 5.4) (for $this->_uploaded_files['cover_media']['name'])
 			// is_array check for it's not a variant && Post data is not empty
 			if (isset($this->_uploaded_files['cover_media']) && is_array($this->_uploaded_files['cover_media']) && !empty($this->_uploaded_files['cover_media']['name']) ) {
 				$this->_ImageProcess($this->_uploaded_files['cover_media'], $previousObject);
@@ -334,7 +338,7 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * Override it due to set language and _upload_files variable
+	 * Override it due to set language and _uploaded_files variable
 	 * 
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 */
@@ -407,7 +411,7 @@ class PaycartProduct extends PaycartLib
 	{
 		// If attribute-data is empty and product exist then load attribute data from database
 		if ($this->getId() && empty($attributeData)) {
-			$attributeValueModel = PaycartFactory::getInstance('productattributevalue', 'model');
+			$attributeValueModel = PaycartFactory::getModel('productattributevalue');
 			$attributeData 	= $attributeValueModel->loadProductRecords($this->getid());
 		}
 		

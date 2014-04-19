@@ -8,24 +8,10 @@
 				readonly="true"
 				size="10"
 			/>
-			<field name="title" type="text"
-				label="COM_PAYCART_PRODUCT_NAME_LABEL"
-				description="COM_PAYCART_PRODUCT_NAME_DESC"
-				required="true"
-			/>
-			<field name="alias" type="text"
-				label="COM_PAYCART_PRODUCT_ALIAS_LABEL"
-				description="COM_PAYCART_PRODUCT_ALIAS_DESC"
-			/>
 			
-			<field name="amount" type="paycart.amount"
-				label="COM_PAYCART_PRODUCT_AMOUNT_LABEL"
-				description="COM_PAYCART_PRODUCT_AMOUNT_DESC"
-			/>
-			
-			<field name="teaser" type="text"
-				label="COM_PAYCART_PRODUCT_TEASER_LABEL"
-				description="COM_PAYCART_PRODUCT_TEASER_DESC"
+			<field name="price" type="paycart.amount"
+				label="COM_PAYCART_PRODUCT_PRICE_LABEL"
+				description="COM_PAYCART_PRODUCT_PRICE_DESC"
 			/>
 			
 			<field name="quantity" type="text"
@@ -43,11 +29,6 @@
 				description="COM_PAYCART_PRODUCT_TYPE_DESC"	
 			/>
 			
-			<field name="digital_file" type="file"
-				label="COM_PAYCART_DIGITAL_FILE_TYPE"
-				description="COM_PAYCART_DIGITAL_FILE_DESC"				
-			/>
-			
 			<field name="featured" type="radio"
 				default="0"
 				description="COM_PAYCART_PRODUCT_FEATURED_DESC"
@@ -58,23 +39,20 @@
 				<option value='1'>COM_PAYCART_YES</option>
 			</field>
 			
-			<field 	name="published" type="radio"
+			<field 	name="status" type="list"
 					default="1"
-					description="COM_PAYCART_PRODUCT_PUBLISHED_DESC"
-					label="COM_PAYCART_PRODUCT_PUBLISHED_LABEL" 
-					class="btn-group"
-			>
-				<option value='0'>COM_PAYCART_NO</option>
-				<option value='1'>COM_PAYCART_YES</option>
+					description="COM_PAYCART_PRODUCT_STATUS_DESC"
+					label="COM_PAYCART_PRODUCT_STATUS_LABEL" 
+				>
+				<option value='published'>COM_PAYCART_PUBLISHED</option>
+				<option value='unpublished'>COM_PAYCART_UNPUBLISHED</option>
+				<option value='invisible'>COM_PAYCART_INVISIBLE</option>
+				<option value='trashed'>COM_PAYCART_TRASHED</option>
 			</field>
 			
-			<field name="description" type="editor"
-				description="COM_PAYCART_PRODUCT_DESCRIPTION_DESC"
-				label="COM_PAYCART_PRODUCT_DESCRIPTION_LABEL" 
-				hide="readmore,pagebreak"
-			/>
+			
 			<!-- Custom Element for paycart product category			-->
-			<field 	name="category_id" type="paycart.category"
+			<field 	name="productcategory_id" type="paycart.category"
 					description="COM_PAYCART_PRODUCT_CATEGORY_ID_DESC"
 					label="COM_PAYCART_PRODUCT_CATEGORY_ID_LABEL" 
 					addnew="true"
@@ -87,22 +65,7 @@
 					description="COM_PAYCART_PRODUCT_COVER_MEDIA_DESC"
 					label="COM_PAYCART_PRODUCT_COVER_MEDIA_LABEL" 
 			/>
-			<field name="teaser" type="text"
-				description="COM_PAYCART_PRODUCT_TEASER_DESC"
-				label="COM_PAYCART_PRODUCT_TEASER_LABEL" 
-			/>
-			<field name="publish_up" type="calendar"
-				default=""
-				description="COM_PAYCART_PRODUCT_PUBLISH_UP_DESC"
-				label="COM_PAYCART_PRODUCT_PUBLISH_UP_LABEL"
-				format="%Y-%m-%d %H:%M:%S"
-			/>
-			<field name="publish_down" type="calendar"
-				default=""
-				description="COM_PAYCART_PRODUCT_PUBLISH_DOWN_DESC"
-				label="COM_PAYCART_PRODUCT_PUBLISH_DOWN_LABEL"		
-				format="%Y-%m-%d %H:%M:%S"		
-			/>
+			
 			<field name="created_date" type="calendar"
 				default=""
 				description="COM_PAYCART_PRODUCT_CREATED_DATE_DESC"
@@ -116,33 +79,94 @@
 				label="COM_PAYCART_PRODUCT_MODIFIED_DATE_LABEL" 
 				format="%Y-%m-%d %H:%M:%S"
 				readonly="true"
-			/>		
-			
-			<field name="hits" type="text"
-				default=""
-				description="COM_PAYCART_PRODUCT_HITS_DESC"
-				label="COM_PAYCART_PRODUCT_HITS_LABEL"
-				readonly="true" 
 			/>
+			
+			<field name="weight" type="text"
+				label="COM_PAYCART_PRODUCT_WEIGHT_LABEL"
+				description="COM_PAYCART_PRODUCT_WEIGHT_DESC"
+			/>
+			
+			<field name="height" type="text"
+				label="COM_PAYCART_PRODUCT_HEIGHT_LABEL"
+				description="COM_PAYCART_PRODUCT_HEIGHT_DESC"
+			/>
+			
+			<field name="length" type="text"
+				label="COM_PAYCART_PRODUCT_LENGTH_LABEL"
+				description="COM_PAYCART_PRODUCT_LENGTH_DESC"
+			/>
+			
+			<field name="depth" type="text"
+				label="COM_PAYCART_PRODUCT_DEPTH_LABEL"
+				description="COM_PAYCART_PRODUCT_DEPTH_DESC"
+			/>
+			
+			<field name="stockout_limit" type="text"
+				label="COM_PAYCART_PRODUCT_STOCKOUT_LIMIT_LABEL" 
+				description="COM_PAYCART_PRODUCT_STOCKOUT_LIMIT_DESC"
+				required="true"
+			/>
+			
+			<field 	name="dimension_unit" type="paycart.dimension"
+					description="COM_PAYCART_PRODUCT_DIMENSION_UNIT_DESC"
+					label="COM_PAYCART_PRODUCT_DIMENSION_UNIT_LABEL" >
+				<option>COM_PAYCART_SELECT_DIMENSION_UNIT</option>
+			</field>
+			
+			<field 	name="weight_unit" type="paycart.weight"
+					description="COM_PAYCART_PRODUCT_WEIGHT_UNIT_DESC"
+					label="COM_PAYCART_PRODUCT_WEIGHT_UNIT_LABEL">
+				<option>COM_PAYCART_SELECT_WEIGHT_UNIT</option>
+			</field>
+			
 				
 		</fieldset>
 	
-		<fields name="meta_data">
-			<fieldset name='meta_data'>
-				<field	name="title" type="text"
+		<fields name="language">
+			<fieldset name='language'>
+				<field name="product_lang_id" type="text"
+					default="0"
+					label="COM_PAYCART_PRODUCT_LANG_ID_LABEL"
+					description="COM_PAYCART_PRODUCT_LANG_ID_DESC"
+					readonly="true"
+					size="10"
+				/>
+				
+				<field name="title" type="text"
+					label="COM_PAYCART_PRODUCT_TITLE_LABEL"
+					description="COM_PAYCART_PRODUCT_TITLE_DESC"
+					required="true"
+				/>
+				<field name="alias" type="text"
+					label="COM_PAYCART_PRODUCT_ALIAS_LABEL"
+					description="COM_PAYCART_PRODUCT_ALIAS_DESC"
+				/>
+				
+				<field name="teaser" type="text"
+					label="COM_PAYCART_PRODUCT_TEASER_LABEL"
+					description="COM_PAYCART_PRODUCT_TEASER_DESC"
+				/>
+				
+				
+				<field name="description" type="editor"
+					description="COM_PAYCART_PRODUCT_DESCRIPTION_DESC"
+					label="COM_PAYCART_PRODUCT_DESCRIPTION_LABEL" 
+				/>	
+			
+				<field	name="metadata_title" type="text"
 						label="COM_PAYCART_PRODUCT_META_DATA_TITLE_LABEL" 
 						description="COM_PAYCART_PRODUCT_META_DATA_TITLE_DESC"
 				/>
 				
-				<field 	name="descriprion" type="text"
+				<field 	name="metadata_descriprion" type="text"
 						description="COM_PAYCART_PRODUCT_META_DATA_DESCRIPRION_DESC" 
 						label="COM_PAYCART_PRODUCT_META_DATA_DESCRIPRION_LABEL"
 				/>
 				
-				<field	name="keyword" type="text"
+				<field	name="metadata_keyword" type="text"
 						description="COM_PAYCART_PRODUCT_META_DATA_KEYWORD_DESC" 
 						label="COM_PAYCART_PRODUCT_META_DATA_KEYWORD_LABEL"
-				/>		
+				/>
 			</fieldset>
 		</fields>
 <!--		<fieldset name="advance-attributes" label="COM_PAYCART_PRODUCT_ADVANCE_ATTRIBUTES_FIELDSET_LABEL">-->
