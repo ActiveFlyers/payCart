@@ -9,9 +9,7 @@
 */
 defined('_JEXEC') or die( 'Restricted access' );
 /**
- * Object of this class should be sent to Shipping Rule Processor.
- * Contains list or properties wihch is common for all Shipping Rule Processors.
- *
+ * Contains the defination of variaous object to be used by processors
  * @since 1.0.0
  *  
  * @author Gaurav Jain
@@ -19,57 +17,29 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartShippingruleRequest
 {
 	/**
-	 * @var PaycartShippingruleRequestProduct[]
+	 * @var PaycartRequestCartparticular[]
 	 */
-	public $products = array();
+	public $cartparticulars = array();
 	
 	/**
-	 * @var PaycartShippingruleRequestAddress
+	 * @var PaycartRequestBuyeraddress
 	 */
 	public $delivery_address;
 	
 	/**
-	 * @var PaycartShippingruleRequestAddress
+	 * @var PaycartRequestBuyeraddress
 	 */
 	public $origin_address;
-	
-	/**
-	 * @var PaycartShippingruleRequestConfig
-	 */
-	public $config;
 }
 
-class PaycartShippingruleRequestProduct
-{
-	public $title;
-	public $unit_price;
-	public $quantity;
-	public $price;
-	public $discount;
-	public $tax;
-	public $total;
-	
-	public $length;
-	public $width;
-	public $height;
-	public $weight;
-}
 
-class PaycartShippingruleRequestAddress
-{
-	public $line1;
-	public $line2;
-	public $city;
-	public $state;
-	public $country;
-	public $zipcode;
-	public $phone;
-}
-
-class PaycartShippingruleRequestConfig
-{
+// @TODOD : common config for all
+class PaycartShippingruleRequestGlobalconfig {
 	public $dimenssion_unit;
 	public $weight_unit; 
+}
+
+class PaycartShippingruleRequestRuleconfig {
 	public $packaging_weight;	
 	public $handling_charge;
 }

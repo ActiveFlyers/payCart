@@ -65,20 +65,32 @@ class PaycartTaxrule extends PaycartLib
 	}
 	
 	/**
+	 * @return PaycartTaxruleProcessor
+	 */
+	public function getProcessor()
+	{
+		$processor = PaycartFactory::getProcessor(paycart::PROCESSOR_TYPE_TAXRULE, $this->processor_classname);
+		$processor->processor_config = $this->getProcessorConfig();
+		$processor->rule_config 	 = $this->getRuleconfigRequestObject();
+		$processor->global_config 	 = $this->getGlobalconfigRequestObject();
+		return $processor;
+	}
+	
+	/**
 	 * 
 	 * Do start processing tax request
 	 * @param Paycartcart $cart
-	 * @param PaycartCartparticular $particular
+	 * @param PaycartCartparticular $cartparticular
 	 * @throws InvalidArgumentException
 	 * 
 	 * @return Taxrule lib object
 	 */
-	public function process(Paycartcart $cart, PaycartCartparticular $particular)
+	public function process(Paycartcart $cart, PaycartCartparticular $cartparticular)
 	{
-		$request   = $this->createRequest($cart, $particular);
+		$request   = $this->getRequestObject($cart, $cartparticular);
 		$response  = $this->createResponse();
 		
-		$processor = PaycartFactory::getProcessor(paycart::PROCESSOR_TYPE_TAX, $this->processor_classname, $this->getProcessorConfig());
+		$processor = $this->getProcessor();
 		
 		//process current request
 		$processor->process($request, $response);
@@ -104,18 +116,18 @@ class PaycartTaxrule extends PaycartLib
 		}
 		
 
-		$particular->addTotal($response->amount);
+		$cartparticular->addTotal($response->amount);
 		
 		//@PCTODO :: auto reinitailize cart price when add tax
 		
 		//create usage data
 		$usage = new stdClass();
 		
-		$usage->rule_type			=	Paycart::PROCESSOR_TYPE_DISCOUNTRULE;
+		$usage->rule_type			=	Paycart::PROCESSOR_TYPE_TAXRULE;
 		$usage->rule_id				=	$this->getId();
 		$usage->cart_id				=	$cart->getId();
 		$usage->buyer_id			=	$cart->getBuyer();
-		$usage->carparticular_id	=	$particular->getId();
+		$usage->carparticular_id	=	$cartparticular->getId();
 		$usage->price				=	$response->amount;
 		$usage->applied_date		=	Rb_Date::getInstance();
 		$usage->realized_date		=	'';
@@ -132,33 +144,38 @@ class PaycartTaxrule extends PaycartLib
 	 * 
 	 * Create Request object to be processed 
 	 * @param PaycartCart $cart
-	 * @param PaycartCartparticular $particular
+	 * @param PaycartCartparticular $cartparticular
 	 * 
 	 * @return PaycartTaxruleRequest object
 	 */
-	protected function createRequest(PaycartCart $cart, PaycartCartparticular $particular)
-	{
+	public function getRequestObject(PaycartCart $cart, PaycartCartparticular $cartparticular)
+	{	
+		/* @var $helperRequest PaycartHelperRequest */	
+		$helperRequest 			= PaycartFactory::getHelper('request');		
+		
 		$request 	= new PaycartTaxruleRequest();
 		
 		//rule specific data
-		$request->rule_amount			= $this->amount;
-		
-		//particular specific stuff
-		$request->particular_unit_price		= $particular->getUnitPrice();
-		$request->particular_quantity		= $particular->getQuantity();
-		$request->particular_price			= $particular->getPrice();		//basePrice = unitPrice * Quantity
-		$request->particular_total			= $particular->getTotal();
-		
-		//cart specific stuff
-		$request->cart_total				=	$cart->getTotal();
-		$request->cart_shipping_address_id	=	$cart->getShippingAddress();
-		$request->cart_billing_address_id	=	$cart->getBillingAddress();
-		
-		//@PCTODO:: Buyer specific stuff
-		$request->buyer_id			=	$cart->getBuyer();
-		$request->buyer_vatnumber	=	'';
+		$request->taxable_amount		= $this->amount;
+		$request->cartparticular 		= $helperRequest->getCartparticularObject($cartparticular);
+		$request->shipping_address		= $helperRequest->getBuyeraddressObject($cart->getShippingAddress());
+		$request->billing_address		= $helperRequest->getBuyeraddressObject($cart->getBillingAddress());
+		$request->buyer					= $helperRequest->getBuyerObject($cart->getBuyer());
 		
 		return $request;
+	}
+	
+	public function getRuleconfigRequestObject()
+	{
+		$object = new PaycartTaxruleRequestRuleconfig();
+		$object->tax_rate = $this->amount;
+		return $object;
+	}
+	
+	public function getGlobalconfigRequestObject()
+	{
+		$object = new PaycartTaxruleRequestGlobalconfig();
+		return $object;
 	}
 	
 	/**
@@ -175,12 +192,8 @@ class PaycartTaxrule extends PaycartLib
 	/**
 	 * Get processor config
 	 */
-	function getProcessorConfig($inArray = false)
-	{		
-		if($inArray){
-			return $this->processor_config->toArray();			
-		}
-		
+	function getProcessorConfig()
+	{
 		return $this->processor_config->toObject();
 	}
 	
@@ -188,12 +201,12 @@ class PaycartTaxrule extends PaycartLib
 	/**
 	 * @PCTODO :: Taxrule-Helper.php 
 	 * @param PayacartCart $cart
-	 * @param PaycartCartparticular $particular
+	 * @param PaycartCartparticular $cartparticular
 	 * @param array $ruleIds Applicable rules
 	 * 
 	 * @return bool value
 	 */
-	protected function _processTaxrule(PayacartCart $cart, PaycartCartparticular $particular, Array $ruleIds)
+	protected function _processTaxrule(PayacartCart $cart, PaycartCartparticular $cartparticular, Array $ruleIds)
 	{
 		//@PCTODO : define constant for applicable_on
 		// {product_price, shipping_price, cart-price}
@@ -219,7 +232,7 @@ class PaycartTaxrule extends PaycartLib
 			$taxrule = PaycartTaxrule::getInstance($id, $record);
 			
 			// process taxrule
-			$taxrule->process($cart, $particular);
+			$taxrule->process($cart, $cartparticular);
 		}
 		
 		return true;
