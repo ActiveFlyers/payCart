@@ -17,7 +17,7 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  * @author Manish Trivedi
  */
 
-class PaycartAdminControllerCategory extends PaycartController {
+class PaycartAdminControllerProductcategory extends PaycartController {
 	
 	/**
 	 * 
@@ -30,9 +30,9 @@ class PaycartAdminControllerCategory extends PaycartController {
 			//@PCTODO :: Rise exception 
 		}
 		
-		$post['title'] = $this->input->get('category_name');
+		$post['language']['title'] = $this->input->get('category_name');
 		
-		if (!$post['title']) {
+		if (!$post['language']['title']) {
 			// @codeCoverageIgnoreStart
 			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_INVALID_POST_DATA', '$title must be required'));
 			// @codeCoverageIgnoreEnd

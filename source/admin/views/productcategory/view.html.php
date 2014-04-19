@@ -15,11 +15,11 @@ defined('_JEXEC') or die( 'Restricted access' );
 * @author Manish Trivedi
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewCategory extends PaycartAdminBaseViewCategory
+class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategory
 {	
 	protected function _adminGridToolbar()
 	{
-		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADD_NEW_PRODUCT');
+		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADD_NEW_PRODUCT_CATEGORY');
 		Rb_HelperToolbar::editList();
 		Rb_HelperToolbar::divider();
 		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ENTITY_DELETE_CONFIRMATION'));
@@ -34,4 +34,17 @@ class PaycartAdminViewCategory extends PaycartAdminBaseViewCategory
 		Rb_HelperToolbar::cancel();
 	}
 	
+	public function edit($tpl = null)
+	{
+		$catId	  =  $this->getModel()->getId();
+		$category =  PaycartProductcategory::getInstance($catId);
+		
+		$form 		= $category->getModelform()->getForm($category);
+	    $language   = array('language'=> $category->getLanguage());
+	    $form->bind($language);
+		
+		$this->assign('form', $form );
+		
+		return parent::edit($tpl);
+	}
 }

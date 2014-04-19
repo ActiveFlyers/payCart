@@ -39,4 +39,4 @@ class PaycartModelColor extends PaycartModel
  * @author rimjhim
  *
  */
-class PaycartModelColorLang extends PaycartModel{}
+class PaycartModelLangColor extends PaycartModel{}

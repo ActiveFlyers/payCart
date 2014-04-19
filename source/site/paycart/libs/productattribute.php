@@ -31,7 +31,7 @@ class PaycartProductAttribute extends PaycartLib
 	//language specific data
 	protected $_language;
 	//attribute specific data
-	protected $_options;
+	protected $_options = array();
 	
 	public function reset() 
 	{	
@@ -92,9 +92,10 @@ class PaycartProductAttribute extends PaycartLib
 	{
 		//if langauge data is not available and its an existing record
 		if(empty($language) && $this->getId()){
-			$language = (array) PaycartFactory::getModelLang('productattribute')
+			$language = PaycartFactory::getModelLang('productattribute')
 					                           ->loadRecords(Array('lang_code' => $this->_language->lang_code,
 																   'productattribute_id' => $this->getId()));
+			$language = (array)array_shift($language);
 		}
 		
 		if(empty($language)) {
@@ -198,5 +199,10 @@ class PaycartProductAttribute extends PaycartLib
 		}
 		
 		return $this;
+	}
+	
+	function getLanguage()
+	{
+		return $this->_language;
 	}
 }

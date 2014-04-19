@@ -22,12 +22,12 @@ defined('_JEXEC') OR die();
 			<tr>
 			
 				<th  width="1%">
-					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" />
+					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 				</th>
 				<th >
-					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_CATEGORY_ID", 'category_id', $filter_order_Dir, $filter_order);?>
+					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCTCATEGORY_ID", 'productcategory_id', $filter_order_Dir, $filter_order);?>
 				</th>
-			    <th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_CATEGORY_NAME", 'name', $filter_order_Dir, $filter_order);?></th>
+			    <th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCTCATEGORY_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
 							
 			</tr>
 		<!-- TABLE HEADER END -->
@@ -42,9 +42,8 @@ defined('_JEXEC') OR die();
 					<th>
 				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
 				    </th>				
-					<td><?php echo $record->category_id;?></td>
-					<td><?php echo PaycartHtml::link($uri.'&task=edit&category_id='.$record->{$record_key}, $record->name);?>
-						<br /> <?php echo $record->alias; ?>
+					<td><?php echo $record->productcategory_id;?></td>
+					<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=productcategory&task=edit&productcategory_id='.$record->{$record_key}, PaycartProductcategory::getInstance($record->productcategory_id, $record)->getTitle());?>
 					</td>
 				</tr>
 			<?php $count++;?>

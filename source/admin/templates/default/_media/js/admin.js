@@ -103,7 +103,7 @@ paycart.admin.product =
 		{	
 			add : function(categoryName, CallbackOnSuccess, CallbackOnError)
 			{
-				var link  = 'index.php?option=com_paycart&task=create&view=category';
+				var link  = 'index.php?option=com_paycart&task=create&view=productcategory';
 				var data  = {'category_name': categoryName };
 				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			}

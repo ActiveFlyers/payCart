@@ -133,26 +133,33 @@ PaycartHtml::_('behavior.formvalidation');
 <!--========	Product Basic Attributes	========-->
 			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
 				
+				<!--	Product Meta Data			-->
 				<div class="span6">
-					<?php $field = $form->getField('title') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>
-					</div>
+					<fieldset class="form-horizontal">	
+							<?php foreach ($form->getFieldset('language') as $field):?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>
+								</div>
+							<?php endforeach;?>
+					</fieldset>
+				</div>
+				
+				<div class="span6">
 					
-					<?php $field = $form->getField('alias') ?>
+					<?php $field = $form->getField('status') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>	
-					
-					<?php $field = $form->getField('category_id') ?>
+				
+					<?php $field = $form->getField('productcategory_id') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
 					
-					<?php $field = $form->getField('amount') ?>
+					<?php $field = $form->getField('price') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
@@ -164,50 +171,11 @@ PaycartHtml::_('behavior.formvalidation');
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
 					
-					<?php $field = $form->getField('teaser') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('description') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
 					<?php $field = $form->getField('cover_media') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
-	
-					<?php $field = $form->getField('featured') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('published') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>	
-					
-					<?php $field = $form->getField('publish_up') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('publish_down') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-				</div>	
-				
-				<div class="span6">
 					
 					<?php $field = $form->getField('type') ?>
 					<div class="control-group">
@@ -220,13 +188,55 @@ PaycartHtml::_('behavior.formvalidation');
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
-					
-					<?php $field = $form->getField('digital_file') ?>
-					<div class="control-group paycart_product_digital_file">
+	
+					<?php $field = $form->getField('featured') ?>
+					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
-				</div>
+					
+					<?php $field = $form->getField('stockout_limit') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('weight') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('weight_unit') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('height') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('depth') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('length') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('dimension_unit') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+				</div>	
 				
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 			
@@ -257,18 +267,6 @@ PaycartHtml::_('behavior.formvalidation');
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>		
-				</div>
-				<!--	Product Meta Data			-->
-				<div class="span6">
-					<fieldset class="form-horizontal">	
-<!--					<legend> <?php //echo Rb_Text::_('COM_PAYCART_PRODUCT_META_DATA_ATTRIBUTES_FIELDSET_LABEL' ); ?> </legend>-->
-							<?php foreach ($form->getFieldset('meta_data') as $field):?>
-								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
-									<div class="controls"><?php echo $field->input; ?></div>								
-								</div>
-							<?php endforeach;?>
-					</fieldset>
 				</div>
 				
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>	

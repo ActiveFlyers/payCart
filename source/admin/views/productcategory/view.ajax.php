@@ -15,7 +15,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 * @author mManishTrivedi
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewCategory extends PaycartAdminBaseViewCategory
+class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategory
 {	
 	protected $_response = null;
 	
@@ -28,9 +28,9 @@ class PaycartAdminViewCategory extends PaycartAdminBaseViewCategory
 	public function create()
 	{
 		$categoryId	=	$this->getModel()->getId();
-		$category	=	PaycartCategory::getInstance($categoryId);
+		$category	=	PaycartProductcategory::getInstance($categoryId);
 		
-		$this->_response->addRawData('response',$category->toArray());
+		$this->_response->addRawData('response',(array)$category->getLanguage());
 		//set ajax response and return it
 		$this->_response->sendResponse();
 	}

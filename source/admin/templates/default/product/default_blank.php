@@ -21,7 +21,7 @@ defined('_JEXEC') or die();
 
 ?>
 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm">
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 	<div class="row-fluid">
 		<div class="span3">&nbsp;</div>
 		<div class="span6 pc-blank-heading">
@@ -38,5 +38,8 @@ defined('_JEXEC') or die();
 			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-book"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_DOCUMENTATION_LINK');?></a>
 		</div>
 	</div>
+	
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="boxchecked" value="0" />
 </form>
 <?php 

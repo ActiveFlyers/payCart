@@ -34,5 +34,8 @@ defined('_JEXEC') or die();
 			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-book"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_DOCUMENTATION_LINK');?></a>
 		</div>
 	</div>
+	
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="boxchecked" value="0" />
 </form>
 <?php 
