@@ -66,7 +66,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		// get packaging weight
 		$weight = $this->rule_config->packaging_weight;
 		
-		$products = $request->products;
+		$products = $request->cartparticulars;
 		foreach($products as $product){
 			/* @var $product PaycartShippingruleRequestProduct */
 			$weight += $product->weight * $product->quantity;
@@ -105,7 +105,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 	
 	protected function getTotalPackageShippingCostByPrice(PaycartShippingruleRequest $request)
 	{
-		$products = $request->products;
+		$products = $request->cartparticulars;
 		$price = 0;
 		foreach($products as $product){
 			/* @var $product PaycartShippingruleRequestProduct */

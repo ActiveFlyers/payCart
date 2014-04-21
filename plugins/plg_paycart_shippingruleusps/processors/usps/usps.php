@@ -152,7 +152,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 		$length = 0;
 		$weight = 0;
 
-		foreach ($request->products as $product){
+		foreach ($request->cartparticulars as $product){
 			/* @var $product PaycartRequestParticular */
 			if ($product->width && $product->width > $width){ 
 				$width = $product->width;
@@ -195,7 +195,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 		
 		$cost = 0;
 		// Getting shipping cost for each product
-		foreach ($request->products as $product){			
+		foreach ($request->cartparticulars as $product){			
 			for ($qty = 0; $qty < $product->quantity; $qty++){
 				$req_params['package_list'][] = array(
 					'width' => ($product->width 	? $product->width : 1),

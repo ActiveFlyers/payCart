@@ -31,7 +31,7 @@ class PaycartLibDiscountruleTest extends PayCartTestCase
 	 */
 	public function testIsApplicable($mockData, $setData, $expectedResponseData) 
 	{
-		$mock = $this->getMock('PaycartDiscountRule', array('_getAlreadyAppliedRules', '_getTotalConsumption', '_getTotalConsumptionByBuyer'));
+		$mock = $this->getMock('PaycartDiscountRule', array('getAlreadyAppliedRules', 'getTotalConsumption', 'getTotalConsumptionByBuyer'));
 		
 		foreach($mockData as $func_name => $returnValue){
 			// Set expectations and return values
@@ -58,7 +58,7 @@ class PaycartLibDiscountruleTest extends PayCartTestCase
 	{
 		// Case-1 : Previous rule has applied and current rule is non-clubbable 
 		$mockData1	= new stdClass();		
-		$mockData1->_getAlreadyAppliedRules	= Array('Discountrule lib object ');
+		$mockData1->getAlreadyAppliedRules	= Array('Discountrule lib object ');
 		
 		$setData1 = new stdClass();
 		$setData1->is_clubbable			 	= false;
@@ -70,7 +70,7 @@ class PaycartLibDiscountruleTest extends PayCartTestCase
 		
 		// Case-2 :  rule consumtion is equal to usage limit
 		$mockData2	= new stdClass();		
-		$mockData2->_getTotalConsumption  = 5;
+		$mockData2->getTotalConsumption  = 5;
 		
 		$setData2 = new stdClass();
 		$setData2->usage_limit = 5;
@@ -82,8 +82,8 @@ class PaycartLibDiscountruleTest extends PayCartTestCase
 		
 		// Case-3 : buyer consumption limit exceeded
 		$mockData3	= new stdClass();
-		$mockData3->_getTotalConsumption = 50;
-		$mockData3->_getTotalConsumptionByBuyer	= 10;
+		$mockData3->getTotalConsumption = 50;
+		$mockData3->getTotalConsumptionByBuyer	= 10;
 		
 		$setData3 = new stdClass();
 		$setData3->usage_limit  		= 100;
@@ -96,9 +96,9 @@ class PaycartLibDiscountruleTest extends PayCartTestCase
 		
 		// Case-4 : everything is ok   
 		$mockData4	= new stdClass();
-		$mockData4->_getAlreadyAppliedRules		= Array('Discountrule lib object ');
-		$mockData4->_getTotalConsumption 		= 5;
-		$mockData4->_getTotalConsumptionByBuyer	= 5;
+		$mockData4->getAlreadyAppliedRules		= Array('Discountrule lib object ');
+		$mockData4->getTotalConsumption 		= 5;
+		$mockData4->getTotalConsumptionByBuyer	= 5;
 		
 		$setData4 = new stdClass();		
 		$setData4->is_clubbable 		= true;
