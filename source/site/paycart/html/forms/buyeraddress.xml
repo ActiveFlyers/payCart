@@ -17,21 +17,17 @@
 			/>
 			
 			
-			<field 	name="name" type="text"
+			<field 	name="to" type="text"
 					label="COM_PAYCART_BUYERADDRESS_NAME_LABEL"
 					description="COM_PAYCART_BUYERADDRESS_NAME_DESC"
 					required="true"
 			/>
 			
-			<field 	name="address1" type="text"
-					label="COM_PAYCART_BUYERADDRESS_ADDRESS1"
-					description="COM_PAYCART_BUYERADDRESS_ADDRESS1_DESC"	
+			<field 	name="address" type="textarea"
+					label="COM_PAYCART_BUYERADDRESS_ADDRESS"
+					description="COM_PAYCART_BUYERADDRESS_ADDRESS_DESC"	
 					required="true"
 			/>
-			
-			<field 	name="address2" type="text" />
-<!--				label="COM_PAYCART_BUYERADDRESS_ADDRESS2" /> -->
-
 			
 			<field 	name="country" type="paycart.country"
 					label="COM_PAYCART_BUYERADDRESS_COUNTRY"
@@ -65,16 +61,16 @@
 			/>
 			
 			<field 	name="phone1" type="text"
-					label="COM_PAYCART_BUYERADDRESS_TELEPHONE1"
-					description="COM_PAYCART_BUYERADDRESS_TELEPHONE1_DESC"	
+					label="COM_PAYCART_BUYERADDRESS_PHONE1"
+					description="COM_PAYCART_BUYERADDRESS_PHONE1_DESC"	
 					required="true"
 			/>
 			
-<!--			<field 	name="phone2" type="text"-->
-<!--					label="COM_PAYCART_BUYERADDRESS_TELEPHONE2"-->
-<!--					description="COM_PAYCART_BUYERADDRESS_TELEPHONE2_DESC"	-->
-<!--					required="true"-->
-<!--			/>-->
+			<field 	name="phone2" type="text"
+					label="COM_PAYCART_BUYERADDRESS_PHONE2"
+					description="COM_PAYCART_BUYERADDRESS_PHONE2_DESC"	
+					required="true"
+			/>
 
 		</fieldset>				
 </form>

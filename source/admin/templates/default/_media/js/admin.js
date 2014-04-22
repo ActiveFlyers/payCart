@@ -157,16 +157,39 @@ paycart.admin.attribute =
 // @PCTODO : Move it proper location so we can utilize it for front end
 paycart.admin.buyer =
 {
-	address  :
+	update : function(data, callBackOnSuccess, callBackOnError)
 	{
-		add : function()
-		{
-			// domObject, use for element id which will be changed.  
-			var link  = 'index.php?option=com_paycart&task=addAddress&view=buyer&domObject=rbWindowBody';
-			paycart.url.modal(link, null);
-		}
-	}
+		var link  = 'index.php?option=com_paycart&view=buyer&task=save';
 
+		paycart.ajax.go(link, data, callBackOnSuccess);
+	}
+	
+};
+
+
+paycart.admin.buyeraddress =
+{
+	//open modal window to create new buyer-address
+	window : function(buyer_id)
+	{
+		// domObject, use for element id which will be changed.  
+		var link  = 'index.php?option=com_paycart&task=edit&view=buyeraddress&domObject=rbWindowBody&buyer_id='+buyer_id;
+		paycart.url.modal(link, null);
+	},
+	
+	add : function(data, callBackOnSuccess, callBackOnError)
+	{
+		var link  = 'index.php?option=com_paycart&view=buyeraddress';
+		paycart.ajax.go(link, data, callBackOnSuccess, callBackOnError);
+		
+	},
+	//open modal window and open existing byer-address
+	edit : function(buyeraddress_id)
+	{
+		// domObject, use for element id which will be changed.  
+		var link  = 'index.php?option=com_paycart&task=edit&view=buyeraddress&domObject=rbWindowBody&buyeraddress_id='+buyeraddress_id;
+		paycart.url.modal(link, null);
+	}
 };
 
 /*--------------------------------------------------------------

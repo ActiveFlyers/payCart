@@ -43,8 +43,11 @@ class PaycartModelBuyer extends PaycartModel
     			   ->select(' joomlausertbl.`name` AS realname ')
     			   ->select(' joomlausertbl.`username` AS username ')
     			   ->select(' joomlausertbl.`email` AS email ')
-    			   ->select(' joomlausertbl.`registerDate` AS registerDate ')
-    			   ->select(' joomlausertbl.`lastvisitDate` AS lastvisitDate ')
+    			   ->select(' joomlausertbl.`registerDate` AS register_date ')
+    			   ->select(' joomlausertbl.`lastvisitDate` AS lastvisit_date ')
+    			   ->select(' t.`is_registered_by_guestcheckout` AS is_registered_by_guestcheckout  ') 	 
+    			   ->select(' t.`billing_address_id` AS billing_address_id  ')
+    			   ->select(' t.`shipping_address_id` AS shipping_address_id  ')
     			   ->leftJoin($join);
     			   
     			   
@@ -56,7 +59,6 @@ class PaycartModelBuyer extends PaycartModel
     	if(is_numeric($this->recordId)){
     		$queryString = $query->_q1->from('( '.$query->_q2->__toString().' ) AS joomlausertbl ')->__toString();		    		
     	}
-
     	else {
     		$queryString = $query->_q1->from(' `#__users` AS joomlausertbl ')->__toString();
     	}
@@ -116,8 +118,8 @@ class PaycartModelBuyer extends PaycartModel
 		$new = $this->getTable()->load($pk)? false : true;
 		return parent::save($data, $pk, $new);
     }
-    
-	public function loadRecords(Array $queryFilters=array(), Array $queryClean = array(), $emptyRecord=false)
+
+   	public function loadRecords(Array $queryFilters=array(), Array $queryClean = array(), $emptyRecord=false, $indexedby = null) 
 	{	
 		//it is required to decide which query to execute in FROM
 		// for single record or multiple record

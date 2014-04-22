@@ -38,7 +38,7 @@ defined('_JEXEC') OR die();
 					<th><?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} );?></th>
 					<td><?php echo $record->buyer_id;?></td>
 					<td>
-						<?php echo PaycartHtml::link($uri.'&task=edit&buyer_id='.$record->buyer_id, $record->username);?>
+						<?php echo PaycartHtml::link('index.php?option=com_paycart&view=buyer&task=edit&buyer_id='.$record->buyer_id, $record->username);?>
 						<br />
 						<?php echo $record->email;?>
 					</td>

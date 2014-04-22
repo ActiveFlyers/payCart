@@ -275,8 +275,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cartparticulars` (
   `delivery_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
   `params` 			text 			COMMENT 'Include extra stuff like, Notes.',
   PRIMARY KEY (`cartparticulars_id`),
-  INDEX `idx_buyer_id` (`buyer_id`),
-  INDEX `idx_product_id` (`product_id`)
+  INDEX `buyer_id` (`buyer_id`),
+  INDEX `product_id` (`product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -292,7 +292,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyer` (
   `billing_address_id` int(11) DEFAULT NULL,
   `shipping_address_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`buyer_id`),
-  KEY `billing_address` (`billing_address`)
+  KEY `billing_address_id` (`billing_address_id`)
+  KEY `shipping_address_id` (`shipping_address_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -305,20 +306,17 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyer` (
 CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `buyeraddress_id` int(11) NOT NULL AUTO_INCREMENT,
   `buyer_id` int(11) NOT NULL DEFAULT '0',
-  `Name` varchar(100) NOT NULL,
-  `address1` varchar(255) DEFAULT NULL,
-  `address2` varchar(255) DEFAULT NULL,
+  `to` varchar(100) NOT NULL COMMENT 'reference name',
+  `address` text,
   `city` varchar(100) DEFAULT NULL,
   `state` char(3) NOT NULL COMMENT 'State ISO code3',
   `country` char(3) NOT NULL COMMENT 'Country ISO code3',
   `zipcode` varchar(10) NOT NULL DEFAULT '',
   `vat_number` varchar(100) NOT NULL,
-  `telephone_number1` int(20) NOT NULL,
-  `telephone_number2` int(20) NOT NULL,
+  `phone1` int(20) NOT NULL,
+  `phone2` int(20) NOT NULL,
   PRIMARY KEY (`buyeraddress_id`),
-  KEY `buyer_id` (`buyer_id`),
-  KEY `state` (`state`),
-  KEY `country` (`country`)
+  KEY `buyer_id` (`buyer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -413,16 +411,30 @@ CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_x_group` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_country` (
-  `isocode3` char(3) NOT NULL,
+  `country_id` char(3) NOT NULL COMMENT 'isocode3',
   `isocode2` char(2) NOT NULL,
-  `title` varchar(100) NOT NULL,
   `call_prefix` varchar(10) NOT NULL,
   `zip_format` varchar(12) NOT NULL,
   `status` enum('published','unpublished','trashed') NOT NULL DEFAULT 'published',
   `ordering` int(11) NOT NULL,
-  PRIMARY KEY (`isocode3`),
-  KEY `isocode2` (`isocode2`,`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`country_id`),
+  KEY `isocode2` (`isocode2`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_country_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_country_lang` (
+  `country_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `country_id` char(3) NOT NULL,
+  `lang_code` char(7) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  PRIMARY KEY (`country_lang_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -431,13 +443,30 @@ CREATE TABLE IF NOT EXISTS `#__paycart_country` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_state` (
-  `isocode3` char(3) NOT NULL,
+  `state_id` char(3) NOT NULL COMMENT 'isocode3',
   `isocode2` char(2) NOT NULL,
-  `title` varchar(100) NOT NULL,
   `country` char(3) NOT NULL,
   `status` enum('published','unpublished','trashed') NOT NULL,
-  `ordering` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `ordering` int(11) NOT NULL,
+   PRIMARY KEY (`state_id`),
+   KEY `isocode2` (`isocode2`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_state_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_state_lang` (
+  `state_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `state_id` char(3) NOT NULL,
+  `lang_code` char(7) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  PRIMARY KEY (` state_lang_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
 
 -- --------------------------------------------------------
 --

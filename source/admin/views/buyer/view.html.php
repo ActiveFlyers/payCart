@@ -19,9 +19,12 @@ class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
 {	
 	protected function _adminEditToolbar()
 	{
-		Rb_HelperToolbar::apply();
-		Rb_HelperToolbar::save();
 		Rb_HelperToolbar::cancel();
+	}
+	
+	protected function _adminGridToolbar()
+	{
+		// no need any toolbar button
 	}
 	
 	/**
@@ -32,9 +35,14 @@ class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
 		
 		$buyer_id	=  $this->getModel()->getState('id');
 		$buyer		=  PaycartBuyer::getInstance($buyer_id);
-		$addresses	= Array();//PaycartHelperBuyer::getAddresses($buyer_id);
+
+		$filter = Array('buyer_id' => $buyer_id);
+
+		$addresses = PaycartFactory::getModel('buyeraddress')->loadRecords($filter);
 		
 		$this->assign('form',  $buyer->getModelform()->getForm($buyer));
+		$this->assign('billing_address_id',		$buyer->getBillingAddress());
+		$this->assign('shipping_address_id',	$buyer->getShippingAddress());
 		$this->assign('addresses', $addresses);
 		
 		return parent::edit($tpl);
