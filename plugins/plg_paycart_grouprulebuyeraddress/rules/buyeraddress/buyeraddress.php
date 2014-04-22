@@ -27,7 +27,7 @@ class PaycartGroupruleBuyeraddress extends PaycartGrouprule
 		// Entity id will be buyer_id
 		$buyer_id = $entity_id;
 		
-		$address_type = $this->params->get('address_type', '');
+		$address_type = $this->config->get('address_type', '');
 		
 		if(empty($address_type)){
 			return false;
@@ -55,7 +55,7 @@ class PaycartGroupruleBuyeraddress extends PaycartGrouprule
 		}
 		
 		// there will be multiple addresses in the parameters
-		$addresses = $this->params->get('address', array());
+		$addresses = $this->config->get('address', array());
 		foreach($addresses as $address){
 			$result = $this->_isApplicable($address, $buyer_address);
 			if($result === true){

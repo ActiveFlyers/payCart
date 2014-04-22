@@ -35,3 +35,28 @@ class PaycartTableLangProductAttribute extends PaycartTable
 		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
 	}
 }
+
+/** 
+ * product attribute option Table
+ * @author rimjhim
+ */
+class PaycartTableProductAttributeOption extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_productattribute_option', $tblPrimaryKey='productattribute_option_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}
+
+/** 
+ * product attribute option language Table
+ * @author rimjhim
+ */
+class PaycartTableLangProductAttributeOption extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_productattribute_option_lang', $tblPrimaryKey='productattribute_option_lang_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}
+

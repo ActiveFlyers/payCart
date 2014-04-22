@@ -14,7 +14,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * Category Base View
 * @author mManishTrivedi
  */
-class PaycartAdminBaseViewCategory extends PaycartView
+class PaycartAdminBaseViewProductcategory extends PaycartView
 {	
 	
 	/**
@@ -24,7 +24,7 @@ class PaycartAdminBaseViewCategory extends PaycartView
 	public function edit($tpl=null) {
 		
 		$categoryId	=  $this->getModel()->getState('id');
-		$category	=  PaycartCategory::getInstance($categoryId);
+		$category	=  PaycartProductcategory::getInstance($categoryId);
 		
 		$this->assign('form',  $category->getModelform()->getForm($category));
 		return parent::edit($tpl);

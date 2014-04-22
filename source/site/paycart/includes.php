@@ -64,6 +64,8 @@ Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/shippingrule',		'Shipping
 //taxrule
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/taxrule',  'taxrule',   'Paycart');
 
-
 //attributes
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/attributes',  'attribute',   'Paycart');
+
+//request
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/requests',		'Request',	 'Paycart');

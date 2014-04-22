@@ -33,11 +33,11 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 
 .pc-categories-wrapper{
 	padding:4px;
-	border: 0px red dashed;
+/* 	border: 0px red dashed; */
 }
 
 .pc-categories {
-	border: 0px black dashed;
+/* 	border: 0px black dashed; */
 	margin: 0 auto;
 }
 
@@ -58,10 +58,10 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 	margin:2px;
 }
 
-.pc-category a {
+.pc-category a ,
+.pc-category a:hover {
 	color : #fff;
 }
-
 
 .pc-size-xs #pc-categories[data-columns]::before {
 	content: '3 .pc-grid-4';
@@ -82,7 +82,11 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 
 /* Also, don't forget to add this: */
 #pc-categories[data-columns]::before { 
-	display: none; 
+	display: block;
+	width:0;
+	height:0;
+	visibility: hidden;
+	 
 }
 
 
@@ -90,11 +94,9 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 Products Display
 */
 .pc-products-wrapper{
-	border: 0px red dashed;
 }
 
 .pc-products{
-	border: 0px black dashed;
 	margin: 0 auto;
 }
 
@@ -116,23 +118,33 @@ Products Display
 
 /* Also, don't forget to add this: */
 #pc-products[data-columns]::before { 
-	display: none; 
+	display: block; 
+	width:0;
+	height:0;
+	visibility: hidden;
 }
 
-
-
 .pc-product-outer{
-	padding:4px;
+	/* seperate products with this padding */
+	padding	:	5px;	
 }
 
 .pc-product {
-	
+	/*required for a proper white border around product content */
+	padding:5px;
+	background-color: #fff;
+}
+
+/* primiary border when hover */
+.pc-product:hover{
+	border : 1px solid #00f;
 }
 
 .pc-product-content{
-	padding:2px;
+	
 }
 
 .pc-product-content img{
 	width:100%;
+
 }

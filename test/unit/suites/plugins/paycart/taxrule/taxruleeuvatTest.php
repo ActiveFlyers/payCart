@@ -10,7 +10,7 @@
 
 
 
-$file = JPATH_PLUGINS . '/paycart/taxruleflat/processors/euvat.php';
+$file = JPATH_PLUGINS . '/paycart/taxruleeuvat/processors/euvat.php';
 
 if(file_exists($file)) {
 	require_once $file;
@@ -43,7 +43,7 @@ class PaycartTaxruleProcessorEuvatTest extends PayCartTestCase
         
         // handle dependency if required
 		  if(!empty($functionName)){
-        	$stub = $this->getMock('PaycartTaxruleProcessorEuvatStub', $functionName, Array($countryCode, $vatNumber, $response));
+        	$stub = $this->getMock('PaycartTaxruleProcessorEuvatStub', $functionName);
         	
         	foreach ($functionName as $function){
 		        $stub->expects($this->once())

@@ -42,7 +42,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 	
 	public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
 	{
-		if($this->getConfig('billing_price', self::WEIGHT) === self::WEIGHT){
+		if($this->processor_config->billing_price === self::WEIGHT){
 			$shipping_cost = $this->getTotalPackageShippingCostByWeight($request);
 		}		
 		else{
@@ -55,7 +55,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 			return $response;
 		}
 		
-		$response->amount = $shipping_cost + $request->config->handling_charge;		
+		$response->amount = $shipping_cost + $this->rule_config->handling_charge;		
 		return $response;
 	}
 	
@@ -64,16 +64,16 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		//IMP: currently support only for one pckage
 		
 		// get packaging weight
-		$weight = $request->config->packaging_weight;
+		$weight = $this->rule_config->packaging_weight;
 		
-		$products = $request->products;
+		$products = $request->cartparticulars;
 		foreach($products as $product){
 			/* @var $product PaycartShippingruleRequestProduct */
 			$weight += $product->weight * $product->quantity;
 		}
 		 
 		// if range is empty empty then return false
-		$ranges = $this->getConfig('weight_range', false);
+		$ranges = $this->processor_config->weight_range;
 		if($ranges === false || empty($ranges)){
 			return false;		
 		}
@@ -96,7 +96,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		}
 		
 		// out of range behaviour
-		if($this->getConfig('out_of_range', self::HIGHEST_RANGE_PRICE) == self::HIGHEST_RANGE_PRICE){
+		if($this->processor_config->out_of_range == self::HIGHEST_RANGE_PRICE){
 			return $max_range_price;
 		} 
 		
@@ -105,7 +105,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 	
 	protected function getTotalPackageShippingCostByPrice(PaycartShippingruleRequest $request)
 	{
-		$products = $request->products;
+		$products = $request->cartparticulars;
 		$price = 0;
 		foreach($products as $product){
 			/* @var $product PaycartShippingruleRequestProduct */
@@ -113,7 +113,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		}
 		 
 		// if range is empty empty then return false
-		$ranges = $this->getConfig('price_range', false);
+		$ranges = $this->processor_config->price_range;
 		if($ranges === false || empty($ranges)){
 			return false;		
 		}
@@ -136,7 +136,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		}
 		
 		// out of range behaviour
-		if($this->getConfig('out_of_range', self::HIGHEST_RANGE_PRICE) == self::HIGHEST_RANGE_PRICE){
+		if($this->processor_config->out_of_range == self::HIGHEST_RANGE_PRICE){
 			return $max_range_price;
 		} 
 		

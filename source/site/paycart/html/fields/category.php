@@ -79,11 +79,11 @@ class PaycartFormFieldCategory extends JFormFieldList
 			{
 				var response = data[0][1];
 				var option = $('<option/>');
-				option.attr({ 'value': response.category_id }).text(response.title);
+				option.attr({ 'value': response.productcategory_id }).text(response.title);
 				//append new oprion to select list
 				$('.paycart_category_class').append(option);
 				// default selected
-				$('.paycart_category_class').val(response.category_id);
+				$('.paycart_category_class').val(response.productcategory_id);
 			};
 			<!-- Callback function when error occur during category adding operation	-->
 			var callbackOnError = function ()
@@ -133,7 +133,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 			return $result;
 		}
 		
-		$model = PaycartFactory::getInstance('category', 'Model');
+		$model = PaycartFactory::getModellang('Productcategory');
 		// Should be sorted according to 'title' so need to write query with "order by"
 		$model->clearQuery();  
 		$query = $model->getQuery()->clear('order')->order('title');

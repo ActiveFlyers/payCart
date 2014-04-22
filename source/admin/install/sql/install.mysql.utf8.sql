@@ -68,7 +68,6 @@ CREATE TABLE IF NOT EXISTS `#__paycart_rating` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_productattribute` (
   `productattribute_id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
   `type` varchar(50) NOT NULL COMMENT 'Type of attribute',
   `css_class` varchar(100) DEFAULT NULL,
   `filterable` tinyint(1) NOT NULL COMMENT 'Treat as a filter',
@@ -88,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productattribute` (
 CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_lang` (
   `productattribute_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `productattribute_id` int(11) NOT NULL,
-  `lang_code` int(11) NOT NULL,
+  `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL COMMENT 'attribute name',
   PRIMARY KEY (`productattribute_lang_id`),
   KEY `productattribute_id` (`productattribute_id`),
@@ -159,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory_lang` (
   `productcategory_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `alias` int(11) NOT NULL,
-  `lang_code` char(50) NOT NULL,
+  `lang_code` char(7) NOT NULL,
   `description` text,
   `metadata_title` varchar(255) DEFAULT NULL,
   `metadata_keywords` varchar(255) DEFAULT NULL,
@@ -209,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
 CREATE TABLE IF NOT EXISTS `#__paycart_product_lang` (
   `product_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
-  `lang_code` int(11) NOT NULL,
+  `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL COMMENT 'Product name',
   `alias` varchar(100) NOT NULL COMMENT 'useful for sef urls',
   `description` text,
@@ -383,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_discountrule` (
 CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_lang` (
   `discountrule_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `discountrule_id` int(11) NOT NULL,
-  `lang_code` varchar(10) NOT NULL,
+  `lang_code` char(7) NOT NULL,
   `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
   PRIMARY KEY (`discountrule_lang_id`),
   KEY `discountrule_id` (`discountrule_id`),
@@ -497,7 +496,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule` (
 CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_lang` (
   `taxrule_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `taxrule_id` int(11) NOT NULL,
-  `lang_code` int(11) NOT NULL,
+  `lang_code` char(7) NOT NULL,
   `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
   PRIMARY KEY (`taxrule_lang_id`),
   KEY `taxrule_id` (`taxrule_id`),
@@ -540,7 +539,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_media` (
 CREATE TABLE IF NOT EXISTS `#__paycart_media_lang` (
   `media_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `media_id` int(11) NOT NULL,
-  `lang_code` int(11) NOT NULL,
+  `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL COMMENT 'media name',
   `description` text,
   `metadata_title` varchar(255) DEFAULT NULL,
@@ -570,7 +569,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_color` (
 CREATE TABLE IF NOT EXISTS `#__paycart_color_lang` (
   `color_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `color_id` varchar(255) NOT NULL,
-  `lang_code` int(11) NOT NULL,
+  `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL COMMENT 'name of color',
   PRIMARY KEY (`color_lang_id`),
   KEY `color_id` (`color_id`),
@@ -598,7 +597,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_option` (
 CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_option_lang` (
   `productattribute_option_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `productattribute_option_id` int(11) NOT NULL,
-  `lang_code` int(11) NOT NULL,
+  `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL,
   PRIMARY KEY (`productattribute_option_lang_id`),
   KEY `productattribute_option_id` (`productattribute_option_id`),

@@ -25,12 +25,12 @@ class PaycartTaxruleProcessorFlatAmount extends PaycartTaxruleProcessor
 		}
 
 		try{
-			if(!$request->taxRate){
+			if(!$this->rule_config->tax_rate){
 				throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_TAXRULE_RATE_CANT_BE_ZERO'));
 			}
 			
 			//it is fixed tax amount so we need to consider product quantity
-			$response->taxAmount = ($request->taxRate * $request->productQuantity);
+			$response->amount = ($this->rule_config->tax_rate * $request->cartparticular->quantity);
 		}
 		catch (Exception $e){
 			$response->exception = $e;

@@ -27,7 +27,7 @@ class PaycartFormFieldAttributeType extends JFormFieldList
 	//@PCTODO:: Should be moved to helper if attribute inject from outside
 	private function getAttributeList()
 	{
-		$files	=	JFolder::files(PAYCART_PATH_CUSTOM_ATTRIBUTES,".xml$");
+		$files	=	JFolder::files(PAYCART_PATH_CUSTOM_ATTRIBUTES,".php$");
 		$fileList = Array();
 		// load all attributes configuration
 		foreach ($files as $file ) {

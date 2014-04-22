@@ -21,7 +21,7 @@
 defined('_JEXEC') or die();
 
 ?>
-<form action="<?php echo $uri; ?>" method="post" name="adminForm">
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 	<div class="row-fluid">
 		<div class="span12">
 			<p class="lead center"><?php echo $heading; ?></p>
@@ -29,5 +29,8 @@ defined('_JEXEC') or die();
 		</div>
 		
 	</div>
+	
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="boxchecked" value="0" />
 </form>
 <?php 

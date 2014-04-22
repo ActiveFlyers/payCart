@@ -232,4 +232,23 @@ class PaycartCartparticular extends PaycartLib
 		return $this;
 	}
 
+	public function getHeight()
+	{
+		return ''; //@PCTODO
+	}
+	
+	public function getWeight()
+	{
+		return ''; //@PCTODO
+	}
+	
+	public function getWidth()
+	{
+		return ''; //@PCTODO
+	}
+	
+	public function getLength()
+	{
+		return ''; //@PCTODO
+	}
 }

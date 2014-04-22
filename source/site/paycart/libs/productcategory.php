@@ -89,11 +89,11 @@ class PaycartProductcategory extends PaycartLib
 		parent::bind($data, $ignore);
 		
 		//2#. Bind related table fields (language specific)
-		
+		$records = array();
 		//@PCTODO :: improve condition as per your requirment
-		if(isset($data['_language'])){
+		if(isset($data['language'])){
 			// like data is Posted
-			$records = $data['_language'];
+			$records = $data['language'];
 		} else if($this->getId()){
 			//@PCTODO :: move to helper and array_shift record
 			$records	 = PaycartFactory::getModelLang('Productcategory')
@@ -245,5 +245,10 @@ class PaycartProductcategory extends PaycartLib
 	function getLanguage()
 	{
 		return $this->_language;
+	}
+	
+	function getTitle()
+	{
+		return $this->_language->title;
 	}
 }

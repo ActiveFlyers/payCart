@@ -20,16 +20,21 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 abstract class PaycartDiscountRuleProcessor
 {
-	// processor config
-	protected $config ;
+	/**
+	 * @var PaycartDiscountruleRequestGlobalconfig
+	 */
+	public $global_config = null;
 	
-	public function __construct($config = Array())
-	{
-		$this->config = $config;
-
-		return $this;
-	}
+	/**
+	 * @var PaycartDiscountruleRequestRuleconfig
+	 */
+	public $rule_config = null;
 	
+	/**
+	 * @var stdclass
+	 */
+	public $processor_config = null;	
+		
 	/**
 	 * Method to invoke on Processor edit view. Set configHtml property on response object
 	 * 
@@ -54,40 +59,6 @@ abstract class PaycartDiscountRuleProcessor
 	
 	/**
 	 * 
-	 * Applicability check  
-	 * @param PaycartDiscountRuleRequest $discountRule
-	 * 
-	 * @return boolean type if applicable otherwise false
-	 */
-	protected function isApplicable(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
-	{	
-		// if discount is already applied and current discount is non-clubbale
-		// then return false 
-		if (!empty($request->entity_previousAppliedRules) && !$request->rule_isClubbable) {
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NON_CLUBBABLE');
-			$response->messageType	= Paycart::MESSAGE_TYPE_MESSAGE;
-			return false; 
-		}
-				
-		// stop further rule-processing, if usage limit exceeded
-		if ($request->rule_consumption >= $request->rule_usageLimit) {
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_USAGE_LIMIT_EXCEEDED');
-			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
-			return false;
-		}
-		
-		// stop further processing, if rule's buyer-usage limit exceeded
-		if ($request->buyer_consumption >= $request->rule_buyerUsageLimit) {
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED');
-			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
-			return false;
-		}
-
-		return true;
-	}
-	
-	/**
-	 * 
 	 * Process, is a method that recive/get request object and execute set of instruction on behalf request variables, 
 	 * then create response object for return purpose.
 	 * Process discount rule 
@@ -98,31 +69,8 @@ abstract class PaycartDiscountRuleProcessor
 	public function process(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response) 
 	{
 		try {
-				
-			// Step-1: check applicibility
-			if (!$this->isApplicable($request, $response)) {
-				return $response;
-			}
-			
-			// Step-2: Get Price for discount
-			 
-			// Price on which discount will applied
-			$price = $request->entity_price;
-			
-			// If discount is successive/row total then applied on total amount.
-			// It will use on multi discount
-			if ($request->rule_isSuccessive) {
-				$price = $request->entity_total;
-			}
-			
-			// Step-3: Calculate discount on Price
-			$response->amount =  $this->calculate($price, $request->rule_amount, $request->rule_isPercentage);
-			
-			// if applied discount is non-clubbable 
-			// then stop next all multiple rules
-			if (!$request->rule_isClubbable) {
-				$response->stopFurtherRules = true;
-			}
+			// Calculate discount on discountable_amount
+			$response->amount =  $this->calculate($request->discountable_amount, $this->rule_config->amount, $this->rule_config->is_percentage);			
 						
 		} catch (Exception $e) {
 			$response->exception = $e;
@@ -159,77 +107,4 @@ abstract class PaycartDiscountRuleProcessor
 		
 		return $discountAmount;
 	}	
-}
-
-
-/**
- * 
- * DiscountRuleRequest class required for discounrule processing 
- * @author mManishTrivedi
- *
- */
-class PaycartDiscountruleRequest
-{
-	// Request Field : Discount speicifc
-	public $rule_isPercentage		=	1; 		 
-	public $rule_amount	  			=	0;
-	public $rule_isSuccessive 		=	1;
-	public $rule_isClubbable 		=	1;
-	public $rule_usageLimit			=	1;		// rule usage limit
-	public $rule_buyerUsageLimit	=	1;		// buyer usage limit as per rule
-	public $rule_coupon				=	null;	// If rule have coupon code then set it
-	
-	// Request Field : Particular Cart/Product/Shipping specific
-	public $particular_unit_price	 		=	0;			// unitPrice * quantity
-	public $particular_quantity		 		=	1;			// quantity
-	public $particular_price		 		=	0;			// (unitPrice * quantity)
-	public $particular_total		 		=	0;			// (unitPrice * quantity)+(-Applied discount)
-//	public $particular_coupon	 			=	NULL;		// @PCTODO: cart or particular. if user have entered any coupon code
-	public $particular_previousAppliedRules	=	Array();	// used when checking clubbale 
-
-	// Request Field : cart data
-	public $cart_particular_quantity	=	0;
-	public $cart_total					=	0;
-	public $cart_shipping_address_id	=	0;
-	public $cart_billing_address_id		=	0;
-	
-	// Request Field : buyer data
-	public $buyer_id			=	0;
-//	public $buyer_address_id	=	0;
-	
-	// Request Field : Usage data
-	public $usage_rule_consumption;				//	rule used counter
-	public $usage_buyer_consumption;			//	rule used by buyer
-}
-
-
-/**
- * 
- * PaycartDiscountRuleResponse required after discount rule processing
- * @author mManishTrivedi
- *
- */
-class PaycartDiscountruleResponse
-{
-	// Response Field : Discounted-Amount
-	public $amount 				=	0;
-	
-	// Response Field : stop all next rules processing. 
-	public $stopFurtherRules 	=	false;
-	
-	// Response Field : need to display any kind of msg for user/admin 	
-	public $message				=	null;
-	
-	// Response Field : {'message', 'warning', 'notice', 'error' }	
-	public $messageType			=	Paycart::MESSAGE_TYPE_MESSAGE;
-	
-	// Response Field : Set this var, If any exception occurred 
-	public $exception			=	'';
-	
-	// Response Field : Processor config html  	
-	public $configHtml			=	'';
-	
-	// Response Field : Processor html  	
-	public $html				=	'';
-	
 }
