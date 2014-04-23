@@ -32,7 +32,7 @@ class SeleniumConfig
 	var $baseURI;
 
 	// Set to true if you want to capture screenshots on failure (only for Firefox)
-	var $captureScreenshotOnFailure = false;
+	var $captureScreenshotOnFailure = true;
 	var $screenShotPath = RBTEST_SCREENSHOTS;
 
 	// set the database host, database username, database pasword, and database name
