@@ -94,4 +94,6 @@ class Paycart
 	const GROUPRULE_TYPE_BUYER 	 = 'buyer';
 
 	const ATTRIBUTE_PATH_MEDIA	= '/media/com_paycart/media/';
+	
+	const LAYOUTS_PATH	=  '/components/com_paycart/templates/default/layouts';
 }

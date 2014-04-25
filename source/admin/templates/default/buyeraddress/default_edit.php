@@ -16,86 +16,40 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 ?>
 
-<form action="<?php echo $uri; ?>" method="post" name="paycart_buyeraddress_form" id="paycart_buyeraddress_form" class="rb-validate-form" enctype="multipart/form-data">
+<div id="rbWindowTitle">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3 id="myModalLabel"><?php echo $model_title ?></h3>
+	</div>
+</div>
 
-
-	<fieldset>
-		
+<div class="modal-body" id="rbWindowBody">
+	
+	<!--  New_atrribute_creation body		-->
+	<form id="paycart_buyeraddress_form" class="rb-validate-form">
+	 
 		<?php
-				//@FIXME : use constant for layout path
-				$layout = new JLayoutFile('paycart_edit_buyeraddress', JPATH_ROOT.'/components/com_paycart/templates/default/layouts');
+				$layout = new JLayoutFile('paycart_buyeraddress_edit', JPATH_ROOT.Paycart::LAYOUTS_PATH);
 				echo $layout->render($display_data); 
 		?>
 		
+		<input type="hidden" name="task" value="save" />
+		<input type='hidden' name='id' value='<?php echo $record_id;?>' />
 		
-	</fieldset>
+	</form>
 	
-	<!-- @FIXME:: validate form and submit it	-->
-	<input type="hidden" name="task" value="save" />
-	<input type='hidden' name='id' value='<?php echo $record_id;?>' />
-	
-	<!-- JavaScript -->
-	<script>
+</div>
 
-		(function($)
-				{
-					var callBackOnSuccess = function(data)
-						{
-							alert('//PCTODO: GOOD!! Buyeraddress successfully save. Now you need to fetch buyeraddress html and append into buyeraddreess template ');
-							// @PCTODO::
-							// 1#.Close Model window
-							// 2#.Fetch html of new created buyeraddress
-							// 3# append into buyeraddreess template
-							// 4#.Good Job
-
-							//close modal window
-							rb.ui.dialog.autoclose(1)
-						};
+<div id="rbWindowFooter">
+	<div class="modal-footer">
+		<button class="btn btn-primary " onClick="paycart.admin.buyeraddress.add.go();"> 
+			<?php echo JText::_('COM_PAYCART_BUTTON_SAVE'); ?> </button>
+		<button class="btn" data-dismiss="modal" aria-hidden="true" ><?php echo JText::_('COM_PAYCART_BUTTON_CANCLE'); ?> </button>
+	</div>
+</div>
 
 
-					var callBackOnError = function(data)
-						{
-							alert('//PCTODO: Oops!! Buyeraddress fail to save. :( Please check ajax response data');
-							// @PCTODO::
-							// 1#.Close Model window and handle error
-							// 2#.Good Job
-							
-							//close modal window
-							rb.ui.dialog.autoclose(1)
-						};
-					
-					$(document).ready(function($) {
 
-						// form validation required 
-						$("#paycart_buyeraddress_form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation();
-						
-						$("#paycart_buyeraddress_add").click(function() {
-							// IMP:: Override submit function otherwise Validation will not work 
-							$("#paycart_buyeraddress_form").submit();
-						});
-						
-						$("#paycart_buyeraddress_form").submit(function(){
-							//Validation Checking
-							if($("#paycart_buyeraddress_form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation("hasErrors")){
-								return false;
-							}
-							
-							// get all form data for post	
-							var postData = $("#paycart_buyeraddress_form").serializeArray();
-
-							// Override task value to ajax task
-							postData.push({'name':'task','value':'add	'});
-							paycart.admin.buyeraddress.add(postData, callBackOnSuccess, callBackOnError);
-
-							// Must be return false otherwise it will redirect
-							return false;
-						});
-						
-					});
-				})(paycart.jQuery);
-
-	</script>
-</form>
 
 
 
