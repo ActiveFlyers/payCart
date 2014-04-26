@@ -13,6 +13,10 @@ if(!defined( '_JEXEC' )){
 	die( 'Restricted access' );
 }?>
 
+<script>
+	
+</script>
+
 <?php
 
 
@@ -56,9 +60,8 @@ $product->specifications = array();
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/owl.carousel.min.js');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/owl.carousel.css');
 ?>
-
 <script>
-paycart.queue.push(' $("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true }); ');
+paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');
 </script>
 
 <div class='pc-product-fullview-wrapper row-fluid clearfix'>
@@ -109,10 +112,14 @@ paycart.queue.push(' $("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true
     			</div>
 		 		
 		 		<!-- buy now -->
-		 		<div class="row-fluid">
-		 			<button class="button btn-block btn-large btn-primary ">Buy Now</button>
-		 			<button class="button btn-block btn-large">Add to Cart</button>
-		 		</div>
+		 		<div class="row-fluid clearfix">
+					<div class="span6">	 			
+				       <button class="button btn-block btn-large btn-primary ">Buy Now</button>
+				    </div>
+					<div class="span6">	 			
+				        <button class="button btn-block btn-large">Add to Cart</button>
+				    </div>
+				</div>
 		 		
 		 		
 		 </div>
