@@ -15,5 +15,16 @@ if(!defined( '_JEXEC' )){
 
 <?php
 
-include __DIR__.'/categories.php';
-include __DIR__.'/products.php';
+$check = JRequest::getCmd('check');
+
+switch($check)
+{
+	case 'product':
+		include __DIR__.'/product.php';
+		break;
+		
+	default:
+		include __DIR__.'/categories.php';
+		include __DIR__.'/products.php';
+		break;
+}
