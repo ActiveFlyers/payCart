@@ -11,6 +11,7 @@ if (typeof(paycart)=='undefined'){
 	paycart.$ 	= paycart.jQuery = rb.jQuery;
 	paycart.ajax	= rb.ajax;
 	paycart.ui	= rb.ui;
+	paycart.queue	= new Array(); 
 }
 
 if (typeof(paycart.element)=='undefined'){
