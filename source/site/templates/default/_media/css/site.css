@@ -63,6 +63,10 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 	color : #fff;
 }
 
+.pc-size-xs .pc-category h2{
+    font-size: 14px;
+}
+
 .pc-size-xs #pc-categories[data-columns]::before {
 	content: '3 .pc-grid-4';
 }
@@ -146,5 +150,12 @@ Products Display
 
 .pc-product-content img{
 	width:100%;
+}
 
+.pc-size-xs .pc-product h3{
+    font-size: 18px;
+}
+
+.pc-size-xs .pc-product h4 {
+	font-size: 14px;	
 }
