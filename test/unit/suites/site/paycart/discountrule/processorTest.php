@@ -78,6 +78,12 @@ class PaycartDiscountRuleProcessorTest extends PayCartTestCase
 		
 		// test instance property
 		foreach ($expectedResponseData as $key=>$expectedValue) {
+			// if you get exception 
+			if ('exception' == $key && $responseData->$key ) {
+				$this->assertSame($expectedValue->getMessage(), $responseData->$key->getMessage(),"Mismatch Exception message");
+				continue;
+			}
+
 			// checking response property
 			$this->assertSame($expectedValue, $responseData->$key,"Mismatch $key value");
 		}
@@ -90,9 +96,7 @@ class PaycartDiscountRuleProcessorTest extends PayCartTestCase
 		$ruleConfig1 	= new PaycartDiscountruleRequestRuleconfig();
 		$responseData1 	= new PaycartDiscountRuleResponse();
 		
-		$responseData1->message 	= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NOT_ON_ZERO');
-		$responseData1->messageType	= Paycart::MESSAGE_TYPE_ERROR;
-		
+		$responseData1->exception = new InvalidArgumentException(Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NOT_ON_ZERO'));	
 		
 		// Case-2 : without discount-amount   
 		$requestData2	= new PaycartDiscountRuleRequest();
@@ -101,8 +105,7 @@ class PaycartDiscountRuleProcessorTest extends PayCartTestCase
 		$ruleConfig2 	= new PaycartDiscountruleRequestRuleconfig();
 		
 		$responseData2 = new PaycartDiscountRuleResponse();		
-		$responseData2->message 	= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_IS_NOT_ZERO');
-		$responseData2->messageType	= Paycart::MESSAGE_TYPE_ERROR;		
+		$responseData2->exception = new InvalidArgumentException(Rb_Text::_('COM_PAYCART_DISCOUNTRULE_IS_NOT_ZERO'));
 				
 		// Case-3 : flat,amount    
 		$requestData3	= new PaycartDiscountRuleRequest();

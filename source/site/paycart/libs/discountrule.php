@@ -170,7 +170,7 @@ class PaycartDiscountRule extends PaycartLib
 		}
 		
 		// stop further processing, if rule's buyer-usage limit exceeded
-		if ($this->getTotalConsumptionByBuyer() >= $this->buyer_usage_limit) {
+		if ($this->getTotalConsumptionByBuyer($cart->getBuyer()) >= $this->buyer_usage_limit) {
 			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED');
 			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
 			return $response;

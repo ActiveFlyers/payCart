@@ -16,13 +16,13 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartRequestCartparticular 
 {
 	public $type;
-	public $title;
-	public $unit_price;
-	public $quantity;
-	public $price;
-	public $discount;
-	public $tax;
-	public $total;
+	public $title		= '';
+	public $unit_price	= 0;
+	public $quantity 	= 1;
+	public $price		= 0;
+	public $discount	= 0;
+	public $tax			= 0;
+	public $total		= 0;
 	
 	//Required for shipping rule processor
 	public $length;

@@ -30,7 +30,7 @@ class PaycartTaxruleProcessorFlatAmount extends PaycartTaxruleProcessor
 			}
 			
 			//it is fixed tax amount so we need to consider product quantity
-			$response->amount = ($this->rule_config->tax_rate * $request->particular->quantity);
+			$response->amount = ($this->rule_config->tax_rate * $request->cartparticular->quantity);
 		}
 		catch (Exception $e){
 			$response->exception = $e;

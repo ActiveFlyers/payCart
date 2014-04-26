@@ -151,7 +151,7 @@ class PaycartPluginsShippingruleUspsTest extends PayCartTestCase
     			$req_product->$key = $value;
     		}
     		
-			$request->products[] = $req_product;
+			$request->cartparticulars[] = $req_product;
 		}
 		
 		// delivery address

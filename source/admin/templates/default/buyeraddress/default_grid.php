@@ -5,12 +5,15 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
-* @contact		team@readybytes.in
-* @author		Puneet Singhal
+* @contact		support+paycart@readybytes.in
+* @author 		Manish Trivedi 
 */
 
 // no direct access
-defined( '_JEXEC' ) or	die( 'Restricted access' );
+defined( '_JEXEC' ) OR die( 'Restricted access' );
 
-class PaycartAdminControllerBuyer extends PaycartController 
-{}
+?>
+
+
+
+
