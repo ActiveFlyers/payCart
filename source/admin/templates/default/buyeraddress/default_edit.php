@@ -29,7 +29,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<form id="paycart_buyeraddress_form" class="rb-validate-form">
 	 
 		<?php
-				$layout = new JLayoutFile('paycart_buyeraddress_edit', JPATH_ROOT.Paycart::LAYOUTS_PATH);
+				$layout = new JLayoutFile('paycart_buyeraddress_edit', PAYCART_LAYOUTS_PATH);
 				echo $layout->render($display_data); 
 		?>
 		
@@ -48,6 +48,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	</div>
 </div>
 
+<script>
+(function($)
+		{
+			$(document).ready(function($) 
+					{
+						paycart.form.validation.init('paycart_buyeraddress_form');		
+					});
+		})(paycart.jQuery)
+</script>
 
 
 

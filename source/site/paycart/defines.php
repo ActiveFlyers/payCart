@@ -4,7 +4,7 @@
 * @copyright	Copyright (C) 2009 - 2012 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
-* @contact		team@readybytes.in
+* @contact		suppor+paycart@readybytes.in
 */
 
 // no direct access
@@ -49,6 +49,9 @@ define('PAYCART_PATH_CORE_FIELDS', 			PAYCART_PATH_CORE.'/html/fields');
 
 // Paycart Custom Attributes
 define('PAYCART_PATH_CUSTOM_ATTRIBUTES', 	PAYCART_PATH_CORE.'/attributes');
+
+// hard coded layout path with default templt
+define('PAYCART_LAYOUTS_PATH',				PAYCART_PATH_SITE_TEMPLATE.'/default/layouts');
 
 // object to identify extension, create once, so same can be consumed by constructors
 Rb_Extension::getInstance(PAYCART_COMPONENT_NAME, array('prefix_css'=>'paycart'));

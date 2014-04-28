@@ -66,34 +66,4 @@ class PaycartAdminViewBuyeraddress extends PaycartAdminBaseViewBuyeraddress
 		return  parent::edit($tpl);
 	}
 	
-	/**
-	 * 
-	 * Add buyeraddress
-	 * @param $tpl
-	 * 
-	 * @return bool false always.  
-	 */
-	public function add($tpl=null)
-	{
-		$response = Array('message' => '');
-		
-		$ajax = Rb_Factory::getAjaxResponse();
-	
-		// default call back method
-		$response['message']	= '//PCTODO: GOOD!! Buyeraddress successfully save. Now you need to fetch buyeraddress html and append into buyeraddreess template ';
-		$callback 				= 'paycart.admin.buyeraddress.add.success';
-		//
-		if(!$this->getModel()->getState('id')) {			
-			$response['message'] =	'//PCTODO: Oops!! Buyeraddress fail to save. :(';
-			$callback 			 =	'paycart.admin.buyeraddress.add.error';
-		}
-		
-		// set call back function
-		$ajax->addScriptCall($callback, json_encode($response)); 
-		
-		// return false : no need to load any template
-		return false;
-		;
-	}
-	
 }

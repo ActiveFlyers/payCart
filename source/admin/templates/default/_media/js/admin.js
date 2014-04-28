@@ -291,7 +291,20 @@ paycart.admin.buyeraddress =
 		var link  = 'index.php?option=com_paycart&task=edit&view=buyeraddress&buyeraddress_id='+buyeraddress_id;
 		paycart.url.modal(link, null);
 	}
-};
+},
+
+
+paycart.form = 
+	{
+		validation : 
+			{	// Proper Binding element for JQuery Bootstrape Validation
+				init :	function(form_id)
+				{
+					// form validation required 
+					$('#'+form_id).find("input,textarea,select").not('.no-validate').jqBootstrapValidation();
+				}
+			}
+	};
 
 /*--------------------------------------------------------------
   on Document ready 
