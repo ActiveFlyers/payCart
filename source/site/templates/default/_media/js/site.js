@@ -93,6 +93,13 @@ $(document).ready(function(){
 
 	// arrange category layout
 	var sizeclass = paycart.helper.do_apply_sizeclass('.pc-categories-wrapper');
+	
+	// execute the queued scripts
+	var length = paycart.queue.length ;
+	for (var i = 0; i < length; i++) {
+		eval(paycart.queue[i]);
+	}
+	
 	paycart.helper.do_grid_layout('#pc-categories[data-columns]','.pc-categories-wrapper', '.pc-category', sizeclass);
 
 	// also do resize category height = width
@@ -113,12 +120,3 @@ $(document).ready(function(){
 //Should be last line, write code above this line.
 })(paycart.jQuery);
 
-var paycart_do_product_xl_layout = function(){
-	var wrapper_width = $('.pc-products-wrapper').width();
-	var item_width = $('.pc-product-outer').width();
-	
-	var count =  parseInt( wrapper_width / item_width) ;
-	alert('calc : '+wrapper_width + ' , ' + item_width + ' , ' + count);
-	
-	return count;
-}

@@ -8,9 +8,10 @@
 
 if (typeof(paycart)=='undefined'){
 	var paycart 	= {};
-	paycart.$ 	= paycart.jQuery = rb.jQuery;
+	paycart.$ 		= paycart.jQuery = rb.jQuery;
 	paycart.ajax	= rb.ajax;
-	paycart.ui	= rb.ui;
+	paycart.ui		= rb.ui;
+	paycart.queue	= new Array(); 
 }
 
 if (typeof(paycart.element)=='undefined'){
