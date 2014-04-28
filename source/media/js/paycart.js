@@ -12,6 +12,7 @@ if (typeof(paycart)=='undefined'){
 	paycart.ajax	=	rb.ajax;
 	paycart.ui		=	rb.ui;
 	paycart.url		=	rb.url;
+	paycart.queue	= new Array(); 
 }
 
 if (typeof(paycart.element)=='undefined'){

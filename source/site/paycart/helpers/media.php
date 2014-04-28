@@ -25,40 +25,19 @@ class PaycartHelperMedia extends PaycartHelper
 	 */
 	function upload($file = array())
 	{
-		$details = array();
+		$details  = array();
+		$filename = $file['name'];
+					
+		$info  	   = pathinfo($filename);
+		$extension = isset($info['extension']) ? $info['extension'] : null; 
+		$mediaFile = PAYCART_ATTRIBUTE_PATH_MEDIA . PaycartHelper::getHash($filename) . '.' . $extension;
 		
-		if(!empty($file['name'])) {
-			$path 	 = Paycart::ATTRIBUTE_PATH_MEDIA;
-			
-			if(empty($filename))continue;	
-						
-			$info  	   = pathinfo($filename);
-			$extension = isset($info['extension']) ? $info['extension'] : null; 
-			$mediaFile = $path . PaycartHelper::getHash($filename) . $extension;
-			
-			if(!JFile::upload($file['tmp_name'][$id],$mediaFile)) {
-				throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $mediaFile));
-			}
+		if(!JFile::upload($file['tmp_name'],$mediaFile)) {
+			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_FILE_COPY_FAILED', $mediaFile));
+		}
 
-			$details['path'] = $mediaFile;
-			$details['type'] = $extension;
-		}
-		
+		$details['path'] = $mediaFile;
+		$details['type'] = $extension;
 		return $details;
-	}
-	
-	/**
-	 * rearrage media files according to indexes
-	 * @param $media post data 
-	 */
-	function rearrangeFiles($media)
-	{
-		$result = array();
-		foreach ($media as $key => $values){
-			foreach ($value as $attrId => $data){
-				$result[$attrId][$key] = array_values($data);
-			}
-		}
-		return $result;
 	}
 }

@@ -31,62 +31,94 @@ class PaycartAttributeMedia extends PaycartAttribute
 		$media['path']             = '';
 		$media['media_lang_id']    = 0;
 		$media['is_free']		   = 1;
+		$media['description']	   = '';
 		$media['metadata_title']   = '';
-		$media['metadata_keyword'] = '';
+		$media['metadata_keywords'] = '';
 		$media['metadata_description'] = '';
 		
 		$attrId = $attribute->getId();
-		if(!is_null($media)){
-			$media = PaycartFactory::getModel('media')->loadRecord($attribute->getLanguageCode(),$value);
+		if(!is_null($value)){
+			$record = PaycartFactory::getModel('media')->loadRecord($attribute->getLanguageCode(),$value);
+			$media  = array_shift($record);
 		}
 		
 		$html  = '';
-		
-		$html .= '<div class="control-label">
-					<label id="title'.$attrId.'_lbl" title="">'.Rb_Text::_('COM_PAYCART_MEDIA_TITLE_LABEL').'</label>
+
+		ob_start();
+		?>
+			<div class="control-group">
+					<div class="control-label">
+					<label id="title<?php echo $attrId ?>_lbl" title=""><?php echo Rb_Text::_('COM_PAYCART_MEDIA_TITLE_LABEL')?></label>
 				 </div>
 				 <div class="controls">
-					<input type="text" name="attributes['.$attrId.'][title]" value="'.$media['title'].'"/>
-				 </div>';
+					<input type="text" name="paycart_form[attributes][<?php echo $attrId ?>][title]" value="<?php echo $media['title'] ?>"/>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<div class="control-group">
+					<div class="control-label">
+						<label id="path<?php echo $attrId ?>_lbl" title=""><?php echo Rb_Text::_('COM_PAYCART_MEDIA_DESCRIPTION_LABEL') ?></label>
+					 </div>
+					 <div class="controls">
+						<textarea name="paycart_form[attributes][<?php echo $attrId ?>][description]"><?php echo $media['description'] ?></textarea>
+					 </div>
+				</div>
+			</div>
 		
-		$html .= '<div class="control-label">
-					<label id="path'.$attrId.'_lbl" title="">'.Rb_Text::_('COM_PAYCART_MEDIA_PATH_LABEL').'</label>
+			<div class="control-group">
+				<div class="control-group">
+					<div class="control-label">
+						<label id="path<?php echo $attrId ?>_lbl" title=""><?php echo Rb_Text::_('COM_PAYCART_MEDIA_PATH_LABEL') ?></label>
+					 </div>
+					 <div class="controls">
+						<input type="file" name="paycart_form[attributes][<?php echo $attrId ?>][path]" value="<?php echo $media['path'] ?>"/>
+					 </div>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<div class="control-label">
+					<label id="isfree<?php echo $attrId ?>_lbl" title=""><?php echo Rb_Text::_('COM_PAYCART_MEDIA_IS_FREE_LABEL') ?></label>
 				 </div>
 				 <div class="controls">
-					<input type="file" name="attributes['.$attrId.'][path]" value="'.$media['path'].'"/>
-				 </div>';
-		
-		$html .= '<div class="control-label">
-					<label id="isfree'.$attrId.'_lbl" title="">'.Rb_Text::_('COM_PAYCART_MEDIA_IS_FREE_LABEL').'</label>
+					<input type="radio" name="paycart_form[attributes][<?php echo $attrId ?>][is_free]" value="1" <?php echo (($media['is_free'] == 1)?"checked='checked'":'') ?> /> <?php echo Rb_Text::_('COM_PAYCART_YES')?>
+				   <input type="radio" name="paycart_form[attributes][<?php echo $attrId ?>][is_free]" value="0"<?php echo (($media['is_free'] == 0)?"checked='checked'":'' )?> /> <?php echo Rb_Text::_('COM_PAYCART_NO')?>
 				 </div>
-				 <div class="controls">'.
-					'<input type="radio" name="attributes['.$attrId.'][is_free]" value="1"'.($media['is_free'] == $value['is_free'])?"checked='checked'":''.'/>'.Rb_Text::_('COM_PAYCART_YES')
-				   .'<input type="radio" name="attributes['.$attrId.'][is_free]" value="0"' .($media['is_free'] == $value['is_free'])?"checked='checked'":''.'/>'.Rb_Text::_('COM_PAYCART_NO').
-				 '</div>';
-		
-		$html .= '<div class="control-label">
-					<label id="metatitle'.$attrId.'_lbl" title="">'.Rb_Text::_('COM_PAYCART_MEDIA_META_TITLE_LABEL').'</label>
+			</div>
+			
+			<div class="control-group">			 		
+				<div class="control-label">
+					<label id="metatitle<?php echo $attrId ?>_lbl" title=""><?php echo Rb_Text::_('COM_PAYCART_MEDIA_META_TITLE_LABEL') ?></label>
 				 </div>
 				 <div class="controls">
-					<input type="text" name="attributes['.$attrId.'][metadata_title]" value="'.$media['metadata_title'].'"/>
-				 </div>';
-		
-		$html .= '<div class="control-label">
-					<label id="metakeyword'.$attrId.'_lbl" title="">'.Rb_Text::_('COM_PAYCART_MEDIA_META_KEYWORD_LABEL').'</label>
+					<input type="text" name="paycart_form[attributes][<?php echo $attrId ?>][metadata_title]" value="<?php echo $media['metadata_title'] ?>"/>
+				 </div>
+			</div>
+				
+			<div class="control-group">
+				<div class="control-label">
+					<label id="metakeyword<?php echo $attrId ?>_lbl" title=""><?php echo Rb_Text::_('COM_PAYCART_MEDIA_META_KEYWORD_LABEL') ?></label>
 				 </div>
 				 <div class="controls">
-					<input type="text" name="attributes['.$attrId.'][metadata_keyword]" value="'.$media['metadata_keyword'].'"/>
-				 </div>';
-		
-		$html .= '<div class="control-label">
-					<label id="metadescription'.$attrId.'_lbl" title="">'.Rb_Text::_('COM_PAYCART_MEDIA_META_DESCRIPTION_LABEL').'</label>
+					<textarea name="paycart_form[attributes][<?php echo $attrId ?>][metadata_keywords]"><?php echo $media['metadata_keywords'] ?></textarea>
+				 </div>
+			</div>
+			
+			<div class="control-group">	
+				<div class="control-label">
+					<label id="metadescription<?php echo $attrId ?>_lbl" title=""><?php echo Rb_Text::_('COM_PAYCART_MEDIA_META_DESCRIPTION_LABEL') ?></label>
 				 </div>
 				 <div class="controls">
-					<input type="text" name="attributes['.$attrId.'][metadata_description]" value="'.$media['metadata_description'].'"/>
-				 </div>';
+					<textarea name="paycart_form[attributes][<?php echo $attrId ?>][metadata_description]"><?php echo $media['metadata_description']?></textarea>
+				 </div>
+			</div>
 		
-		$html .= '<input type="hidden" name="attributes['.$attrId.'][media_id]" value="'.isset($media['media_id'])?$media['media_id']:'0'.'" />';
-		$html .= '<input type="hidden" name="attributes['.$attrId.'][media_lang_id]" value="'.isset($media['media_lang_id'])?$media['media_lang_id']:'0'.'" />';
+		<input type="hidden" name="paycart_form[attributes][<?php echo $attrId ?>][media_id]" value="<?php echo (isset($media['media_id'])?$media['media_id']:'0')?>" />
+		<input type="hidden" name="paycart_form[attributes][<?php echo $attrId ?>][media_lang_id]" value="<?php echo (isset($media['media_lang_id'])?$media['media_lang_id']:'0')?>" />
+		<?php 
+		$html .= ob_get_contents();
+		ob_end_clean();
 		
 		return $html;
 	}
@@ -107,16 +139,23 @@ class PaycartAttributeMedia extends PaycartAttribute
 	/**
 	 * return mediaid after saving data in media table
 	 */
-	function save($data, $file)
+	function formatValue($data)
 	{
+		//if data contain value directly then return data as it is 
+		if(is_array($data) && !isset($data['media_id'])) {
+			return $data;
+		}
+		
 		$media = array();
 		$media['media_id'] = $data['media_id'];
 		$media['is_free']  = $data['is_free'];
 		
-		//upload file at proper location and get details like path and type
-		$details = PaycartHelperMedia::upload($file['path']);
-		$media['path']	   = isset($details['path'])?$details['path']:'';
-		$media['type']     = isset($details['extension'])?$details['extension']:'';
+		//if file exist then upload it at proper location and get details like path and type
+		if(isset($data['path']) && is_array($data['path']) && !empty($data['path']['tmp_name'])){
+			$details 		   = PaycartHelperMedia::upload($data['path']);
+			$media['path']	   = isset($details['path'])?$details['path']:'';
+			$media['type']     = isset($details['type'])?$details['type']:'';
+		}
 
 		$mediaModel = PaycartFactory::getInstance('media','model');
 		$mediaId 	= $mediaModel->save($media,$media['media_id']);
@@ -128,12 +167,13 @@ class PaycartAttributeMedia extends PaycartAttribute
 		$media['media_lang_id'] = $data['media_lang_id'];
 		$media['media_id']		= $mediaId;	
 		$media['title']			= $data['title'];
+		$media['description']	= $data['description'];	
 		$media['lang_code'] 	= PaycartFactory::getLanguageTag();
 		$media['metadata_title'] 	   = $data['metadata_title'];
-		$media['metadata_keyword'] 	   = $data['metadata_keyword'];
+		$media['metadata_keywords']    = $data['metadata_keywords'];
 		$media['metadata_description'] = $data['metadata_description'];
 		
-		$langModel = PaycartFactory::getInstance('medialang','model');
+		$langModel = PaycartFactory::getModelLang('media');
 		$mediaLangId = $langModel->save($media,$media['media_lang_id']);
 		if(!$mediaLangId){
 			throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $mediaModel->getError());

@@ -49,6 +49,7 @@ define('PAYCART_PATH_CORE_FIELDS', 			PAYCART_PATH_CORE.'/html/fields');
 
 // Paycart Custom Attributes
 define('PAYCART_PATH_CUSTOM_ATTRIBUTES', 	PAYCART_PATH_CORE.'/attributes');
+define('PAYCART_ATTRIBUTE_PATH_MEDIA',  	PAYCART_PATH_CORE_MEDIA.'/media/');
 
 // hard coded layout path with default templt
 define('PAYCART_LAYOUTS_PATH',				PAYCART_PATH_SITE_TEMPLATE.'/default/layouts');
