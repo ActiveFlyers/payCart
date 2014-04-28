@@ -282,10 +282,15 @@ class PaycartProduct extends PaycartLib
 			$data = Array();
 			$count = 0;
 			foreach ($this->_attributeValues as $attributeId => $attributeValue) {
+				//format Value before save
+				$attribute 		= PaycartProductAttribute::getInstance($attributeId);
+				$attributeValue = PaycartAttribute::getInstance($attribute->getType())->formatValue($attributeValue);
+				
 				if(!is_array($attributeValue)){
 					$attributeValue = (array)$attributeValue;
 				}
-				
+
+				//in case of multiple values
 				foreach ($attributeValue as $value){
 					$data[++$count]['product_id'] 		 = $productId;
 					$data[$count]['productattribute_id'] = $attributeId;
@@ -356,11 +361,6 @@ class PaycartProduct extends PaycartLib
 			$this->_uploaded_files = $data['_uploaded_files'];
 		}
 		
-		//media attribute related data 
-		if( isset($data['_media'])) {
-			$this->_media = PaycartHelperMedia::rearrangeMediaFiles($data['_media']['attributes']);
-		}
-		
 		//Collect langauge data
 		$language = (isset($data['language'])) ? $data['language']: array();
 		
@@ -426,10 +426,8 @@ class PaycartProduct extends PaycartLib
 									->loadRecords($condition); 
 		
 		foreach ($attributes as $attributeId => $attribute) {
-			//$this->_attributes[$attributeId] = PaycartProductAttribute::getInstance($attributeId, $attribute);
-			
-			//PCTODO: Save media attribute at controller level, so that mediaId will be directly set from here 
-			
+			PaycartProductAttribute::getInstance($attributeId, $attribute);
+						
 			//array of attribute values
 			$this->_attributeValues->$attributeId = $attributeData[$attributeId];
 		}
@@ -472,50 +470,6 @@ class PaycartProduct extends PaycartLib
 			  ->create($targetFolder, $targetFileInfo['filename']);
 			 
 		return $this;
-	}
-			
-	
-	/**
-	 * 
-	 * Create new variation of Product. 
-	 */
-	public function addVariant()
-	{
-		$newProduct 	= $this->getClone();
-		$newProduct->variation_of = $this->getId();
-		// New created variant will be always variation of ROOT product. 
-		// @see Discuss#39
-		if($variantOf = $this->getVariationOf()) {
-			$newProduct->variation_of = $variantOf;
-		}
-		//### Attribute Changes in Variants
-		//1. Product id should be 0
-		$newProduct->product_id = 0 ;
-		
-		//2. New image file name save nd create new after save
-		if($this->getCoverMedia()) { 
-			$extension = PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
-			// set Image name  
-			$newProduct->cover_media = PaycartHelper::getHash($this->getTitle());
-			$newProduct->cover_media = $this->getName().'/'.$newProduct->cover_media.$extension;
-			// set source path. It will required on image processing
-			$newProduct->_uploaded_files['cover_media'] = $this->getCoverMedia();
-		}
-		
-		//3. set attribute values
-		$newProduct->_attributeValues = $this->_attributeValues;
-		
-		//4. Changable Property 	
-		$newProduct->created_date  =	Rb_Date::getInstance();	
-		$newProduct->modified_date =	Rb_Date::getInstance(); 
-		
-		//5. Set langauge data
-		//PCTODO: Save all the langauge data of main product
-		$newProduct->_language     = $this->_language;
-		$newProduct->_language->product_lang_id	   = 0;
-		
-		// Save new variant		
-		return $newProduct->save();	
 	}
 	
 	protected function _delete()
