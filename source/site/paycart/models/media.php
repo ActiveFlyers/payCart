@@ -30,10 +30,10 @@ class PaycartModelMedia extends PaycartModel
 		return $query->select('*')
 		 		     ->from('#__paycart_media as m')
 		 		     ->join('INNER', '#__paycart_media_lang as ml ON m.media_id = ml.media_id')
-		 		     ->where('ml.lang_code = '.$languageCode)
+		 		     ->where('ml.lang_code = "'.$languageCode.'"')
 		 		     ->where('ml.media_id = '.$mediaId)
 		 		     ->dbLoadQuery()
-		 		     ->loadRow();
+		 		     ->loadAssocList();
 	}
 }
 
@@ -43,4 +43,4 @@ class PaycartModelMedia extends PaycartModel
  * @author rimjhim
  *
  */
-class PaycartModelMediaLang extends PaycartModel{}
+class PaycartModelLangMedia extends PaycartModel{}

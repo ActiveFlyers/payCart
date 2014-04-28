@@ -27,6 +27,16 @@ class PaycartAdminControllerProduct extends PaycartController
 	{
 		//Get All files from paycart form
 		$data['_uploaded_files'] = $this->input->files->get('paycart_form', false);
+		
+		//manage media files related to attribute
+		if(isset($data['_uploaded_files']['attributes'])){			
+			foreach ($data['_uploaded_files']['attributes'] as $attributeId => $value ){
+				if(!empty($value['path']['tmp_name'])){
+					$data['attributes'][$attributeId]['path'] = $value['path'];
+				}
+			}
+		}
+		
 		return parent::_save($data, $itemId, $type);
 	}
 	
@@ -80,14 +90,15 @@ class PaycartAdminControllerProduct extends PaycartController
 			return false;
 		} 
 		// if everything is ok then create new variant
-		$variant = $product->addVariant();
+		$productHelper = PaycartFactory::getHelper('product');
+		$variant       = $productHelper->addVariant($product);
 		if(!$variant) {
 			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_CREATION_FAIL'),'error');
 			return false;
 		}
 		
 		$this->setRedirect(
-						'index.php?option=com_paycart&view=product&task=edit&id='.$variant->getId(),
+						'index.php?option=com_paycart&view=product&task=edit&product_id='.$variant->getId(),
 						Rb_Text::_('COM_PAYCART_VARIANT_CREATION_SUCCESS')
 							);
 		// no need to execute view functions

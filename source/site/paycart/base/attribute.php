@@ -147,9 +147,9 @@ class PaycartAttribute
 	}
 	
 	/**
-	 * save attribute specific data after/before saving product
+	 * format data before saving
 	 */
-	function save($data)
+	function formatValue($data)
 	{
 		return $data;
 	}

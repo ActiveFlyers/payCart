@@ -83,4 +83,50 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		return $rows;
 	}
+
+	/**
+	 * Create new variation of Product. 
+	 */
+	public function addVariant($product)
+	{
+		$newProduct 	= $product->getClone();
+		$newProduct->set('variation_of',$product->getId());
+		// New created variant will be always variation of ROOT product. 
+		// @see Discuss#39
+		if($variantOf = $product->getVariationOf()) {
+			$newProduct->set('variation_of',$variantOf);
+		}
+		//### Attribute Changes in Variants
+		//1. Product id and product lang id should be 0
+		$newProduct->set('product_id', 0) ;
+		
+		//2. New image file name save nd create new after save
+		if($product->getCoverMedia()) { 
+			$extension = PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
+			// set Image name  
+			$newProduct->set('cover_media',PaycartHelper::getHash($product->getTitle()));
+			$newProduct->set('cover_media', $product->getName().'/'.$newProduct->cover_media.$extension);
+			// set source path. It will required on image processing
+			$newProduct->set("_uploaded_files['cover_media']",$product->getCoverMedia());
+		}
+		
+		//3. set attribute values
+		$newProduct->set('_attributeValues',$product->getAttributeValues());
+		
+		//4. Changable Property 	
+		$newProduct->set('created_date', Rb_Date::getInstance());	
+		$newProduct->set('modified_date',Rb_Date::getInstance()); 
+		
+		//5. fetch all the language records and save one by one
+		$records   = PaycartFactory::getModelLang('product')->loadRecords(array('product_id' => $product->getId()));
+		
+		foreach ($records as $record){
+			$record->product_id = 0;
+			$record->product_lang_id = 0;
+			$data->language = (array)$record;
+			$newProduct->bind($data)->save();
+		}
+
+		return $newProduct;
+	}
 }

@@ -49,6 +49,7 @@ define('PAYCART_PATH_CORE_FIELDS', 			PAYCART_PATH_CORE.'/html/fields');
 
 // Paycart Custom Attributes
 define('PAYCART_PATH_CUSTOM_ATTRIBUTES', 	PAYCART_PATH_CORE.'/attributes');
+define('PAYCART_ATTRIBUTE_PATH_MEDIA',  	PAYCART_PATH_CORE_MEDIA.'/media/');
 
 // object to identify extension, create once, so same can be consumed by constructors
 Rb_Extension::getInstance(PAYCART_COMPONENT_NAME, array('prefix_css'=>'paycart'));
