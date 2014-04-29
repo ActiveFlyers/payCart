@@ -76,6 +76,14 @@
 }
 
 /**
+  Create whitespace around buttons 
+-- might create issues
+.paycart button{
+	margin-bottom:4px;
+}
+*/
+
+/**
 	Generate a simple separator line consume 2px bandwidth  
 */
 .pc-separator{

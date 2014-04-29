@@ -15,16 +15,23 @@ if(!defined( '_JEXEC' )){
 
 <?php
 
-$check = JRequest::getCmd('check');
+$check = JRequest::getCmd('check', null);
 
-switch($check)
-{
-	case 'product':
-		include __DIR__.'/product.php';
-		break;
-		
-	default:
+
+if($check !== null){
+	// catlogue
+	if($check == 'catlogue'){	
 		include __DIR__.'/categories.php';
 		include __DIR__.'/products.php';
-		break;
+	}else{
+		include __DIR__."/$check.php";
+	}
 }
+
+echo "<div class='well'> <h3 class='page-header'>Paycart Test Menu</h3><ul>";
+// show links to test
+$links = array('product', 'catlogue','checkout-cart', 'checkout-login','checkout-shipping','checkout-confirm','checkout-payment');
+foreach($links as $link){
+	echo "<li> <a href='index.php?option=com_paycart&view=catlogue&check=$link'> $link </a> </li>";
+}
+echo "</ul></div>";
