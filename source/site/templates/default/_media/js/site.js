@@ -91,8 +91,8 @@ if(typeof(Joomla)=='undefined'){
 --------------------------------------------------------------*/
 $(document).ready(function(){
 
-	// arrange category layout
-	var sizeclass = paycart.helper.do_apply_sizeclass('.pc-categories-wrapper');
+	// setup paycart-wrap size
+	var sizeclass = paycart.helper.do_apply_sizeclass('.paycart-wrap');
 	
 	// execute the queued scripts
 	var length = paycart.queue.length ;
@@ -109,7 +109,6 @@ $(document).ready(function(){
 	paycart.helper.do_vertical_center('.vertical-center-wrapper');
 	
 	// arrange item layout
-	sizeclass = paycart.helper.do_apply_sizeclass('.pc-products-wrapper');
 	paycart.helper.do_grid_layout('#pc-products[data-columns]','.pc-products-wrapper', '.pc-product', sizeclass);
 	
 	
