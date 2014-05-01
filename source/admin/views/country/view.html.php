@@ -1,0 +1,40 @@
+<?php
+
+/**
+* @copyright	Copyright (C) 2009 - 2013 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
+* @license		GNU/GPL, see LICENSE.php
+* @package 		PAYCART
+* @contact		support+paycart@readybytes.in
+* @author		mManishTrivedi
+*/
+
+// no direct access
+defined('_JEXEC') or die( 'Restricted access' );
+
+/** 
+ * Country Html View
+ * @author mManishTrivedi
+ */
+require_once dirname(__FILE__).'/view.php';
+class PaycartAdminViewCountry extends PaycartAdminBaseViewCountry
+{	
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_View::edit()
+	 */
+	public function edit($tpl=null) 
+	{
+		$country_id	=  $this->getModel()->getState('id');
+		$filter = Array('country_id' => $country_id);
+
+		$country_data = PaycartFactory::getModel('country')->loadRecords($filter);
+		
+		if(isset($country_data[$country_id])) {
+			$country_data = (array) $country_data[$country_id];
+		}
+		
+		$this->assign('form',  PaycartFactory::getModelForm('country')->getForm($country_data, false));
+				
+		return parent::edit($tpl);
+	}
+}
