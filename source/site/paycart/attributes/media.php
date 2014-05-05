@@ -168,7 +168,7 @@ class PaycartAttributeMedia extends PaycartAttribute
 		$media['media_id']		= $mediaId;	
 		$media['title']			= $data['title'];
 		$media['description']	= $data['description'];	
-		$media['lang_code'] 	= PaycartFactory::getLanguageTag();
+		$media['lang_code'] 	= PaycartFactory::getLanguage()->getTag();
 		$media['metadata_title'] 	   = $data['metadata_title'];
 		$media['metadata_keywords']    = $data['metadata_keywords'];
 		$media['metadata_description'] = $data['metadata_description'];

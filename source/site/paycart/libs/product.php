@@ -81,7 +81,7 @@ class PaycartProduct extends PaycartLib
 		$this->_language = new stdClass();
 		$this->_language->product_lang_id	   = 0;
 		$this->_language->product_id 		   = 0;	
-		$this->_language->lang_code 		   = PaycartFactory::getLanguageTag(); //Current Paycart language Tag	
+		$this->_language->lang_code 		   = PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag	
 		$this->_language->title	 			   = '';	
 		$this->_language->alias  			   = '';
 		$this->_language->teaser 			   = '';
