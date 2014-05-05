@@ -15,8 +15,8 @@
 				type="text"
 				maxlength="3"
 				required="true"
-				label="COM_PAYCART_COUNTRY_ID_LABEL"
-				description="COM_PAYCART_COUNTRY_ID_DESC"
+				label="COM_PAYCART_COUNTRY_COUNTRY_ID_LABEL"
+				description="COM_PAYCART_COUNTRY_COUNTRY_ID_DESC"
 				labelclass="control-label"
 				/>
 
@@ -25,8 +25,8 @@
 				type="text"
 				maxlength="2"
 				required="true"
-				label="COM_PAYCART_ISOCODE2_LABEL"
-				description="COM_PAYCART_ISOCODE2_DESC"
+				label="COM_PAYCART_COUNTRY_ISOCODE2_LABEL"
+				description="COM_PAYCART_COUNTRY_ISOCODE2_DESC"
 				labelclass="control-label"
 				/>
   		
@@ -61,8 +61,6 @@
 		<field 	name="country_lang_id"
 				type="hidden"
 				/>
-		
-
 
 		</fieldset>
 </form>

@@ -18,6 +18,7 @@ class PaycartAdminControllerBuyeraddress extends PaycartController
 	/**
 	 * 
 	 * Ajax Call create new buyer-address
+	 * @PCTODO: you can use save/edit method
 	 */
 	public function add() 
 	{
@@ -54,10 +55,14 @@ class PaycartAdminControllerBuyeraddress extends PaycartController
 		return false;
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see /plugins/system/rbsl/rb/rb/Rb_Controller::edit()
+	 */
 	public function edit() 
 	{
 		// Id required in View
-		$this->getModel()->setState('buyer_id', JFactory::getApplication()->input->get('buyer_id', 0));
+		$this->getModel()->setState('buyer_id', $this->input->get('buyer_id', 0));
 	}
 	
 	

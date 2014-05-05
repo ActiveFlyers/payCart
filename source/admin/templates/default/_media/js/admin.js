@@ -293,15 +293,111 @@ paycart.admin.buyeraddress =
 	}
 },
 
+paycart.admin.state =
+{
+	//open modal window to create new state or edit in existing state
+	window : function(country_id, state_id)
+	{
+		var link  = 'index.php?option=com_paycart&task=edit&view=state&country_id='+country_id+'&state_id='+state_id;
+		paycart.url.modal(link, null);
+	},
+	
+	add : 
+	{
+		go : function()
+		{
+			//Validation Checking
+			if($("#paycart_state_form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation("hasErrors")){
+				// Our validation work on submit call therefore first we will ensure that form is not properly fill 
+				// then we will call submit method. So proper msg display and focus on required element. 
+				$("#paycart_state_form").submit();
+				return false;
+			}
+			
+			var link  = 'index.php?option=com_paycart&view=state';
+			
+			// get all form data for post	
+			var postData = $("#paycart_state_form").serializeArray();
+	
+			// Override task value to ajax task
+			postData.push({'name':'task','value':'save'});
+	
+			paycart.ajax.go(link, postData);
+		},
+		
+		// data is json string		
+		success : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window
+			rb.ui.dialog.autoclose(1);
+			// 2#.Fetch html of new created state
+			// 3# append into state template
+			// 4#.Good Job
+		},
+		
+		// data is json string
+		error : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window and handle error
+			// 2#.Good Job
+			
+			//close modal window
+			rb.ui.dialog.autoclose(1);
+		}
+		
+	},
+	
+	remove : 
+	{
+		go : function(country_id, state_id)
+		{
+			var link  = 'index.php?option=com_paycart&view=state&task=delete&state_id='+state_id+'&country_id='+country_id;
+			paycart.ajax.go(link);
+		},
+		
+		// data is json string		
+		success : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window
+			rb.ui.dialog.autoclose(1);
+			// 2#.Fetch html of new created state
+			// 3# append into state template
+			// 4#.Good Job
+		},
+		
+		// data is json string
+		error : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window and handle error
+			// 2#.Good Job
+			
+			//close modal window
+			rb.ui.dialog.autoclose(1);
+		}
+		
+	}
+},
 
 paycart.form = 
 	{
 		validation : 
 			{	// Proper Binding element for JQuery Bootstrape Validation
-				init :	function(form_id)
+				init :	function(selector)
 				{
 					// form validation required 
-					$('#'+form_id).find("input,textarea,select").not('.no-validate').jqBootstrapValidation();
+					$(selector).find("input,textarea,select").not('.no-validate').jqBootstrapValidation();
 				}
 			}
 	};

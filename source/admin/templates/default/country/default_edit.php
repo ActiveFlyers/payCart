@@ -21,7 +21,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		<?php echo JHtml::_('bootstrap.startTabSet', 'country', array('active' => 'detail')); ?>
 		
 <!--	 Account Details Tab		-->
-			<?php echo JHtml::_('bootstrap.addTab', 'country', 'detail', Rb_Text::_('COM_PAYCART_TAB_COUNTRY_DETAILS', true)); ?>
+			<?php echo JHtml::_('bootstrap.addTab', 'country', 'detail', JText::_('COM_PAYCART_TAB_COUNTRY_DETAILS')); ?>
 				
 				<?php foreach ($form->getFieldset('country') as $field):?>
 				
@@ -35,9 +35,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 			
 <!--	 Address Details Tab		-->
-			<?php echo JHtml::_('bootstrap.addTab', 'country', 'state', Rb_Text::_('COM_PAYCART_TAB_STATE_DETAILS', true)); ?>
+			<?php echo JHtml::_('bootstrap.addTab', 'country', 'state', JText::_('COM_PAYCART_TAB_STATE_DETAILS')); ?>
 				
-				<?php //echo $this->loadTemplate('address'); ?>
+				<?php echo $this->loadTemplate('states'); ?>
 
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 

@@ -26,13 +26,17 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <div class="modal-body" id="rbWindowBody">
 	
 	<!--  New_atrribute_creation body		-->
-	<form id="paycart_buyeraddress_form" class="rb-validate-form">
+	<form id="paycart_state_form" class="rb-validate-form">
+	
+		<?php foreach ($form->getFieldset('state') as $field):?>
+				
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
+				
+		<?php endforeach;?>
 	 
-		<?php
-				$layout = new JLayoutFile('paycart_buyeraddress_edit', PAYCART_LAYOUTS_PATH);
-				echo $layout->render($display_data); 
-		?>
-		
 		<input type="hidden" name="task" value="save" />
 		<input type='hidden' name='id' value='<?php echo $record_id;?>' />
 		
@@ -42,18 +46,21 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 <div id="rbWindowFooter">
 	<div class="modal-footer">
-		<button class="btn btn-primary " onClick="paycart.admin.buyeraddress.add.go();"> 
+		<button class="btn btn-primary " onClick="paycart.admin.state.add.go();"> 
 			<?php echo JText::_('COM_PAYCART_BUTTON_SAVE'); ?> </button>
 		<button class="btn" data-dismiss="modal" aria-hidden="true" ><?php echo JText::_('COM_PAYCART_BUTTON_CANCLE'); ?> </button>
 	</div>
 </div>
 
 <script>
+<?php include_once PAYCART_PATH_ADMIN_TEMPLATE.'/default/_media/js/template.js'; ?>
 (function($)
 		{
 			$(document).ready(function($) 
 					{
-						paycart.form.validation.init('#paycart_buyeraddress_form');		
+						paycart.form.validation.init('#paycart_state_form');
+//						paycart_radio_btn_group_init();	
+
 					});
 		})(paycart.jQuery)
 </script>

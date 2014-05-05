@@ -15,34 +15,29 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 class PaycartAdminControllerCountry extends PaycartController 
 {
 	/**
+	 * 
+	 * @var overwrite
+	 */
+	protected $_input_type	=	'STRING';
+	
+	/**
 	 * Saves an item (new or old)
 	 */
 	public function _save(array $data, $itemId=null)
 	{
 		// language data
-		$data['lang_code'] = PaycartFactory::getLanguageTag();
+		$data['lang_code'] = PaycartFactory::getLanguage()->getTag();
 		
 		// validation will be done on Model
 		return  $this->getModel()->save($data, $data['country_id']);
 	}
 	
 	/**
-	 * We are using char in primary key
-	 * @see /plugins/system/rbsl/rb/rb/Rb_AbstractController::_getId()
+	 * (non-PHPdoc)
+	 * @see /plugins/system/rbsl/rb/rb/Rb_Controller::_remove()
 	 */
-	public function _getId() 
+	public function _remove($itemId=null, $userId=null)
 	{
-		$id = parent::_getId();
-		
-		if ( -1 === $id ) 
-		{
-			$id = $this->input->get('country_id', null);
-			if(!$id) {
-				$id = $this->input->get('id', null);
-			}
-		}
-		
-		return $id;
-		;
+		return $this->getModel()->delete();
 	}
 }

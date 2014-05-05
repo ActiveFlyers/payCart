@@ -139,8 +139,5 @@ class PaycartTableLangCountry extends PaycartTable
 	function __construct($tblFullName='#__paycart_country_lang', $tblPrimaryKey='country_lang_id', $db=null)
 	{
 		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
-	}
-	
-
-	
+	}	
 }

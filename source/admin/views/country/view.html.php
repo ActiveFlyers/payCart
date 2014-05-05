@@ -24,7 +24,7 @@ class PaycartAdminViewCountry extends PaycartAdminBaseViewCountry
 	 */
 	public function edit($tpl=null) 
 	{
-		$country_id	=  $this->getModel()->getState('id');
+		$country_id	=  $this->getModel()->getId();
 		$filter = Array('country_id' => $country_id);
 
 		$country_data = PaycartFactory::getModel('country')->loadRecords($filter);
@@ -34,7 +34,14 @@ class PaycartAdminViewCountry extends PaycartAdminBaseViewCountry
 		}
 		
 		$this->assign('form',  PaycartFactory::getModelForm('country')->getForm($country_data, false));
-				
+		
+		//get state data for specific country
+		
+		$filter 	=	Array('country_id' => $country_id );
+		$states 	=	PaycartFactory::getModel('state')->loadRecords($filter);
+		
+		$this->assign('states', $states);
+		
 		return parent::edit($tpl);
 	}
 }
