@@ -67,7 +67,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 								<i class="icon-plus-sign icon-white"></i>&nbsp; <?php echo JText::_('COM_PAYCART_EDIT_STATE');?>
 							</a>
 							
-							<a href="#" class="btn btn-success" onClick="paycart.admin.state.remove.go(<?php echo "'$record_id', {$state_id}"; ?>);" >
+							<a href="#" class="btn btn-success" onClick="paycart.admin.state.remove.go(<?php echo $state_id; ?>);" >
 								<i class="icon-plus-sign icon-white"></i>&nbsp; <?php echo JText::_('COM_PAYCART_DELETE_STATE');?>
 							</a>
 					</td>

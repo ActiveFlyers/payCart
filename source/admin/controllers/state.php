@@ -85,8 +85,9 @@ class PaycartAdminControllerState extends PaycartController
 		$callback 			 =	'paycart.admin.state.remove.error';
 		$redirect			 =	'';
 
-		//@FIXME : dont use hardcoded entry
-		$country_id	=	$this->input->get('country_id');
+		$state_id		=	$this->_getId();
+		$state_details 	=	$this->getModel()->loadrecords();
+		$country_id		=	$state_details[$state_id]->country_id;
 		
 		// if buyeraddress succesfully save  
 		if($this->getModel()->delete($this->_getId())) {			

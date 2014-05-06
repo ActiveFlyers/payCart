@@ -355,9 +355,9 @@ paycart.admin.state =
 	
 	remove : 
 	{
-		go : function(country_id, state_id)
+		go : function(state_id)
 		{
-			var link  = 'index.php?option=com_paycart&view=state&task=delete&state_id='+state_id+'&country_id='+country_id;
+			var link  = 'index.php?option=com_paycart&view=state&task=delete&state_id='+state_id;
 			paycart.ajax.go(link);
 		},
 		
