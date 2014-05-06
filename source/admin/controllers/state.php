@@ -23,7 +23,7 @@ class PaycartAdminControllerState extends PaycartController
 		$post = $this->input->post->get('paycart_form', array(), 'array');
 		
 		// language data
-		$data['lang_code'] = PaycartFactory::getLanguage()->getTag();
+		$post['lang_code'] = PaycartFactory::getLanguage()->getTag();
 		
 		// validation will be done on Model
 		$entity =  $this->getModel()->save($post, $this->_getId());

@@ -18,7 +18,7 @@ class PaycartAdminControllerCountry extends PaycartController
 	 * 
 	 * @var overwrite
 	 */
-	protected $_input_type	=	'STRING';
+	protected $_id_data_type	=	'STRING';
 	
 	/**
 	 * Saves an item (new or old)
@@ -38,6 +38,6 @@ class PaycartAdminControllerCountry extends PaycartController
 	 */
 	public function _remove($itemId=null, $userId=null)
 	{
-		return $this->getModel()->delete();
+		return $this->getModel()->delete($itemId);
 	}
 }

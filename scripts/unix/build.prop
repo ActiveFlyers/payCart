@@ -29,10 +29,16 @@ file.extension		= zip
 # RbFramework
 rbframework.build.version 	= 1.1.0
 rbframework.name	  		= RBSL
-rbframework.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
+#rbframework.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
+# url for rbframework
+rbframework.location	  	=	http://10.0.0.91/intranet/downloads/SetupKits/RbFramework
+
 
 # RB Commerce Pakages
-build.package.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
+#build.package.location	  	= ${user.home}/Dropbox/TEAM/dev/rbframework
+# required for build pkg
+build.package.location	  	= ${rbframework.location}
+
 build.package.name	  	= Pakage_Paycart
 script.tag			= <scriptfile>script.php</scriptfile>
 

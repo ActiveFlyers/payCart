@@ -53,7 +53,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 </div>
 
 <script>
-<?php include_once PAYCART_PATH_ADMIN_TEMPLATE.'/default/_media/js/template.js'; ?>
 (function($)
 		{
 			$(document).ready(function($) 
