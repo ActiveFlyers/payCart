@@ -28,6 +28,8 @@ if($check !== null){
 	}
 }
 
+echo '<div class=" clearfix span12" style="height:250px;">&nbsp;</div>';
+
 echo "<div class='well'> <h3 class='page-header'>Paycart Test Menu</h3><ul>";
 // show links to test
 $links = array('product', 'catlogue','checkout-cart', 'checkout-login','checkout-shipping','checkout-confirm','checkout-payment');

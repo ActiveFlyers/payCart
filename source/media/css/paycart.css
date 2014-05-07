@@ -102,6 +102,13 @@
   overflow: hidden;
 }
 
+.pc-size-xs .pc-whitespace{
+	margin-top :  20px;
+	margin-bottom :  20px;
+/*	margin-left :  5px;
+	margin-right :  5px; */
+}
+
 /* =============================================
    TINY 960 Grid : 
    Its required becuase bootstrap based 
