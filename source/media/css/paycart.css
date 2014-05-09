@@ -76,6 +76,14 @@
 }
 
 /**
+  Create whitespace around buttons 
+-- might create issues
+.paycart button{
+	margin-bottom:4px;
+}
+*/
+
+/**
 	Generate a simple separator line consume 2px bandwidth  
 */
 .pc-separator{
@@ -92,6 +100,13 @@
   /* Required for text-overflow to do anything */
   white-space: nowrap;
   overflow: hidden;
+}
+
+.pc-size-xs .pc-whitespace{
+	margin-top :  20px;
+	margin-bottom :  20px;
+/*	margin-left :  5px;
+	margin-right :  5px; */
 }
 
 /* =============================================

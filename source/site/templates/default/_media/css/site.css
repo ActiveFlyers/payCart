@@ -137,6 +137,7 @@ Products Display
 	/*required for a proper white border around product content */
 	padding:5px;
 	background-color: #fff;
+	border : 1px solid transparent;
 }
 
 /* primiary border when hover */
@@ -158,4 +159,16 @@ Products Display
 
 .pc-size-xs .pc-product h4 {
 	font-size: 14px;	
+}
+
+
+
+
+/** checkout page */
+.pc-checkout-wrapper .pc-item-attribute	{
+	text-transform: capitalize;
+}
+
+.pc-checkout-wrapper hr{
+	margin: 5px 0px;
 }

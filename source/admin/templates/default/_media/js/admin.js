@@ -211,11 +211,68 @@ paycart.admin.attribute = {
 // @PCTODO : Move it proper location so we can utilize it for front end
 paycart.admin.buyer =
 {
-	update : function(data, callBackOnSuccess, callBackOnError)
+	shipping_address : 
 	{
-		var link  = 'index.php?option=com_paycart&view=buyer&task=save';
+		update	:	function(shipping_address_id, buyer_id)
+		{
+			var json_object		= {};
+			var paycart_form 	= {};
+			
+			// get all paycart_form data
+			paycart_form['shipping_address_id'] 	= shipping_address_id;
+			paycart_form['buyer_id']				= buyer_id ;
+		
+			// prepare paycart_form data
+			json_object['paycart_form'] = paycart_form;
 
-		paycart.ajax.go(link, data, callBackOnSuccess);
+			var link  = 'index.php?option=com_paycart&view=buyer&task=save';
+
+			paycart.ajax.go(link, json_object);
+		},
+		
+		//callback function on shipping address successfully update
+		success : function()
+		{
+			alert('Successfully update!!');
+		},
+		
+		//callback function on shipping address updation fail
+		error : function()
+		{
+			alert('Oop... :( updation fail!!');
+		}
+	},
+
+	billing_address : 
+	{
+		update	:	function(billing_address_id, buyer_id)
+		{
+			var json_object		= {};
+			var paycart_form 	= {};
+
+			// get all paycart_form data
+			paycart_form['billing_address_id'] 	= billing_address_id;
+			paycart_form['buyer_id']			= buyer_id ;
+		
+			// prepare paycart_form data
+			json_object['paycart_form'] = paycart_form;
+			
+			var link  = 'index.php?option=com_paycart&view=buyer&task=save';
+	
+			paycart.ajax.go(link, json_object);
+		}, 
+		
+		//callback function on billing address successfully update
+		success : function()
+		{
+			alert('Successfully update!!');
+		},
+		
+		//callback function on billing address updation fail
+		error : function()
+		{
+			alert('Oop... :( updation fail!!');
+		}
 	}
 	
 };
@@ -227,24 +284,177 @@ paycart.admin.buyeraddress =
 	window : function(buyer_id)
 	{
 		// domObject, use for element id which will be changed.  
-		var link  = 'index.php?option=com_paycart&task=edit&view=buyeraddress&domObject=rbWindowBody&buyer_id='+buyer_id;
+		var link  = 'index.php?option=com_paycart&task=edit&view=buyeraddress&buyer_id='+buyer_id;
 		paycart.url.modal(link, null);
 	},
 	
-	add : function(data, callBackOnSuccess, callBackOnError)
+	add : 
 	{
-		var link  = 'index.php?option=com_paycart&view=buyeraddress';
-		paycart.ajax.go(link, data, callBackOnSuccess, callBackOnError);
+		go : function()
+		{
+			//Validation Checking
+			if($("#paycart_buyeraddress_form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation("hasErrors")){
+				// Our validation work on submit call therefore first we will ensure that form is not properly fill 
+				// then we will call submit method. So proper msg display and focus on required element. 
+				$("#paycart_buyeraddress_form").submit();
+				return false;
+			}
+			
+			var link  = 'index.php?option=com_paycart&view=buyeraddress';
+			// get all form data for post	
+			var postData = $("#paycart_buyeraddress_form").serializeArray();
+	
+			// Override task value to ajax task
+			postData.push({'name':'task','value':'add'});
+	
+			paycart.ajax.go(link, postData);
+		},
+		
+		// data is json string		
+		success : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window
+			rb.ui.dialog.autoclose(1);
+			// 2#.Fetch html of new created buyeraddress
+			// 3# append into buyeraddreess template
+			// 4#.Good Job
+		},
+		
+		// data is json string
+		error : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window and handle error
+			// 2#.Good Job
+			
+			//close modal window
+			rb.ui.dialog.autoclose(1);
+		}
 		
 	},
-	//open modal window and open existing byer-address
+	
+	//open modal window and open existing buyer-address
 	edit : function(buyeraddress_id)
 	{
 		// domObject, use for element id which will be changed.  
-		var link  = 'index.php?option=com_paycart&task=edit&view=buyeraddress&domObject=rbWindowBody&buyeraddress_id='+buyeraddress_id;
+		var link  = 'index.php?option=com_paycart&task=edit&view=buyeraddress&buyeraddress_id='+buyeraddress_id;
 		paycart.url.modal(link, null);
 	}
-};
+},
+
+paycart.admin.state =
+{
+	//open modal window to create new state or edit in existing state
+	window : function(country_id, state_id)
+	{
+		var link  = 'index.php?option=com_paycart&task=edit&view=state&country_id='+country_id+'&state_id='+state_id;
+		paycart.url.modal(link, null);
+	},
+	
+	add : 
+	{
+		go : function()
+		{
+			//Validation Checking
+			if($("#paycart_state_form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation("hasErrors")){
+				// Our validation work on submit call therefore first we will ensure that form is not properly fill 
+				// then we will call submit method. So proper msg display and focus on required element. 
+				$("#paycart_state_form").submit();
+				return false;
+			}
+			
+			var link  = 'index.php?option=com_paycart&view=state';
+			
+			// get all form data for post	
+			var postData = $("#paycart_state_form").serializeArray();
+	
+			// Override task value to ajax task
+			postData.push({'name':'task','value':'save'});
+	
+			paycart.ajax.go(link, postData);
+		},
+		
+		// data is json string		
+		success : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window
+			rb.ui.dialog.autoclose(1);
+			// 2#.Fetch html of new created state
+			// 3# append into state template
+			// 4#.Good Job
+		},
+		
+		// data is json string
+		error : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window and handle error
+			// 2#.Good Job
+			
+			//close modal window
+			rb.ui.dialog.autoclose(1);
+		}
+		
+	},
+	
+	remove : 
+	{
+		go : function(state_id)
+		{
+			var link  = 'index.php?option=com_paycart&view=state&task=delete&state_id='+state_id;
+			paycart.ajax.go(link);
+		},
+		
+		// data is json string		
+		success : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window
+			rb.ui.dialog.autoclose(1);
+			// 2#.Fetch html of new created state
+			// 3# append into state template
+			// 4#.Good Job
+		},
+		
+		// data is json string
+		error : function(data)
+		{
+			var response = JSON.parse(data);
+			alert(response.message);
+			// @PCTODO::
+			// 1#.Close Model window and handle error
+			// 2#.Good Job
+			
+			//close modal window
+			rb.ui.dialog.autoclose(1);
+		}
+		
+	}
+},
+
+paycart.form = 
+	{
+		validation : 
+			{	// Proper Binding element for JQuery Bootstrape Validation
+				init :	function(selector)
+				{
+					// form validation required 
+					$(selector).find("input,textarea,select").not('.no-validate').jqBootstrapValidation();
+				}
+			}
+	};
 
 paycart.radio = {
 		init : function(){

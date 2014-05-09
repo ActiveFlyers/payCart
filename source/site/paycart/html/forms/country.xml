@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+	<fieldset name="country" label="COM_PAYCART_COUNTRY_FIELDSET_LABEL">
+		
+		<field 	name="title" 
+				type="text"
+				label="COM_PAYCART_COUNTRY_TITLE_LABEL"
+				description="COM_PAYCART_COUNTRY_NAME_DESC"	
+				required="true"			 
+				labelclass="control-label"
+				/>
+		
+		<field 	name="country_id"
+				type="text"
+				maxlength="3"
+				required="true"
+				label="COM_PAYCART_COUNTRY_COUNTRY_ID_LABEL"
+				description="COM_PAYCART_COUNTRY_COUNTRY_ID_DESC"
+				labelclass="control-label"
+				/>
+
+  		
+  		<field 	name="isocode2"
+				type="text"
+				maxlength="2"
+				required="true"
+				label="COM_PAYCART_COUNTRY_ISOCODE2_LABEL"
+				description="COM_PAYCART_COUNTRY_ISOCODE2_DESC"
+				labelclass="control-label"
+				/>
+  		
+
+		<field 	name="call_prefix" 
+				type="text"
+				label="COM_PAYCART_COUNTRY_CALL_PREFIX_LABEL"
+				description="COM_PAYCART_COUNTRY_CALL_PREFIX_DESC"
+				required="true"	
+				labelclass="control-label"/>
+
+		<field 	name="zip_format" 
+				type="text"
+				label="COM_PAYCART_COUNTRY_ZIP_FORMAT_LABEL"
+				description="COM_PAYCART_COUNTRY_ZIP_FORMAT_DESC"				
+				labelclass="control-label"
+				required="true"
+				maxlength="7"
+				/>
+
+		<field 	name="status" type="radio"
+				default="published"
+				description="COM_PAYCART_COUNTRY_STATUS_DESC"
+				label="COM_PAYCART_COUNTRY_STATUS_LABEL" 
+				class="btn-group"
+			>
+				<option value='unpublished'>COM_PAYCART_STATUS_UNPUBLISH</option>
+				<option value='published'>COM_PAYCART_STATUS_PUBLISH</option>
+		</field>
+		
+<!--	Hidden Variable	-->
+		<field 	name="country_lang_id"
+				type="hidden"
+				/>
+
+		</fieldset>
+</form>

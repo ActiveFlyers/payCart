@@ -7,10 +7,11 @@
 */
 
 if (typeof(paycart)=='undefined'){
-	var paycart 	= {};
-	paycart.$ 		= paycart.jQuery = rb.jQuery;
-	paycart.ajax	= rb.ajax;
-	paycart.ui		= rb.ui;
+	var paycart		=	{};
+	paycart.$		=	paycart.jQuery = rb.jQuery;
+	paycart.ajax	=	rb.ajax;
+	paycart.ui		=	rb.ui;
+	paycart.url		=	rb.url;
 	paycart.queue	= new Array(); 
 }
 
@@ -29,25 +30,7 @@ if (typeof(paycart.element)=='undefined'){
    	url.redirect 	: redirect current window to new url
    	url.fetch		: fetch the url and replace to given node 
 --------------------------------------------------------------*/
-paycart.url = {
-  	modal: function( theurl, options, windowWidth, windowHeight){
-		var ajaxCall = {'url':theurl, 'data': {}, 'iframe': false};
-			
-		if(options) {
-		  ajaxCall = {'url':theurl, 'data':options.data, 'iframe' : false};
-		}
-		
-		if (!windowWidth)  { windowWidth = 'auto';	 }
-		
-		if (!windowHeight) { windowHeight = 'auto'; }
 
-		paycart.ui.dialog.create(ajaxCall, '', windowWidth, windowHeight);
-	},
-		
-	redirect:function(url) {
-		document.location.href=url;
-	}
-};
 // ENDING :
 // Scoping code for easy and non-conflicting access to $.
 // Should be last line, write code above this line.

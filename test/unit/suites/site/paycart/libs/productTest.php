@@ -75,7 +75,7 @@ class PaycartProductTest extends PayCartTestCaseDatabase
 		$language = new stdClass();
  		$language->product_lang_id	   = 0;
 		$language->product_id 		   = 0;	
-		$language->lang_code 		   = PaycartFactory::getLanguageTag();
+		$language->lang_code 		   = PaycartFactory::getLanguage()->getTag();
 		$language->title	 		   = '';	
 		$language->alias  			   = '';
 		$language->teaser 			   = '';

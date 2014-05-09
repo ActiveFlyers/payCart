@@ -11,7 +11,7 @@ return  Array(Array(
 			),
 			Array(
 			    "productattribute_id" => 0,
-				"lang_code"			  => PaycartFactory::getLanguageTag(),
+				"lang_code"			  => PaycartFactory::getLanguage()->getTag(),
 				"title" 			  => '',	
 			)
 		);

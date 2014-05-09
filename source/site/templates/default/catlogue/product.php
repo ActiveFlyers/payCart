@@ -114,10 +114,10 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		<!-- buy now -->
 		 		<div class="row-fluid clearfix">
 					<div class="span6">	 			
-				       <button class="button btn-block btn-large btn-primary ">Buy Now</button>
+				       <button class="btn btn-block btn-large btn-primary ">Buy Now</button>
 				    </div>
 					<div class="span6">	 			
-				        <button class="button btn-block btn-large">Add to Cart</button>
+				        <button class="btn btn-block btn-large">Add to Cart</button>
 				    </div>
 				</div>
 		 		

@@ -152,23 +152,18 @@ class PaycartFactory extends Rb_Factory
 		return self::getHelper('processor')->getInstance($type, $className, $config);
 	}
 	
+	/**
+	 * 
+	 * Invoke to get group rule instance
+	 * @param  string $type, Group type {user, product}
+	 * @param  string $className, Group class name 
+	 * @param  Array $config, group configuration
+	 * @throws RuntimeException
+	 * 
+	 * @return Group Instance
+	 */
 	public static function getGrouprule($type, $className, $config = Array()) 
 	{
 		return self::getHelper('group')->getInstance($type, $className, $config);
-	}
-	
-	/**
-	*	
-	* Get current enable Paycart-Language Tag	
-	*/
-	public static function getLanguageTag() 
-	{
-		//@PCTODO :: get current language tag, not from joomla
-		$langCode = '';
-		if(!$langCode) {
-			$langCode = self::getLanguage()->getTag();
-		}
-
-		return $langCode;
 	}
 }

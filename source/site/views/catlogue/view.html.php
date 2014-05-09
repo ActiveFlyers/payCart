@@ -29,6 +29,7 @@ class PaycartSiteViewCatlogue extends PaycartSiteBaseViewCatlogue
 		
 		
 		$this->assign('catlogue', $catlogue);
+		return true;
 	}
 
 	public function _basicFormSetup()

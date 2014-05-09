@@ -78,7 +78,7 @@ class PaycartProductAttributeTest extends PayCartTestCaseDatabase
 		$language->title = '';
 		$language->productattribute_lang_id = 0;
 		$language->productattribute_id 		= 0;
-		$language->lang_code  				= PaycartFactory::getLanguageTag(); //Current Paycart language Tag
+		$language->lang_code  				= PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag
 		
 		$this->assertEquals($language, $instance->get('_language'));
 		

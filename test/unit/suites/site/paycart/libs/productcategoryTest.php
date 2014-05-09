@@ -75,7 +75,7 @@ class PaycartProductcategoryTest extends PayCartTestCaseDatabase
  		$language->title				= '';
 		$language->alias				= '';
 		$language->description			= ''; 	
- 		$language->lang_code 			= PaycartFactory::getLanguageTag(); //Current Paycart language Tag	
+ 		$language->lang_code 			= PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag	
 		$language->metadata_title		= '';
 		$language->metadata_keywords	= '';
 		$language->metadata_description = '';

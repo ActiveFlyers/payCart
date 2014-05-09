@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+	<fieldset name="state" label="COM_PAYCART_STATE_FIELDSET_LABEL">
+		
+		<field 	name="title" 
+				type="text"
+				label="COM_PAYCART_STATE_TITLE_LABEL"
+				description="COM_PAYCART_STATE_NAME_DESC"	
+				required="true"			 
+				labelclass="control-label"
+				/>
+		
+  		<field 	name="isocode"
+				type="text"
+				maxlength="7"
+				required="true"
+				label="COM_PAYCART_STATE_ISOCODE_LABEL"
+				description="COM_PAYCART_STATE_ISOCODE_DESC"
+				labelclass="control-label"
+				/>
+				
+		<field 	name="country_id"
+				type="text"
+				maxlength="3"
+				required="true"
+				label="COM_PAYCART_STATE_COUNTRY_ID_LABEL"
+				description="COM_PAYCART_STATE_COUNTRY_ID_DESC"
+				labelclass="control-label"
+				readonly="true"
+				/>
+				
+		<field 	name="status" type="radio"
+				default="published"
+				description="COM_PAYCART_STATE_STATUS_DESC"
+				label="COM_PAYCART_STATE_STATUS_LABEL" 
+				class="btn-group"
+				labelclass="control-label"
+			>
+				<option value='unpublished'>COM_PAYCART_STATUS_UNPUBLISH</option>
+				<option value='published'>COM_PAYCART_STATUS_PUBLISH</option>
+		</field>
+		
+<!--	Hidden Variable	-->
+		<field 	name="state_lang_id"
+				type="hidden"
+				/>
+		
+		<field 	name="state_id"
+				type="hidden"
+				label="COM_PAYCART_STATE_ID_LABEL"
+				description="COM_PAYCART_STATE_ID_DESC"
+				labelclass="control-label"
+				/>
+				
+
+		</fieldset>
+</form>
