@@ -247,7 +247,7 @@ paycart.admin.buyeraddress =
 };
 
 paycart.radio = {
-		onLoad : function(){
+		init : function(){
 			 //needed some fix to show radio button properly in front-end
 		    // Turn radios into btn-group
 			$('.radio.btn-group label').addClass('btn');
@@ -262,6 +262,23 @@ paycart.radio = {
 					$("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
 				}
 			});
+		},
+		
+		applyBtnClass : function(btn){
+			  var label = $(btn);
+			  var input = $('#' + label.attr('for'));
+
+			  if (!input.prop('checked')) {
+				  label.closest('.btn-group').find("label").removeClass('active btn-success btn-danger btn-primary');
+				  if (input.val() == '') {
+					  label.addClass('active btn-primary');
+				  } else if (input.val() == 0) {
+					  label.addClass('active btn-danger');
+				  } else {
+					  label.addClass('active btn-success');
+				  }
+				  input.prop('checked', true);
+			  }
 		}
 }
 
@@ -272,26 +289,11 @@ $(document).ready(function(){
 	  /*
 	   * catch click event
 	   */
-	  $(document).on('click','.btn-group label:not(.active)', function()
-	  {
-		  //PCTODO : make function for this
-		  var label = $(this);
-		  var input = $('#' + label.attr('for'));
-
-		  if (!input.prop('checked')) {
-			  label.closest('.btn-group').find("label").removeClass('active btn-success btn-danger btn-primary');
-			  if (input.val() == '') {
-				  label.addClass('active btn-primary');
-			  } else if (input.val() == 0) {
-				  label.addClass('active btn-danger');
-			  } else {
-				  label.addClass('active btn-success');
-			  }
-			  input.prop('checked', true);
-		  }
+	  $(document).on('click','.btn-group label:not(.active)', function(){
+		  paycart.radio.applyBtnClass(this);
 	  });
 	  
-	  paycart.radio.onLoad();
+	  paycart.radio.init();
 });
 //ENDING :
 //Scoping code for easy and non-conflicting access to $.

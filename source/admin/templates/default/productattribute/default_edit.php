@@ -41,7 +41,7 @@ PaycartHtml::_('behavior.formvalidation');
 			});
 
 			//load required script for radio buttons
-			paycart.radio.onLoad();
+			paycart.radio.init();
 			
 	})(paycart.jQuery);
 	

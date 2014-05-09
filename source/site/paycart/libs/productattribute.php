@@ -116,6 +116,16 @@ class PaycartProductAttribute extends PaycartLib
 		
 		return $this;
 	}
+
+	public function save()
+	{
+		//title is mandatory
+		if(!$this->_language->title){
+			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_TITLE_REQUIRED', $this->getName()));
+		}	
+		
+		return parent::save();
+	}
 	
 	protected function _save($previousObject)
 	{
@@ -167,7 +177,12 @@ class PaycartProductAttribute extends PaycartLib
 		}
 		
 		//delete option data
-		if(!PaycartAttribute::getInstance($this->type)->deleteOptions($this)){
+		if(!PaycartAttribute::getInstance($this->type)->deleteOptions($this->getId())){
+			return false;
+		}
+
+		//delete all the attached values of this attribute for products 
+		if(!$this->_deleteProductAttributeValues()){
 			return false;
 		}
 	}
@@ -175,6 +190,11 @@ class PaycartProductAttribute extends PaycartLib
 	protected function _deleteLanguageData()
 	{
 		return PaycartFactory::getModelLang('productattribute')->deleteMany(array('productattribute_id' => $this->getId()));
+	}
+
+	protected function _deleteProductAttributeValues()
+	{
+		return PaycartFactory::getModel('productattributevalue')->deleteMany(array('productattribute_id' => $this->getId()));
 	}
 	
 	public function getTitle()
