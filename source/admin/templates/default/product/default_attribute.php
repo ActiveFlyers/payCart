@@ -19,63 +19,68 @@
  */
 defined('_JEXEC') or die();
 // List of applied attribtes on Product
-$appliedAttributes = $form->getFieldset('attributes');  
+$appliedAttributes = $product->getAttributeValues();
 ?>
-
 	<script>
 		paycart.jQuery(document).ready(function($) {
 
-			$('.paycart_attribute_add_window').click( function()
+			var checkValues =  <?php echo json_encode($appliedAttributes)?>;
+			paycart.admin.product.attribute.attach(checkValues);
+			
+			$('.paycart-attribute-add-window').click( function()
 			{
 				paycart.admin.product.attribute.window();
 				
+			});
+
+			$('.paycart-attribute-attach-value').click( function()
+			{
+				var checkValues = $('input[name="productattribute[]"]:checked').map(function()
+		        {
+		            return $(this).val();
+		        }).get();
+
+				paycart.admin.product.attribute.attach(checkValues);
 			});
 		});
 	</script>
 	
 	<div class="row-fluid">
-		<div class="span9">
-			<?php  if(!empty($appliedAttributes)):?>
-				<?php	foreach ($appliedAttributes as $attribute) : ?>
-							<div class="control-group">
-								<div class="control-label">	<?php echo $attribute->label; ?> </div>
-								<div class="controls">		<?php echo $attribute->input; ?></div>								
-							</div>
-				<?php 	endforeach;?>
-			<?php endif;?>
-			
+		<div class="span6 paycart-product-applied-attributes">
+			<!--
+			    Here comes the applied and new attributes 
+			-->
 		</div>
 			
-		<div class="span3">
-		
-			<a href="#" class="btn btn-success paycart_attribute_add_window">
-				<i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ATTRIBUTE_ADD_NEW');?>
+		<div class="span6">
+			<a href="#" class="btn btn-success paycart-attribute-add-window">
+				<i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo JText::_('COM_PAYCART_ATTRIBUTE_ADD_NEW');?>
 			</a>
 
 			<div class="input-append">  				
   				<input class="span10" id="appendedInputButtons" type="text" placeholder="Search Attribute!!" />
   				<span class="add-on">
-					<input type="checkbox" id="" value="">
+					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 				</span>
-			  	<button class="btn" type="button">Add</button>
+			  	<button class="btn paycart-attribute-attach-value" type="button">Jtext::_("COM_PAYCART_PRODUCT_ATTACH_ATTRIBUTES");Add</button>
 			  	
 			</div>
 			
-			<div class="">
-				
-				<table class="table table-striped" >
+			<div>				
+				<table class="table table-condensed" >
 					<?php
-						$count = 0; 
+						$count = 0;
 					?>
-					<?php foreach($availbleAttributes as $attribute) :?>
-						<tr class="<?php echo "row".$count%2; ?>">								
-							
+					<?php $remainingAttributes = array_diff_key($availableAttributes,$appliedAttributes)?>
+					<?php foreach($remainingAttributes as $attribute) :?>
+						<tr class="<?php echo "row".$attribute->productattribute_id; ?>">
 							<th>
-			    				<?php echo $attribute->title ; ?>
+			    				<?php $instance = PaycartProductAttribute::getInstance($attribute->productattribute_id,$attribute);
+			    					  echo $instance->getTitle() ; ?>
 			    			</th>
 			    			
 							<th>
-			    				<?php echo PaycartHtml::_('grid.id', $count++, 'attribute_id' ); ?>
+			    				<?php echo PaycartHtml::_('grid.id', $count++, $attribute->productattribute_id, false,'productattribute' ); ?>
 			    			</th>
 			    			
 			    		</tr>		
@@ -84,7 +89,5 @@ $appliedAttributes = $form->getFieldset('attributes');
 			</div>
 		</div>
 		
-		
-	</div>
-
-	
+		<input type="hidden" name="boxchecked" value="0" />
+	</div>	

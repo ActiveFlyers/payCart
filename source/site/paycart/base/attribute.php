@@ -50,18 +50,20 @@ class PaycartAttribute
 	 */
 	function buildOptions($attribute, $data)
 	{	
-		$options = (isset($data['options'])) ? $data['options']: array();
+		$options = (isset($data['_options'])) ? $data['_options']: array();
 		
 		if(empty($options) && $attribute->getId()){
-			$options = PaycartFactory::getInstance('productattributeoption','model')
+			$options = PaycartFactory::getModel('productattributeoption')
 					                           ->loadOptions($attribute->getId(), $attribute->getLanguageCode());
 		}
 		
 		$result = array();
 		foreach ($options as $id => $option){
+			$result[$id] = new stdClass();
 			$result[$id]->option_ordering = $option['option_ordering'];
 			$result[$id]->title			  = $option['title'];
 			$result[$id]->productattribute_option_id = $option['productattribute_option_id'];
+			$result[$id]->productattribute_option_lang_id = $option['productattribute_option_lang_id'];
 		}
 		return $result;
 	}
@@ -78,15 +80,15 @@ class PaycartAttribute
 			return false;
 		}
 		
-		$attrOptionModel 	 = PaycartFactory::getInstance('productattributeoption', 'model');
-		$attrOptionLangModel = PaycartFactory::getInstance('productattributeoptionlang', 'model');
+		$attrOptionModel 	 = PaycartFactory::getModel('productattributeoption');
+		$attrOptionLangModel = PaycartFactory::getModelLang('productattributeoption');
 		
 		foreach ($options as $option){
 			$data = array();
 			
 			//save option data
 			$data['option_ordering'] = $option->option_ordering;
-			$data['productattribute_id'] = $option->getId();
+			$data['productattribute_id'] = $attribute->getId();
 			$optionId = $attrOptionModel->save($data, $option->productattribute_option_id);
 			if(!$optionId){
 				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $attrOptionModel->getError());
@@ -96,8 +98,8 @@ class PaycartAttribute
 			$data = array();
 			$data['productattribute_option_id'] = $optionId;
 			$data['lang_code'] = $attribute->getLanguageCode();
-			$data['title']	   = $param->title;
-			$optionLangId = $attrOptionLangModel->save($data,$param->productattribute_option_lang_id );
+			$data['title']	   = $option->title;
+			$optionLangId = $attrOptionLangModel->save($data,$option->productattribute_option_lang_id );
 			if(!$optionLangId){
 				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $attrOptionLangModel->getError());
 			}
@@ -110,40 +112,81 @@ class PaycartAttribute
 	 */
 	function getConfigHtml($attribute)
 	{
-		$html = '';
+		$type = $attribute->getType();
+		
+		$html = '<div id="paycart-attribute-config">';
+		
+		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
 		
 		$options = $this->getOptions($attribute);
 		$count	 = (count($options) >= 1)?count($options):1;
 		
-		for($i=0; $i < $count ; $i++)
-		{
-			$html .= "<div class='control-label'><label id='title_".$i."_lbl' title=''>".Rb_Text::_("COM_PAYCART_ATTRIBUTES_OPTION_LABEL")."</label></div>";
-			
-			$html .= "<div class='controls'><input type='text' name='options[$i][title]' id='title_".$i."' 
-			         value='".isset($options[$i]['title'])?$options[$i]['title']:''."' /></div>";
-			
-			$html .= "<input type='hidden' name='options[$i][option_ordering]' id='option_ordering_".$i."'  
-					  value='".isset($options[$i]['option_ordering'])?$options[$i]['option_ordering']:$i."' />";
-			
-			$html .= "<input type='hidden' name='options[$i][productattribute_option_id]' id='productattribute_option_id_".$id."'
-			          value='".isset($options[$i]['productattribute_option_id'])?$options[$i]['productattribute_option_id']:'0'."' />";
-			
-			$html .= "<input type='hidden' name='options[$i][productattribute_option_lang_id]' id='productattribute_option_lang_id_".$id."'
-			          value='".isset($options[$i]['productattribute_option_lang_id'])?$options[$i]['productattribute_option_lang_id']:'0'."' />";
-			
-			//PCTODO: append button to add new and delete existing html 
+		for($i=0; $i < $count ; $i++){
+			$html .= $this->buildCounterHtml($i, $type, $options);
 		}  
+		
+		$html .= "</div>";
 		
 		return $html;
 	}
 	
 	/**
+	 * 
+	 * Bulid html for a specific counter
+	 * @param $counter : array index to be used for creating html
+	 * @param $type : type of attribute
+	 * @param $options : Array containing values of attribute options
+	 */
+	function buildCounterHtml($counter, $type, $options = array())
+	{
+		ob_start();
+		?>	
+			<div id="option_row_<?php echo $counter?>">
+				 <div class="control-group">
+					 <div class='control-label'><label id='title_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTES_OPTION_LABEL") ?></label></div>
+					
+					 <div class='controls'>
+					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' 
+					      	value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>'/>
+					      	<button class="btn" id="paycart-attribute-option-remove" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>');">
+								<?php echo JText::_('Delete');?>
+				 			</button>
+					</div>
+				</div>
+				 
+				<input type='hidden' name='options[<?php echo $counter?>][option_ordering]' id='option_ordering_<?php echo $counter?>'  
+						  value='<?php echo (isset($options[$counter]['option_ordering'])?$options[$counter]['option_ordering']:$counter) ?>' />
+						  
+				<input type='hidden' name='options[<?php echo $counter?>][productattribute_option_id]' id='productattribute_option_id_<?php echo $counter?>'  
+						  value='<?php echo (isset($options[$counter]['productattribute_option_id'])?$options[$counter]['productattribute_option_id']:0) ?>' />
+	
+				<input type='hidden' name='options[<?php echo $counter?>][productattribute_option_lang_id]' id='productattribute_option_lang_id_<?php echo $counter?>'  						  
+						  value='<?php echo (isset($options[$counter]['productattribute_option_lang_id'])?$options[$counter]['productattribute_option_lang_id']:0) ?>' />
+				 
+			</div>
+		<?php 
+		$html = ob_get_contents();
+		ob_clean();
+		
+		return $html;
+	}
+	
+	/**
+	 * script to be added while ajax request
+	 */
+	function getScript()
+	{
+		return '';
+	}
+	
+	/**
 	 * delete options data from both option and option_lang table
 	 */
-	function deleteOptions($attribute)
+	function deleteOptions($attributeId=null, $optionId=null)
 	{
-		$attrOptionModel = PaycartFactory::getInstance('productattributeoption', 'model');
-		return $attrOptionLangModel->deleteOptions($attribute->getid());
+		$attrOptionModel = PaycartFactory::getModel('productattributeoption');
+		
+		return $attrOptionModel->deleteOptions($attributeId, $optionId);
 	}
 	
 	/**

@@ -128,7 +128,7 @@ class PaycartAttributeMedia extends PaycartAttribute
 	 */
 	function getConfigHtml($attribute)
 	{
-	 	return '';
+	 	return '<div id="paycart-attribute-config"></div>';
 	} 
 	
 	function buildOptions($attribute, $data)

@@ -76,7 +76,7 @@ class PaycartProduct extends PaycartLib
 		$this->created_date  	= Rb_Date::getInstance();	
 		$this->modified_date 	= Rb_Date::getInstance(); 
 		
-		$this->_attributeValues = new stdClass();
+		$this->_attributeValues = array();
 		
 		$this->_language = new stdClass();
 		$this->_language->product_lang_id	   = 0;
@@ -421,17 +421,10 @@ class PaycartProduct extends PaycartLib
 		}
 		
 		//Get all attributes
-		$condition	= Array('productattribute_id' => Array(Array('IN', '('.implode(',',array_keys($attributeData)).')')));
-		$attributes = PaycartFactory::getInstance('productattribute','model')
-									->loadRecords($condition); 
-		
-		foreach ($attributes as $attributeId => $attribute) {
-			PaycartProductAttribute::getInstance($attributeId, $attribute);
-						
+		foreach ($attributeData as $attributeId => $value){
 			//array of attribute values
-			$this->_attributeValues->$attributeId = $attributeData[$attributeId];
+			$this->_attributeValues[$attributeId] = $value;
 		}
-
 		return $this;
 	}
 	
@@ -483,7 +476,7 @@ class PaycartProduct extends PaycartLib
 		//if yes, then delete language and attributes also
 		
 		//delete product attributes
-		if(!$this->_deleteProductAttributes()){
+		if(!$this->deleteAttributeValues()){
 			return false;
 		}
 		
@@ -500,8 +493,19 @@ class PaycartProduct extends PaycartLib
 		return PaycartFactory::getModelLang('Product')->deleteMany(array('product_id' => $this->getId()));
 	}
 	
-	protected function _deleteProductAttributes()
+	public function deleteAttributeValues($productattributeId = null)
 	{
-		return PaycartFactory::getInstance('productattributevalue', 'model')->deleteMany(array('product_id' => $this->getId()));
+		$condition['product_id'] = $this->getId();
+		
+		if(!is_null($productattributeId)){
+			$condition['productattribute_id'] = $productattributeId;
+		}
+		
+		return PaycartFactory::getInstance('productattributevalue', 'model')->deleteMany($condition);
+	}
+	
+	public function getAttributeValues()
+	{
+		return $this->_attributeValues;
 	}
 }
