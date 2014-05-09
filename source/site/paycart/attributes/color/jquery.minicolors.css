@@ -1,8 +1,8 @@
-.paycart .minicolors {
+.paycart-wrap .minicolors {
 	position: relative;
 }
 
-.paycart .minicolors-swatch {
+.paycart-wrap .minicolors-swatch {
 	position: absolute;
 	vertical-align: middle;
 	background: url(jquery.minicolors.png) -80px 0;
@@ -13,7 +13,7 @@
 	display: inline-block;
 }
 
-.paycart .minicolors-swatch-color {
+.paycart-wrap .minicolors-swatch-color {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -21,14 +21,14 @@
 	bottom: 0;
 }
 
-.paycart .minicolors input[type=hidden] + .minicolors-swatch {
+.paycart-wrap .minicolors input[type=hidden] + .minicolors-swatch {
 	width: 28px;
 	position: static;
 	cursor: pointer;
 }
 
 /* Panel */
-.paycart .minicolors-panel {
+.paycart-wrap .minicolors-panel {
 	position: absolute;
 	width: 173px;
 	height: 152px;
@@ -42,32 +42,32 @@
 	display: none;
 }
 
-.paycart .minicolors-panel.minicolors-visible {
+.paycart-wrap .minicolors-panel.minicolors-visible {
 	display: block;
 }
 
 /* Panel positioning */
-.paycart .minicolors-position-top .minicolors-panel {
+.paycart-wrap .minicolors-position-top .minicolors-panel {
 	top: -154px;
 }
 
-.paycart .minicolors-position-right .minicolors-panel {
+.paycart-wrap .minicolors-position-right .minicolors-panel {
 	right: 0;
 }
 
-.paycart .minicolors-position-bottom .minicolors-panel {
+.paycart-wrap .minicolors-position-bottom .minicolors-panel {
 	top: auto;
 }
 
-.paycart .minicolors-position-left .minicolors-panel {
+.paycart-wrap .minicolors-position-left .minicolors-panel {
 	left: 0;
 }
 
-.paycart .minicolors-with-opacity .minicolors-panel {
+.paycart-wrap .minicolors-with-opacity .minicolors-panel {
 	width: 194px;
 }
 
-.paycart .minicolors .minicolors-grid {
+.paycart-wrap .minicolors .minicolors-grid {
 	position: absolute;
 	top: 1px;
 	left: 1px;
@@ -77,7 +77,7 @@
 	cursor: crosshair;
 }
 
-.paycart .minicolors .minicolors-grid-inner {
+.paycart-wrap .minicolors .minicolors-grid-inner {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -86,28 +86,28 @@
 	background: none;
 }
 
-.paycart .minicolors-slider-saturation .minicolors-grid {
+.paycart-wrap .minicolors-slider-saturation .minicolors-grid {
 	background-position: -420px 0;
 }
 
-.paycart .minicolors-slider-saturation .minicolors-grid-inner {
+.paycart-wrap .minicolors-slider-saturation .minicolors-grid-inner {
 	background: url(jquery.minicolors.png) -270px 0;
 }
 
-.paycart .minicolors-slider-brightness .minicolors-grid {
+.paycart-wrap .minicolors-slider-brightness .minicolors-grid {
 	background-position: -570px 0;
 }
 
-.paycart .minicolors-slider-brightness .minicolors-grid-inner {
+.paycart-wrap .minicolors-slider-brightness .minicolors-grid-inner {
 	background: black;
 }
 
-.paycart .minicolors-slider-wheel .minicolors-grid {
+.paycart-wrap .minicolors-slider-wheel .minicolors-grid {
 	background-position: -720px 0;
 }
 
-.paycart .minicolors-slider,
-.paycart .minicolors-opacity-slider {
+.paycart-wrap .minicolors-slider,
+.paycart-wrap .minicolors-opacity-slider {
 	position: absolute;
 	top: 1px;
 	left: 152px;
@@ -117,30 +117,30 @@
 	cursor: row-resize;
 }
 
-.paycart .minicolors-slider-saturation .minicolors-slider {
+.paycart-wrap .minicolors-slider-saturation .minicolors-slider {
 	background-position: -60px 0;
 }
 
-.paycart .minicolors-slider-brightness .minicolors-slider {
+.paycart-wrap .minicolors-slider-brightness .minicolors-slider {
 	background-position: -20px 0;
 }
 
-.paycart .minicolors-slider-wheel .minicolors-slider {
+.paycart-wrap .minicolors-slider-wheel .minicolors-slider {
 	background-position: -20px 0;
 }
 
-.paycart .minicolors-opacity-slider {
+.paycart-wrap .minicolors-opacity-slider {
 	left: 173px;
 	background-position: -40px 0;
 	display: none;
 }
 
-.paycart .minicolors-with-opacity .minicolors-opacity-slider {
+.paycart-wrap .minicolors-with-opacity .minicolors-opacity-slider {
 	display: block;
 }
 
 /* Pickers */
-.paycart .minicolors-grid .minicolors-picker {
+.paycart-wrap .minicolors-grid .minicolors-picker {
 	position: absolute;
 	top: 70px;
 	left: 70px;
@@ -153,7 +153,7 @@
 	background: none;
 }
 
-.paycart .minicolors-grid .minicolors-picker > div {
+.paycart-wrap .minicolors-grid .minicolors-picker > div {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -166,7 +166,7 @@
 	box-sizing: content-box;
 }
 
-.paycart .minicolors-picker {
+.paycart-wrap .minicolors-picker {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -181,15 +181,15 @@
 }
 
 /* Inline controls */
-.paycart .minicolors-inline {
+.paycart-wrap .minicolors-inline {
 	display: inline-block;
 }
 
-.paycart .minicolors-inline .minicolors-input {
+.paycart-wrap .minicolors-inline .minicolors-input {
 	display: none !important;
 }
 
-.paycart .minicolors-inline .minicolors-panel {
+.paycart-wrap .minicolors-inline .minicolors-panel {
 	position: relative;
 	top: auto;
 	left: auto;
@@ -199,47 +199,47 @@
 }
 
 /* Default theme */
-.paycart .minicolors-theme-default .minicolors-swatch {
+.paycart-wrap .minicolors-theme-default .minicolors-swatch {
 	top: 5px;
 	left: 5px;
 	width: 18px;
 	height: 18px;	
 }
-.paycart .minicolors-theme-default.minicolors-position-right .minicolors-swatch {
+.paycart-wrap .minicolors-theme-default.minicolors-position-right .minicolors-swatch {
 	left: auto;
 	right: 5px;
 }
-.paycart .minicolors-theme-default.minicolors {
+.paycart-wrap .minicolors-theme-default.minicolors {
 	width: auto;
 	display: inline-block;
 }
-.paycart .minicolors-theme-default .minicolors-input {
+.paycart-wrap .minicolors-theme-default .minicolors-input {
 	height: 20px;
 	width: auto;
 	display: inline-block;
 	padding-left: 26px;
 }
-.paycart .minicolors-theme-default.minicolors-position-right .minicolors-input {
+.paycart-wrap .minicolors-theme-default.minicolors-position-right .minicolors-input {
 	padding-right: 26px;
 	padding-left: inherit;
 }
 
 /* Bootstrap theme */
-.paycart .minicolors-theme-bootstrap .minicolors-swatch {
+.paycart-wrap .minicolors-theme-bootstrap .minicolors-swatch {
 	top: 3px;
 	left: 3px;
 	width: 28px;
 	height: 28px;
 	border-radius: 3px;
 }
-.paycart .minicolors-theme-bootstrap.minicolors-position-right .minicolors-swatch {
+.paycart-wrap .minicolors-theme-bootstrap.minicolors-position-right .minicolors-swatch {
 	left: auto;
 	right: 3px;
 }
-.paycart .minicolors-theme-bootstrap .minicolors-input {
+.paycart-wrap .minicolors-theme-bootstrap .minicolors-input {
 	padding-left: 44px;
 }
-.paycart .minicolors-theme-bootstrap.minicolors-position-right .minicolors-input {
+.paycart-wrap .minicolors-theme-bootstrap.minicolors-position-right .minicolors-input {
 	padding-right: 44px;
 	padding-left: 12px;
 }

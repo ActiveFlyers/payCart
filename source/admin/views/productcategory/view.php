@@ -23,7 +23,7 @@ class PaycartAdminBaseViewProductcategory extends PaycartView
 	 */
 	public function edit($tpl=null) {
 		
-		$categoryId	=  $this->getModel()->getState('id');
+		$categoryId	=  $this->getModel()->getId();
 		$category	=  PaycartProductcategory::getInstance($categoryId);
 		
 		$this->assign('form',  $category->getModelform()->getForm($category));

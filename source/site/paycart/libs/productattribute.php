@@ -76,8 +76,13 @@ class PaycartProductAttribute extends PaycartLib
 		// Parent bind	
 		parent::bind($data, $ignore);
 		
+		//set options
+		if( isset($data['_options'])) {
+			$this->_options = $data['_options'];
+		}
+		
 		//Collect langauge data
-		$language = (isset($data['_language'])) ? $data['_language']: array();
+		$language = (isset($data['language'])) ? $data['language']: array();
 		
 		//bind it to lib instance
 		$this->setLanguageData($language);
@@ -162,7 +167,7 @@ class PaycartProductAttribute extends PaycartLib
 		}
 		
 		//delete option data
-		if(!PaycartAttribute::getInstance($this->type)->deleteConfig($this)){
+		if(!PaycartAttribute::getInstance($this->type)->deleteOptions($this)){
 			return false;
 		}
 	}

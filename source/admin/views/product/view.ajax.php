@@ -4,7 +4,7 @@
 * @copyright	Copyright (C) 2009 - 2013 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
-* @contact		team@readybytes.in
+* @contact		support+paycart@readybytes.in
 */
 
 // no direct access
@@ -41,27 +41,5 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		//set ajax response and return it
 		$this->_response->addRawData('row',$alias);
 		$this->_response->sendResponse();	
-	}
-	
-	/**
-	 * 
-	 * Render new attribute creation window 
-	 * 
-	 */
-	public function addAttribute()
-	{
-		// Id required when you will edit current attribute
-		$attributeId	=  $this->input->get('attribute_id',0);
-		$attribute		=  PaycartAttribute::getInstance($attributeId);
-
-		$attributeView = PaycartFactory::getInstance('attribute','view','paycartadmin');
-		// form variable required in attribute edit template		
-		$attributeView->assign('form',  $attribute->getModelform()->getForm());
-		$attributeView->assign( 'record_id',$attributeId);
-		
-		$this->assign('attributeView', $attributeView);
-		$this->setTpl('addattribute');
-
-		return true;
 	}
 }

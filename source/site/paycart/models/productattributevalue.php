@@ -26,7 +26,7 @@ class PaycartModelProductAttributeValue extends PaycartModel
 	public function loadProductRecords($productId)
 	{
 		// @PCTODO:: Should be cached 
-		$query = $this->_db->getQuery(true);
+		$query = new Rb_Query();
 		$query->select('*')
 			  ->from($this->getTable()->get('_tbl'))
 			  ->where($this->_db->quoteName('product_id') .' = '.$productId);

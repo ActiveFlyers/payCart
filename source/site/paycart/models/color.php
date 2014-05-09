@@ -27,7 +27,7 @@ class PaycartModelColor extends PaycartModel
 		return $query->select('*')
 		 		     ->from('#__paycart_color as ac')
 		 		     ->join('INNER', '#__paycart_color_lang as acl ON ac.color_id = acl.color_id')
-		 		     ->where('acl.lang_code = '.$languageCode)
+		 		     ->where('acl.lang_code = "'.$languageCode.'"')
 		 		     ->dbLoadQuery()
 		 		     ->loadAssocList();
 	}

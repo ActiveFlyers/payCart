@@ -104,5 +104,18 @@ class PaycartAdminControllerProduct extends PaycartController
 		// no need to execute view functions
 		return false;
 	}
+	
+	/**
+	 * Ajax task : Delete any attached attribute
+	 */
+	public function deleteAttributeValues()
+	{
+		$productAttributeId =  $this->input->get('productattribute_id', false);
+		$product = PaycartProduct::getInstance($this->input->get('product_id', false));
+		$product->deleteAttributeValues($productAttributeId);
 		
+		$ajax = PaycartFactory::getAjaxResponse();
+		$ajax->addScriptCall('paycart.jQuery(".paycart-product-attribute-'.$productAttributeId.'").remove');
+		return false;
+	}
 }

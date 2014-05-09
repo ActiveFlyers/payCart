@@ -31,7 +31,7 @@ class PaycartAttributeCheckbox extends PaycartAttribute
 		if( !empty($options)){
 			foreach($options as $option){
 				$checked = ($option['productattribute_option_id'] == $value) ? "checked='checked'":'';
-				$html   .= "<input type='checkbox' name='attributes[".$attribute->getId()."]' value='".$option['productattribute_option_id'] ."'".$checked.">".$option['title'];
+				$html   .= "<input type='checkbox' name='paycart_form[attributes][".$attribute->getId()."]' value='".$option['productattribute_option_id'] ."'".$checked.">".$option['title'];
 			}
 		}
 				

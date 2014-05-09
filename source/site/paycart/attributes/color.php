@@ -30,7 +30,7 @@ class PaycartAttributeColor extends PaycartAttribute
 		$colors  = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
 		
 		if( !empty($colors)){
-			$html .= "<select id='attribute".$attribute->getId()."' name='attributes[".$attribute->getId()."]'>";
+			$html .= "<select id='attribute".$attribute->getId()."' name='paycart_form[attributes][".$attribute->getId()."]'>";
 			
 			foreach($colors as $color){
 				$selected = ($color['color_id'] == $value) ? "selected='selected'":'';
@@ -46,73 +46,78 @@ class PaycartAttributeColor extends PaycartAttribute
 	 */
 	function getConfigHtml($attribute)
 	{
-		static $js;
 		$html   = '';
+		$type   = $attribute->getType();
+				
+		$html = '<div id="paycart-attribute-config">';
 		
-		//load required assets
-		$document = Rb_Factory::getDocument(); 
-
-		//PCTODO: add option to load minified js file 
-		$document->addScript(PAYCART_PATH_CORE.'/attributes/color/jquery.minicolors.js' );
-		$document->addStyleSheet(PAYCART_PATH_CORE.'/attributes/color/jquery.minicolors.css');
-		
-		// don't load it more than once
-		if(!isset($js)){
-			ob_start();
-			?>	
-			<script>
-				$(document).ready( function() {
-		            $('.wheel-color').each( function() {
-						$(this).minicolors({
-							control: $(this).attr('data-control') || 'hue',
-							defaultValue: $(this).attr('data-defaultValue') || '',
-							inline: $(this).attr('data-inline') === 'true',
-							letterCase: $(this).attr('data-letterCase') || 'lowercase',
-							opacity: $(this).attr('data-opacity'),
-							position: $(this).attr('data-position') || 'bottom left',
-							change: function(hex, opacity) {
-								var log;
-								try {
-									log = hex ? hex : 'transparent';
-									if( opacity ) log += ', ' + opacity;
-									console.log(log);
-								} catch(e) {}
-							},
-							theme: 'default'
-						});
-		                
-		            });
-					
-				});
-			</script>
-			<?php 
-			
-			$js .= ob_get_contents();
-			ob_end_clean();
-		}
-		
-		$html  .= $js;
+		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
 		
 		$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
 		$count  = (count($colors) > 0)?count($colors):1;
-
+		
 		for($i=0; $i < $count ; $i++){
-			$html .= "<div class='control-label'><label id='hashcode_".$i."_lbl' title=''>".Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_HASHCODE_LABEL")."</label></div>";
-			$html .= "<div class='controls'><input type='text' id='hashcode_".$i."' name='colors[$i][hashcode]'  class='wheel-color' placeholder='#rrggbb'
-					  value='".isset($colors[$i]['hash_code'])?$colors[$i]['hash_code']:'none'."'/></div>";
-			
-			$html .= "<div class='control-label'><label id='title_".$i."_lbl' title=''>".Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_TITLE_LABEL")."</label></div>";
-			$html .= "<div class='controls'><input type='text' id='title_".$i."' name='colors[$i][title]' 
-				     value='".isset($colors[$i]['title'])?$colors[$i]['title']:''."'/></div>";
-			
-			$html .= "<input type='hidden' name='colors[$i][color_id]' value='".isset($colors[$i]['color_id'])?$colors[$i]['color_id']:'0'."' />";
-			
-			$html .= "<input type='hidden' name='colors[$i][color_lang_id]' id='color_lang_id".$id."'
-			          value='".isset($colors[$i]['color_lang_id'])?$colors[$i]['color_lang_id']:'0'."' />";
-			//PCTODO: append button to add new and delete existing html 
+			$html .= $this->buildCounterHtml($i, $type, $colors);
 		}
 		
+		$html .= "</div>";
+		
 		return $html;
+	}
+	
+	/**
+	 * 
+	 * Bulid html for a specific counter
+	 * @param $counter : array index to be used for creating html
+	 * @param $type : type of attribute
+	 * @param $options : Array containing values of attribute options
+	 */
+	function buildCounterHtml($counter, $type, $options=array())
+	{		
+		ob_start();
+			?>	
+			<div id="option_row_<?php echo $counter?>">
+				 <div class="control-group">
+					 <div class='control-label'><label id='hashcode_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_HASHCODE_LABEL") ?></label></div>
+					
+					 <div class='controls'>
+					 		<input type='text' name='options[<?php echo $counter?>][hash_code]' id='hash_code_<?php echo $counter?>'  class='wheel-color' placeholder='#rrggbb' data-control="wheel"
+					      	value='<?php echo (isset($options[$counter]['hash_code'])?$options[$counter]['hash_code']:'')?>'/>
+					      	<button class="btn" id="paycart-attribute-option-remove" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>');">
+								<?php echo JText::_('Delete');?>
+				 			</button>
+					 </div>
+				 </div>
+				 
+				 <div class="control-group">
+					 <div class='control-label'><label id='title_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_TITLE_LABEL") ?></label></div>
+					
+					 <div class='controls'>
+					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>'/>
+					 </div>
+				 </div>
+				 
+				 <input type='hidden' name='options[<?php echo $counter?>][color_id]' id='color_id_<?php echo $counter?>'  
+						  value='<?php echo (isset($options[$counter]['color_id'])?$options[$counter]['color_id']:0) ?>' />
+						  
+				 <input type='hidden' name='options[<?php echo $counter?>][color_lang_id]' id='color_lang_id_<?php echo $counter?>'  
+						  value='<?php echo (isset($options[$counter]['color_lang_id'])?$options[$counter]['color_lang_id']:0) ?>' />
+				 
+			</div>
+			<?php 
+			
+			$html = ob_get_contents();
+			ob_clean();
+			
+			return $html;
+	}
+	
+	/**
+	 * script to be added while ajax request
+	 */
+	function getScript()
+	{
+		return 'paycart.admin.attribute.addColorScript';
 	}
 	
 	/**
@@ -121,18 +126,19 @@ class PaycartAttributeColor extends PaycartAttribute
 	 */
 	function buildOptions($attribute, $data)
 	{	
-		$colors = (isset($data['colors'])) ? $data['colors']: array();
+		$colors = (isset($data['_options'])) ? $data['_options']: array();
 		
 		if(empty($colors) && $attribute->getId()){
-			$colors = PaycartFactory::getInstance('color','model')
-					                           ->loadOptions($attribute->getLangugeCode());
+			$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
 		}
 		
 		$result = array();
 		foreach ($colors as $id => $color){
+			$result[$id] = new stdClass();
 			$result[$id]->title 	= $color['title'];
 			$result[$id]->hash_code	= $color['hash_code'];
 			$result[$id]->color_id  = $color['color_id'];
+			$result[$id]->color_lang_id = $color['color_lang_id'];
 		}
 		return $result;
 	}
@@ -154,7 +160,7 @@ class PaycartAttributeColor extends PaycartAttribute
 			
 			//save option data
 			$data['hash_code'] = $option->hash_code;
-			$colorModel 	   = PaycartFactory::getInstance('color', 'model');
+			$colorModel 	   = PaycartFactory::getModel('color');
 			$colorId 		   = $colorModel->save($data, $option->color_id);
 			if(!$colorId){
 				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $colorModel->getError());
@@ -164,7 +170,7 @@ class PaycartAttributeColor extends PaycartAttribute
 			$data['color_id']  = $colorId;
 			$data['lang_code'] = $attribute->getLanguageCode();
 			$data['title']	   = $option->title;
-			$colorLangModel    = PaycartFactory::getInstance('colorlang', 'model');
+			$colorLangModel    = PaycartFactory::getModelLang('color');
 			$colorLangId 	   = $colorLangModel->save($data,$option->color_lang_id );
 			if(!$colorLangId){
 				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $colorLangModel->getError());
@@ -176,8 +182,8 @@ class PaycartAttributeColor extends PaycartAttribute
 	/**
 	 * delete attribute specific data 
 	 */
-	function deleteOptions($attribute)
+	function deleteOptions($attributeId=null, $optionId=null)
 	{
-		return true;
+		return false;
 	}
 }

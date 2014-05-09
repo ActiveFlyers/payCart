@@ -61,34 +61,44 @@ class PaycartModelProductAttributeOption extends PaycartModel
 {
 	function loadOptions($attributeId, $languageCode)
 	{
-		$query = $this->_db->getQuery(true);
+		$query = new Rb_Query();
 
-		$query->select('*')
- 		      ->from('#__paycart_productattribute_option as ao')
- 		      ->join('INNER', '#__paycart_productattribute_option_lang as aol ON ao.productattribute_option_id = aol.productattribute_option_id')
- 		      ->where('ao.productattribute_id = '.$attributeId)
- 		      ->where('aol.lang_code = "'.$languageCode.'"')
- 		      ->order('ao.option_ordering');
-
-		 return $this->_db->setQuery($query)->loadAssocList();
+		return $query->select('*')
+		 		     ->from('#__paycart_productattribute_option as ao')
+		 		     ->join('INNER', '#__paycart_productattribute_option_lang as aol ON ao.productattribute_option_id = aol.productattribute_option_id')
+		 		     ->where('ao.productattribute_id = '.$attributeId)
+		 		     ->where('aol.lang_code = "'.$languageCode.'"')
+		 		     ->order('ao.option_ordering')
+		 		     ->dbLoadQuery()
+		 		     ->loadAssocList();
 	}
 	
 	/**
 	 * delete options data from both option and option_lang table
 	 */
-	function deleteOptions($attributeId)
+	function deleteOptions($attributeId, $optionId)
 	{
-		$query = $this->_db->getQuery(true);
+		$query = new Rb_Query();
 		
-		$query->delete('a,b')
-			  ->from('#_paycart_productattribute_option_lang` as a')
-			  ->join('inner','#__paycart_productattribute_option as b on a.productattributeoption_id = b.productattributeoption_id')
-			  ->where('b.productattribute_id = '. $attributeId);
-					 
-	   return $this->_db->setQuery($query)->query();
+		if(!is_null($optionId)){
+			$query->where('b.productattribute_option_id = '. $optionId);
+		}
+		if(!is_null($attributeId)){
+			$query->where('b.productattribute_id = '. $attributeId);
+		}	
+		
+		//Due to some limitation of joomla's delete function, here we used rb_delete to add elements
+		return $query->rb_delete(null, 'a.*, b.*')
+					 ->from('`#__paycart_productattribute_option_lang` as a')
+					 ->from('`#__paycart_productattribute_option` as b')
+					 ->where('a.productattribute_option_id = b.productattribute_option_id')
+					 ->dbLoadQuery()
+					 ->query();
 	}
 }
 
 class PaycartModellangProductAttribute extends PaycartModel{}
 
 class PaycartModellangProductAttributeOption extends PaycartModel{}
+
+class PaycartModellangProductAttributeOptionLang extends PaycartModel{}
