@@ -100,6 +100,8 @@ $(document).ready(function(){
 		eval(paycart.queue[i]);
 	}
 	
+	paycart.jui.defaults();
+	
 	paycart.helper.do_grid_layout('#pc-categories[data-columns]','.pc-categories-wrapper', '.pc-category', sizeclass);
 
 	// also do resize category height = width
