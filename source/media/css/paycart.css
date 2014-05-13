@@ -102,9 +102,19 @@
   overflow: hidden;
 }
 
-.pc-size-xs .pc-whitespace{
+.pc-size-xs .pc-whitespace,
+.pc-size-sm .pc-whitespace{
 	margin-top :  20px;
 	margin-bottom :  20px;
+/*	margin-left :  5px;
+	margin-right :  5px; */
+}
+
+
+.pc-size-lg .pc-whitespace,
+.pc-size-xl .pc-whitespace{
+	margin-top :  30px;
+	margin-bottom :  30px;
 /*	margin-left :  5px;
 	margin-right :  5px; */
 }
@@ -170,7 +180,7 @@
 .pc-grid-9 {
 	width:73.0%;
 }
-
+ 
 .pc-grid-10 {
 	width:81.333%;
 }
@@ -182,3 +192,9 @@
 .pc-grid-12 {
 	width:98.0%;
 }
+
+
+/* =============================================
+   Bootstrap v2.3 Overrides : 
+================================================*/
+
