@@ -29,7 +29,7 @@ class PaycartGroup extends PaycartLib
 	/**
 	 * @var Rb_Registry
 	 */
-	protected $config 		= null;	
+	protected $params 		= null;	
 	
 	/**
 	 * @var PaycartHelperGroup
@@ -72,12 +72,25 @@ class PaycartGroup extends PaycartLib
 		$this->description 	= '';
 		$this->published 	= 1;
 		$this->ordering 	= 0;
-		$this->config 		= new Rb_Registry();
+		$this->params 		= new Rb_Registry();
 		return $this;
 	}
 	
 	public function getType()
 	{
 		return $this->type;
+	}
+	
+	public function isAppicable($entity_id)
+	{
+		$rules = (array) $this->params->toArray();
+		foreach($rules as $rule){		
+			$ruleInstance = $this->_helper->getInstance($this->type, $rule['ruleClass'], $rule);
+			if(!$ruleInstance->isApplicable($entity_id)){
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }

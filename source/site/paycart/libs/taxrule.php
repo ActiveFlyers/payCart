@@ -59,6 +59,9 @@ class PaycartTaxrule extends PaycartLib
 		$this->message				= '';
 	}
 	
+	/**
+	 * @return PaycartTaxrule
+	 */
 	public static function getInstance($id = 0, $data = null, $dummy1 = null, $dummy2 = null)
 	{
 		return parent::getInstance('taxrule', $id, $data);
@@ -75,71 +78,7 @@ class PaycartTaxrule extends PaycartLib
 		$processor->global_config 	 = $this->getGlobalconfigRequestObject();
 		return $processor;
 	}
-	
-	/**
-	 * 
-	 * Do start processing tax request
-	 * @param Paycartcart $cart
-	 * @param PaycartCartparticular $cartparticular
-	 * @throws InvalidArgumentException
-	 * 
-	 * @return Taxrule lib object
-	 */
-	public function process(Paycartcart $cart, PaycartCartparticular $cartparticular)
-	{
-		$request   = $this->getRequestObject($cart, $cartparticular);
-		$response  = $this->createResponse();
 		
-		$processor = $this->getProcessor();
-		
-		//process current request
-		$processor->process($request, $response);
-		
-		
-		// check if exception is occured
-		if ($response->exception && $response->exception instanceof Exception) {
-			//@PCTODO : Exception handling. better if we will introduce our tax type exception
-			//$this->_errors = $response->exception->getMessage();
-			return $this;
-		}
-		
-		// notify to admin
-		if ( Paycart::MESSAGE_TYPE_ERROR == $response->messageType) {
-			//@PCTODO : Error propagate to admin and log it 
-			//$this->_errors = $response->exception->getMessage();
-			return $this;
-		}
-		
-		// show system message to end user 
-		if ( Paycart::MESSAGE_TYPE_NOTICE == $response->messageType || Paycart::MESSAGE_TYPE_WARNING == $response->messageType || Paycart::MESSAGE_TYPE_MESSAGE == $response->messageType) {
-			//@PCTODO:: Show msg to end user with msgtype
-		}
-		
-
-		$cartparticular->addTotal($response->amount);
-		
-		//@PCTODO :: auto reinitailize cart price when add tax
-		
-		//create usage data
-		$usage = new stdClass();
-		
-		$usage->rule_type			=	Paycart::PROCESSOR_TYPE_TAXRULE;
-		$usage->rule_id				=	$this->getId();
-		$usage->cart_id				=	$cart->getId();
-		$usage->buyer_id			=	$cart->getBuyer();
-		$usage->carparticular_id	=	$cartparticular->getId();
-		$usage->price				=	$response->amount;
-		$usage->applied_date		=	Rb_Date::getInstance();
-		$usage->realized_date		=	'';
-		$usage->message				=	'';
-		$usage->title				=	'';
-		
-		//invoke method to track usage
-		PaycartFactory::getModel('usage')->save((array)$usage);
-		
-		return $response;
-	}
-	
 	/**
 	 * 
 	 * Create Request object to be processed 
@@ -184,7 +123,7 @@ class PaycartTaxrule extends PaycartLib
 	 * 
 	 * @return PaycartTaxruleResponse
 	 */
-	protected function createResponse()
+	protected function getResponseObject()
 	{
 		return new PaycartTaxruleResponse();
 	}

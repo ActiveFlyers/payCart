@@ -89,4 +89,26 @@ class PaycartHelperGroup extends JObject
 		// create rule instance 
 		return new $className($config);		
 	}	
+	
+	public function getApplicableRules($type, $entity_id)
+	{
+		$filter = array();
+		$filter['type'] = $type;
+		$filter['published'] = 1;
+		
+		$records = PaycartFactory::getModel('group');
+
+		$groups = array();
+		if(empty($records)){
+			return $groups;
+		}
+		
+		foreach($records as $record_id => $record){
+			$group = PaycartGroup::getInstance($record_id, $record);
+			if($group->isAppicable($entity_id)){
+				$groups[] = $record_id;
+			}
+		}
+		return $groups;
+	}
 }
