@@ -25,7 +25,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * 			## Discount calculate on row-total or actual-price, will be dicided by is_successive field
  * 	 
  */
-class PaycartDiscountRule extends PaycartLib
+class PaycartDiscountrule extends PaycartLib
 {
 	//Table fields : System-specific fields
 	protected $discountrule_id; 
@@ -181,96 +181,6 @@ class PaycartDiscountRule extends PaycartLib
 	}
 	
 	/**
-	 * 
-	 * Process discountrule
-	 * @param Paycartcart $cart
-	 * @param PaycartCartparticular $cartparticular
-	 * @throws InvalidArgumentException
-	 * 
-	 * @return DiscountRule lib object
-	 */
-	public function process(Paycartcart $cart, PaycartCartparticular $cartparticular)
-	{
-		// first check its applicabiliy
-		$isApplicableResponse = $this->isApplicable($cart, $cartparticular);
-		
-		if($isApplicableResponse->error === true){
-			// $isApplicableResponse contains the messgage, 
-		}
-		
-		// get Processor instanse. 
-		$processor = $this->getProcessor();
-		
-		// create request and reponse object then process discount-rule
-		$request	= $this->getRequestObject($cart, $cartparticular);
-		$response	= $this->createResponse();
-		
-		$processor->process($request, $response);
-		
-		// check if exception is occured
-		if ($response->exception && $response->exception instanceof Exception) {
-			//@PCTODO : Exception handling. better if we will introduce our discount type exception
-			//$this->_errors = $response->exception->getMessage();
-			return $this;
-		}
-		
-		// notify to admin
-		if ( Paycart::MESSAGE_TYPE_ERROR == $response->messageType) {
-			//@PCTODO : Error propagate to admin and log it			
-			return $this;
-		}
-		
-		// show system message to end user 
-		if ( Paycart::MESSAGE_TYPE_NOTICE == $response->messageType || Paycart::MESSAGE_TYPE_WARNING == $response->messageType || Paycart::MESSAGE_TYPE_MESSAGE == $response->messageType) {
-			//@PCTODO:: Show msg to end user with msgtype
-		}
-
-		// if response amount is not set or less than equal to zero then do nothing
-		if(!isset($response->amount) && $response->amount <= 0){
-			//@PCTODO: 
-			return $this;
-		} 
-		
-		$total 	= $cartparticular->getTotal();
-		
-		// @NOTE: Stop next all-rule processing for $cartparticular if meet following any one conditions in current rule
-		
-		// Check limit of discount 
-		if ($total+($response->amount) < 0) { // @NOTE: should not fall behind of minimum-price limit.
-			$this->_stopFurtherRules = true;
-			//@PCTODO :: notify to user or Log it
-			return $this;
-		}
-		
-		// if applied discount is non-clubbable 
-		// then stop next all multiple rules
-		if (!$this->is_clubbable) {
-			$this->_stopFurtherRules = true;
-		}			
-			
-		// apply discounted amount
-		$cartparticular->addDiscount($response->amount);
-		
-		//create usage data
-		$usage = new stdClass();
-		
-		$usage->rule_type			=	Paycart::PROCESSOR_TYPE_DISCOUNTRULE;
-		$usage->rule_id				=	$this->getId();
-		$usage->cart_id				=	$cart->getId();
-		$usage->buyer_id			=	$cart->getBuyer();
-		$usage->carparticular_id	=	$cartparticular->getId();
-		$usage->price				=	$response->amount;
-		$usage->applied_date		=	Rb_Date::getInstance();
-		$usage->realized_date		=	'';
-		$usage->message				=	'';
-		$usage->title				=	'';
-		
-		//invoke method to track usage
-		PaycartFactory::getModel('usage')->save((array)$usage);
-		return $this;
-	}
-	
-	/**
 	 * @return PaycartDiscountRuleRequest object
 	 */
 	public function getRequestObject(PaycartCart $cart, PaycartCartparticular $cartparticular)
@@ -331,7 +241,7 @@ class PaycartDiscountRule extends PaycartLib
 	 * 
 	 * @return PaycartDiscountRuleResponse object
 	 */
-	protected function createResponse()
+	function getResponseObject()
 	{
 		return new PaycartDiscountruleResponse();
 	}

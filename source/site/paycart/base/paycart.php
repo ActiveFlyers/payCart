@@ -81,8 +81,7 @@ class Paycart
 	const CART_PARTICULAR_TYPE_PROMOTION	 	= 'promotion';
 	const CART_PARTICULAR_TYPE_DUTIES 			= 'duties';
 	const CART_PARTICULAR_TYPE_SHIPPING			= 'shipping';
-	// @Future Purpose
-//	const CART_PARTICULAR_TYPE_SHIPPING_PROMOTION	= 'shippingpromotion';
+	const CART_PARTICULAR_TYPE_SHIPPING_PROMOTION	= 'shippingpromotion';
 	const CART_PARTICULAR_TYPE_ADJUSTMENT			= 'adjustment';
 
 	const CART_PARTICULAR_QUANTITY_MINIMUM = 1;
@@ -92,4 +91,10 @@ class Paycart
 	
 	const GROUPRULE_TYPE_PRODUCT = 'product';
 	const GROUPRULE_TYPE_BUYER 	 = 'buyer';
+
+	const ATTRIBUTE_PATH_MEDIA	= '/media/com_paycart/media/';
+	
+	const RULE_APPLY_ON_PRODUCT 	= 'product';
+	const RULE_APPLY_ON_CART 		= 'cart';
+	const RULE_APPLY_ON_SHIPPING	= 'shipping';
 }

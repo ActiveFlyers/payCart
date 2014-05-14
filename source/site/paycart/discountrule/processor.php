@@ -70,7 +70,8 @@ abstract class PaycartDiscountRuleProcessor
 	{
 		try {
 			// Calculate discount on discountable_amount
-			$response->amount =  $this->calculate($request->discountable_amount, $this->rule_config->amount, $this->rule_config->is_percentage);			
+			// amount must be negative as it is a discount
+			$response->amount =  -$this->calculate($request->discountable_amount, $this->rule_config->amount, $this->rule_config->is_percentage);			
 						
 		} catch (Exception $e) {
 			$response->exception = $e;

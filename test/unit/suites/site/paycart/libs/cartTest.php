@@ -194,7 +194,7 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 				throw new InvalidArgumentException('INVALID :: Particular Type');
 		}
 		
-		$cart->reinitializeTotal();
+		$cart->updateTotal();
 	}
 
 	
@@ -218,7 +218,7 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 			default :
 				throw new InvalidArgumentException('INVALID :: Particular Type');
 		}
-		$cart->reinitializeTotal();
+		$cart->updateTotal();
 	}
 	
 	
@@ -271,7 +271,7 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 				   			function ($currentCart, $dutiesParticular) use ($changed_property)
 				   			{
 				   				$dutiesParticular->addTax($changed_property['tax']);
-				   				$currentCart->reinitializeTotal();
+				   				$currentCart->updateTotal();
 				   			}
 				   	));
 		
@@ -384,7 +384,7 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 				   			function ($currentCart, $promotionParticular) use ($changed_property)
 				   			{
 				   				$promotionParticular->addDiscount($changed_property['discount']);
-				   				$currentCart->reinitializeTotal();
+				   				$currentCart->updateTotal();
 				   			}
 				   	));
 		
@@ -593,7 +593,7 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 				$this->assertTrue(false, "Checkout sequence is not properly working for Product-particular");
 		}
 		
-		$cart->reinitializeTotal();
+		$cart->updateTotal();
 		self::$invokeCounter++;
 	}
 	
@@ -613,7 +613,7 @@ class PaycartCartTest extends PayCartTestCaseDatabase
 				$this->assertTrue(false, "Checkout sequence is not properly working for Product-particular");
 		}
 		
-		$cart->reinitializeTotal();
+		$cart->updateTotal();
 		self::$invokeCounter++;
 	}
 	
