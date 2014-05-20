@@ -22,8 +22,8 @@ class PaycartProductcategory extends PaycartLib
 {
 	// Table Fields
 	protected $productcategory_id	=	0; 
-	protected $status				=	1;
-	protected $parent 		 		=	0;
+	protected $status				=	Paycart::STATUS_PUBLISHED;
+	protected $parent_id	 		=	Paycart::PRODUCTCATEGORY_ROOT_ID;
 	protected $cover_media	 		=	null; 	
 	protected $created_date  		=	'';	
 	protected $modified_date 		=	'';
@@ -36,7 +36,7 @@ class PaycartProductcategory extends PaycartLib
 		// Table Fields
 		$this->productcategory_id	=	0; 
 		$this->status		 		=	Paycart::STATUS_PUBLISHED;
-		$this->parent 		 		=	0;
+		$this->parent_id	 		=	Paycart::PRODUCTCATEGORY_ROOT_ID; //set id of root 
 		$this->cover_media	 		=	null; 	
 		$this->created_date  		=	Rb_Date::getInstance();	
 		$this->modified_date 		=	Rb_Date::getInstance();
@@ -148,21 +148,8 @@ class PaycartProductcategory extends PaycartLib
 		if (!$this->_language->alias) {
 			$this->_language->alias = $this->_language->title;
 		}
-		
-		//resave existing product then need to productcat_lang_id to avoid alias checking on specific ID.  
-		if( $this->getId() && !$this->_language->productcategory_lang_id) {
-			$helper = PaycartFactory::getHelper('Productcategory');
-			
-			$this->_language->productcategory_lang_id = $helper->translateAliasToKey($this->_language->alias);
-			
-			// Create new alias if put alias is already exist for other category 
-			if ($this->getId() != $helper->translateAliasToKey($this->_language->alias, 'productcategory_id')) {
-				$this->_language->productcategory_lang_id = 0;
-			}
-		}
-		
-		// alias must be unique
-		$this->_language->alias = PaycartFactory::getTableLang('Productcategory')->getUniqueAlias($this->_language->alias, $this->_language->productcategory_lang_id);
+
+		$this->_language->alias = PaycartFactory::getModelLang('Productcategory')->getValidAlias($this->_language->alias, $this->parent_id, $this->_language->productcategory_lang_id);
 		
 		//@PCTODO :: before parent save. Create cover_media path and set on $this
 		
