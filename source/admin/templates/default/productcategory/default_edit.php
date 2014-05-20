@@ -16,15 +16,6 @@ JHtml::_('behavior.formvalidation');
 
 ?>
 
-<script type="text/javascript">
-	Joomla.submitbutton = function(task)
-	{
-		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-			Joomla.submitform(task, document.getElementById('adminForm'));
-		}
-	}
-</script>
-
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
 	
 <fieldset>
@@ -45,9 +36,9 @@ JHtml::_('behavior.formvalidation');
 		</div>
 		
 		<div class="control-group">
-			<?php echo $form->getLabel('parent'); ?>
+			<?php echo $form->getLabel('parent_id'); ?>
 			<div class="controls">
-				<?php echo $form->getInput('parent'); ?>
+				<?php echo $form->getInput('parent_id'); ?>
 			</div>
 		</div>
 		
@@ -89,5 +80,5 @@ JHtml::_('behavior.formvalidation');
 
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="save" />
-	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
+	<?php echo $form->getInput('productcategory_id');?>
 </form>

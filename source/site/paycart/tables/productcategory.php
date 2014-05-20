@@ -16,9 +16,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * Category Table
  * @author Manish Trivedi
  */
-class PaycartTableProductcategory extends PaycartTable
-{}
-
+class PaycartTableProductcategory extends PaycartTableNested
+{
+	public function __construct($tblFullName='#__paycart_productcategory', $tblPrimaryKey='productcategory_id', $db=null)
+	{
+		return parent::__construct('#__paycart_productcategory', 'productcategory_id', $db);
+	}
+}
 
 class PaycartTablelangProductcategory extends PaycartTable
 {

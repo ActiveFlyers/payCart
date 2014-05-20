@@ -50,14 +50,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$category = self::getCategory();
-
-		$listLabel = parent::getOptions();
-		if($listLabel) {
-			$listLabel[0]->title = $listLabel[0]->text;
-			$category = array_merge($listLabel, $category);
-		}
-		
+		$category = self::getCategory();		
 		return PaycartHtml::buildOptions($category);		
 	}
 	
@@ -138,7 +131,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 		$model->clearQuery();  
 		$query = $model->getQuery()->clear('order')->order('title');
 		
-		$result = $model->loadRecords();
+		$result = $model->loadRecords(array('lang_code' => PaycartFactory::getLanguage()->getTag()), array(), false, 'productcategory_id');
 		 
 		return $result;
 	}

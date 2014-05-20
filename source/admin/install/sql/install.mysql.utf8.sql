@@ -108,28 +108,6 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_value` (
   INDEX `idx_productattribute_id` (`productattribute_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Values of item''s attribute will be store here' ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `#__paycart_category`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_category` (
-  `category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `alias` varchar(255) DEFAULT NULL,
-  `description` text,
-  `cover_image` varchar(255) DEFAULT NULL,
-  `parent` int(11) DEFAULT '0',
-  `ordering` int(11) NOT NULL DEFAULT '0',
-  `published` tinyint(1) DEFAULT '0',
-  `params` text,
-  `created_by` int(11) NOT NULL DEFAULT '0',
-  `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`category_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='All products''s category will be store here ' AUTO_INCREMENT=1 ;
-
 
 -- --------------------------------------------------------
 --
@@ -139,12 +117,16 @@ CREATE TABLE IF NOT EXISTS `#__paycart_category` (
 CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
   `productcategory_id` int(11) NOT NULL AUTO_INCREMENT,
   `cover_media` varchar(255) DEFAULT NULL,
-  `parent` int(11) NOT NULL,
-  `status` varchar(50) NOT NULL,
+  `parent_id` int(11) NOT NULL,
+  `lft` int(11) NOT NULL DEFAULT '0',
+  `rgt` int(11) NOT NULL DEFAULT '0',
+  `level` int(10) unsigned NOT NULL DEFAULT '0',
+  `status` enum('published','invisible','unpublished','trashed') NOT NULL,
   `created_date` datetime NOT NULL,
   `modified_date` datetime NOT NULL,
   `ordering` int(11) NOT NULL,
-  PRIMARY KEY (`productcategory_id`)
+  PRIMARY KEY (`productcategory_id`),
+  KEY `idx_left_right` (`lft`,`rgt`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -157,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory_lang` (
   `productcategory_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `productcategory_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `alias` int(11) NOT NULL,
+  `alias` varchar(100) NOT NULL,
   `lang_code` char(7) NOT NULL,
   `description` text,
   `metadata_title` varchar(255) DEFAULT NULL,
@@ -639,4 +621,9 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('image_upload_directory', NULL),
 ('discountrule_issuccessive', 1);
 
+INSERT IGNORE INTO `#__paycart_productcategory_lang` (`productcategory_lang_id`, `productcategory_id`, `title`, `alias`, `lang_code`, `description`, `metadata_title`, `metadata_keywords`, `metadata_description`) VALUES
+(1, 1, 'root', 'root', 'en-GB', NULL, NULL, NULL, NULL);
+
+INSERT IGNORE INTO `#__paycart_productcategory` (`productcategory_id`, `cover_media`, `parent_id`, `lft`, `rgt`, `level`, `status`, `created_date`, `modified_date`, `ordering`) VALUES
+(1, NULL, 0, 0, 1, 0, 'published', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0);
 

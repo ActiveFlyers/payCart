@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
 		<fieldset name="basic-attributes" label="COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL">
-			<field name="productcategory_id" type="text"
+			<field name="productcategory_id" type="hidden"
 				default="0"
 				label="COM_PAYCART_PRODUCTCATEGORY_ID_LABEL"
 				description="COM_PAYCART_PRODUCTCATEGORY_ID_DESC"
@@ -21,13 +21,12 @@
 			</field>
 
 <!-- Custom Element for paycart product category			-->
-			<field name="parent" type="paycart.category"
+			<field name="parent_id" type="paycart.category"
 				default=""
 				description="COM_PAYCART_PRODUCTCATEGORY_DESC"
 				label="COM_PAYCART_PRODUCTCATEGORY_PARENT_LABEL" 
 				addnew="false"
 			>
-				<option>COM_PAYCART_SELECT_CATEGORY_PARENT</option>
 			</field>
 			
 			<field name="cover_media" type="paycart.media"
@@ -54,7 +53,7 @@
 		
 		<fields name="language">
 			<fieldset name='language'>
-				<field name="productcategory_lang_id" type="text"
+				<field name="productcategory_lang_id" type="hidden"
 					default="0"
 					label="COM_PAYCART_PRODUCTCATEGORY_LANG_ID_LABEL"
 					description="COM_PAYCART_PRODUCTCATEGORY_LANG_ID_DESC"
