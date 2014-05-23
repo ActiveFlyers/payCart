@@ -52,52 +52,10 @@ if(!defined( '_JEXEC' )){
 	 </div>	 
 	 
 	<script>
-		//paycart.queue.push('paycart.checkout.login.init()');
-
-		
+				
 		(function($){
 
 			paycart.checkout.step.change('<?php echo $step_ready; ?>');
-			
-			paycart.checkout.login =
-			{
-				init : function()
-				{
-					// initialize screen interface
-					//1. on click on guest checkout mode
-					paycart.checkout.login.setEmailCheckout(true);
-					
-					$('#paycart_form_emailcheckout_1').click(function(){
-							paycart.checkout.login.setEmailCheckout(true)
-						});
-					
-					$('#paycart_form_emailcheckout_0').click(function(){
-						paycart.checkout.login.setEmailCheckout(false)
-					});
-				},
-				
-				do : function()
-				{
-					console.log('paycart.checkout.login.do');
-					
-					paycart.checkout.submit.do();
-
-					return false;					
-				},
-
-				setEmailCheckout : function(guest)
-				{
-					//default is guest mode
-					if(guest){
-						$('[data-pc-emailcheckout="show"]').show();
-						$('[data-pc-emailcheckout="hide"]').hide();
-					}else{
-						$('[data-pc-emailcheckout="show"]').hide();
-						$('[data-pc-emailcheckout="hide"]').show();
-					}
-				}
-			};
-
 			paycart.checkout.login.init();
 			
 		})(paycart.jQuery);

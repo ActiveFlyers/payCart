@@ -16,6 +16,10 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 ?>
+
+<?php
+		include_once 'default.js.php'; 
+	?>
 <div class='pc-checkout-wrapper clearfix'>
 
 <!--	Checkout flow state	-->
@@ -38,57 +42,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<input type="hidden"	name='view' value='checkout'	/>			
 		</form>
 	</div>
-	
-	<script>
-
-
-		(function($){
-
-			paycart.checkout.submit =
-			{
-				do : function()
-				{
-					// get all form data for post	
-					var postData 	= $("#pc-checkout-form").serializeArray();
-					var link  		= 'index.php?option=com_paycart';
-
-					console.log('paycart.checkout.submit.do');
-
-					//@PCTODO :: Display Spinner{ request is processing }  
-
-
-					paycart.ajax.go(link, postData);
-
-					return false;
- 					
-				},
-
-				/**
-				 * data is json object 
-				 */
-				success: function(data)
-				{
-					console.log('paycart.checkout.submit.success : start');
-
-					// replace string
-					$(".pc-checkout-step-html").html(data.html);
-
-					console.log('paycart.checkout.submit.success : end');
-				},
-
-				/**
-				 * data is json object 
-				 */
-				error :function(data)
-				{
-					console.log('paycart.checkout.submit.error :: ' + data);
-				}
-			};
-			
-		})(paycart.jQuery);
-	</script>
-	
-	
 </div>
 
 

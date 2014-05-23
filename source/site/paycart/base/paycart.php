@@ -97,4 +97,9 @@ class Paycart
 	const RULE_APPLY_ON_PRODUCT 	= 'product';
 	const RULE_APPLY_ON_CART 		= 'cart';
 	const RULE_APPLY_ON_SHIPPING	= 'shipping';
+	
+	const CHECKOUT_STEP_LOGIN		=	'login';
+	const CHECKOUT_STEP_ADDRESS		=	'address';
+	const CHECKOUT_STEP_CONFIRM		=	'confirm';
+	const CHECKOUT_STEP_PAYMENT		=	'payment';
 }
