@@ -17,7 +17,7 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  */
 class PaycartSiteBaseViewCheckout extends PaycartView
 {
-	protected $step_ready = 'login';
+	protected $step_ready = Paycart::CHECKOUT_STEP_LOGIN;
 	
 	/**
 	 * 
