@@ -168,6 +168,17 @@ class PaycartCart extends PaycartLib
 		return $this->reversal_for;
 	}
 		
+	public function setShippingAddressId($id)
+	{
+		$this->shipping_address_id = $id; 
+	}
+	
+	public function setBillingAddressId($id)
+	{
+		$this->billing_address_id =	$id; 
+	}
+	
+	
 	/**
 	 * 
 	 * Save CartParticulrs

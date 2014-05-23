@@ -84,11 +84,7 @@ if(typeof(Joomla)=='undefined'){
 		}
 		$(selector).addClass(sizeclass);
 		return sizeclass;
-	};
-	
-	
-	paycart.checkout = {};
-	
+	};	
 /*--------------------------------------------------------------
   on Document ready 
 --------------------------------------------------------------*/
