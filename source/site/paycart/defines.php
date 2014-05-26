@@ -42,6 +42,7 @@ define('PAYCART_PATH_ADMIN', 				JPATH_ADMINISTRATOR.'/components/com_paycart');
 define('PAYCART_PATH_ADMIN_CONTROLLER',		PAYCART_PATH_ADMIN.'/controllers');
 define('PAYCART_PATH_ADMIN_VIEW',			PAYCART_PATH_ADMIN.'/views');
 define('PAYCART_PATH_ADMIN_TEMPLATE',		PAYCART_PATH_ADMIN.'/templates');
+define('PAYCART_PATH_ADMIN_LAYOUTS',		PAYCART_PATH_ADMIN_TEMPLATE.'/default/_layouts');
 
 // Html => form + fields
 define('PAYCART_PATH_CORE_FORMS', 			PAYCART_PATH_CORE.'/html/forms');

@@ -14,7 +14,6 @@ if(!defined( '_JEXEC' )){
 }
 
 Rb_HelperTemplate::loadSetupEnv();
-Rb_HelperTemplate::loadSetupScripts();
 
 // load bootsrap, font-awesome
 Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
