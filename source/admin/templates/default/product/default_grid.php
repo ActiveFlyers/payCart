@@ -11,7 +11,15 @@
 
 defined('_JEXEC') OR die();
 ?>
+<div class="row-fluid">
+<div class="span2">
+<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=product'); 
+	?>
+</div>
 
+<div class="span10">	
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
 	<?php // echo $this->loadTemplate('filter'); ?>
@@ -69,4 +77,6 @@ defined('_JEXEC') OR die();
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 </form>
+</div>
+</div>
 <?php 
