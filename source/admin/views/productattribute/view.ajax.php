@@ -22,7 +22,7 @@ class PaycartAdminViewProductAttribute extends PaycartAdminBaseViewProductAttrib
 	{
 		$this->_setAjaxWinTitle(JText::_('COM_PAYCART_PRODUCT_CREATE_NEW_ATTRIBUTE'));
 		$this->_addAjaxWinAction(JText::_('COM_PAYCART_PRODUCT_CREATE_NEW_ATTRIBUTE'),'paycart.admin.product.attribute.create()','btn btn-primary');
-		$this->_addAjaxWinAction(XiText::_('COM_PAYCART_AJAX_CANCEL_BUTTON'), 'rb.ui.dialog.close();');
+		$this->_addAjaxWinAction(JText::_('COM_PAYCART_AJAX_CANCEL_BUTTON'), 'rb.ui.dialog.close();');
 		$this->_setAjaxWinAction();
 				
 		parent::_assignTemplateVars();

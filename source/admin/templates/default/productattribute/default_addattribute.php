@@ -25,7 +25,7 @@ if(empty($productAttributeIds)){
 		<div class="control-group paycart-product-attribute-<?php echo $attributeId?>">
 			<div class="control-label"><label><?php echo $instance->getTitle();?></label></div>
 			<div class="controls"><?php echo PaycartAttribute::getInstance($instance->getType())->getEditHtml($instance, $selected);?>
-					<button class="btn" id="paycart-product-attribute-remove" type="button" onClick="paycart.admin.product.attribute.detach('<?php echo $attributeId?>');">
+						<button class="btn" id="paycart-product-attribute-delete" type="button" onClick="paycart.admin.product.attribute.deleteAttributeValues('<?php echo $attributeId?>');">
 							<?php echo JText::_('COM_PAYCART_DELETE');?>
 			 			</button>
 			</div>

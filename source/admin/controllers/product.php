@@ -118,4 +118,20 @@ class PaycartAdminControllerProduct extends PaycartController
 		$ajax->addScriptCall('paycart.jQuery(".paycart-product-attribute-'.$productAttributeId.'").remove');
 		return false;
 	}
+	
+	/**
+	 * Ajax task : Delete image attached to product
+	 */
+	public function deleteImage()
+	{
+		$productId = $this->input->get('product_id',0);
+		$instance  = PaycartProduct::getInstance($productId);
+		$imageId   = $this->input->get('image_id',0);
+		 
+		if($instance->deleteImages($imageId)){
+			PaycartFactory::getAjaxResponse()->addScriptCall('paycart.jQuery("#pc-product-image-'.$imageId.'").remove');
+		}
+		return false;
+		
+	}
 }

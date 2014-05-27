@@ -40,4 +40,35 @@ class PaycartHelperMedia extends PaycartHelper
 		$details['type'] = $extension;
 		return $details;
 	}
+	
+	/**
+	 * Delete media records
+	 * @param $mediaIds
+	 * @param $path : path where files exist
+	 */
+	function deleteFiles(Array $mediaIds = array(), $path = PAYCART_ATTRIBUTE_PATH_MEDIA)
+	{
+		//if empty, do nothing
+		if(empty($mediaIds)){
+			return true;
+		}
+		
+		$condition    = array('media_id' => array(array('IN',"(".implode(',',$mediaIds).")")));
+		$model 		  = PaycartFactory::getModel('media'); 
+		$mediaRecords = $model->loadRecords($condition);
+		$files		  = array();
+		
+		//delete records from db
+		if($model->deleteRecords($condition)){
+			foreach ($mediaRecords as $record){
+				$filePath = $path.$record->path;
+				if(JFile::exists($filePath)){
+					$files[] = $filePath;
+				}	
+			}
+		}
+		
+		//Now delete files from actual path 
+		return JFile::delete($files);
+	}
 }

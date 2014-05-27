@@ -35,6 +35,28 @@ class PaycartModelMedia extends PaycartModel
 		 		     ->dbLoadQuery()
 		 		     ->loadAssocList();
 	}
+	
+	function save($data, $pk=null, $new=false)
+	{
+		$new = $this->getTable()->load($pk)?false:true;
+		$id  = parent::save($data, $pk,$new);
+		
+		if(!$id){
+			return false;
+		}
+		
+		$data['media_id'] = $id;
+		PaycartFactory::getModelLang($this->getName())->save($data);		
+		return $id;
+	}
+	
+	function deleteRecords($filters)
+	{
+		$query = new Rb_Query();
+		$query->multiDelete($this->getTable()->getTableName()." as tbl ",'tbl');
+		$this->_buildWhereClause($query, $filters);
+		return $query->dbLoadQuery()->execute();
+	}
 }
 
 /**
