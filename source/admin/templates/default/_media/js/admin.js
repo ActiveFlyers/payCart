@@ -117,6 +117,15 @@ paycart.admin.product =
 				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			}
 		},
+		
+		deleteImage : function(imageId)
+		{
+			var link  = 'index.php?option=com_paycart&task=deleteImage&view=product';
+			var productId = $('#paycart_form_product_id').val();
+			var data  = {'image_id': imageId, 'product_id':productId};
+			paycart.ajax.go(link,data);
+		},
+		
 		attribute :
 		{
 			window: function()
@@ -154,9 +163,9 @@ paycart.admin.product =
 				paycart.ajax.go(link,data);
 			},
 			
-			detach : function(attributeId)
+			deleteAttributeValues : function(attributeId)
 			{
-				var link  = 'index.php?option=com_paycart&task=detachAttribute&view=product';
+				var link  = 'index.php?option=com_paycart&task=deleteAttributeValues&view=product';
 				var productId = $('#paycart_form_product_id').val();
 				var data  = {'productattribute_id': attributeId, 'product_id' :productId};
 				paycart.ajax.go(link,data);

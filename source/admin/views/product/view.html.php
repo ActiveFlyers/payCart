@@ -54,6 +54,14 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		$attributeModel = PaycartFactory::getModel('productattribute');
 		$this->assign('availableAttributes',  $attributeModel->loadRecords());
 		
+		//set images
+		$imageIds = $product->getImages();
+		$images	  = array();
+		if(!empty($imageIds)){
+			$images   = PaycartFactory::getModel('media')->loadRecords(array('media_id' => array(array('IN',"(".implode(',',$imageIds).")"))));
+		}
+		$this->assign('images', $images);
+		
 		// @PCTODO:: Set availble variants
 		$this->assign('variants',  Array());
 		

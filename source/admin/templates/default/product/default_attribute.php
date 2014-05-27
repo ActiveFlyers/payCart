@@ -62,7 +62,7 @@ $appliedAttributes = $product->getAttributeValues();
   				<span class="add-on">
 					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 				</span>
-			  	<button class="btn paycart-attribute-attach-value" type="button">Jtext::_("COM_PAYCART_PRODUCT_ATTACH_ATTRIBUTES");Add</button>
+			  	<button class="btn paycart-attribute-attach-value" type="button"><?php echo Jtext::_("COM_PAYCART_PRODUCT_ATTACH_ATTRIBUTES");?></button>
 			  	
 			</div>
 			

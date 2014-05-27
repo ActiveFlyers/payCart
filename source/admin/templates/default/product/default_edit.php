@@ -270,6 +270,23 @@ PaycartHtml::_('behavior.formvalidation');
 				</div>
 				
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>	
+			
+<!-- ========== Product Images ========== -->
+		<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'log', Rb_Text::_('COM_PAYCART_PRODUCT_IMAGES_FIELDSET_LABEL', true)); ?>
+				<div class="span6">
+					<?php echo $this->loadTemplate('images'); ?>
+				</div>
+				
+				<div class="span6">
+					<!-- Uploaded images -->
+					<?php foreach ($images as $image):?>
+					<span class="pull-left" id="pc-product-image-<?php echo $image->media_id?>">
+						<a onClick="paycart.admin.product.deleteImage(<?php echo $image->media_id?>)"><?php echo JText::_("COM_PAYCART_PRODUCT_IMAGE_DELETE");?></a>
+						<img class="clearfix" src="<?php echo PaycartHelperImage::getURL().$image->path;?>"/>
+					</span>	
+					<?php endforeach;?>
+				</div>
+		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 				
 <!--========	Product Custom Attributes	========-->			
 			<!--<?php // echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'log', Rb_Text::_('COM_PAYCART_PRODUCT_SYSTEM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
