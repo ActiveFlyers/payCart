@@ -13,84 +13,97 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
 
-
 	 <div class="pc-checkout-address clearfix">
 		
-<!--	Shipping Address -->
-	 	<div class="pc-checkout-shipping ">
-		 	<h3>Shipping Info</h3>
-		 	 <fieldset>
-				<label>ZIP code*</label>
-				<input type="text" name="paycart_form[shipping][zipcode]" class="input-block-level" >
-				<span class="hide help-block">Example block-level help text here.</span>
-
-				<label>Full Name*</label>
-				<input type="text" name="paycart_form[shipping][to]" class="input-block-level">
-				<span class="hide help-block">Example block-level help text here.</span>
-				
-				<label>Phone Number*</label>
-				<input type="text" name="paycart_form[shipping][phone1]" class="input-block-level">
-				<span class="hide help-block">Example block-level help text here.</span>
-				
-				<select name="paycart_form[shipping][country]" class="span12">
-					<option value="" selected="selected">Select Country *</option> 
-					<?php include '_options_country.php'?> 
-				</select>
-				<span class="hide help-block">Example block-level help text here.</span>
-				
-				<select name="paycart_form[shipping][state]" class="span12">
-					<option value="" selected="selected">Select State*</option> 
-					<?php include '_options_state.php'?> 
-				</select>
-				<span class="hide help-block">Example block-level help text here.</span>
-				
-				<label>Town/City*</label>
-				<input type="text" name="paycart_form[shipping][city]" class="input-block-level">
-				<span class="hide help-block">Example block-level help text here.</span>
-				
-				<label>Delivery Address*</label>
-				<span class="hide help-block">Example block-level help text here.</span>
-				<textarea class="input-block-level" rows="3" name="paycart_form[shipping][address]"></textarea>
-			</fieldset>
-		</div>
-		
-<!--	Billing Address	-->
-		<div class="pc-checkout-billing clearfix">
-		 	<h3>Billing Address</h3>
+<!--	Billing Address -->
+	 	<div class="span6 pc-checkout-billing ">
+		 	<h3>Billing Info</h3>
 		 	
-		 	<fieldset>
-				
-				<label>ZIP code*</label>
-				<input type="text" name="paycart_form[billing][zipcode]" class="input-block-level">
+		 	 <fieldset>
+		 	 
+		 	 	<label class="control-label required" >ZIP code</label>
+				<input type="text" name="paycart_form[billing][zipcode]" class="input-block-level" >
 				<span class="hide help-block">Example block-level help text here.</span>
 
-				<label>Full Name*</label>
+				<label class="control-label required">Full Name</label>
 				<input type="text" name="paycart_form[billing][to]" class="input-block-level">
 				<span class="hide help-block">Example block-level help text here.</span>
 				
-				<label>Phone Number*</label>
+				<label class="control-label required">Phone Number</label>
 				<input type="text" name="paycart_form[billing][phone1]" class="input-block-level">
 				<span class="hide help-block">Example block-level help text here.</span>
 				
+				<label  class="control-label required">Select Country</label>
 				<select name="paycart_form[billing][country]" class="span12">
-					<option value="" selected="selected">Select Country *</option> 
+					<option value="" selected="selected">Select Country </option> 
 					<?php include '_options_country.php'?> 
 				</select>
 				<span class="hide help-block">Example block-level help text here.</span>
 				
+				<label  class="control-label required">Select City</label>
 				<select name="paycart_form[billing][state]" class="span12">
-					<option value="" selected="selected">Select State*</option> 
+					<option value="" selected="selected">Select State</option> 
 					<?php include '_options_state.php'?> 
 				</select>
 				<span class="hide help-block">Example block-level help text here.</span>
 				
-				<label>Town/City*</label>
+				<label  class="control-label required">Town/City</label>
 				<input type="text" name="paycart_form[billing][city]" class="input-block-level">
 				<span class="hide help-block">Example block-level help text here.</span>
 				
-				<label>Delivery Address*</label>
+				<label  class="control-label required">Delivery Address</label>
 				<span class="hide help-block">Example block-level help text here.</span>
 				<textarea class="input-block-level" rows="3" name="paycart_form[billing][address]"></textarea>
+			</fieldset>
+		</div>
+		
+<!--	Shipping Address	-->
+		<div class=" span6 pc-checkout-shipping clearfix">
+		 	<h3>Shipping Info</h3>
+		 	
+		 	<label class="checkbox">
+				<input 	id='billing_to_shipping' type="checkbox" 
+						checked="checked"		 name="paycart_form[billing_to_shipping]"
+						onClick="paycart.checkout.address.billing_to_shipping();"
+						value='true'
+				> Same as Billing address
+			</label>
+			
+		 	<fieldset>
+				
+				<label  class="control-label required">ZIP code</label>
+				<input type="text" name="paycart_form[shipping][zipcode]" class="input-block-level">
+				<span class="hide help-block">Example block-level help text here.</span>
+
+				<label  class="control-label required">Full Name</label>
+				<input type="text" name="paycart_form[shipping][to]" class="input-block-level">
+				<span class="hide help-block">Example block-level help text here.</span>
+				
+				<label  class="control-label required">Phone Number</label>
+				<input type="text" name="paycart_form[shipping][phone1]" class="input-block-level">
+				<span class="hide help-block">Example block-level help text here.</span>
+				
+				<label  class="control-label required">Select Country</label>
+				<select name="paycart_form[shipping][country]" class="span12">
+					<option value="" selected="selected">Select Country </option> 
+					<?php include '_options_country.php'?> 
+				</select>
+				<span class="hide help-block">Example block-level help text here.</span>
+				
+				<label  class="control-label required">Select State</label>
+				<select name="paycart_form[shipping][state]" class="span12">
+					<option value="" selected="selected">Select State</option> 
+					<?php include '_options_state.php'?> 
+				</select>
+				<span class="hide help-block">Example block-level help text here.</span>
+				
+				<label  class="control-label required">Town/City</label>
+				<input type="text" name="paycart_form[shipping][city]" class="input-block-level">
+				<span class="hide help-block">Example block-level help text here.</span>
+				
+				<label  class="control-label required">Delivery Address</label>
+				<span class="hide help-block">Example block-level help text here.</span>
+				<textarea class="input-block-level" rows="3" name="paycart_form[shipping][address]"></textarea>
 				
 			</fieldset>
 			
@@ -99,15 +112,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <!--	Continue Checkout	-->
 		<div class="clearfix">
 			
-			<label class="checkbox">
-				<input 	id='shipping_to_billing' type="checkbox" 
-						checked="checked"		 name="paycart_form[shipping_to_billing]"
-						onClick="paycart.checkout.address.shipping_to_billing();"
-						value='true'
-				> Same as shipping address
-			</label>
-		
-			<button type="button" onClick="paycart.checkout.address.do();" class="pc-whitespace btn btn-block btn-large btn-primary">Deliver To This Address</button>
+			<button type="button" onClick="paycart.checkout.address.do();" 
+					class="pc-whitespace btn btn-block btn-large btn-primary">
+			Continue <i class="fa fa-angle-double-right"></i>
+			</button>
 			
 		</div>
 		
@@ -121,11 +129,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			{
 				copy : 
 				{
-					to_billing	:	function()
+					to_shipping	:	function()
 					{
 						var regExp = /\[(\w*)\]$/;
 						
-						$('[name^="paycart_form[shipping]"]').each(function() {
+						$('[name^="paycart_form[billing]"]').each(function() {
 		
 							// get index
 							var matches = this.name.match(regExp);
@@ -136,34 +144,34 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		
 							//matches[1] contains the value between the Square Bracket
 							var index = matches[1];
-							$('[name^="paycart_form[billing]['+index+']"]').val($(this).val())
+							$('[name^="paycart_form[shipping]['+index+']"]').val($(this).val())
 						});
-						console.log('copy shipping to billing');
+						console.log('copy billing to shipping');
 					}
 				},
 			
-				// Copy Shipping to Billing				
-				shipping_to_billing : function()
+				// Copy billing to shipping				
+				billing_to_shipping : function()
 				{
-					// Checked Shipping to billing 
-					if( $('#shipping_to_billing').prop('checked') == true ) { 
+					// Checked billing to shipping 
+					if( $('#billing_to_shipping').prop('checked') == true ) { 
 
-						paycart.checkout.address.copy.to_billing();
+						paycart.checkout.address.copy.to_shipping();
 						
-						$('.pc-checkout-billing fieldset:first').fadeOut();
+						$('.pc-checkout-shipping fieldset:first').fadeOut();
 
 						return true;
 					} 
 
-					// unchecked Shipping to billing 
+					// unchecked billing to shipping 
 					
-					// delete all billing input values
-					$('[name^="paycart_form[billing]"]').val('');
+					// delete all shipping input values
+					$('[name^="paycart_form[shipping]"]').val('');
 
-					// Open billing address deatil field setfor
-					$('.pc-checkout-billing fieldset:first').fadeIn();
+					// Open shipping address deatil field setfor
+					$('.pc-checkout-shipping fieldset:first').fadeIn();
 					
-					console.log('delete input from billing');
+					console.log('delete input from shipping');
 
 					return true;
 				},
@@ -172,9 +180,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				{
 					console.log('paycart.checkout.address.do');
 
-					//Before Submit Copy shipping to billing address
-					if ( $('#shipping_to_billing').prop('checked') == true ) { 
-						paycart.checkout.address.copy.to_billing();
+					//Before Submit Copy billing to shipping address
+					if ( $('#billing_to_shipping').prop('checked') == true ) { 
+						paycart.checkout.address.copy.to_shipping();
 					}
 					
 					paycart.checkout.submit.do();
@@ -185,6 +193,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				
 			};
 
+			paycart.checkout.address.billing_to_shipping();
 			paycart.checkout.step.change('<?php echo $step_ready; ?>');				
 			
 		})(paycart.jQuery);
