@@ -61,8 +61,7 @@ $steps				=	array_keys($checkout_sequence);
 					
 					if (step_ready == steps[i]){
 						// active mark it
-						//@PCTODO:: Acive mark
-						paycart.jQuery(class_name).addClass('text-success');
+						paycart.jQuery(class_name).removeClass('muted');
 						break; 
 					}
 

@@ -385,21 +385,15 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 */
 	protected function step_address(Array $form_data)
 	{
-		// store shipping address
-		$shipping_address_data 				=	$form_data['shipping'];
-		$shipping_address_data['buyer_id']	=	$this->cart->getBuyer();
+		// Step 1# :: get Billing Address
 		
-		// shave buyer-address
-		$shipping_address_lib 	= 	PaycartBuyeraddress::getInstance(0, $shipping_address_data)->save();
-		$shipping_address_id	=	$shipping_address_lib->getId();
-		//@PCFIXME : set shipping address on cart
-		//$this->cart->setShippingAddressId($shipping_address_id);
+		// if select any billing address
+		$billing_address_id		=	@$form_data['billing_address_id'];
 		
-		// get shipping to billing checkbox value if same address 
 		
-		if ((bool)$form_data['shipping_to_billing']) {
-			$billing_address_id = $shipping_address_id;
-		} else {
+		// if billing address id is not available and not copy shipping to billing 
+		// then I assume that buyer entered new address
+		if (!$billing_address_id && !((bool)@$form_data['shipping_to_billing']) ) {
 			// store billing address
 			$billing_address_data 				=	$form_data['billing'];
 			$billing_address_data['buyer_id']	=	$this->cart->getBuyer();
@@ -407,6 +401,38 @@ class PaycartSiteControllerCheckout extends PaycartController
 			$billing_address_lib	= PaycartBuyeraddress::getInstance(0, $billing_address_data)->save();
 			$billing_address_id		= $billing_address_lib->getId();
 		}
+		
+		
+		// Step 2# :: Get Shipping Address
+		
+		// if select any Shipping address
+		$shipping_address_id		=	@$form_data['shipping_address_id'];
+		
+		
+		// if shipping address id is not available and not copy billing to shipping 
+		// then I assume that buyer entered new address
+		if (!$shipping_address_id && !((bool)@$form_data['billing_to_shipping']) ) {
+			// store shipping address
+			$shipping_address_data 				=	$form_data['shipping'];
+			$shipping_address_data['buyer_id']	=	$this->cart->getBuyer();
+			
+			$shipping_address_lib		= PaycartBuyeraddress::getInstance(0, $shipping_address_data)->save();
+			$shipping_address_id		= $shipping_address_lib->getId();
+		}
+		
+		
+		// get shipping to billing checkbox value if same address 
+		
+		if ((bool)@$form_data['shipping_to_billing']) {
+			$billing_address_id = $shipping_address_id;
+		} 
+		
+		if ((bool)@$form_data['billing_to_shipping']) {
+			$shipping_address_id	=	$billing_address_id;
+		}
+		
+		//@PCFIXME : set shipping address on cart
+		//$this->cart->setShippingAddressId($shipping_address_id);
 		
 		//@PCFIXME :: set billing address on cart
 		//$this->cart->setBillingAddressId($billing_address_id);
