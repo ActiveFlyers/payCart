@@ -38,9 +38,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<!--	Continue Checkout	-->
 			<div class="clearfix">
 				
-				<button type="button" onClick="paycart.checkout.address.do();" 
+				<button type="button" onClick="paycart.checkout.address.onContinue();" 
 						class="pc-whitespace btn btn-block btn-large btn-primary">
-					Continue <i class="fa fa-angle-double-right"></i>
+					<?php JText::_('COM_PAYCART_BUTTON_CONTINUE')?> <i class="fa fa-angle-double-right"></i>
 				</button>
 				
 			</div>
@@ -54,77 +54,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<script>
 			
 		(function($) {
-
-			paycart.checkout.address = 
-			{
-				copy : function(from, to)
-				{
-					var regExp 			=	/\[(\w*)\]$/;
-					var from_name 		=	'paycart_form['+from +']';
-					var to_name 		=	'paycart_form['+to +']';
-					
-					var form_selector	= '[name^="'+from_name+'"]';
-						
-					$(form_selector).each(function() {
-
-						// get index
-						var matches = this.name.match(regExp);
-
-						if (!matches) {
-							return false;
-						}
-
-						//matches[1] contains the value between the Square Bracket
-						var index 		= matches[1];
-						var to_selector = '[name^="'+to_name+'['+index+']"]';
-
-						$(to_selector).val($(this).val())
-					});
-
-					console.log('copy '+from+' to '+to);
-				},
-			
-				// Copy billing to shipping				
-				billing_to_shipping : function()
-				{
-					// Checked billing to shipping 
-					if( $('#billing_to_shipping').prop('checked') == true ) { 
-
-						paycart.checkout.address.copy('billing', 'shipping');
-						
-						$('.pc-checkout-shipping fieldset:first').fadeOut();
-
-						return true;
-					} 
-
-					// unchecked billing to shipping 
-					
-					// delete all shipping input values
-					$('[name^="paycart_form[shipping]"]').val('');
-
-					// Open shipping address deatil field setfor
-					$('.pc-checkout-shipping fieldset:first').fadeIn();
-					
-					console.log('delete input from shipping');
-
-					return true;
-				},
-
-				do : function()
-				{
-					console.log('paycart.checkout.address.do');
-
-					//@FIXME:: (check element exist or not) Or Remove this stuff from here
-					//Before Submit Copy billing to shipping address
-					if ( $('#billing_to_shipping').prop('checked') == true ) { 
-						paycart.checkout.address.copy('billing', 'shipping');
-					}
-					
-					paycart.checkout.submit.do();
-
-					return false;					
-				}
-			};
 
 			paycart.checkout.address.billing_to_shipping();
 			paycart.checkout.step.change('<?php echo $step_ready; ?>');				

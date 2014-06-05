@@ -14,7 +14,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
 
 	<?php if (isset($title) && !empty($title)): ?>
-		 	<h3>Shipping Info</h3>
+		 	<h3><?php echo JText::_('COM_PAYCART_BILLING_INFO'); ?></h3>
 	<?php endif; ?>	 	
 	
 	<?php if (isset($billing_to_shipping) && !empty($billing_to_shipping)): ?>
@@ -23,7 +23,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					checked="checked"		 name="paycart_form[billing_to_shipping]"
 					onClick="paycart.checkout.address.billing_to_shipping();"
 					value='true'
-			> Same as Billing address
+			><?php echo JText::_('COM_PAYCART_SAME_AS_BILLING_ADDRESS'); ?>
 		</label>
 	<?php endif; ?>
 		
