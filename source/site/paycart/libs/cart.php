@@ -51,6 +51,10 @@ class PaycartCart extends PaycartLib
 	
 	protected $session_id;
 	
+	protected $params;
+	protected $is_guestcheckout;
+	
+	
 	// Related Table Fields: Array of cart-particulars
 	protected $_cartparticulars;
 	
@@ -114,13 +118,16 @@ class PaycartCart extends PaycartLib
 		$this->created_date			= Rb_Date::getInstance();
 		$this->modified_date		= Rb_Date::getInstance();
 		
-		$this->session_id	= '';
+		$this->session_id			= 	'';
+		$this->is_guestcheckout		=	false;
 		
 		// Related Table Fields: cart particulars libs instance
 		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_PRODUCT] 	 =	array();
 		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION] =	array();
 		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_DUTIES] 	 =	array();
 		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_SHIPPING]  =	array();
+		
+		$this->params	=	new JRegistry();
 		
 		return $this;
 	}
@@ -168,6 +175,48 @@ class PaycartCart extends PaycartLib
 		return $this->reversal_for;
 	}
 		
+	/**
+	 * 
+	 * Return buyeraddress-Lib instance Or buyeraddress-Id
+	 * @param Boolean $instance : true, if you need buyeraddress-lib instance. default buyeraddress-Id 
+	 * 
+	 * @return buyeraddress-Lib instance Or buyeraddress-Id
+	 */
+	public function getShippingAddress($instance = false)
+	{
+		if(!$instance) {
+			return $this->shipping_address_id;
+		}
+
+		return PaycartBuyer::getInstance($this->shipping_address_id);
+	}
+	
+	/**
+	 * 
+	 * Return buyeraddress-Lib instance Or buyeraddress-Id
+	 * @param Boolean $instance : true, if you need buyeraddress-lib instance. default buyeraddress-Id 
+	 * 
+	 * @return buyeraddress-Lib instance Or buyeraddress-Id
+	 */
+	public function getBillingAddress($instance = false)
+	{
+		if(!$instance) {
+			return $this->billing_address_id;
+		}
+
+		return PaycartBuyer::getInstance($this->billing_address_id);
+	}
+	
+	public function getIsGuestCheckout() 
+	{
+		return (bool)$this->is_guestcheckout;
+	}
+	
+	public function setIsGuestCheckout($isGuestCheckout =false)
+	{
+		$this->is_guestcheckout = $isGuestCheckout; 
+	}
+	
 	public function setShippingAddressId($id)
 	{
 		$this->shipping_address_id = $id; 
@@ -176,6 +225,11 @@ class PaycartCart extends PaycartLib
 	public function setBillingAddressId($id)
 	{
 		$this->billing_address_id =	$id; 
+	}
+	
+	public function setBuyer($id)
+	{
+		$this->buyer_id	=	$id; 
 	}
 	
 	
