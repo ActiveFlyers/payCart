@@ -182,6 +182,48 @@ class PaycartCart extends PaycartLib
 		return $this->reversal_for;
 	}
 		
+	/**
+	 * 
+	 * Return buyeraddress-Lib instance Or buyeraddress-Id
+	 * @param Boolean $instance : true, if you need buyeraddress-lib instance. default buyeraddress-Id 
+	 * 
+	 * @return buyeraddress-Lib instance Or buyeraddress-Id
+	 */
+	public function getShippingAddress($instance = false)
+	{
+		if(!$instance) {
+			return $this->shipping_address_id;
+		}
+
+		return PaycartBuyer::getInstance($this->shipping_address_id);
+	}
+	
+	/**
+	 * 
+	 * Return buyeraddress-Lib instance Or buyeraddress-Id
+	 * @param Boolean $instance : true, if you need buyeraddress-lib instance. default buyeraddress-Id 
+	 * 
+	 * @return buyeraddress-Lib instance Or buyeraddress-Id
+	 */
+	public function getBillingAddress($instance = false)
+	{
+		if(!$instance) {
+			return $this->billing_address_id;
+		}
+
+		return PaycartBuyer::getInstance($this->billing_address_id);
+	}
+	
+	public function getIsGuestCheckout() 
+	{
+		return (bool)$this->is_guestcheckout;
+	}
+	
+	public function setIsGuestCheckout($isGuestCheckout =false)
+	{
+		$this->is_guestcheckout = $isGuestCheckout; 
+	}
+	
 	public function setShippingAddressId($id)
 	{
 		$this->shipping_address_id = $id; 
@@ -190,6 +232,11 @@ class PaycartCart extends PaycartLib
 	public function setBillingAddressId($id)
 	{
 		$this->billing_address_id =	$id; 
+	}
+	
+	public function setBuyer($id)
+	{
+		$this->buyer_id	=	$id; 
 	}
 	
 	
