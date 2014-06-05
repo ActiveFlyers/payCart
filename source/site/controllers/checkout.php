@@ -25,7 +25,6 @@ class PaycartSiteControllerCheckout extends PaycartController
 	
 	//default step
 	protected $step_current	=	Paycart::CHECKOUT_STEP_LOGIN;
-	protected $step_next	=	Paycart::CHECKOUT_STEP_LOGIN;
 
 	protected $message		=	'';
 	protected $message_type	=	'';
@@ -77,20 +76,24 @@ class PaycartSiteControllerCheckout extends PaycartController
 	public function init()
 	{
 		//@TODO :: count number of particular
+		// @TODO :: move it to preProcess
 		// if cart is not exist or cart is empty then intimate to end user 
-		if ( !($this->cart instanceof PaycartCart) || $this->cart->getCartparticulars()) {
+		if ( !($this->cart instanceof PaycartCart) ) { // || $this->cart->getCartparticulars()) {
 			//@TODO :: cart is empty
+			throw new RuntimeException('cart is not exist');
 		} 
 		
-		//	check user is logged-in or guest.
-		if ($this->_is_loggedin()) {
-			//next step get form $this->step_next
-			$this->step_next	=	$this->step_sequence[$this->step_next];
+		// if user login then move next step
+		if ($this->_is_loggedin())  {
+			$this->step_current = $this->step_sequence[$this->step_current];
 		}
+		
+		$this->preProcess(Array());
 		
 		// @PCTODO:: Check  minimum condition for Checkout-flow like minimum amount, mimimum product. 
 		
-		$this->getView()->set('step_ready', $this->step_next);
+		$this->getView()->set('step_ready', $this->step_current);
+		$this->getView()->set('cart', 		$this->cart);
 		return true;
 	} 
 	
@@ -150,13 +153,15 @@ class PaycartSiteControllerCheckout extends PaycartController
 		
 		//3#.	Post-Processing
 		
-		//@FIXME :: cart should be save after processing
+		// Cart should be save after processing
+		$this->cart->save();
 
 		// if step successfully process
 		if ($is_processed) {
 			$this->step_next	=	$this->step_sequence[$this->step_current];
 			
 			$this->getView()->set('step_ready', $this->step_next);
+			$this->getView()->set('cart', 		$this->cart);
 			return true;
 		}
 		
@@ -174,6 +179,9 @@ class PaycartSiteControllerCheckout extends PaycartController
 	
 	/**
 	 * Pre-Process current step
+	 * 	All previous step will be verified then move next
+	 *  
+	 *  
 	 * @param array $form_data
 	 * 
 	 * @since	1.0
@@ -183,6 +191,22 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 */
 	protected function preProcess(Array $form_data )
 	{
+		$step_current = $this->step_current;
+		
+		// If user neither login nor using guest checkout
+		if (!$this->_is_loggedin() && !($this->cart->getIsGuestCheckout()) )  {
+			//change current step
+			$this->step_current	=	Paycart::CHECKOUT_STEP_LOGIN;
+			return true;
+		}
+		
+		// if address is not exist 
+		if ( !( $this->cart->getShippingAddress() &&  $this->cart->getBillingAddress()) ) {
+			//change current step
+			$this->step_current	=	Paycart::CHECKOUT_STEP_ADDRESS;
+			return true;
+		}
+			
 		return true;
 	}
 	
@@ -251,18 +275,25 @@ class PaycartSiteControllerCheckout extends PaycartController
 			return false;
 		}		
 		
+		$user_id = 0;
+		
 		if ($form_data['emailcheckout'] ) {
 			// email checkout
-			$is_processed = $this->_do_emailCheckout($form_data);
+			$user_id = $this->_do_emailCheckout($form_data);
 		} else {
 			//checkout by login
-			$is_processed = $this->_do_login($form_data);
+			$user_id = $this->_do_login($form_data);
 		}
 		
-		if ( !$is_processed ) {
+		// if do not get any user id 
+		if ( !$user_id ) {
 			return false;
 		}
 		
+		//set user id on cart
+		$previous_buyer_id = $this->cart->getBuyer();
+		
+		$this->cart->setBuyer($user_id);	
 		return true;
 	}
 	
@@ -286,8 +317,10 @@ class PaycartSiteControllerCheckout extends PaycartController
 			// @PCFIXME::for testing purpose, comment below code
 			//return false;
 		}
-		
-		return PaycartCart::getInstance(0, $cart_data);
+
+		//return PaycartCart::getInstance(0, $cart_data);
+		// @FIXME :: use only testing purpose	
+		return PaycartCart::getInstance(1);
 	}
 	
 	/**
@@ -297,7 +330,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 * @since 	1.0
 	 * @author 	Manish
 	 * 
-	 * @return true if successfully login
+	 * @return ser_id if buyer successfully login otherwise false
 	 */
 	protected function _do_login(Array $form_data)
 	{
@@ -327,9 +360,10 @@ class PaycartSiteControllerCheckout extends PaycartController
 			return false;
 		} 
 		
-		//@TODO:: user-id set on cart
+		//set it not guest checkout
+		$this->cart->setIsGuestCheckout(false);
 		
-		return true;
+		return PaycartFactory::getUser()->get('id');
 	} 
 	
 	/**
@@ -340,7 +374,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 * @since 	1.0
 	 * @author 	Manish
 	 * 
-	 * @return true if successfully registered
+	 * @return user_id if buyer successfully registered otherwise false
 	 */
 	protected function _do_emailCheckout(Array $form_data)
 	{
@@ -367,9 +401,13 @@ class PaycartSiteControllerCheckout extends PaycartController
 			return false;	
 		}
 		
-		//@TODO:: user-id set on cart
+		$this->cart->setIsGuestCheckout(true);
 		
-		return true;
+		// we will always remove address when doing email checkout
+		$this->cart->setBillingAddressId(0);
+		$this->cart->setShippingAddressId(0);
+		
+		return $user_id;
 	}
 	
 	/**
@@ -387,55 +425,58 @@ class PaycartSiteControllerCheckout extends PaycartController
 	{
 		// Step 1# :: get Billing Address
 		
+		// copy variable
+		$billing_to_shipping	=	isset($form_data['billing_to_shipping']) ? (bool)$form_data['billing_to_shipping'] : false;
+		$shipping_to_billing	=	isset($form_data['shipping_to_billing']) ? (bool)$form_data['shipping_to_billing'] : false;
+		
 		// if select any billing address
-		$billing_address_id		=	@$form_data['billing_address_id'];
+		$billingaddress_id		=	isset($form_data['billingaddress_id']) ? $form_data['billingaddress_id'] : 0;
 		
 		
 		// if billing address id is not available and not copy shipping to billing 
 		// then I assume that buyer entered new address
-		if (!$billing_address_id && !((bool)@$form_data['shipping_to_billing']) ) {
+		if (!$billingaddress_id && ! $shipping_to_billing ) {
 			// store billing address
 			$billing_address_data 				=	$form_data['billing'];
 			$billing_address_data['buyer_id']	=	$this->cart->getBuyer();
 			
-			$billing_address_lib	= PaycartBuyeraddress::getInstance(0, $billing_address_data)->save();
-			$billing_address_id		= $billing_address_lib->getId();
+			$billingaddress_lib	= PaycartBuyeraddress::getInstance(0, $billing_address_data)->save();
+			$billingaddress_id		= $billingaddress_lib->getId();
 		}
-		
 		
 		// Step 2# :: Get Shipping Address
 		
 		// if select any Shipping address
-		$shipping_address_id		=	@$form_data['shipping_address_id'];
-		
+		$shippingaddress_id		=	isset($form_data['shippingaddress_id']) ? $form_data['shippingaddress_id'] : 0;
 		
 		// if shipping address id is not available and not copy billing to shipping 
 		// then I assume that buyer entered new address
-		if (!$shipping_address_id && !((bool)@$form_data['billing_to_shipping']) ) {
+		if (!$shippingaddress_id && !$billing_to_shipping ) {
+			
 			// store shipping address
 			$shipping_address_data 				=	$form_data['shipping'];
 			$shipping_address_data['buyer_id']	=	$this->cart->getBuyer();
 			
-			$shipping_address_lib		= PaycartBuyeraddress::getInstance(0, $shipping_address_data)->save();
-			$shipping_address_id		= $shipping_address_lib->getId();
+			$shippingaddress_lib	= PaycartBuyeraddress::getInstance(0, $shipping_address_data)->save();
+			$shippingaddress_id		= $shippingaddress_lib->getId();
 		}
 		
 		
 		// get shipping to billing checkbox value if same address 
 		
-		if ((bool)@$form_data['shipping_to_billing']) {
-			$billing_address_id = $shipping_address_id;
+		if ($shipping_to_billing) {
+			$billingaddress_id = $shippingaddress_id;
 		} 
 		
-		if ((bool)@$form_data['billing_to_shipping']) {
-			$shipping_address_id	=	$billing_address_id;
+		if ($billing_to_shipping) {
+			$shippingaddress_id	=	$billingaddress_id;
 		}
 		
-		//@PCFIXME : set shipping address on cart
-		//$this->cart->setShippingAddressId($shipping_address_id);
+		// Set shipping address on cart
+		$this->cart->setShippingAddressId($shippingaddress_id);
 		
-		//@PCFIXME :: set billing address on cart
-		//$this->cart->setBillingAddressId($billing_address_id);
+		// Set billing address on cart
+		$this->cart->setBillingAddressId($billingaddress_id);
 		
 		return true;
 	}
