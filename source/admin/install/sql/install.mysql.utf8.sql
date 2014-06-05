@@ -247,6 +247,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `cancelled_date` 	datetime DEFAULT '0000-00-00 00:00:00',
   `completed_date` 	datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'when final status done (paid+shipped)',
   `params` 		text		 			COMMENT 'Products and their quantiy store here initial',
+  `is_guestcheckout` int(11) NOT NULL,
   PRIMARY KEY (`cart_id`),
   KEY `idx_invoice_id` (`invoice_id`),
   KEY `idx_buyer_id` (`buyer_id`),
@@ -313,8 +314,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `country` char(3) NOT NULL COMMENT 'Country ISO code3',
   `zipcode` varchar(10) NOT NULL DEFAULT '',
   `vat_number` varchar(100) NOT NULL,
-  `phone1` int(20) NOT NULL,
-  `phone2` int(20) NOT NULL,
+  `phone1` varchar(32) NOT NULL,
+  `phone2` varchar(32) NOT NULL,
   PRIMARY KEY (`buyeraddress_id`),
   KEY `idx_buyer_id` (`buyer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
