@@ -56,7 +56,6 @@ class PaycartHelperBuyer extends PaycartHelper
 	public function createAccount($email)
 	{
 		$password 	= JUserHelper::genRandomPassword();
-		$timestamp 	= PaycartFactory::getDate()->format('U');
 		
 
 		$temp = Array(	

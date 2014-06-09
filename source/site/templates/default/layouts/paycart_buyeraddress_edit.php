@@ -84,31 +84,30 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	</div>
 	
 	
-<!-- Buyeraddress input-->
+<!-- Buyeraddress country-->
 	<div class="control-group">
-	  <label class="control-label" for="textinput"></label>
+	  <label class="control-label" for="textinput">
+	  	<?php echo JText::_('COM_PAYCART_BUYERADDRESS_COUNTRY');?>"
+	  </label>
 	  <div class="controls">
-	    <input	name="<?php echo $prefix; ?>[country]" 
-				id="<?php echo $prefix; ?>_country" 
-	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_COUNTRY');?>" class="input-xlarge"
-	    		value="<?php echo $displayData->country; ?>" 
-	    		type="text"
-	    		required=""
-	    />
+	  		<?php
+	  			echo PaycartHtml::_('paycarthtml.country.getList', $prefix.'[country]', '', array('class'=>"input-xlarge")); 
+	  		?>
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_COUNTRY_DESC');?></p>
 	  </div>
 	</div>
-		
-<!--	Buyeraddress State	-->
+	
+	
+	
+	<!--	Buyeraddress State	-->
 	<div class="control-group">
-	  <label class="control-label" for="textinput"></label>
+	  
+	  <label class="control-label" for="textinput"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE'); ?></label>
 	  <div class="controls">
-	    <input 	name="<?php echo $prefix; ?>[state]" 
-				id="<?php echo $prefix; ?>_state" 
-				value="<?php echo $displayData->state; ?>"
-				placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE'); ?>" class="input-xlarge" type="text"
-				required=""
-				>
+	  	<?php 
+	  		echo PaycartHtml::_('paycarthtml.state.getList', "\"[name='{$prefix}[country]']\"" , $prefix.'[state]', '', array('class'=>"input-xlarge"));
+	  	?>
+	    
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE_DESC');?></p>
 	  </div>
 	</div>

@@ -29,81 +29,87 @@ $steps				=	array_keys($checkout_sequence);
 	(function($){
 
 		//define checkout
-		paycart.checkout = {};
-
-		/**
-		 * -----------------------------------------------------------
-		 * Checkout > Change Steps
-		 *	
-		 * 1. Change (step_ready)
-		 * 	Invoke when you need to change step
-		 * 	step_ready : current step
-		 * 
-		 * -----------------------------------------------------------
-		 */
-		paycart.checkout.step =
-		{
-			change : function(step_ready)
-			{
-				// @PCTODO: do not use hard-coding
-				// availble steps 
-				var steps 		= [ <?php echo implode(',', $steps); ?> ];
-				var class_name	= '';
-
-				// set incomplet class to all (remove previous class and add default classes);
-				paycart.jQuery('.pc-checkout-step').removeClass('text-success').addClass('muted');
-				
-				for (i=0; i<steps.length; i++) {
-
-					class_name = '.pc-checkout-step-'+steps[i];
-
-					paycart.jQuery(class_name).removeClass('muted');
-					
-					if (step_ready == steps[i]){
-						// active mark it
-						paycart.jQuery(class_name).removeClass('muted');
-						break; 
-					}
-
-					//Previous step mark completed
-					paycart.jQuery(class_name).addClass('text-success');
-				}
-			}
-				
-		};
-
-		/**
-		 * -----------------------------------------------------------
-		 * Checkout > Submit
-		 *
-		 * 1 do  
-		 *	Submit current active step form
-		 * 
-		 * 2. success(data)
-		 * 	Invoke when successfully complete current step.
-		 * 	data : JSON object
-		 * 
-		 * 3. notification(data)
-		 * 	Invoke when anything is going wrong with current step
-		 * 	data : JSON object
-		 * 
-		 * -----------------------------------------------------------
-		 */
 		
-		paycart.checkout.submit = 
+		/**
+		 * -----------------------------------------------------------
+		 * Checkout > Process
+		 *
+		 *	1. Change (step_ready)
+		 * 	 	Invoke when you need to change step
+		 * 	 	step_ready : current step
+		 * 
+		 *	2 do  
+		 *		Submit current active step form
+		 * 
+		 *	3. success(data)
+		 * 		Invoke when successfully complete current step.
+		 * 		data : JSON object
+		 * 
+		 * 	4. notification(data)
+		 * 		Invoke when anything is going wrong with current step
+		 * 		data : JSON object
+		 * 
+		 * -----------------------------------------------------------
+		 */
+		paycart.checkout=
 		{
-			do : function()
+			step :
+			{
+				change : function(step_ready)
+				{
+					// @PCTODO: do not use hard-coding
+					// availble steps 
+					var steps 		= [ <?php echo implode(',', $steps); ?> ];
+					var class_name	= '';
+	
+					// set incomplet class to all (remove previous class and add default classes);
+					$('.pc-checkout-step').removeClass('text-success').addClass('muted');
+					
+					for (i=0; i<steps.length; i++) {
+	
+						class_name = '.pc-checkout-step-'+steps[i];
+	
+						$(class_name).removeClass('muted');
+						
+						if (step_ready == steps[i]){
+							// active mark it
+							$(class_name).removeClass('muted');
+							break; 
+						}
+	
+						//Previous step mark completed
+						$(class_name).addClass('text-success');
+					}
+				}
+		 	},
+
+		 	process : function()
 			{
 				// get all form data for post	
 				var postData 	= $("#pc-checkout-form").serializeArray();
-				var link  		= 'index.php?option=com_paycart';
+				var link  		= 'index.php?option=com_paycart&view=checkout&task=process';
 	
-				console.log('paycart.checkout.submit.do');
+				console.log('paycart.checkout.process');
 	
 				//@PCTODO :: Display Spinner{ request is processing }  
 	
 	
 				paycart.ajax.go(link, postData);
+	
+				return false;
+					
+			},
+
+
+			goback : function(data)
+			{
+				var link  		= 'index.php?option=com_paycart&view=checkout&task=goback';
+	
+				console.log('paycart.checkout.goback.do');
+	
+				//@PCTODO :: Display Spinner{ request is processing }  
+	
+				paycart.ajax.go(link, data);
 	
 				return false;
 					
@@ -114,12 +120,12 @@ $steps				=	array_keys($checkout_sequence);
 			 */
 			success: function(data)
 			{
-				console.log('paycart.checkout.submit.success : start');
+				console.log('paycart.checkout.process.success : start');
 	
 				// replace string
 				$(".pc-checkout-step-html").html(data.html);
 	
-				console.log('paycart.checkout.submit.success : end');
+				console.log('paycart.checkout.process.success : end');
 			},
 	
 			/**
@@ -127,8 +133,8 @@ $steps				=	array_keys($checkout_sequence);
 			 */
 			notification :function(data)
 			{
-				console.log('paycart.checkout.submit.error :: ' + data);
-			}
+				console.log('paycart.checkout.process.error :: ' + data);
+			}		
 		};
 
 
@@ -169,7 +175,7 @@ $steps				=	array_keys($checkout_sequence);
 				{
 					console.log('paycart.checkout.login.do');
 					
-					paycart.checkout.submit.do();
+					paycart.checkout.process();
 
 					return false;					
 				},
@@ -277,7 +283,7 @@ $steps				=	array_keys($checkout_sequence);
 			{
 				console.log('paycart.checkout.address.do');
 
-				paycart.checkout.submit.do();
+				paycart.checkout.process();
 
 				return false;					
 			}
@@ -309,7 +315,7 @@ $steps				=	array_keys($checkout_sequence);
 					// div will be visible when try to add new address
 					'div_selector'		:	'.pc-checkout-billingaddress-addnew-html',
 					// next move 
-					'move_next_name'	:	'shippinging_address_info',		
+					'move_next_name'	:	'shipping_address_info',		
 					//next-move required (true then move to shipping address ) Otherwise move to next checkout step 
 					'move_next'			:	true	
 			},
@@ -317,7 +323,7 @@ $steps				=	array_keys($checkout_sequence);
 			/**
 			 *  Invoke to get shipping address stuff
 			 */
-			shippinging_address_info	: 
+			shipping_address_info	: 
 			{
 					'name'				:	'shipping',
 					'input_selector'	:	'#shippingaddress_id',
@@ -328,37 +334,44 @@ $steps				=	array_keys($checkout_sequence);
 					'move_next'			:	false
 			},
 
-			/**
+			visible_address_info	:	{},
+
+		   /**
 			* Initial setup for buyer address
 			*	- Which address will visible
 			*	- According to visible address set other stuff like title, hide dummy span which contain previous selected address 
 			*	
 			*/
-			init : function()
+			init : function(visible_address)
 			{
-				var buyer_address = paycart.checkout.buyeraddress.visible_address;
-				
-				// default both address disable {shipping and billing address}
-				$('.pc-checkout-shippingaddress-addnew-html, .pc-checkout-billingaddress-addnew-html ').hide();
+				if (visible_address) { 
+					// set current visble address
+					paycart.checkout.buyeraddress.visible_address_info = visible_address;
+				}
 
-				// hide dummy span, Used for display new created address  
-				$('.pc-checkout-buyeraddress-new-created').hide()
-				
+				//if address is not available then set default address
+				if ($.isEmptyObject(paycart.checkout.buyeraddress.visible_address_info)) {
+					// if address is not avalable
+					paycart.checkout.buyeraddress.visible_address_info = paycart.checkout.buyeraddress.billing_address_info;
+				}
+
+				//get current visible address
+				var buyer_address = paycart.checkout.buyeraddress.visible_address_info;
+
 				// Show add-new buyer address span
 				$('.pc-checkout-buyeraddress-addnew').show();
 
 				// Current title
 				$('[data-pc-checkout-buyeraddresses-title="show"]').html('<h3>'+buyer_address['title_text']+'</h3>');
-
 			},
 			
 			/**
 			 * After selecting any address invoke this function to execute further
 			 * processing.
 			 */
-			selected : function (buyeraddress_id) 
+			onSelect : function (buyeraddress_id) 
 			{
-				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address;
+				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address_info;
 
 				// set buyeraddress id on hidden input element
 				$(visible_buyeraddress['input_selector']).val(buyeraddress_id);
@@ -372,8 +385,7 @@ $steps				=	array_keys($checkout_sequence);
 				// if first address is set then set next address
 
 				//change visible address
-				paycart.checkout.buyeraddress.visible_address = paycart.checkout.buyeraddress[visible_buyeraddress['move_next_name']];
-				paycart.checkout.buyeraddress.init();
+				paycart.checkout.buyeraddress.init(paycart.checkout.buyeraddress[visible_buyeraddress['move_next_name']]);
 
 				// display span-0 (dummy span) which contain selected address
 				if ( buyeraddress_id ) {	
@@ -400,7 +412,7 @@ $steps				=	array_keys($checkout_sequence);
 			 */
 			create : function()
 			{
-				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address;
+				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address_info;
 				
 				// next address show for next task
 				if (paycart.checkout.buyeraddress.selected(0) === false) {
@@ -413,12 +425,12 @@ $steps				=	array_keys($checkout_sequence);
 				var to 			=	$('[name^="paycart_form['+from_name+'][to]"]').val();
 				var address		=	$('[name^="paycart_form['+from_name+'][address]"]').val();
 				var zipcode		=	$('[name^="paycart_form['+from_name+'][zipcode]"]').val();
-				var country		=	$('[name^="paycart_form['+from_name+'][country]"]').val();
-				var state		=	$('[name^="paycart_form['+from_name+'][state]"]').val();
+				var country		=	$('[name^="paycart_form['+from_name+'][country]"]').find(":selected").text();
+				var state		=	$('[name^="paycart_form['+from_name+'][state]"]').find(":selected").text();
 				var city		=	$('[name^="paycart_form['+from_name+'][city]"]').val();
 				var phone		=	$('[name^="paycart_form['+from_name+'][phone1]"]').val();
 
-				//@PCTODO:: add vat var
+				//@PCFIXME:: add VAT var
 				
 				// @PCTODO::Address should be formated accoding to address formate
 				var full_address	 = 		to+'<br/>'+address+'<br/>'+city+'-'+zipcode+'<br/>'+state+'<br/>'+country + '<br /> <br />';
@@ -455,7 +467,7 @@ $steps				=	array_keys($checkout_sequence);
 			{
 				// if first address id (let say billing_address_id) set, It means buyer already choosed existing address
 				// so we will copy this address id to next address id (it means, Copy billing_address_id to shipping_address_id)
-				var visible_buyeraddress	=	paycart.checkout.buyeraddress.visible_address;
+				var visible_buyeraddress	=	paycart.checkout.buyeraddress.visible_address_info;
 				var previous_buyeraddress	=	paycart.checkout.buyeraddress[visible_buyeraddress['move_next_name']];
 
 				var previous_buyeraddress_id	=	$(previous_buyeraddress['input_selector']).val();
@@ -507,7 +519,7 @@ $steps				=	array_keys($checkout_sequence);
 			addNew	:	function()
 			{
 				$('.pc-checkout-buyeraddress-addnew').hide();
-				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address;
+				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address_info;
 				$(visible_buyeraddress['div_selector']).show();
 				
 			}

@@ -188,7 +188,7 @@ class PaycartCart extends PaycartLib
 			return $this->shipping_address_id;
 		}
 
-		return PaycartBuyer::getInstance($this->shipping_address_id);
+		return PaycartBuyeraddress::getInstance($this->shipping_address_id);
 	}
 	
 	/**
@@ -204,7 +204,7 @@ class PaycartCart extends PaycartLib
 			return $this->billing_address_id;
 		}
 
-		return PaycartBuyer::getInstance($this->billing_address_id);
+		return PaycartBuyeraddress::getInstance($this->billing_address_id);
 	}
 	
 	public function getIsGuestCheckout() 
