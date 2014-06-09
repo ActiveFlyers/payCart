@@ -41,17 +41,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<span class="hide help-block">Example block-level help text here.</span>
 			
 			<label  class="control-label required">Select Country</label>
-			<select name="paycart_form[billing][country]" class="span12">
-				<option value="" selected="selected">Select Country </option> 
-				<?php include '_options_country.php'?> 
-			</select>
+			<?php
+				echo PaycartHtml::_('paycarthtml.country.getList', 'paycart_form[billing][country]', '', array('class'=>"span12"));
+			?>
 			<span class="hide help-block">Example block-level help text here.</span>
 			
 			<label  class="control-label required">Select City</label>
-			<select name="paycart_form[billing][state]" class="span12">
-				<option value="" selected="selected">Select State</option> 
-				<?php include '_options_state.php'?> 
-			</select>
+			<?php 
+	  			echo PaycartHtml::_('paycarthtml.state.getList', "\"[name='paycart_form[billing][country]']\"" , 'paycart_form[billing][state]', '', array('class'=>"span12"));
+	  		?>
 			<span class="hide help-block">Example block-level help text here.</span>
 			
 			<label  class="control-label required">Town/City</label>

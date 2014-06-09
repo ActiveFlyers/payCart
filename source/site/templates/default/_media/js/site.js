@@ -94,10 +94,7 @@ $(document).ready(function(){
 	var sizeclass = paycart.helper.do_apply_sizeclass('.paycart-wrap');
 	
 	// execute the queued scripts
-	var length = paycart.queue.length ;
-	for (var i = 0; i < length; i++) {
-		eval(paycart.queue[i]);
-	}
+	paycart.queue.execute();
 	
 	paycart.jui.defaults();
 	

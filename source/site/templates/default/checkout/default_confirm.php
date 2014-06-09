@@ -26,17 +26,19 @@ $currency_html = '<i class="fa fa-usd"></i>';
 				<div class="accordion-group">
 			 		<div class="accordion-heading">
 			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-email">
-			 				Email
+			 				<?php echo JText::_("COM_PAYCART_EMAIL_TITLE"); ?>
 			 			</a>
 			 		</div>
 			 		
 			 		<div id="pc-confirm-email" class="accordion-body in collapse"">
 			 			<div class="accordion-inner">
-			 				<p>support+paycart@readybytes.in</p>
+			 				<p><?php echo $buyer->get('email'); ?></p>
 			 				
+			 				<?php if ($cart->is_guestcheckout) :?>
 			 				<div>
-			 						<a href="#"> <i class="fa fa-edit"></i> Edit </a>
+			 					<a href="#"> <i class="fa fa-edit"></i> <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
 			 				</div>
+			 				<?php endif; ?>
 			 			</div>
 			 		</div>
 			 	</div>
@@ -50,22 +52,19 @@ $currency_html = '<i class="fa fa-usd"></i>';
 		 			<div class="accordion-group">
 		 				<div class="accordion-heading">
 		 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-billing-address">
-		 						Billing Address
+		 						<?php echo JText::_("COM_PAYCART_BILLING_ADDRESS_TITLE"); ?>
 		 					</a>
 		 				</div>
 		 		
 				 		<div id="pc-confirm-billing-address" class="accordion-body in collapse"">
 				 			<div class="accordion-inner">
-				 				<address>
-				 					Team ReadyBytes <br> 
-									B-54 Sindhu Nager<br>
-									Bhilwara, Rajasthan<br>
-									India 301001<br>
-									9928348313
-								</address>
-							
+				 				<?php
+				 					$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+									echo $layout->render($billing_address); 
+				 				?>
+				 											
 								<div>
-			 						<a href="#"> <i class="fa fa-edit"></i> Edit </a>
+			 						<a href="#" onclick="paycart.checkout.confirm.edit.billing_address(event);"> <i class="fa fa-edit"></i>  <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
 			 					</div>
 			 					
 				 			</div>
@@ -78,21 +77,18 @@ $currency_html = '<i class="fa fa-usd"></i>';
 		 			<div class="accordion-group">
 		 				<div class="accordion-heading">
 		 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-shipping-address">
-		 						Shipping Address
+		 						<?php echo JText::_("COM_PAYCART_SHIPPING_ADDRESS_TITLE"); ?>
 		 					</a>
 		 				</div>
 				 		<div id="pc-confirm-shipping-address" class="accordion-body in collapse"">
 				 			<div class="accordion-inner">
-				 				<address>
-				 					Team ReadyBytes <br> 
-									B-54 Sindhu Nager<br>
-									Bhilwara, Rajasthan<br>
-									India 301001<br>
-									9928348313
-								</address>	
+				 				<?php
+				 					$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+									echo $layout->render($shipping_address); 
+				 				?>	
 								
 								<div>
-			 						<a href="#"> <i class="fa fa-edit"></i> Edit </a>
+			 						<a href="#"  onclick="paycart.checkout.confirm.edit.shipping_address(event);"> <i class="fa fa-edit"></i>  <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
 			 					</div>
 								
 				 			</div>
@@ -243,7 +239,32 @@ $currency_html = '<i class="fa fa-usd"></i>';
 (function($){
 			paycart.checkout.confirm = 
 			{
-				
+				edit : 
+				{	//@PCFIXME :: clean event code
+					billing_address : function(event)
+					{
+						try {
+							var data = {'back_to' : 'billing_address'}
+							paycart.checkout.goback(data);
+						}catch (e) {
+							paycart.notification.console.log({'exception_was': e});	
+						}
+
+						event.preventDefault();
+					},
+
+					shipping_address : function(event)
+					{
+						try {
+							var data = {'back_to' : 'shipping_address'}
+							paycart.checkout.goback(data);
+						}catch (e) {
+							paycart.notification.console.log({'exception_was': e});	
+						}
+
+						event.preventDefault();
+					}
+				}
 				
 			};
 
