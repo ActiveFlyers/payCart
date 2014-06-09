@@ -75,22 +75,20 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 */
 	public function init()
 	{
-		//@TODO :: count number of particular
-		// @TODO :: move it to preProcess
-		// if cart is not exist or cart is empty then intimate to end user 
-		if ( !($this->cart instanceof PaycartCart) ) { // || $this->cart->getCartparticulars()) {
-			//@TODO :: cart is empty
-			throw new RuntimeException('cart is not exist');
-		} 
-		
+		// @NOTE:: Very necessary thing
+		// If user is cuming from outside then ALWAYS call init function. Ok  
+		// If user was doing guest chekout an movie anywhere on site then Checkout always start with First Step  
+		//@PCFIXME :: Check cart exist or not
+		$this->cart->setIsGuestCheckout(false);
+
 		// if user login then move next step
 		if ($this->_is_loggedin())  {
 			$this->step_current = $this->step_sequence[$this->step_current];
 		}
 		
-		$this->preProcess(Array());
-		
-		// @PCTODO:: Check  minimum condition for Checkout-flow like minimum amount, mimimum product. 
+		if (!$this->preProcess()) {
+			// @PCTODO :: Show error page 
+		}
 		
 		$this->getView()->set('step_ready', $this->step_current);
 		$this->getView()->set('cart', 		$this->cart);
@@ -158,9 +156,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 
 		// if step successfully process
 		if ($is_processed) {
-			$this->step_next	=	$this->step_sequence[$this->step_current];
-			
-			$this->getView()->set('step_ready', $this->step_next);
+			$this->getView()->set('step_ready', $this->step_sequence[$this->step_current]);
 			$this->getView()->set('cart', 		$this->cart);
 			return true;
 		}
@@ -171,7 +167,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 		$response_data['messgae'] 		= $this->message;
 		$response_data['messgae_type'] 	= $this->message_type;
 
-		$ajax_response->addScriptCall('paycart.checkout.notification', json_encode($response_data));
+		$ajax_response->addScriptCall('paycart.notification', $response_data);
 		
 		// return false no need to execute view 
 		return false;
@@ -189,9 +185,17 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 * 
 	 * @return bool true if successfully validate
 	 */
-	protected function preProcess(Array $form_data )
+	protected function preProcess(Array $form_data = Array() )
 	{
-		$step_current = $this->step_current;
+		// if cart is not exist or cart is empty then intimate to end user 
+		if ( !($this->cart instanceof PaycartCart)  || count($this->cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT)) ) {
+			$this->message			=	JText::_('COM_PAYCART_CART_NOT_EXIST');
+			$this->message_type		=	Paycart::MESSAGE_TYPE_ERROR;
+			//throw new RuntimeException(JText::_('COM_PAYCART_CART_NOT_EXIST'));
+			return false;
+		}
+		
+		// @PCTODO:: Check  minimum condition for Checkout-flow like minimum amount, mimimum product.
 		
 		// If user neither login nor using guest checkout
 		if (!$this->_is_loggedin() && !($this->cart->getIsGuestCheckout()) )  {
@@ -200,13 +204,6 @@ class PaycartSiteControllerCheckout extends PaycartController
 			return true;
 		}
 		
-		// if address is not exist 
-		if ( !( $this->cart->getShippingAddress() &&  $this->cart->getBillingAddress()) ) {
-			//change current step
-			$this->step_current	=	Paycart::CHECKOUT_STEP_ADDRESS;
-			return true;
-		}
-			
 		return true;
 	}
 	
@@ -289,9 +286,6 @@ class PaycartSiteControllerCheckout extends PaycartController
 		if ( !$user_id ) {
 			return false;
 		}
-		
-		//set user id on cart
-		$previous_buyer_id = $this->cart->getBuyer();
 		
 		$this->cart->setBuyer($user_id);	
 		return true;
@@ -515,7 +509,25 @@ class PaycartSiteControllerCheckout extends PaycartController
 	
 	public function goBack()
 	{
-		// 
+		$back_to = $this->input->get('back_to');
+		
+		switch ($back_to) 
+		{
+			case 'billing_address':
+			case 'shipping_address':
+				$this->step_current = Paycart::CHECKOUT_STEP_ADDRESS;
+			break;
+			
+			default:
+				;
+			break;
+		} 
+		
+		
+		$this->getView()->set('step_ready', $this->step_current);
+		$this->getView()->set('cart', 		$this->cart);
+			
+		return true;
 	}
 	
 	

@@ -27,6 +27,18 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 {
 	position: relative;
 }
+
+.paycart .pc-hide 
+{
+	display: none;
+}
+
+.paycart .pc-margin-left-1 
+{
+	/* @PCFIXME :: Test it properly */
+	margin-left: 1%;
+}
+
 </style>
 
 	<div data-pc-checkout-buyeraddresses-title="show">
@@ -35,7 +47,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<div class="pc-checkout-buyeraddress row-fluid" >
 		
 		<!--	Span for copy-->
-		<div class="span4 accordion pc-checkout-buyeraddress-new-created" id="pc-checkout-buyeraddress-accordion-0">
+		<div class="span4 accordion pc-checkout-buyeraddress-new-created pc-hide pc-margin-left-1" id="pc-checkout-buyeraddress-accordion-0">
 			<div class="accordion-group">
 	 			
 	 			<div class="accordion-heading">
@@ -74,7 +86,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		<?php 
 		foreach ($buyer_addresses as $buyeraddress_id => $buyeraddress_details) :
 		?>
-			<div class="span4 accordion"  id="pc-checkout-buyeraddress-accordion-<?php echo$buyeraddress_id?>" >
+			<div class="span4 accordion pc-margin-left-1"  id="pc-checkout-buyeraddress-accordion-<?php echo$buyeraddress_id?>" >
 				<div class="accordion-group">
 	 				<div class="accordion-heading">
 	 					<a class="accordion-toggle">
@@ -107,7 +119,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		?>	
 		
 		
-	 	<div class="span4  pc-checkout-buyeraddress-addnew well" onClick="paycart.checkout.buyeraddress.addNew()" >
+	 	<div class="span4  pc-checkout-buyeraddress-addnew well pc-margin-left-1" onClick="paycart.checkout.buyeraddress.addNew()" >
 	 		
 	 		<div class="row-fluid text-center muted" style="border:1px dotted;">
 				<div style="padding: 10% 25%;" >
@@ -125,7 +137,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		</div>
 		
 		<!--	Billing Address -->
-		<div class="span4 pc-checkout-billingaddress-addnew-html" >
+		<div class="span4 pc-checkout-billingaddress-addnew-html pc-margin-left-1 pc-hide " >
 			<div class="accordion-group ">
 				<div class="accordion-heading">
 	 				<a class="accordion-toggle"	 href="#">
@@ -152,7 +164,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		</div>
 	
 		<!--	Shipping Address	-->
-		<div class="span4 pc-checkout-shippingaddress-addnew-html" >
+		<div class="span4 pc-checkout-shippingaddress-addnew-html pc-margin-left-1 pc-hide " >
 			<div class="accordion-group">
 				<div class="accordion-heading">
 	 				<a class="accordion-toggle" href="#">
@@ -179,8 +191,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		</div>
 		
 		<!-- hidden element		-->
-		<input	type="hidden"	id="billingaddress_id"		name='paycart_form[billingaddress_id]'		value='0' />
-		<input	type="hidden"	id='shippingaddress_id'		name='paycart_form[shippingaddress_id]'		value='0' />
+		<input	type="hidden"	id="billingaddress_id"		name='paycart_form[billingaddress_id]'		value='<?php echo $billing_address_id; ?>' />
+		<input	type="hidden"	id='shippingaddress_id'		name='paycart_form[shippingaddress_id]'		value='<?php echo $shipping_address_id; ?>' />
 		<input	type="hidden"	id="billing_to_shipping"	name='paycart_form[billing_to_shipping]'	value='0' />
 		<input	type="hidden"	id="shipping_to_billing"	name='paycart_form[shipping_to_billing]'	value='0' />
 		
@@ -192,12 +204,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<script>
 			
 		(function($) {
-
-			//Default first we will ask billing address.
-			paycart.checkout.buyeraddress.visible_address = paycart.checkout.buyeraddress.billing_address_info;
-
-			paycart.checkout.buyeraddress.init();	
-			
+			paycart.checkout.buyeraddress.init();				
 		})(paycart.jQuery);
 	
 	</script>	 

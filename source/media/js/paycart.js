@@ -69,8 +69,78 @@ if (typeof(paycart.element)=='undefined'){
 				$("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
 			}
 		});
-	}
+	};
 	
+	
+	paycart.state = 
+	{
+		/**
+		 * response : [state_selector, state_options]
+		 */
+		html : function(response)
+		{
+			var state_selector = response['state_selector'];
+			$(state_selector).html(response['state_options']);
+			
+		},
+
+		onCountryChange	:	function(country_selector, state_selector)
+		{
+			var link = rb_vars.url.root +'index.php?option=com_paycart&view=state&task=getoptions';
+
+			paycart.ajax.go( link, {'country_id' : $(country_selector).val(), 'state_selector' : state_selector });
+		}
+	};
+	
+	
+	paycart.notification = 
+	{
+		// copy console API reference
+		console : console,
+		
+		user : function(response) 
+		{
+		
+		}
+		
+							
+	};
+
+	paycart.queue = 
+		(function()
+		{
+			//private variable
+			var _queue = [];
+			
+			// contain all available object
+			var method	= {};
+			
+			method.enqueue = 
+				function(script_content)
+				{	
+					//enqueue script into queue
+					_queue.push(script_content)
+				};
+			
+			method.dequeue = 
+				function()
+				{	
+					//dequeue script from queue and execute
+					eval(_queue.shift());
+				};
+			
+			method.execute =
+				function()
+				{
+					for (index = 0 ; index < _queue.length ; index++){
+						method.dequeue();
+					}
+				}
+				
+			return method;
+				
+		})(); 
+
 // ENDING :
 // Scoping code for easy and non-conflicting access to $.
 // Should be last line, write code above this line.
