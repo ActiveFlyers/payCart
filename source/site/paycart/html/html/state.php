@@ -8,7 +8,7 @@
 */
 
 // no direct access
-use SeleniumClient\SelectElement;
+
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 
