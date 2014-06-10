@@ -106,7 +106,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						
 							<div>
 		 						<hr />
-								<button type="button" class="btn btn-info btn-large btn-block" onClick="paycart.checkout.buyeraddress.selected(<?php echo$buyeraddress_id?>)">
+								<button type="button" class="btn btn-info btn-large btn-block" onClick="paycart.checkout.buyeraddress.onSelect(<?php echo$buyeraddress_id?>)">
 									<?php echo JText::_('COM_PAYCART_BUTTON_SELECT') ; ?>
 								</button>
 		 					</div>

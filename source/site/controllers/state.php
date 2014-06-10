@@ -62,7 +62,7 @@ class PaycartSiteControllerState extends PaycartController
 		}
 		
 		
-		PaycartFactory::getAjaxResponse()->addScriptCall('paycart.state.html', Array('state_selector' => $selector, 'state_option_html' => $html));
+		PaycartFactory::getAjaxResponse()->addScriptCall('paycart.address.state.html', Array('state_selector' => $selector, 'state_option_html' => $html));
 		
 		return false;
 	}

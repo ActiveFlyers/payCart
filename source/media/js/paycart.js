@@ -71,8 +71,16 @@ if (typeof(paycart.element)=='undefined'){
 		});
 	};
 	
+/*--------------------------------------------------------------
+  Address related to works
+   	address.state 		: do all address related work
+   		state.html	 	: set state options html on state selector
+   		onCountryChange	: fetch states on country change
+--------------------------------------------------------------*/
 	
-	paycart.state = 
+	paycart.address = {};
+	
+	paycart.address.state = 
 	{
 		/**
 		 * response : [state_selector, state_options]
@@ -80,7 +88,7 @@ if (typeof(paycart.element)=='undefined'){
 		html : function(response)
 		{
 			var state_selector = response['state_selector'];
-			$(state_selector).html(response['state_options']);
+			$(state_selector).html(response['state_option_html']);
 			
 		},
 
@@ -92,11 +100,22 @@ if (typeof(paycart.element)=='undefined'){
 		}
 	};
 	
-	
+/*--------------------------------------------------------------
+  Paycart notification related to works
+   	console 	: all console related function
+	user		: All user related notification methos
+
+--------------------------------------------------------------*/	
 	paycart.notification = 
 	{
 		// copy console API reference
-		console : console,
+		console : 
+		{	//Outputs a message to the Web Console.
+			log :	function(msg)
+			{
+				console.log(msg);
+			}
+		}
 		
 		user : function(response) 
 		{
@@ -105,41 +124,6 @@ if (typeof(paycart.element)=='undefined'){
 		
 							
 	};
-
-	paycart.queue = 
-		(function()
-		{
-			//private variable
-			var _queue = [];
-			
-			// contain all available object
-			var method	= {};
-			
-			method.enqueue = 
-				function(script_content)
-				{	
-					//enqueue script into queue
-					_queue.push(script_content)
-				};
-			
-			method.dequeue = 
-				function()
-				{	
-					//dequeue script from queue and execute
-					eval(_queue.shift());
-				};
-			
-			method.execute =
-				function()
-				{
-					for (index = 0 ; index < _queue.length ; index++){
-						method.dequeue();
-					}
-				}
-				
-			return method;
-				
-		})(); 
 
 // ENDING :
 // Scoping code for easy and non-conflicting access to $.

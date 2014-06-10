@@ -13,7 +13,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 
 
-class PaycartHtmlState extends Rb_Html
+class PaycartHtmlState 
 {	
 	/**
 	 * 
@@ -23,38 +23,17 @@ class PaycartHtmlState extends Rb_Html
 	 * @param $value				:	Field Value
 	 * @param $attr					:	Field attribute
 	 */
-	public static function getList($country_selector, $name, $value, $attr = Array())
+	public static function getList($name, $value, $idtag = false, $attr = Array(), $country_id = '')
 	{
 		$options = Array();
 		
-		$html	=	PaycartHtml::_('select.genericlist', $options, $name, $attr, 'state_id', 'title', $value);
+		if ($country_id) {
+			$options = PaycartFactory::getModel('state')->loadRecords(Array('country_id'=> $country_id));			
+		}
 		
-		$state_selector	=	"\"[name='$name']\"";
+		$html	=	PaycartHtml::_('select.genericlist', $options, $name, $attr, 'isocode', 'title', $value, $idtag);
 		
-		$script	=	self::_addScript($country_selector, $state_selector);
-		
-		return $html.$script;
-		
-	}
-	
-	private static function _addScript($country_selector, $state_selector) 
-	{
-		?>
-		
-		<script>
-
-			(function($){
-
-				$(<?php echo $country_selector ?>).on('change',  function() {
-					paycart.state.onCountryChange(<?php echo $country_selector ?>, <?php echo $state_selector ?>);
-				});
-
-				paycart.state.onCountryChange(<?php echo $country_selector ?>, <?php echo $state_selector ?>);
-				
-			})(paycart.jQuery);
-			
-		</script>
-		<?php 
+		return $html;
 	}
 	
 	
