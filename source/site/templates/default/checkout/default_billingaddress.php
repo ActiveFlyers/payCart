@@ -28,36 +28,49 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	
 	 	 <fieldset>
 	 	 
-	 	 	<label class="control-label required" >ZIP code</label>
+	 	 	<label class="control-label required" ><?php echo JText::_('ZIP code'); ?></label>
 			<input type="text" name="paycart_form[billing][zipcode]" class="input-block-level" >
-			<span class="hide help-block">Example block-level help text here.</span>
+			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 
-			<label class="control-label required">Full Name</label>
+			<label class="control-label required"><?php echo JText::_('Full Name'); ?></label>
 			<input type="text" name="paycart_form[billing][to]" class="input-block-level">
-			<span class="hide help-block">Example block-level help text here.</span>
+			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 			
-			<label class="control-label required">Phone Number</label>
+			<label class="control-label required"><?php echo JText::_('Phone Number'); ?></label>
 			<input type="text" name="paycart_form[billing][phone1]" class="input-block-level">
-			<span class="hide help-block">Example block-level help text here.</span>
+			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 			
-			<label  class="control-label required">Select Country</label>
+			<label  class="control-label required"><?php echo JText::_('Select Country'); ?></label>
 			<?php
-				echo PaycartHtml::_('paycarthtml.country.getList', 'paycart_form[billing][country]', '', array('class'=>"span12"));
+				echo PaycartHtmlCountry::getList('paycart_form[billing][country]', '',  "billing_country_id", Array('class'=>"span12"));
+
 			?>
-			<span class="hide help-block">Example block-level help text here.</span>
+			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 			
-			<label  class="control-label required">Select City</label>
+			<label  class="control-label required"><?php echo JText::_('Select State'); ?></label>
 			<?php 
-	  			echo PaycartHtml::_('paycarthtml.state.getList', "\"[name='paycart_form[billing][country]']\"" , 'paycart_form[billing][state]', '', array('class'=>"span12"));
+	  			echo PaycartHtmlState::getList('paycart_form[billing][state]', '',  "billing_state_id", Array('class'=>"span12"));
 	  		?>
-			<span class="hide help-block">Example block-level help text here.</span>
+		  		<script>
+	
+				(function($){
+	
+					$('#billing_country_id').on('change',  function() {
+						paycart.address.state.onCountryChange('#billing_country_id', '#billing_state_id');
+					});
+					paycart.address.state.onCountryChange('#billing_country_id', '#billing_state_id');
+				})(paycart.jQuery);
+				
+				</script>
+		
+			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 			
-			<label  class="control-label required">Town/City</label>
+			<label  class="control-label required"><?php echo JText::_('Town/City'); ?></label>
 			<input type="text" name="paycart_form[billing][city]" class="input-block-level">
-			<span class="hide help-block">Example block-level help text here.</span>
+			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 			
-			<label  class="control-label required">Delivery Address</label>
-			<span class="hide help-block">Example block-level help text here.</span>
+			<label  class="control-label required"><?php echo JText::_('Delivery Address'); ?></label>
+			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 			<textarea class="input-block-level" rows="3" name="paycart_form[billing][address]"></textarea>
 		</fieldset>
 

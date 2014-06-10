@@ -93,9 +93,6 @@ $(document).ready(function(){
 	// setup paycart-wrap size
 	var sizeclass = paycart.helper.do_apply_sizeclass('.paycart-wrap');
 	
-	// execute the queued scripts
-	paycart.queue.execute();
-	
 	paycart.jui.defaults();
 	
 	paycart.helper.do_grid_layout('#pc-categories[data-columns]','.pc-categories-wrapper', '.pc-category', sizeclass);

@@ -25,6 +25,10 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	$prefix = $displayData->prefix;
 }
 
+// use it for multiple ids
+static $id_suffix = 0;
+$id_suffix++;
+
 ?>
 
 <fieldset>
@@ -34,7 +38,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	<!--	Buyeraddress Country : value		-->
 		<div class="">		
 			<input	name="<?php echo $prefix; ?>[buyeraddress_id]" 
-					id="<?php echo $prefix; ?>_buyeraddress_id"
+					id="buyeraddress_id_<?php echo $id_suffix; ?>"
 					value="<?php echo $displayData->buyeraddress_id; ?>"
 					type="hidden"
 				/>
@@ -46,7 +50,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 		<!--	Buyeraddress buyer_id : value		-->
 		<div class="">		
 			<input	name="<?php echo $prefix; ?>[buyer_id]" 
-					id="<?php echo $prefix; ?>_buyer_id" 
+					id="buyer_id_<?php echo $id_suffix; ?>" 
 					value="<?php echo $displayData->buyer_id; ?>"
 					type="hidden" 
 				/>
@@ -60,7 +64,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  <div class="controls">
 	    <input 
 	    		name="<?php echo $prefix; ?>[to]" 
-				id="<?php echo $prefix; ?>_to" 
+				id="to_<?php echo $id_suffix; ?>" 
 				value="<?php echo $displayData->to; ?>"
 				placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_TO_LABEL'); ?>" 
 				class="input-xlarge" required="" type="text"
@@ -74,7 +78,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  <label class="control-label" for="address"></label>
 	  <div class="controls">                     
 	    <textarea 	name="<?php echo $prefix; ?>[address]" 
-					id="<?php echo $prefix; ?>_address"
+					id="address_<?php echo $id_suffix; ?>"
 	    			placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_ADDRESS'); ?>"
 	    >
 	    	<?php echo $displayData->address; ?>
@@ -91,7 +95,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  </label>
 	  <div class="controls">
 	  		<?php
-	  			echo PaycartHtml::_('paycarthtml.country.getList', $prefix.'[country]', '', array('class'=>"input-xlarge")); 
+	  			echo PaycartHtmlCountry::getList($prefix.'[country]', $displayData->country, "country_$id_suffix", array('class'=>"input-xlarge")); 
 	  		?>
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_COUNTRY_DESC');?></p>
 	  </div>
@@ -105,10 +109,25 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  <label class="control-label" for="textinput"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE'); ?></label>
 	  <div class="controls">
 	  	<?php 
-	  		echo PaycartHtml::_('paycarthtml.state.getList', "\"[name='{$prefix}[country]']\"" , $prefix.'[state]', '', array('class'=>"input-xlarge"));
+	  		echo PaycartHtmlState::getList($prefix.'[state]',$displayData->state,  "state_$id_suffix", $displayData->state, array('class'=>"input-xlarge"),  $displayData->country);
 	  	?>
-	    
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE_DESC');?></p>
+	    
+	    <script>
+
+			(function($){
+
+				$(<?php echo "'#country_$id_suffix'"; ?>).on('change',  function() {
+					alert('ok');
+					paycart.address.state.onCountryChange(<?php echo "'#country_$id_suffix'" ?>, <?php echo "'#state_$id_suffix'" ?>);
+				});
+
+				paycart.address.state.onCountryChange(<?php echo "'#country_$id_suffix'" ?>, <?php echo "'#state_$id_suffix'" ?>);
+				
+			})(paycart.jQuery);
+			
+		</script>
+		
 	  </div>
 	</div>
 
@@ -117,11 +136,12 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  <label class="control-label" for="textinput"></label>
 	  <div class="controls">
 	    <input 	name="<?php echo $prefix; ?>[city]" 
-				id="<?php echo $prefix; ?>_city" 
+				id="city_<?php echo $id_suffix; ?>" 
 				value="<?php echo $displayData->city; ?>"
 	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_CITY'); ?>" class="input-xlarge" type="text"
 	    		required="" >
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_CITY_DESC');?></p>
+	    
 	  </div>
 	</div>
 
@@ -130,7 +150,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  <label class="control-label" for="Zipcode"></label>
 	  <div class="controls">
 	    <input 	name="<?php echo $prefix; ?>[zipcode]" 
-				id="<?php echo $prefix; ?>_zipcode" 
+				id="zipcode_<?php echo $id_suffix; ?>" 
 				value="<?php echo $displayData->zipcode; ?>"
 				placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_ZIPCODE'); ?>" class="input-xlarge" type="text"
 				required=""
@@ -144,7 +164,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  <label class="control-label" for="textinput"></label>
 	  <div class="controls">
 	    <input 	name="<?php echo $prefix; ?>[vat_number]" 
-				id="<?php echo $prefix; ?>_vat_number" 
+				id="vat_number_<?php echo $id_suffix; ?>" 
 				value="<?php echo $displayData->vat_number; ?>" 
 	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_VAT_NUMBER'); ?>" class="input-xlarge" type="text">
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_VAT_NUMBER_DESC');?></p>
@@ -156,7 +176,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  <label class="control-label" for="textinput"></label>
 	  <div class="controls">
 	    <input	name="<?php echo $prefix; ?>[phone1]" 
-				id="<?php echo $prefix; ?>_phone1" 
+				id="phone1_<?php echo $id_suffix; ?>" 
 				value="<?php echo $displayData->phone1; ?>" 
 	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_PHONE1'); ?>" class="input-xlarge" type="text"
 	    		required=""
@@ -171,7 +191,7 @@ if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	  <label class="control-label" for="textinput"></label>
 	  <div class="controls">
 	    <input	name="<?php echo $prefix; ?>[phone2]" 
-				id="<?php echo $prefix; ?>_phone2" 
+				id="phone2_<?php echo $id_suffix; ?>" 
 				value="<?php echo $displayData->phone2; ?>" 
 	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_PHONE2'); ?>" class="input-xlarge" type="text">
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_PHONE2_DESC');?></p>

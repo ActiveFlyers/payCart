@@ -12,7 +12,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 
 
-class PaycartHtmlCountry extends Rb_Html
+class PaycartHtmlCountry
 {	
 	/**
 	 * 
@@ -21,11 +21,11 @@ class PaycartHtmlCountry extends Rb_Html
 	 * @param $value	:	field value
 	 * @param $attr	:	field attribute
 	 */
-	public static function getList($name, $value, $attr = Array())
+	public static function getList($name, $value='', $idtag = false, $attr = Array())
 	{
 		$available_countries = PaycartFactory::getModel('country')->loadRecords(Array('status' => paycart::STATUS_PUBLISHED));
 		
-		return PaycartHtml::_('select.genericlist', $available_countries, $name, $attr, 'country_id', 'title', $value);
+		return PaycartHtml::_('select.genericlist', $available_countries, $name, $attr, 'country_id', 'title', $value, $idtag);
 	}
 	
 }
