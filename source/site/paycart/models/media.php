@@ -20,43 +20,43 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartModelMedia extends PaycartModel
 {
-	/**
-	  * returns single record
-	  */
-	function loadRecord($languageCode, $mediaId)
-	{
-		$query = new Rb_Query();
-		
-		return $query->select('*')
-		 		     ->from('#__paycart_media as m')
-		 		     ->join('INNER', '#__paycart_media_lang as ml ON m.media_id = ml.media_id')
-		 		     ->where('ml.lang_code = "'.$languageCode.'"')
-		 		     ->where('ml.media_id = '.$mediaId)
-		 		     ->dbLoadQuery()
-		 		     ->loadAssocList();
-	}
-	
-	function save($data, $pk=null, $new=false)
-	{
-		$new = $this->getTable()->load($pk)?false:true;
-		$id  = parent::save($data, $pk,$new);
-		
-		if(!$id){
-			return false;
-		}
-		
-		$data['media_id'] = $id;
-		PaycartFactory::getModelLang($this->getName())->save($data);		
-		return $id;
-	}
-	
-	function deleteRecords($filters)
-	{
-		$query = new Rb_Query();
-		$query->multiDelete($this->getTable()->getTableName()." as tbl ",'tbl');
-		$this->_buildWhereClause($query, $filters);
-		return $query->dbLoadQuery()->execute();
-	}
+//	/**
+//	  * returns single record
+//	  */
+//	function loadRecord($languageCode, $mediaId)
+//	{
+//		$query = new Rb_Query();
+//		
+//		return $query->select('*')
+//		 		     ->from('#__paycart_media as m')
+//		 		     ->join('INNER', '#__paycart_media_lang as ml ON m.media_id = ml.media_id')
+//		 		     ->where('ml.lang_code = "'.$languageCode.'"')
+//		 		     ->where('ml.media_id = '.$mediaId)
+//		 		     ->dbLoadQuery()
+//		 		     ->loadAssocList();
+//	}
+//	
+//	function save($data, $pk=null, $new=false)
+//	{
+//		$new = $this->getTable()->load($pk)?false:true;
+//		$id  = parent::save($data, $pk,$new);
+//		
+//		if(!$id){
+//			return false;
+//		}
+//		
+//		$data['media_id'] = $id;
+//		PaycartFactory::getModelLang($this->getName())->save($data);		
+//		return $id;
+//	}
+//	
+//	function deleteRecords($filters)
+//	{
+//		$query = new Rb_Query();
+//		$query->multiDelete($this->getTable()->getTableName()." as tbl ",'tbl');
+//		$this->_buildWhereClause($query, $filters);
+//		return $query->dbLoadQuery()->execute();
+//	}
 }
 
 /**

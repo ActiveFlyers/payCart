@@ -30,6 +30,7 @@ define('PAYCART_REVISION','@global.build.number@');
 define('PAYCART_PATH_CORE',					JPATH_SITE.'/components/com_paycart/paycart');
 define('PAYCART_PATH_CORE_MEDIA',			JPATH_ROOT.'/media/com_paycart');
 define('PAYCART_PATH_CORE_FORM',			PAYCART_PATH_CORE.'/form');
+define('PAYCART_PATH_CORE_IMAGES',  		'images/cart');
 
 // front-end
 define('PAYCART_PATH_SITE', 				JPATH_SITE.'/components/com_paycart');
@@ -56,4 +57,4 @@ define('PAYCART_ATTRIBUTE_PATH_MEDIA',  	PAYCART_PATH_CORE_MEDIA.'/media/');
 define('PAYCART_LAYOUTS_PATH',				PAYCART_PATH_SITE_TEMPLATE.'/default/layouts');
 
 // object to identify extension, create once, so same can be consumed by constructors
-Rb_Extension::getInstance(PAYCART_COMPONENT_NAME, array('prefix_css'=>'paycart'));
+Rb_Extension::getInstance(PAYCART_COMPONENT_NAME, array('prefix_css'=>'pc'));

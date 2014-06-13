@@ -35,9 +35,9 @@ class PaycartFormFieldCategory extends JFormFieldList
 			$html = "
 					{$html}
 					<div class='input-append'>
-						<input class='' type='text' id='add_new_category' placeholder='Add category name'>
+						<input class='' type='text' id='add_new_category' placeholder='".JText::_('COM_PAYCART_ADMIN_CATEGORY_ETER_NEW_TITLE')."'>
 						<button class='btn' type='button' id='add_new_category_button'>".
-								Rb_Text::_('COM_PAYCART_ADD_NEW_PRODUCT_CATEGORY')."
+								Rb_Text::_('COM_PAYCART_ADMIN_ADD')."
 						</button>
 					</div>";
 		}

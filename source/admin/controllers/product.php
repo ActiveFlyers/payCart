@@ -128,10 +128,22 @@ class PaycartAdminControllerProduct extends PaycartController
 		$instance  = PaycartProduct::getInstance($productId);
 		$imageId   = $this->input->get('image_id',0);
 		 
-		if($instance->deleteImages($imageId)){
-			PaycartFactory::getAjaxResponse()->addScriptCall('paycart.jQuery("#pc-product-image-'.$imageId.'").remove');
-		}
-		return false;
+		$ret = $instance->deleteImages(array($imageId));
 		
+		// if it is a json request
+		if($this->input->get('format', 'html') == 'json'){
+			if($ret){
+				$response = array('success' => true);
+				$response['message'] = JText::_('COM_PAYCART_ADMIN_SUCCESS_ITEM_DELETE');
+			}
+			else{
+				$response = array('success' => false);				
+				$response['message'] = JText::_('COM_PAYCART_ADMIN_ERROR_ITEM_DELETE');
+			}
+			echo json_encode($response);
+			exit;
+		}
+		
+		return false;		
 	}
 }

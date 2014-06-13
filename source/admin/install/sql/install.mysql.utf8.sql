@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `weight_unit` varchar(50) DEFAULT NULL,
   `height` decimal(12,4) DEFAULT '0.0000',
   `length` decimal(12,4) DEFAULT '0.0000',
-  `depth` decimal(12,4) DEFAULT '0.0000',
+  `width` decimal(12,4) DEFAULT '0.0000',
   `dimension_unit`varchar(50) DEFAULT NULL,
   `config` text COMMENT 'Store layouts',
   `created_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',

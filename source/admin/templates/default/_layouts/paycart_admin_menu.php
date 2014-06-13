@@ -17,7 +17,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 #pc-admin-menu{
 	border: 1px solid #cccccc;
-	border-radius: 10px;
+	border-radius: 5px;
 	padding: 10px 5px 10px 10px;
 }
 
@@ -26,7 +26,7 @@ defined('_JEXEC') or die( 'Restricted access' );
     border: 0px;
     color: #999999;
     display: block;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     line-height: 20px;
     padding: 15px;
@@ -38,10 +38,10 @@ defined('_JEXEC') or die( 'Restricted access' );
     border: 0px;
     color: #999999;
     display: block;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     line-height: 20px;
-    padding: 8px 10px 8px 40px;
+    padding: 5px 10px 5px 40px;
     text-decoration: none;
 }
 
@@ -65,6 +65,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 #pc-admin-menu a:focus{
 	outline: none;
+}
+
+#pc-admin-menu a i{
+	min-width: 16px;
 }
 
 #pc-admin-menu .caret{
@@ -92,6 +96,17 @@ defined('_JEXEC') or die( 'Restricted access' );
 #pc-admin-menu .accordion-group a > i{
 	margin-right: 5px;
 }
+
+.fa-tax {
+    position:relative;
+}    
+.fa-tax:before {
+    font-family: FontAwesome;
+    top:0;
+    left:-5px;
+	content: "\0025"; <--- this is your text. You can also use UTF-8 character codes as I do here
+}
+    
 </style>
 
 <script>
@@ -126,7 +141,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 						endif;						
 						?>
 						<li>
-							<a <?php echo $active ? 'class="active"' : '';?> href="<?php echo $childmenu['url'];?>"><?php echo $childmenu['title'];?></a>
+							<a <?php echo $active ? 'class="active"' : '';?> href="<?php echo $childmenu['url'];?>">
+							<i class="fa <?php echo isset($childmenu['class']) && !empty($childmenu['class']) ? $childmenu['class'] : '';?>"></i>
+								<?php echo $childmenu['title'];?>
+							</a>
 						</li>
 						<?php 
 					endforeach;
@@ -146,13 +164,13 @@ defined('_JEXEC') or die( 'Restricted access' );
 		<li class="accordion-group">			
 				<?php if(isset($menu['children'])) :?>
 					<a href="<?php echo $menu['url'];?>" data-toggle='collapse' data-target='#pc-admin-menu-<?php echo $id;?>', data-parent='#pc-admin-menu' class="accordion-toggle <?php echo $isCurrentActive ? 'active' : 'collapsed';?>">
-						<i class="<?php echo isset($menu['class']) && !empty($menu['class']) ? $menu['class'] : '';?>"></i>						
+						<i class="fa <?php echo isset($menu['class']) && !empty($menu['class']) ? $menu['class'] : '';?>">&nbsp;</i>						
 						<span class="caret pull-right"></span>
 						<?php echo $menu['title'];?>  
 					</a>
 				<?php else:?>
 					<a href="<?php echo $menu['url'];?>" data-toggle='collapse' data-target='#pc-admin-menu-<?php echo $id;?>', data-parent='#pc-admin-menu' class="accordion-toggle <?php echo $isCurrentActive ? 'active' : 'collapsed';?>">
-						<i class="<?php echo isset($menu['class']) && !empty($menu['class']) ? $menu['class'] : '';?>"></i>
+						<i class="fa <?php echo isset($menu['class']) && !empty($menu['class']) ? $menu['class'] : '';?>">&nbsp;</i>
 						<?php echo $menu['title'];?>  
 					</a>
 					

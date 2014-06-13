@@ -31,7 +31,7 @@ class PaycartLib extends Rb_Lib
 	 */
 	public function getModel()
 	{
-		return PaycartFactory::getInstance($this->getName(), 'Model');
+		return PaycartFactory::getModel($this->getName());
 	}
 
 	/**
@@ -42,7 +42,10 @@ class PaycartLib extends Rb_Lib
 	 */
 	public function reload()
 	{
-		$data = $this->getModel()->loadRecords(array('id'=>$this->getId()));
-		return $this->bind($data[$this->getId()]);
+		// @PCTODO : verify, reset is required or not
+		return $this->load($this->getId());
+		
+//		$data = $this->getModel()->loadRecords(array('id'=>$this->getId()));
+//		return $this->bind($data[$this->getId()]);
 	}
 }

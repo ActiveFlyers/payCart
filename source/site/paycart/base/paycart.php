@@ -28,16 +28,16 @@ class Paycart
 	const PRODUCT_TYPE_DIGITAL	=	20;		
 	
 	// Image constant	
-	const IMAGES_ROOT_PATH					= '/media/com_paycart/images/';
-	const IMAGE_ORIGINAL_PREFIX 			= 'original_';
-	const IMAGE_ORIGINAL_SUFIX 				= '.orig';
-	const IMAGE_OPTIMIZE_WIDTH 				= 200;
-	const IMAGE_OPTIMIZE_HEIGHT				= 200;
-	const IMAGE_THUMB_PREFIX 				= 'thumb_';
-	const IMAGE_THUMB_WIDTH 				= 133;
-	const IMAGE_THUMB_HEIGHT				= 100;
-	const IMAGE_FILE_DEFAULT_MAXIMUM_SIZE 	= 2; 	// 2MB
-	const IMAGE_FILE_DEFAULT_EXTENSION 		= '.png';
+	const MEDIA_PATH_ROOT					= PAYCART_PATH_CORE_IMAGES;
+	
+	const MEDIA_THUMB_FOLDER_NAME			= 'thumbs';
+	const MEDIA_OPTIMIZED_FOLDER_NAME		= 'optimized';
+	
+	const MEDIA_IMAGE_OPTIMIZE_WIDTH 		= 300;
+	const MEDIA_IMAGE_OPTIMIZE_HEIGHT		= 'auto';	
+	const MEDIA_IMAGE_THUMB_WIDTH 			= 64;
+	const MEDIA_IMAGE_THUMB_HEIGHT			= 'auto';	
+	const MEDIA_IMAGE_MAX_UPLOAD_SIZE 		= 2; 	// 2MB
 
 	const PRODUCT_FILTER_FIELD_PREFIX	= 'attr_';
 

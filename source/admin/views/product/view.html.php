@@ -19,12 +19,10 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 {	
 	protected function _adminGridToolbar()
 	{
-		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADD_NEW_PRODUCT');
+		Rb_HelperToolbar::addNew('new');
 		Rb_HelperToolbar::editList();
 		Rb_HelperToolbar::divider();
 		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ENTITY_DELETE_CONFIRMATION'));
-//		Rb_HelperToolbar::publish();
-//		Rb_HelperToolbar::unpublish();
 	}
 	
 	protected function _adminEditToolbar()
@@ -55,12 +53,7 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		$this->assign('availableAttributes',  $attributeModel->loadRecords());
 		
 		//set images
-		$imageIds = $product->getImages();
-		$images	  = array();
-		if(!empty($imageIds)){
-			$images   = PaycartFactory::getModel('media')->loadRecords(array('media_id' => array(array('IN',"(".implode(',',$imageIds).")"))));
-		}
-		$this->assign('images', $images);
+		$this->assign('images', $product->getImages());
 		
 		// @PCTODO:: Set availble variants
 		$this->assign('variants',  Array());

@@ -11,34 +11,41 @@
 
 defined('_JEXEC') OR die();
 ?>
-<div class="row-fluid">
+<div class="pc-product-wrapper clearfix">
+<div class="pc-product row-fluid">
+
+<!-- CONTENT START -->
+
+<!-- ADMIN MENU -->
 <div class="span2">
-<?php
+	<?php
 			$helper = PaycartFactory::getHelper('adminmenu');			
 			echo $helper->render('index.php?option=com_paycart&view=product'); 
 	?>
 </div>
+<!-- ADMIN MENU -->
 
 <div class="span10">	
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
 	<?php // echo $this->loadTemplate('filter'); ?>
 	
-	<table class="table table-condensed ">
+	<table class="table table-striped ">
 		<thead>
 		<!-- TABLE HEADER START -->
 			<tr>
 			
-				<th  width="1%">
+				<th width="1%">
 					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 				</th>
-				<th >
-					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_ID", 'product_id', $filter_order_Dir, $filter_order);?>
+				<th>
+					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'product_id', $filter_order_Dir, $filter_order);?>
 				</th>
 			    				
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_NAME", 'title', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCT_AMOUNT", 'amount', $filter_order_Dir, $filter_order);?></th>			
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PRICE", 'price', $filter_order_Dir, $filter_order);?></th>
+				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ORDERING", 'ordering', $filter_order_Dir, $filter_order);?></th>			
 			</tr>
 		<!-- TABLE HEADER END -->
 		</thead>
@@ -57,6 +64,10 @@ defined('_JEXEC') OR die();
 					</td>
 					<td><?php echo $record->sku;?></td>
 					<td><?php echo $record->price;?></td>
+					<td class="center">
+						<span><?php echo $pagination->orderUpIcon( $count , true, 'orderup', 'Move Up'); ?></span>
+						<span><?php echo $pagination->orderDownIcon( $count , count($records), true , 'orderdown', 'Move Down', true ); ?></span>
+					</td>
 				</tr>
 			<?php $count++;?>
 			<?php endforeach;?>
@@ -77,6 +88,7 @@ defined('_JEXEC') OR die();
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 </form>
+</div>
 </div>
 </div>
 <?php 
