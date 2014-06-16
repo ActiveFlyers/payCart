@@ -507,8 +507,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_x_group` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_media` (
   `media_id` int(11) NOT NULL AUTO_INCREMENT,
-  `path` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `mime_type` varchar(255) NOT NULL,
   `is_free` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`media_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

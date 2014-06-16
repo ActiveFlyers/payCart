@@ -18,25 +18,24 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartAdminControllerMedia extends PaycartController 
 {
 	
-	public function _save(array $data, $itemId=null)
+	public function save()
 	{
-		$ret = parent::_save($data, $itemId);
-		
-		// if it is a json request
-		// e.g. product media save request by angularjs
 		if($this->input->get('format', 'html') == 'json'){
+			$data 	= $this->input->post->get($this->_component->getNameSmall().'_form', array(), 'array');		
+			$itemId = $this->_getId();		
+			$ret 	= parent::_save($data, $itemId);
+			
+			$view = $this->getView();
 			if($ret){
-				$response = array('success' => true);
-				$response['message'] = JText::_('COM_PAYCART_ADMIN_SUCCESS_ITEM_SAVE');
+				$view->assign('success', true);
 			}
 			else{
-				$response = array('success' => false);				
-				$response['message'] = JText::_('COM_PAYCART_ADMIN_ERROR_ITEM_SAVE');
+				$view->assign('success', true);
 			}
-			echo json_encode($response);
-			exit;
-		}		
 		
-		return $ret;
+			return true;
+		}
+		
+		return parent::save();
 	}
 }

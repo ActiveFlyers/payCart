@@ -5,8 +5,7 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
-* @contact		team@readybytes.in
-* @author 		mManishTrivedi 
+* @contact		team@readybytes.in 
 */
 
 // no direct access
@@ -119,7 +118,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	 	
 	})(paycart.jQuery);
 	
-	var pcProductApp = angular.module('pcProductApp', []);
+	paycart.ng.product = angular.module('pcngProductApp', []);
 </script>
 
 <?php 

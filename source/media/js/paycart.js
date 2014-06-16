@@ -12,7 +12,8 @@ if (typeof(paycart)=='undefined'){
 	paycart.ajax	=	rb.ajax;
 	paycart.ui		=	rb.ui;
 	paycart.url		=	rb.url;
-	paycart.queue	= new Array(); 
+	paycart.queue	= new Array();
+	paycart.ng		= {};
 }
 
 if (typeof(paycart.element)=='undefined'){

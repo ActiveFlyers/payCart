@@ -6,7 +6,6 @@
 * @package 		PAYCART
 * @subpackage	Back-end
 * @contact		team@readybytes.in
-* @author 		mManishTrivedi 
 */
 
 // no direct access
@@ -15,7 +14,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
 
 <script type="text/javascript">	
-	pcProductApp.controller('pcProductImagesCtrl', function($scope, $http){
+	paycart.ng.product.controller('pcngProductImagesCtrl', function($scope, $http){
 		$scope.images 		= pc_product_images;
 		$scope.activeIndex 	= '';
 		$scope.activeImage 	= '';

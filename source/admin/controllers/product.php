@@ -130,20 +130,14 @@ class PaycartAdminControllerProduct extends PaycartController
 		 
 		$ret = $instance->deleteImages(array($imageId));
 		
-		// if it is a json request
-		if($this->input->get('format', 'html') == 'json'){
-			if($ret){
-				$response = array('success' => true);
-				$response['message'] = JText::_('COM_PAYCART_ADMIN_SUCCESS_ITEM_DELETE');
-			}
-			else{
-				$response = array('success' => false);				
-				$response['message'] = JText::_('COM_PAYCART_ADMIN_ERROR_ITEM_DELETE');
-			}
-			echo json_encode($response);
-			exit;
+		$view = $this->getView();
+		if($ret){
+			$view->assign('success', true);
 		}
-		
-		return false;		
+		else{
+			$view->assign('success', true);
+		}
+	
+		return true;
 	}
 }

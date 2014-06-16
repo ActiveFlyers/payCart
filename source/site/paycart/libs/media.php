@@ -20,8 +20,8 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartMedia extends PaycartLib 
 {	
 	protected $media_id	= 0;
-	protected $path = '';
-	protected $type = '';
+	protected $filename = '';
+	protected $mime_type = '';
 	protected $is_free = true;
 	protected $_language = null;
 	
@@ -51,8 +51,8 @@ class PaycartMedia extends PaycartLib
 	public function reset() 
 	{	
 		$this->media_id	= 0;
-		$this->path = '';
-		$this->type = '';
+		$this->filename = '';
+		$this->mime_type = '';
 		$this->is_free = true;
 			
 		$this->_language = new stdClass();
@@ -173,16 +173,16 @@ class PaycartMedia extends PaycartLib
 		}
 		
 		// delete original, thumb and optimized image
-		if(JFile::exists($this->_basepath.$this->path)){ 
-			JFile::delete($this->_basepath.$this->path);
+		if(JFile::exists($this->_basepath.$this->filename)){ 
+			JFile::delete($this->_basepath.$this->filename);
 		}
 		
-		if(JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->path)){
-			JFile::delete($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->path);
+		if(JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename)){
+			JFile::delete($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename);
 		}
 		
-		if(JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->path)){
-			JFile::delete($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->path);
+		if(JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename)){
+			JFile::delete($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename);
 		}
 		
 		return true;
@@ -231,34 +231,36 @@ class PaycartMedia extends PaycartLib
 			throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
 		}
 		
-		$this->path = $this->getId().'.'.$ext;
+		$this->filename = $this->getId().'.'.$ext;
+		$properties = JImage::getImageFileProperties($this->_basepath.$this->filename);
+		$this->mime_type = $properties->mime;
 		return $this->save();
 	}
 	
 	public function toArray()
 	{		
 		$data = parent::toArray();		
-		$data['original'] 	= $this->_baseurl.$this->path;
-		$data['optimized'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->path) ? $this->_baseurl.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->path : $data['original'];
-		$data['thumbnail'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->path) ? $this->_baseurl.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->path : $data['original'];
+		$data['original'] 	= $this->_baseurl.$this->filename;
+		$data['optimized'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename : $data['original'];
+		$data['thumbnail'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename : $data['original'];
 		$data['language'] 	= (array)$this->_language;		
 		return $data;
 	}
 	
 	public function createThumb($thumbWidth, $thumbHeight)
 	{
-		$properties = JImage::getImageFileProperties($this->_basepath.$this->path);
+		$properties = JImage::getImageFileProperties($this->_basepath.$this->filename);
 		
 		if($thumbHeight == 'auto'){
 			$variation = $thumbWidth * 100 / $properties->width; 
 			$thumbHeight = $properties->height * $variation / 100;
 		}
 		
-		$image = new JImage($this->_basepath.$this->path);
+		$image = new JImage($this->_basepath.$this->filename);
 		$image = $image->resize($thumbWidth, $thumbHeight, true, JImage::SCALE_FILL);
 	 	
 		// Generate image name name
-		$fileName 	= $this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->path;
+		$fileName 	= $this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename;
 
 		if (!$image->toFile($fileName, $properties->type)) {
 			return false;	
@@ -269,18 +271,18 @@ class PaycartMedia extends PaycartLib
 	
 	public function createOptimized($width, $height)
 	{
-		$properties = JImage::getImageFileProperties($this->_basepath.$this->path);
+		$properties = JImage::getImageFileProperties($this->_basepath.$this->filename);
 		
 		if($height == 'auto'){
 			$variation = $width * 100 / $properties->width; 
 			$height = $properties->height * $variation / 100;
 		}
 		
-		$image = new JImage($this->_basepath.$this->path);
+		$image = new JImage($this->_basepath.$this->filename);
 		$image = $image->resize($width, $height, true, JImage::SCALE_FILL);
 	 	
 		// Generate image name name
-		$fileName 	= $this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->path;
+		$fileName 	= $this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename;
 
 		if (!$image->toFile($fileName, $properties->type)) {
 			return false;	

@@ -15,12 +15,12 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 PaycartHtml::_('behavior.formvalidation');
 Rb_HelperTemplate::loadMedia(array('angular'));
 
-echo $this->loadTemplate('edit_js');
-echo $this->loadTemplate('edit_angularjs');
+echo $this->loadTemplate('edit.js');
+echo $this->loadTemplate('edit.ng');
 ?>
 
 <div class="pc-product-wrapper clearfix">
-<div class="pc-product row-fluid" data-ng-app="pcProductApp">
+<div class="pc-product row-fluid" data-ng-app="pcngProductApp">
 
 <!-- CONTENT START -->
 
@@ -191,7 +191,7 @@ echo $this->loadTemplate('edit_angularjs');
 										var pc_product_id		= <?php echo $record_id;?>;
 									</script>
 									
-									<div data-ng-controller="pcProductImagesCtrl">
+									<div data-ng-controller="pcngProductImagesCtrl">
 										<ul class="thumbnails">
 		    								<li data-ng-repeat="(index,image) in images" class="thumbnail">		    									
 		    									<a href="#pc-product-gallery-modal" data-toggle="modal" onClick="return false;" data-ng-click="setActiveImage(index);">
