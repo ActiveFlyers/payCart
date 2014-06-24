@@ -132,6 +132,7 @@ class PaycartAdminControllerProduct extends PaycartController
 		
 		$view = $this->getView();
 		if($ret){
+			$instance->save();
 			$view->assign('success', true);
 		}
 		else{

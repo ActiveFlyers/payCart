@@ -15,14 +15,14 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 /** 
  * Product Model
  */
-class PaycartModelProduct extends PaycartModel
+class PaycartModelProduct extends PaycartModelLang
 {
 	/**
 	 * 
 	 * Array of those column which are unique. It will be checked (uniqueness) before save Product object 
 	 * @var Array
 	 */
-	protected $uniqueColumns = Array('sku');
+	protected $uniqueColumns = Array('sku', 'alias');
 	
 	/**
 	 * 
@@ -31,31 +31,30 @@ class PaycartModelProduct extends PaycartModel
 	 *
 	 * @see components/com_paycart/paycart/base/PaycartModel::validate() 
 	 */
-	public function validate(&$data, $pk=null,array $filter = array(),array $ignore = array()) 
-	{
-		// 1#. No need to create variant of variant
-		if ($data['variation_of']) {
-			$product  = PaycartProduct::getInstance($data['variation_of']);
-			if(!$product || ($product->getVariationOf() && $product->getVariationOf() != $product->getId())) {
-				// PCTODO :: Dont need to fire exception juts set variation_of property    
-				// Notify to user we dont support multi-level variation
-				throw new UnexpectedValueException(Rb_Text::_('COM_PAYCART_NOT_SUPPORT_MULTILEVEL_VARIATION'));
-			}
-		}
-		// Invoke parent validation
-		return parent::validate($data, $pk, $filter, $ignore);
-	}
+//	public function validate(&$data, $pk=null,array $filter = array(),array $ignore = array()) 
+//	{
+//		// 1#. No need to create variant of variant
+//		if ($data['variation_of']) {
+//			$product  = PaycartProduct::getInstance($data['variation_of']);
+//			if(!$product || ($product->getVariationOf() && $product->getVariationOf() != $product->getId())) {
+//				// PCTODO :: Dont need to fire exception juts set variation_of property    
+//				// Notify to user we dont support multi-level variation
+//				throw new UnexpectedValueException(Rb_Text::_('COM_PAYCART_NOT_SUPPORT_MULTILEVEL_VARIATION'));
+//			}
+//		}
+//		// Invoke parent validation
+//		return parent::validate($data, $pk, $filter, $ignore);
+//	}
 }
 
 class PaycartModelformProduct extends PaycartModelform {}
 
-/**
- * 
- * Product Lang Model
- * @author rimjhim
- *
- */
-class PaycartModellangProduct extends PaycartModel
+class PaycartTableProduct extends PaycartTable {}
+
+class PaycartTableProductLang extends PaycartTable
 {
-	protected $uniqueColumns = Array('alias');
+	function __construct($tblFullName='#__paycart_product_lang', $tblPrimaryKey='product_lang_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
 }

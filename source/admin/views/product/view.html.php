@@ -43,9 +43,7 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		$product	=  PaycartProduct::getInstance($productId);
 		
 		$form 		= $product->getModelform()->getForm($product);
-	    $language   = array('language'=> $product->getLanguage());
-	    $form->bind($language);
-		
+	    
 		$this->assign('form', $form );
 		$this->assign('product', $product );
 		

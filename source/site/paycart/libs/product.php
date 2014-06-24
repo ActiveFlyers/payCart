@@ -46,7 +46,15 @@ class PaycartProduct extends PaycartLib
 	protected $_attributeValues;
 	
 	//language specific data
-	protected $_language;
+	protected $product_lang_id	   = 0;
+	protected $lang_code 		   = '';	
+	protected $title 			   = '';	
+	protected $alias  			   = '';
+	protected $teaser 			   = '';
+	protected $description 		   = '';	
+	protected $metadata_title  	   = '';
+	protected $metadata_keywords   = '';
+	protected $metadata_description = '';	
 	
 	/**
 	 * (non-PHPdoc)
@@ -79,18 +87,16 @@ class PaycartProduct extends PaycartLib
 		
 		$this->_attributeValues = array();
 		$this->_images			= array();
-
-		$this->_language = new stdClass();
-		$this->_language->product_lang_id	   = 0;
-		$this->_language->product_id 		   = 0;	
-		$this->_language->lang_code 		   = PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag	
-		$this->_language->title	 			   = '';	
-		$this->_language->alias  			   = '';
-		$this->_language->teaser 			   = '';
-		$this->_language->description 		   = '';	
-		$this->_language->metadata_title  	   = '';
-		$this->_language->metadata_keywords	   = '';
-		$this->_language->metadata_description = '';	
+		
+		$this->product_lang_id	   = 0;		
+		$this->lang_code 		   = PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag	
+		$this->title	 			   = '';	
+		$this->alias  			   = '';
+		$this->teaser 			   = '';
+		$this->description 		   = '';	
+		$this->metadata_title  	   = '';
+		$this->metadata_keywords   = '';
+		$this->metadata_description = '';	
 		
 		return $this;
 	}
@@ -110,23 +116,6 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function save()
 	{	
-		//title is mandatory
-		if(!$this->_language->title){
-			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_TITLE_REQUIRED', $this->getName()));
-		}
-		
-		//set title if alias doesn't exist
-		if (!$this->_language->alias) {
-			$this->_language->alias = $this->_language->title;
-		}
-		
-		// alias must be unique
-		$this->_language->alias = PaycartFactory::getTableLang('Product')->getUniqueAlias($this->_language->alias, $this->_language->product_lang_id);
-
-		if (!$this->sku) {
-			$this->sku = $this->_language->alias;
-		}
-		
 		// @PCTODO :: Set default Image 
 		if(isset($this->_uploaded_files['images']) && !empty($this->_uploaded_files['images']['name'])){
 			$extension = PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
@@ -142,12 +131,7 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function getTitle() 
 	{	
-		return $this->_language->title;
-	}
-	
-	public function getLanguage()
-	{
-		return $this->_language;
+		return $this->title;
 	}
 	
 	/**
@@ -212,6 +196,11 @@ class PaycartProduct extends PaycartLib
 		if(isset($this->_uploaded_files['images']) && count($this->_uploaded_files['images'])) {
 			$media_ids = array();
 			foreach($this->_uploaded_files['images'] as $image){
+				// empty array is posted, if there is no file to upload
+				if(!isset($image['tmp_name']) || empty($image['tmp_name'])){
+					continue;
+				}
+				
 				$media = PaycartMedia::getInstance();
 				$data = array();
 				$data['language']['title'] = $image['name'];
@@ -224,14 +213,13 @@ class PaycartProduct extends PaycartLib
 
 				$media_ids[] = $media->getId();
 			}
-						
-			$this->addImages($media_ids);
+			
+			if(count($media_ids)){
+				$this->addImages($media_ids);
+			}
 			
 			parent::_save($previousObject);
 		}
-		
-		//save langauge data
-		$this->_saveLanguageData($previousObject);
 		
 		// Process Attribute Value
 		$this->_saveAttributeValue($previousObject);
@@ -242,30 +230,6 @@ class PaycartProduct extends PaycartLib
 		$this->reload();
 		
 		return $id;
-	}
-	
-	/**
-	 * Save langauge specific data
-	 */
-	protected function _saveLanguageData($previousObject)
-	{
-		//PCTODO: Handle it 
-		if(empty($this->_language)){
-			return false;
-		}
-		
-		$data = (array)$this->_language;
-		$data['product_id'] = $this->getId();
-		
-		//save data
-		$model = PaycartFactory::getModelLang('product');
-		$productLangId = $model->save($data, $data['product_lang_id']);
-		
-		if(!$productLangId){
-			throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $model->getError());
-		}
-		
-		return $this;
 	}
 	
 	/**
@@ -343,42 +307,12 @@ class PaycartProduct extends PaycartLib
 			$this->_uploaded_files = $data['_uploaded_files'];
 		}
 		
-		//Collect langauge data
-		$language = (isset($data['language'])) ? $data['language']: array();
-		
-		//bind it to lib instance
-		$this->setLanguageData($language);
-		
 		// if custom Attributes available in data then bind with lib object 
 		$attributes = isset($data['attributes']) ? $data['attributes'] : Array();
 		
 		// Bind attributevalue-lib's instance on Product lib  
 		$this->setAttributeValues($attributes);
 
-		return $this;
-	}
-
-	public function setLanguageData(Array $langauge = Array())
-	{
-		//if langauge data is not available and its an existing record
-		if(empty($langauge) && $this->getId()){
-			$langauge = PaycartFactory::getModelLang('Product')
-					                           ->loadRecords(Array('lang_code' => $this->_language->lang_code,
-																   'product_id' => $this->getId()));
-			$langauge = (array)array_shift($langauge);
-		}
-		
-		if(empty($langauge)) {
-			return false;
-		}
-		
-		// set language data
-		foreach ($this->_language as $key => $value) { 
-			if(isset($langauge[$key])) {
-				$this->_language->$key = $langauge[$key];
-			}
-		}
-		
 		return $this;
 	}
 	
@@ -425,22 +359,12 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 		
-		//Delete language related data
-		if (!$this->_deleteLanguageData()) {
-			return false;
-		}
-		
 		//Delete product images
 		if(!$this->deleteImages()){
 			return false;
 		}
 		
 		return true;
-	}
-	
-	protected function _deleteLanguageData()
-	{
-		return PaycartFactory::getModelLang('Product')->deleteMany(array('product_id' => $this->getId()));
 	}
 	
 	public function deleteAttributeValues($productattributeId = null)
@@ -517,6 +441,6 @@ class PaycartProduct extends PaycartLib
 		
 		$imageIds = array_diff($allMediaIds, $imageIds);
 		$imageIds = array_values($imageIds);
-		return $this->setImages($imageIds)->save();
+		return $this->setImages($imageIds);
 	}
 }

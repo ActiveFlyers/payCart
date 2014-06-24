@@ -60,7 +60,7 @@ defined('_JEXEC') OR die();
 				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
 				    </th>				
 					<td><?php echo $record->product_id;?></td>
-					<td><?php echo PaycartHtml::link(JUri::base().'index.php?option=com_paycart&view=product&task=edit&product_id='.$record->{$record_key}, PaycartProduct::getInstance($record->product_id, $record)->getTitle());?>
+					<td><?php echo PaycartHtml::link(JUri::base().'index.php?option=com_paycart&view=product&task=edit&product_id='.$record->{$record_key}, $record->title);?>
 					</td>
 					<td><?php echo $record->sku;?></td>
 					<td><?php echo $record->price;?></td>

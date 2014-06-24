@@ -39,10 +39,7 @@ echo $this->loadTemplate('edit.ng');
 		<div class="<?php echo count($variants)? 'span10' : 'span12'; ?>">
 			<?php echo PaycartHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>
 <!--========	Product Basic Attributes	========-->
-			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_DETAILS', true)); ?>
-				
-				<?php $prefix = $this->_component->getNameSmall().'_form_language_';?>
-				<?php $language_fields = $form->getFieldset('language');?>				
+			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_DETAILS', true)); ?>			
 				<!-- PRODUCT DETAILS -->
 				<div class="row-fluid">
 					<div class="span3">
@@ -54,24 +51,28 @@ echo $this->loadTemplate('edit.ng');
 					<div class="span9">
 						<fieldset class="form">
 							<div class="row-fluid">
+								<?php $field = $form->getField('title') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $language_fields[$prefix.'title']->label; ?></div>
-									<div class="controls"><?php echo $language_fields[$prefix.'title']->input; ?></div>
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
+								<?php $field = $form->getField('teaser') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $language_fields[$prefix.'teaser']->label; ?></div>
-									<div class="controls"><?php echo $language_fields[$prefix.'teaser']->input; ?></div>
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
+								<?php $field = $form->getField('description') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $language_fields[$prefix.'description']->label; ?></div>
-									<div class="controls"><?php echo $language_fields[$prefix.'description']->input; ?></div>
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 							</div>
 							<div class="row-fluid">
 								<div class="span6">
+									<?php $field = $form->getField('alias') ?>
 									<div class="control-group">
-										<div class="control-label"><?php echo $language_fields[$prefix.'alias']->label; ?> </div>
-										<div class="controls"><?php echo $language_fields[$prefix.'alias']->input; ?></div>
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls"><?php echo $field->input; ?></div>								
 									</div>
 								</div>
 								<div class="span6">
@@ -256,19 +257,19 @@ echo $this->loadTemplate('edit.ng');
 					<div class="span9">
 						<fieldset class="form">
 							<div class="row-fluid">								
-								<?php $field = $language_fields[$prefix.'metadata_title']; ?>
+								<?php $field = $form->getField('metadata_title') ?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 								
-								<?php $field = $language_fields[$prefix.'metadata_description']; ?>
+								<?php $field = $form->getField('metadata_description') ?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 								
-								<?php $field = $language_fields[$prefix.'metadata_keyword']; ?>
+								<?php $field = $form->getField('metadata_keywords') ?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								

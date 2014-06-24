@@ -114,52 +114,50 @@
 					<option>COM_PAYCART_ADMIN_SELECT</option>
 			</field>			
 				
-		</fieldset>
-	
-		<fields name="language">
-			<fieldset name='language'>
-				<field 	name="product_lang_id" 
-						type="text"
-						default="0"
-						label="COM_PAYCART_PRODUCT_LANG_ID_LABEL"
-						description="COM_PAYCART_PRODUCT_LANG_ID_DESC"
-						readonly="true"
-						size="10"/>
-				
-				<field 	name="title" 
-						type="text"
-						class="input-block-level"
-						label="COM_PAYCART_ADMIN_TITLE"
-						required="true"/>
-						
-				<field 	name="alias" 
-						type="text"
-						class="input-block-level"
-						label="COM_PAYCART_ADMIN_ALIAS"/>
-				
-				<field 	name="teaser" 
-						type="textarea"
-						class="input-block-level"
-						label="COM_PAYCART_ADMIN_TEASER"/>				
-				
-				<field 	name="description" 
-						type="editor"						
-						label="COM_PAYCART_ADMIN_DESCRIPTION"/>
+		</fieldset>	
+		
+		<fieldset name='language'>
+			<field 	name="product_lang_id" 
+					type="text"
+					default="0"
+					label="COM_PAYCART_PRODUCT_LANG_ID_LABEL"
+					description="COM_PAYCART_PRODUCT_LANG_ID_DESC"
+					readonly="true"
+					size="10"/>
 			
-				<field	name="metadata_title" 
-						type="text"
-						class="input-block-level"
-						label="COM_PAYCART_ADMIN_METADATA_TITLE"/>
-				
-				<field 	name="metadata_description" 
-						type="text"
-						class="input-block-level"
-						label="COM_PAYCART_ADMIN_METADATA_DESCRIPTION"/>
-				
-				<field	name="metadata_keyword" 
-						type="text" 
-						class="input-block-level"
-						label="COM_PAYCART_ADMIN_METADATA_KEYWORD"/>
-			</fieldset>
-		</fields>			
+			<field 	name="title" 
+					type="text"
+					class="input-block-level"
+					label="COM_PAYCART_ADMIN_TITLE"
+					required="true"/>
+					
+			<field 	name="alias" 
+					type="text"
+					class="input-block-level"
+					label="COM_PAYCART_ADMIN_ALIAS"/>
+			
+			<field 	name="teaser" 
+					type="textarea"
+					class="input-block-level"
+					label="COM_PAYCART_ADMIN_TEASER"/>				
+			
+			<field 	name="description" 
+					type="editor"						
+					label="COM_PAYCART_ADMIN_DESCRIPTION"/>
+		
+			<field	name="metadata_title" 
+					type="text"
+					class="input-block-level"
+					label="COM_PAYCART_ADMIN_METADATA_TITLE"/>
+			
+			<field 	name="metadata_description" 
+					type="text"
+					class="input-block-level"
+					label="COM_PAYCART_ADMIN_METADATA_DESCRIPTION"/>
+			
+			<field	name="metadata_keywords" 
+					type="text" 
+					class="input-block-level"
+					label="COM_PAYCART_ADMIN_METADATA_KEYWORD"/>
+		</fieldset>		
 </form>
