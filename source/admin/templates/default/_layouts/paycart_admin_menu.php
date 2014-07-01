@@ -163,7 +163,7 @@ defined('_JEXEC') or die( 'Restricted access' );
     
 		<li class="accordion-group">			
 				<?php if(isset($menu['children'])) :?>
-					<a href="<?php echo $menu['url'];?>" data-toggle='collapse' data-target='#pc-admin-menu-<?php echo $id;?>', data-parent='#pc-admin-menu' class="accordion-toggle <?php echo $isCurrentActive ? 'active' : 'collapsed';?>">
+					<a href="<?php echo $menu['url'];?>" onclick="return false;" data-toggle='collapse' data-target='#pc-admin-menu-<?php echo $id;?>', data-parent='#pc-admin-menu' class="accordion-toggle <?php echo $isCurrentActive ? 'active' : 'collapsed';?>">
 						<i class="fa <?php echo isset($menu['class']) && !empty($menu['class']) ? $menu['class'] : '';?>">&nbsp;</i>						
 						<span class="caret pull-right"></span>
 						<?php echo $menu['title'];?>  

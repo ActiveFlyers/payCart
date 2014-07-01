@@ -12,6 +12,21 @@
 defined('_JEXEC') OR die();
 ?>
 
+<div class="pc-product-wrapper clearfix">
+<div class="pc-product row-fluid" data-ng-app="pcngProductApp">
+
+<!-- CONTENT START -->
+
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=productcategory'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
+
+<div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
 	<?php // echo $this->loadTemplate('filter'); ?>
@@ -24,10 +39,12 @@ defined('_JEXEC') OR die();
 				<th  width="1%">
 					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 				</th>
-				<th >
-					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCTCATEGORY_ID", 'productcategory_id', $filter_order_Dir, $filter_order);?>
-				</th>
-			    <th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_PRODUCTCATEGORY_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
+				<th>
+					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'productcategory_id', $filter_order_Dir, $filter_order);?>
+				</th>				
+			    <th>
+			    	<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?>
+			    </th>
 							
 			</tr>
 		<!-- TABLE HEADER END -->
@@ -43,7 +60,7 @@ defined('_JEXEC') OR die();
 				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
 				    </th>				
 					<td><?php echo $record->productcategory_id;?></td>
-					<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=productcategory&task=edit&productcategory_id='.$record->{$record_key}, PaycartProductcategory::getInstance($record->productcategory_id, $record)->getTitle());?>
+					<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=productcategory&task=edit&productcategory_id='.$record->{$record_key}, $record->title);?>
 					</td>
 				</tr>
 			<?php $count++;?>
@@ -65,4 +82,7 @@ defined('_JEXEC') OR die();
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 </form>
+</div>
+</div>
+</div>
 <?php 

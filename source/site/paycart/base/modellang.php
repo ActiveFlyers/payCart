@@ -92,19 +92,41 @@ class PaycartModelLang extends PaycartModel
     
     public function delete($pk=null)
 	{
-		if(!parent::delete($pk)){
+		//try to calculate automatically
+		if($pk === null){
+			$pk = (int) $this->getId();
+		}
+		
+		if(!$pk){
+			$this->setError('Invalid itemid to delete for model : '.$this->getName());
 			return false;
 		}
 		
-		$lang_table = $this->getLanguageTable();		
 		$key_name = $this->getTable()->getKeyName();
 		
 		$query = new Rb_Query();
-		$query->delete()
-				->from($lang_table->getTableName());
-		
-		$query->where(" {$key_name} = $pk");
+		$query->select('*')
+				->from($this->getLanguageTableName())
+				->where('`'.$key_name.'` = '.$pk);
+				
+		$records 	= $query->dbLoadQuery()->loadObjectList();
 
-		return $query->dbLoadQuery()->execute();			
+		$lang_table = $this->getLanguageTable();
+		$lang_key 	= $lang_table->getKeyName();
+		foreach($records as $record){
+			//try to delete
+			// Load table so as to get all the available table data for other processing
+			// Like joomla tag untagging works on table data
+		    if($lang_table->load($record->$lang_key) && $lang_table->delete($record->$lang_key)){
+		    	continue;
+		    }
+		    
+		    //some error occured
+			//@PCTODO : should we continue to deleted or not
+			$this->setError($lang_table->getError());
+		}
+		
+		// afte deleting all other data not delete main data
+		return parent::delete($pk);	
 	}
 }

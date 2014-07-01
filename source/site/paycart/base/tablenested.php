@@ -34,4 +34,11 @@ class PaycartTableNested extends JTableNested
 		
 		return parent::__construct($table, $key, $db);
 	}
+	
+	public function rb_save($new = false)
+	{
+		// Specify where to insert the new node.
+		$this->setLocation($this->parent_id, 'last-child');		
+		return $this->store();
+	}
 }

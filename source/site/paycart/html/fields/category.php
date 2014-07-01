@@ -126,12 +126,12 @@ class PaycartFormFieldCategory extends JFormFieldList
 			return $result;
 		}
 		
-		$model = PaycartFactory::getModellang('Productcategory');
+		$model = PaycartFactory::getModel('productcategory');
 		// Should be sorted according to 'title' so need to write query with "order by"
 		$model->clearQuery();  
 		$query = $model->getQuery()->clear('order')->order('title');
 		
-		$result = $model->loadRecords(array('lang_code' => PaycartFactory::getLanguage()->getTag()), array(), false, 'productcategory_id');
+		$result = $model->loadRecords();
 		 
 		return $result;
 	}

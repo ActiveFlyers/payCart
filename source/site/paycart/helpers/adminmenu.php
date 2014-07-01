@@ -41,7 +41,7 @@ class PaycartHelperAdminmenu extends PaycartHelper
 											),
 											Array(
 												'title' => JText::_('COM_PAYCART_ADMIN_CATEGORIES'),
-												'url' => 'index.php?option=com_paycart&view=category',
+												'url' => 'index.php?option=com_paycart&view=productcategory',
 												'class' => 'fa-sitemap'
 											),
 											Array(

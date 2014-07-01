@@ -19,10 +19,10 @@ class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategor
 {	
 	protected function _adminGridToolbar()
 	{
-		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADD_NEW_PRODUCT_CATEGORY');
+		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADMIN_ADD');
 		Rb_HelperToolbar::editList();
 		Rb_HelperToolbar::divider();
-		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ENTITY_DELETE_CONFIRMATION'));
+		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ADMIN_DELETE_PROMPT'));
 		Rb_HelperToolbar::publish();
 		Rb_HelperToolbar::unpublish();
 	}
@@ -38,10 +38,10 @@ class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategor
 	{
 		$catId	  =  $this->getModel()->getId();
 		$category =  PaycartProductcategory::getInstance($catId);
+		$form 	  = $category->getModelform()->getForm($category);
 		
-		$form 		= $category->getModelform()->getForm($category);
-	    $language   = array('language'=> $category->getLanguage());
-	    $form->bind($language);
+		//set images
+		$this->assign('cover_media', $category->getCoverMedia());
 		
 		$this->assign('form', $form );
 		

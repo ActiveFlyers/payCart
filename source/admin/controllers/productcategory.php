@@ -30,9 +30,9 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 			//@PCTODO :: Rise exception 
 		}
 		
-		$post['language']['title'] = $this->input->get('category_name');
+		$post['title'] = $this->input->get('category_name');
 		
-		if (!$post['language']['title']) {
+		if (!$post['title']) {
 			// @codeCoverageIgnoreStart
 			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_INVALID_POST_DATA', '$title must be required'));
 			// @codeCoverageIgnoreEnd
@@ -45,5 +45,15 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 		
 		return  true;
 	}
+	
+	/**
+	 * override it due to get all uploaded files 
+	 */
+	public function _save(array $data, $itemId=null, $type=null)
+	{
+		//Get All files from paycart form
+		$data['_uploaded_files'] = $this->input->files->get('paycart_form', false);	
 		
+		return parent::_save($data, $itemId, $type);
+	}		
 }
