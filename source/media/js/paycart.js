@@ -113,7 +113,7 @@ if (typeof(paycart.element)=='undefined'){
 			{
 				console.log(msg);
 			}
-		}
+		},
 		
 		user : function(response) 
 		{

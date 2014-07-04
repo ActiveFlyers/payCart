@@ -34,13 +34,33 @@ class PaycartSiteViewCheckout extends PaycartSiteBaseViewCheckout
 	 */
 	protected function render($html, $options = array('domObject'=>'rbWindowContent','domProperty'=>'innerHTML'))
 	{
-		$response	= PaycartFactory::getAjaxResponse();
-		
 		$data = Array('message'=> '','html' => $html );
 		
-		$response->addScriptCall('paycart.checkout.success', $data);
+		$this->response->addScriptCall('paycart.checkout.success', $data);
 		
-		$response->sendResponse();
+		$this->response->sendResponse();
+	}
+	
+	protected function _process()
+	{
+		switch ($this->step_ready) 
+		{
+			case Paycart::CHECKOUT_STEP_ADDRESS:
+				$this->prepare_step_address();
+				break;
+				
+			case Paycart::CHECKOUT_STEP_CONFIRM :
+				$this->prepare_step_confirm();
+				break;
+			case Paycart::CHECKOUT_STEP_PAYMENT :
+				$this->prepare_step_payment();
+				break;
+			
+			default:
+				;
+			break;
+		}
+		;
 	}
 	
 	/**
@@ -77,9 +97,9 @@ class PaycartSiteViewCheckout extends PaycartSiteBaseViewCheckout
 				parent::prepare_step_address();
 				$this->response->addScriptCall("paycart.checkout.buyeraddress.shipping_address_info['move_next'] = false; ");
 				$this->response->addScriptCall('paycart.checkout.buyeraddress.visible_address_info = paycart.checkout.buyeraddress.shipping_address_info;');
-				
+
+			case 'email_address' :
 			default:
-				;
 			break;
 		}
 

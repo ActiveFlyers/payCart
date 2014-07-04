@@ -32,7 +32,7 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			 		
 			 		<div id="pc-confirm-email" class="accordion-body in collapse"">
 			 			<div class="accordion-inner">
-			 				<p><?php echo $buyer->get('email'); ?></p>
+			 				<p><?php echo $buyer->email; ?></p>
 			 				
 			 				<?php if ($cart->is_guestcheckout) :?>
 			 				<div>
@@ -129,37 +129,32 @@ $currency_html = '<i class="fa fa-usd"></i>';
 		 		<div class="accordion-group">
 		 			<div class="accordion-heading">
 		 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-products-summary">
-	 						Product Summary
+	 						<?php echo JText::_('Product Summary'); ?>
 	 					</a>
 	 				</div>
 	 		
 			 		<div id="pc-confirm-products-summary" class="accordion-body in collapse"">
 			 			<div class="accordion-inner">
+			 			<?php 
+			 				$products_total 	= 0;
+			 				$products_quantity	= 0;
+			 				
+			 				foreach ($product_particular as $particular) :
+			 					$products_total 	+=	$particular->total;
+			 					$products_quantity 	+=	$particular->quantity;
+			 				?>
 			 				<div class="row-fluid">
-				 				<div class="span4">Mobile (Nokia X) 10(items) </div>
-				 				<div class="span3">Quantity : <input type="number" class="input-mini" /></div>  
-				 				<div class="span3">Price : <?php echo $currency_html; ?>950</div>
-				 				<div class="span1"><a href='#'>Remove</a></div>
+				 				<div class="span4"><?php echo $particular->title; ?> </div>
+				 				<div class="span3"><?php echo JText::_('Quantity'); ?> : <input type="number" class="input-mini" value="<?php echo $particular->quantity; ?>" /></div>  
+				 				<div class="span3"><?php echo JText::_('Price'); ?> : <?php echo $currency_html; ?><?php echo $particular->total; ?></div>
+				 				<div class="span1"><a href='#'><?php echo JText::_('Remove') ?></a></div>
 				 			</div>
 				 			<hr />
-				 			<div class="row-fluid">
-				 				<div class="span4">Mobile (Nokia X) 10(items) </div>
-				 				<div class="span3">Quantity : <input type="number" class="input-mini" /></div>  
-				 				<div class="span3">Price : <?php echo $currency_html; ?>950</div>
-				 				<div class="span1"><a href='#'>Remove</a></div>
-				 			</div>
-				 			<hr />
-				 			
-				 			<div class="row-fluid">
-				 				<div class="span4">Mobile (Nokia X) 10(items) </div>
-				 				<div class="span3">Quantity : <input type="number" class="input-mini" /></div>  
-				 				<div class="span3">Price : <?php echo $currency_html; ?>950</div>
-				 				<div class="span1"><a href='#'>Remove</a></div>
-				 			</div>
-				 			<hr />
-				 			
-				 			<div class="row-fluid">
-				 				<span class="pull-right"> Product's Total : <?php echo $currency_html?>2850 </span>
+			 			<?php 
+			 				endforeach;
+			 			?>
+			 				<div class="row-fluid">
+				 				<span class="pull-right"><?php echo JText::_("Product's Total") ?> : <?php echo $currency_html?><?php echo $products_total; ?> </span>
 				 			</div>
 				 			
 			 			</div>
@@ -179,7 +174,7 @@ $currency_html = '<i class="fa fa-usd"></i>';
 	 			<div class="accordion-group">
 			 		<div class="accordion-heading">
 			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-order-summary">
-			 				Order Summary
+			 				<?php echo JText::_('Order Summary'); ?>
 			 			</a>
 			 		</div>
 			 		
@@ -188,26 +183,53 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			 				<table class="table">
 			 					<thead>
 			 						<tr>
-			 							<td>Quantity</td>
-			 							<td>10(items)</td>
+			 							<td><?php echo JText::_('Quantity'); ?></td>
+			 							<td><?php echo $products_quantity;?></td>
 			 						</tr>
 			 					</thead>
 			 					
 			 					<tbody>
-			 						<tr><td>Cart Total</td>
-			 							<td><?php echo $currency_html; ?>950</td>
+			 						<tr>
+			 							<td><?php echo JText::_('Cart Total'); ?></td>
+			 							<td><?php echo $currency_html.$products_total; ?></td>
 			 						</tr>
-			 						<tr><td>Shipping</td>
-			 							<td><?php echo $currency_html; ?>70</td>
+			 						<?php
+			 								$shipping_total	=	0;
+			 								
+			 								foreach ($shipping_particular as $particular) :
+			 									$shipping_total	+=	$particular->total;
+			 								endforeach;
+			 						 ?>
+			 						 <tr>
+			 							<td><?php echo JText::_('Shipping'); ?></td>
+			 							<td><?php echo $currency_html.$shipping_total; ?></td>
 			 						</tr>
-			 						<tr><td>Tax</td>
-			 							<td><?php echo $currency_html; ?>30</td>
+			 						<?php
+			 								$duties_total	=	0;
+			 								
+			 								foreach ($duties_particular as $particular) :
+			 									$duties_total	+=	$particular->total;
+			 								endforeach;
+			 						 ?>
+			 						<tr>
+			 							<td><?php echo JText::_('Tax'); ?></td>
+			 							<td><?php echo $currency_html.$duties_total; ?></td>
 			 						</tr>
-			 						<tr><td>Discount</td>
-			 							<td>-<?php echo $currency_html; ?>50</td>
+			 						<?php
+			 								$promotion_total	=	0;
+			 								
+			 								foreach ($promotion_particular as $particular) :
+			 									$promotion_total	+=	$particular->total;
+			 								endforeach;
+			 						 ?>
+			 						<tr>
+			 							<td><?php echo JText::_('Discount'); ?></td>
+			 							<td><?php echo $currency_html.$promotion_total; ?></td>
 			 						</tr>
-			 						<tr><td>TOTAL</td>
-			 							<td><?php echo $currency_html; ?> 100</td>
+			 						
+			 						<tr>
+			 							<td><?php echo JText::_('TOTAL'); ?></td>
+			 							<td><?php echo $currency_html.($products_total+$promotion_total+$duties_total); ?> </td>
 			 						</tr>
 			 					</tbody>
 			 				</table>	
@@ -227,8 +249,10 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			 
 			 <!-- Process ne		 -->
 			 <div class="row-fluid">
-			 	<button type="button" class="btn btn-primary btn-block btn-large" >Proceed to Payment</button>
+			 	<button type="button" class="btn btn-primary btn-block btn-large" onClick="return paycart.checkout.confirm.process(); " ><?php echo JText::_('Proceed to Payment'); ?></button>
 			 </div>
+			 
+			 <input	type="hidden"	name='step_name' value='confirm' />
 		 	
 	 	</div>
 
@@ -240,8 +264,22 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			paycart.checkout.confirm = 
 			{
 				edit : 
-				{	//@PCFIXME :: clean event code
-					billing_address : function(event)
+				{	
+					email_address : function() 
+					{
+						try
+						{
+							var data = {'back_to' : 'email_address'}
+							paycart.checkout.goback(data);
+						}catch (e) {
+							paycart.notification.console.log({'exception_was ' : e});
+						}
+						
+						return false;
+					},
+				
+					//@PCFIXME :: Comments for all methods
+					billing_address : function()
 					{
 						try {
 							var data = {'back_to' : 'billing_address'}
@@ -250,10 +288,10 @@ $currency_html = '<i class="fa fa-usd"></i>';
 							paycart.notification.console.log({'exception_was': e});	
 						}
 
-						event.preventDefault();
+						return false;
 					},
 
-					shipping_address : function(event)
+					shipping_address : function()
 					{
 						try {
 							var data = {'back_to' : 'shipping_address'}
@@ -262,8 +300,14 @@ $currency_html = '<i class="fa fa-usd"></i>';
 							paycart.notification.console.log({'exception_was': e});	
 						}
 
-						event.preventDefault();
+						return false;
 					}
+				},
+
+				process :	function()
+				{
+					paycart.checkout.process()
+					
 				}
 				
 			};

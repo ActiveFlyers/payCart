@@ -25,11 +25,11 @@ if(is_array($displayData)) {
 ?>
 
 <address>
-  <strong><?php echo $displayData->to;  ?></strong><br>
-  <?php echo $displayData->address;  ?><br>
-  <?php echo $displayData->city;  ?>, <?php echo $displayData->state;  ?><br>
-  <?php echo $displayData->country;  ?> <?php echo $displayData->zipcode;  ?><br>
-  <abbr title="Phone"><i class="fa fa-phone"></i></abbr> <?php echo $displayData->phone1;  ?><br>
+  <strong><?php echo@$displayData->to;  ?></strong><br>
+  <?php echo @$displayData->address;  ?><br>
+  <?php echo @$displayData->city;  ?>, <?php echo @$displayData->state;  ?><br>
+  <?php echo @$displayData->country;  ?> <?php echo @$displayData->zipcode;  ?><br>
+  <abbr title="Phone"><i class="fa fa-phone"></i></abbr> <?php echo @$displayData->phone1;  ?><br>
 </address>
 
 	

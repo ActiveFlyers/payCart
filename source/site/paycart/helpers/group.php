@@ -90,22 +90,32 @@ class PaycartHelperGroup extends JObject
 		return new $className($config);		
 	}	
 	
+	/**
+	 * 
+	 * 
+	 * @param unknown_type $type  : Paycart::GROUPRULE_TYPE_*
+	 * @param unknown_type $entity_id
+	 * 
+	 * @since 1.0
+	 * @author Gaurav Jain
+	 * 
+	 * @return applicable group array
+	 */
 	public function getApplicableRules($type, $entity_id)
 	{
 		$filter = array();
 		$filter['type'] = $type;
 		$filter['published'] = 1;
 		
-		$records = PaycartFactory::getModel('group');
+		$records = PaycartFactory::getModel('group')->loadRecords($filter);
 
 		$groups = array();
-		if(empty($records)){
-			return $groups;
-		}
 		
-		foreach($records as $record_id => $record){
-			$group = PaycartGroup::getInstance($record_id, $record);
-			if($group->isAppicable($entity_id)){
+		foreach($records as $group_id => $group_data) {
+			$group = PaycartGroup::getInstance($group_id, $group_data);
+			
+			//check group applicability on particular entity
+			if($group->isAppicable($entity_id)) {
 				$groups[] = $record_id;
 			}
 		}

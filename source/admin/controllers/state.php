@@ -53,7 +53,7 @@ class PaycartAdminControllerState extends PaycartController
 		// set call back function
 		$ajax->addScriptCall($callback, json_encode($response)); 
 		
-		$this->setRedirect( $redirect , $this->getMessage(), $msgType);
+		$this->setRedirect( $redirect , $this->getMessage(), Paycart::MESSAGE_TYPE_WARNING);
 
 		// no need to move at view
 		return false;

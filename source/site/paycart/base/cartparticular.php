@@ -32,17 +32,29 @@ abstract class PaycartCartparticular extends JObject
 	protected $title;
 	protected $message;
 	
-	protected $_usage;
+	protected $_usage		=	Array();
 	
 	protected $_rule_apply_on = '';
 	protected $_applied_promotions = array();
 	
-	public static function getInstance($type, $binddata = array())
+	
+	/**
+	 * 
+	 * Invoke to get particular instance   
+	 * @param unknown_type $type 		: Particular type {shipping, duties, promotion, discount}
+	 * @param unknown_type $bind_data	: data bine on particulare instance
+	 * 
+	 * @since 1.0
+	 * @author mManishTrivedi
+	 * 
+	 * @return  PaycartCartparticular extends instance
+	 */
+	public static function getInstance($type, $bind_data = array())
 	{
 		$classname 	= 'PaycartCartparticular'.$type;
-		$object 	= new $classname();		
+		$object 	= 	new $classname();		
 	
-		$object->bind($binddata);
+		$object->bind($bind_data);
 		
 		return $object;
 	}
@@ -162,9 +174,24 @@ abstract class PaycartCartparticular extends JObject
 		return $this;
 	}
 	
+	/**
+	 * 
+	 * Invoke to apply discount on cart-particular
+	 * @param PaycartCart $cart
+	 * 
+	 * @return $this
+	 */
 	public function applyDiscountrules(PaycartCart $cart)
 	{
+		// get appliable group rule on buyer and product bases
 		$applicableGrouprules = $this->getApplicableGrouprules($cart);
+		
+		//@PCTODO :: if we dont have any applicable group rule den no need to further processing 
+		if (empty($applicableGrouprules)) {
+			return $this;
+		}
+		
+		// get discount rule according to group applicability
 		$discountrules = $this->getDiscountrules($applicableGrouprules);
 		
 		foreach($discountrules as $discountruleId){
@@ -203,7 +230,8 @@ abstract class PaycartCartparticular extends JObject
 		
 		$messageKey = $ruleId;
 		$coupon = $discountrule->getCoupon();
-		if(!empty(trim($coupon))){
+
+		if(!empty($coupon)){
 			$messageKey = $coupon;
 		}
 		
@@ -266,7 +294,8 @@ abstract class PaycartCartparticular extends JObject
 	public function saveUsage()
 	{
 		$model = PaycartFactory::getModel('usage');
-		foreach($this->_usage as &$usage){
+
+		foreach ($this->_usage as $usage) {
 			$usage->carparticular_id = $this->carparticular_id;
 			
 			$date = new Rb_Date();
@@ -286,6 +315,12 @@ abstract class PaycartCartparticular extends JObject
 	public function applyTaxrules(PaycartCart $cart)
 	{
 		$applicableGrouprules = $this->getApplicableGrouprules($cart);
+		
+		//@PCTODO :: if we dont have any applicable group rule den get static rules or  no need to further processing 
+		if (empty($applicableGrouprules)) {
+			return $this;
+		}
+		
 		$taxrules = $this->getTaxrules($applicableGrouprules);
 		
 		foreach($taxrules as $taxruleId){
@@ -332,7 +367,13 @@ abstract class PaycartCartparticular extends JObject
 		return true;
 	}
 	
-	public function getTaxrules($groupRules)
+	/**
+	 * 
+	 * Invoke to get taxrules which will apply on all product/cart (Statically) and accroding to applicable grouperules 
+	 * @param array $groupRules
+	 * 
+	 */
+	public function getTaxrules(Array $groupRules = Array())
 	{
 		$subquery = new Rb_Query();
 		$subquery->select('DISTINCT(`taxrule_id`)')
@@ -354,7 +395,7 @@ abstract class PaycartCartparticular extends JObject
 		return $query->dbLoadQuery()->loadAssoc();
 	}
 	
-	public function getDiscountrules($groupRules)
+	public function getDiscountrules(Array $groupRules = Array())
 	{
 		$subquery = new Rb_Query();
 		$subquery->select('DISTINCT(`discountrule_id`)')
@@ -381,6 +422,11 @@ abstract class PaycartCartparticular extends JObject
 		return $query->dbLoadQuery()->loadAssoc();
 	}
 	
+	/**
+	 * 
+	 * Invoke to get applicable discount rule on particular
+	 * @param PaycartCart $cart
+	 */
 	public function getApplicableGrouprules(PaycartCart $cart)
 	{
 		/* @var $groupHelper PaycartHelperGroup */
@@ -423,5 +469,28 @@ abstract class PaycartCartparticular extends JObject
 		
 		$this->saveUsage();
 		return $this;
+	}
+	
+	/**
+	 * 
+	 * Invoke to copy current object into stdClass object
+	 * 
+	 *  @return stdClass object
+	 */
+	public function toObject() 
+	{
+		$object = new stdClass();
+		
+		foreach (get_object_vars($this) as $key => $value)
+		{
+			// ignore extra variables
+			if(preg_match('/^_/',$key)){
+				continue;
+			}
+			
+			$object->$key	=	$value;
+		}
+		
+		return $object;
 	}
 }

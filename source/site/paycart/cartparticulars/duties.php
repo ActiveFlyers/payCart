@@ -38,13 +38,13 @@ class PaycartCartparticularDuties extends PaycartCartparticular
 		return $this;
 	}
 	
-	public function calculate($cart) 
+	public function calculate(PaycartCart $cart) 
 	{
 		$this->applyTaxrules($cart);
 		return $this;
 	}
 	
-	public function getDiscountrules($groupsRules)
+	public function getDiscountrules(Array $groupRules = Array())
 	{
 		// empty discount rules
 		return array();
