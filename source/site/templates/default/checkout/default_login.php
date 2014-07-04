@@ -30,7 +30,7 @@ if(!defined( '_JEXEC' )){
 			 <div class="control-group">	
 		 		<label>Email</label>
 		 		<div class="controls">
-					<input type="text" name="paycart_form[email]" class="input-block-level" placeholder="Enter email address (required)">
+					<input type="text" name="paycart_form[email]" class="input-block-level" placeholder="Enter email address (required)" value = "<?php echo @$buyer->email; ?>" />
 					<span class="hide help-block">Example block-level help text here.</span>
 				</div>
 			 </div>

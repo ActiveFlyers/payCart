@@ -28,11 +28,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	position: relative;
 }
 
-.paycart .pc-hide 
-{
-	display: none;
-}
-
 .paycart .pc-margin-left-1 
 {
 	/* @PCFIXME :: Test it properly */
@@ -47,7 +42,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<div class="pc-checkout-buyeraddress row-fluid" >
 		
 		<!--	Span for copy-->
-		<div class="span4 accordion pc-checkout-buyeraddress-new-created pc-hide pc-margin-left-1" id="pc-checkout-buyeraddress-accordion-0">
+		<div class="span4 accordion pc-checkout-buyeraddress-new-created hide pc-margin-left-1" id="pc-checkout-buyeraddress-accordion-0">
 			<div class="accordion-group">
 	 			
 	 			<div class="accordion-heading">
@@ -137,7 +132,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		</div>
 		
 		<!--	Billing Address -->
-		<div class="span4 pc-checkout-billingaddress-addnew-html pc-margin-left-1 pc-hide " >
+		<div class="span4 pc-checkout-billingaddress-addnew-html pc-margin-left-1 hide" >
 			<div class="accordion-group ">
 				<div class="accordion-heading">
 	 				<a class="accordion-toggle"	 href="#">
@@ -164,7 +159,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		</div>
 	
 		<!--	Shipping Address	-->
-		<div class="span4 pc-checkout-shippingaddress-addnew-html pc-margin-left-1 pc-hide " >
+		<div class="span4 pc-checkout-shippingaddress-addnew-html pc-margin-left-1 hide" >
 			<div class="accordion-group">
 				<div class="accordion-heading">
 	 				<a class="accordion-toggle" href="#">

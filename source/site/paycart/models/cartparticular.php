@@ -12,10 +12,13 @@
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-/** 
- * CartParticulars Model
+/**
+ * 
+ * Particular Modal
+ * @author manish
+ *
  */
-class PaycartModelCartParticulars extends PaycartModel
+class PaycartModelCartParticular extends PaycartModel
 {
 	var $filterMatchOpeartor = Array(
 									'buyer_id' 	=> array('='),

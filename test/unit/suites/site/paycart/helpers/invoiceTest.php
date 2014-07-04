@@ -70,6 +70,7 @@ class PaycartHelperInvoiceTest extends PayCartTestCaseDatabase
 		// set cart total 
 		PayCartTestReflection::setValue($cart, '_total', 500);
 		
+		/* @var $paycartInvoice PaycartHelperInvoice */
 		$paycartInvoice 	= PaycartFactory::getHelper('invoice');
 		$invoiceId			= $paycartInvoice->createInvoice($cart);
 		

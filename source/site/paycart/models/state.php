@@ -90,9 +90,7 @@ class PaycartModelState extends PaycartModel
 	 * @see/plugins/system/rbsl/rb/rb/Rb_Model::save()
 	 */
 	public function save($data, $pk=null, $new=false)
-    {
-    	$new = $this->getTable()->load($pk)? false : true;
-		
+    {		
     	// get state id
     	$state_id = parent::save($data, $pk, $new);
     	

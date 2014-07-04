@@ -69,3 +69,6 @@ Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/attributes',  'attribute'
 
 //request
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/requests',		'Request',	 'Paycart');
+
+//Cartparticular
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/cartparticulars',	'cartparticular',	 'Paycart');
