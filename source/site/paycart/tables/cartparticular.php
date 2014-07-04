@@ -12,10 +12,14 @@
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-/** 
- * Cart_Particulars Table
+
+/**
+ * 
+ * PaycartTableCartparticular
+ * @author manish
+ *
  */
-class PaycartTableCartparticulars extends PaycartTable
+class PaycartTableCartparticular extends PaycartTable
 {
 	
 }

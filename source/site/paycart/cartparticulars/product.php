@@ -31,29 +31,37 @@ class PaycartCartparticularProduct extends PaycartCartparticular
 		/**
 		 * Need few validation, Before creation
 		 */ 
+		if(is_array($binddata)) {
+			$binddata = (object) $binddata;
+		}
+		
 		//#Validation-1 : Paricular Id must exist
-		if (!isset($binddata['product_id']) || !$binddata['product_id']) {
+		if (!isset($binddata->product_id) || !$binddata->product_id) {
 			throw new InvalidArgumentException('COM_PAYCART_CART_PARTICULAR_EMPTY_PRODUCT');
 		}
 		
 		//#Validation-2 : if Quantity have then must be equal or greater than product-min. quantity 
-		if (!isset($binddata['quantity']) || $binddata['quantity'] < Paycart::CART_PARTICULAR_QUANTITY_MINIMUM) {
+		if (!isset($binddata->quantity) || $binddata->quantity < Paycart::CART_PARTICULAR_QUANTITY_MINIMUM) {
 			// DISCUSS : We should not throw exception here, as we cart already create and one product is added
 			// then minimum value is changed than this cart can never be used 
 			throw new InvalidArgumentException('COM_PAYCART_CART_PARTICULAR_QUANTITY_UNDERFLOW');			
 		} 
 		
 		//1# get added product
-		$product = PaycartProduct::getInstance($binddata['product_id']);		
+		$product = PaycartProduct::getInstance($binddata->product_id);		
+		
 		$this->unit_price		= $product->getPrice();		// unit price
-		$this->quantity 		= $binddata['quantity'];
+		$this->quantity			= $binddata->quantity;
+
 		$this->type 			= Paycart::CART_PARTICULAR_TYPE_PRODUCT;
-		$this->particular_id	= $binddata['product_id'];		
+		$this->particular_id	= $binddata->product_id;		
 		$this->tax				= 0;
 		$this->discount			= 0;
 		$this->price 			= $this->getPrice();
 		$this->total 			= $this->getTotal();		
-				
+
+		$this->updateTotal();				
+
 		// set dimensions 
 		$this->weight = $product->getWeight();
 		$this->width  = $product->getWidth();
@@ -66,6 +74,16 @@ class PaycartCartparticularProduct extends PaycartCartparticular
 		return $this;
 	}
 	
+	/**
+	 * 
+	 * Invoke to calculate and apply Dicosunt and tax on product particular.
+	 * @param PaycartCart $cart
+	 * 
+	 * @since 1.0
+	 * @author mManisTrivedi, gaurav Jain
+	 * 
+	 * @return PaycartCartparticularProduct
+	 */
 	public function calculate(PaycartCart $cart)
 	{
 		$this->applyDiscountrules($cart);
@@ -74,12 +92,16 @@ class PaycartCartparticularProduct extends PaycartCartparticular
 		return $this;
 	}
 	
-	public function getApplicableGrouprules($cart)
+	/**
+	 * (non-PHPdoc)
+	 * @see /components/com_paycart/paycart/base/PaycartCartparticular::getApplicableGrouprules()
+	 */
+	public function getApplicableGrouprules(PaycartCart $cart)
 	{
 		/* @var $groupHelper PaycartHelperGroup */
 		$groupHelper = PaycartFactory::getHelper('group');
 		
-		//@PCTODO : caching
+		//@PCTODO : caching on bases { group-rules type + type_id }
 		$groups = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
 		$groups = array_merge($groups, $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $this->particular_id));
 		$groups = array_unique($groups);

@@ -50,6 +50,8 @@ class PaycartFactory extends Rb_Factory
 	 * 
 	 * Invoke to get Paycart Model instance
 	 * @param string $name : Entity name
+	 * 
+	 * @return PaycartModel Entity 
 	 */
 	public static function getModel($name)
 	{

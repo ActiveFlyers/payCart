@@ -107,7 +107,14 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * @return PaycartProduct
+	 * 
+	 * PaycartProduct Instance
+	 * @param  $id, existing Product id
+	 * @param  $data, required data to bind on return instance	
+	 * @param  $dummy1, Just follow code-standards
+	 * @param  $dummy2, Just follow code-standards
+	 * 
+	 * @return PaycartProduct lib instance
 	 */
 	public static function getInstance($id = 0, $data = null, $dummy1 = null, $dummy2 = null)
 	{

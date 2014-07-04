@@ -48,7 +48,7 @@ class PaycartCartparticularPromotion extends PaycartCartparticular
 		return $this;
 	}
 	
-	public function getTaxrules($groupsRules)
+	public function getTaxrules(Array $groupRules = Array())
 	{
 		// empty tax rules
 		return array();

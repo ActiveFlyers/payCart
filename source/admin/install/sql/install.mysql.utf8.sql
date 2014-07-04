@@ -242,24 +242,26 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
 -- Table structure for table `#__paycart_cart_particulars`
 --
 
-CREATE TABLE IF NOT EXISTS `#__paycart_cartparticulars` (
-  `cartparticulars_id` int(11) 	NOT NULL 	AUTO_INCREMENT,
-  `cart_id` 		int(11) 					DEFAULT '0',
-  `buyer_id` 		int(11) 					DEFAULT '0',
-  `product_id` 		int(11) 					DEFAULT '0',
-  `title` 			varchar(255) 				DEFAULT NULL,
-  `quantity` 		int(11) 					DEFAULT '0',
-  `unit_cost` 		decimal(15,5) 				DEFAULT '0.00000',
-  `tax` 			decimal(15,5) 				DEFAULT '0.00000',
-  `discount` 		decimal(15,5) 				DEFAULT '0.00000',
-  `price` 			decimal(15,5) 				DEFAULT '0.00000',
-  `shipment_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
-  `reversal_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
-  `delivery_date` 	datetime 					DEFAULT '0000-00-00 00:00:00',
-  `params` 			text 			COMMENT 'Include extra stuff like, Notes.',
-  PRIMARY KEY (`cartparticulars_id`),
+CREATE TABLE IF NOT EXISTS `#__paycart_cartparticular` (
+  `cartparticular_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cart_id` int(11) DEFAULT '0',
+  `buyer_id` int(11) DEFAULT '0',
+  `particular_id` int(11) DEFAULT '0',
+  `title` varchar(255) DEFAULT NULL,
+  `quantity` int(11) DEFAULT '0',
+  `unit_cost` decimal(15,5) DEFAULT '0.00000',
+  `tax` decimal(15,5) DEFAULT '0.00000',
+  `discount` decimal(15,5) DEFAULT '0.00000',
+  `price` decimal(15,5) DEFAULT '0.00000',
+  `total` decimal(15,5) DEFAULT '0.00000',
+  `shipment_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `reversal_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `delivery_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `params` text COMMENT 'Include extra stuff like, Notes.',
+  PRIMARY KEY (`cartparticular_id`),
   INDEX `idx_buyer_id` (`buyer_id`),
-  INDEX `idx_product_id` (`product_id`)
+  INDEX `idx_particular_id` (`particular_id`),
+  INDEX `idx_cart_id` (`cart_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -292,8 +294,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `to` varchar(100) NOT NULL COMMENT 'reference name',
   `address` text,
   `city` varchar(100) DEFAULT NULL,
-  `state` char(3) NOT NULL COMMENT 'State ISO code3',
-  `country` char(3) NOT NULL COMMENT 'Country ISO code3',
+  `state_id` VARCHAR(7) NOT NULL COMMENT 'State ISO code3',
+  `country_id` char(3) NOT NULL COMMENT 'Country ISO code3',
   `zipcode` varchar(10) NOT NULL DEFAULT '',
   `vat_number` varchar(100) NOT NULL,
   `phone1` varchar(32) NOT NULL,
@@ -428,14 +430,14 @@ CREATE TABLE IF NOT EXISTS `#__paycart_country_lang` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_state` (
-  `state_id` char(3) NOT NULL COMMENT 'isocode3',
-  `isocode2` char(2) NOT NULL,
-  `country` char(3) NOT NULL,
+  `state_id` int(11) NOT NULL AUTO_INCREMENT,
+  `isocode` varchar(7) NOT NULL,
+  `country_id` char(3) NOT NULL,
   `status` enum('published','unpublished','trashed') NOT NULL,
   `ordering` int(11) NOT NULL,
-   PRIMARY KEY (`state_id`),
-   KEY `idx_isocode2` (`isocode2`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`state_id`),
+  KEY `idx_isocode2` (`isocode`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -610,6 +612,46 @@ CREATE TABLE IF NOT EXISTS `#__paycart_group` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_paymentgateway`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_paymentgateway` (
+  `paymentgateway_id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` enum('published','unpublished','trashed') NOT NULL,
+  `processor_type` varchar(255) NOT NULL,
+  `processor_config` text,
+  PRIMARY KEY (`paymentgateway_id`),
+  INDEX `idx_processor_type` (`processor_type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rb790_paycart_usage`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_usage` (
+  `usage_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rule_type` varchar(100) NOT NULL COMMENT 'discountrule, taxrule',
+  `rule_id` int(11) NOT NULL,
+  `cart_id` int(11) NOT NULL,
+  `buyer_id` int(11) NOT NULL,
+  `cartparticular_id` int(11) NOT NULL,
+  `price` double(15,5) NOT NULL COMMENT ' Discount must be  -ive',
+  `applied_date` datetime NOT NULL,
+  `realized_date` datetime NOT NULL,
+  `message` varchar(255) NOT NULL COMMENT ' for tax rate should be added in message',
+  `title` varchar(100) NOT NULL,
+  PRIMARY KEY (`usage_id`),
+  INDEX `idx_rule_id` (`rule_id`),
+  INDEX `idx_buyer_id` (`buyer_id`),
+  INDEX `idx_cart_id` (`cart_id`),
+  INDEX `idx_cartparticular_id` (`cartparticular_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All rule''s usage history is available here' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 -- ------------------- DEFAULT VALUES ---------------------
