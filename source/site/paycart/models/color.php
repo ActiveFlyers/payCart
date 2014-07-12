@@ -20,16 +20,29 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartModelColor extends PaycartModel
 {
-	function loadOptions($languageCode)
+	/**
+	 * Load options of color attribute
+	 * 
+	 * @param $languageCode : language code for which options' data are to be loaded
+	 * @param $optionIds(optional) : Comma separaterd string containing options for which data to be loaded,
+	 * 								 otherwise all the options of color attribute will be loaded 
+	 *
+	 * @return array of resultant rows 
+	 */
+	function loadOptions($languageCode, $optionIds = '')
 	{
 		$query = new Rb_Query();
+		
+		if(!empty($optionIds)){
+			$query->where('ac.color_id IN('.$optionIds.')');
+		}
 		
 		return $query->select('*')
 		 		     ->from('#__paycart_color as ac')
 		 		     ->join('INNER', '#__paycart_color_lang as acl ON ac.color_id = acl.color_id')
 		 		     ->where('acl.lang_code = "'.$languageCode.'"')
 		 		     ->dbLoadQuery()
-		 		     ->loadAssocList();
+		 		     ->loadAssocList('color_id');
 	}
 }
 

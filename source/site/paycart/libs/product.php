@@ -135,7 +135,7 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * @return name of Product Cover Media 
+	 * @return media id set as product Cover Media 
 	 */
 	public function getCoverMedia() 
 	{	
@@ -378,13 +378,18 @@ class PaycartProduct extends PaycartLib
 		return PaycartFactory::getModel('productattributevalue')->deleteMany($condition);
 	}
 	
-	public function getAttributeValues()
+	public function getAttributeValues($productAttributeId = null)
 	{
+		if(!is_null($productAttributeId) && isset($this->_attributeValues[$productAttributeId])){
+			$attributeValues = $this->_attributeValues[$productAttributeId];
+			return array_shift($attributeValues);
+		}
 		return $this->_attributeValues;
 	}
 	
 	/**
 	 * Get all the images of product
+	 * @return array containing detail all images
 	 */
 	public function getImages()
 	{
@@ -442,5 +447,32 @@ class PaycartProduct extends PaycartLib
 		$imageIds = array_diff($allMediaIds, $imageIds);
 		$imageIds = array_values($imageIds);
 		return $this->setImages($imageIds);
+	}
+	
+	/**
+	 * Get detailed description of product
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	} 
+	
+	/**
+	 * Load all the variants of the product
+	 * @return vaiants array of stdClass  
+	 */
+	public function getVariants()
+	{
+		//FIXME : cache this records
+		return PaycartFactory::getModel('product')->loadRecords(array('variation_of' => $this->getVariationOf()));
+	}
+	
+	/**
+	 * Load attributes from which product variants can be filtered
+	 */
+	public function getFilterableAttributes($productIds)
+	{
+		return PaycartFactory::getModel('productattributevalue')->loadFilterableAttributes($productIds);
 	}
 }

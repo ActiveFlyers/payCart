@@ -129,4 +129,68 @@ class PaycartHelperProduct extends PaycartHelper
 
 		return $newProduct;
 	}
+
+	/**
+	 * 
+	 * Process and build required data for selector attributes
+	 * In this processing, we treat base attribute and remaining attributes differently
+	 * Here we build the attribute options that will be displayed in selector
+	 * 
+	 * @param Array $records  		  : attributeId => containing totalProducts, totalAttrValue and
+	 * 											       comma separated values of attribute that are used in product variants
+	 * @param int $baseAttrId         : Id of attribute on which other selectors will be dependent
+	 * @param Array $variants         : variants of current product
+	 * @param PaycartProduct $product : Current product
+	 * 
+	 * @return array containing data that will be used to generate selector attributes
+	 */
+	public function buildSelectorAttributes($records, $baseAttrId, $variants, $product)
+	{
+		$productIds = implode(',', array_keys($variants));
+		$attributes = array();
+		
+		//for base attribute
+		$productAttributeValue = PaycartFactory::getModel('productattributevalue')->loadProductAttributeValue($baseAttrId, $productIds);
+		$attributes[$baseAttrId]['options'] 	  = $records[$baseAttrId]['values'];
+		$attributes[$baseAttrId]['selectedvalue'] = $product->getAttributeValues($baseAttrId);
+		$attributes[$baseAttrId]['optionMapping'] = $this->_buildAttributeOptionUrl($productAttributeValue);
+		
+		unset($records[$baseAttrId]);
+		
+		//for other attributes
+		foreach ($records as $key => $record){
+
+			// select only those products that have their
+			// base attribute value = current product's value for base filter 
+		 	$condition = 'product_id IN(select product_id from #__paycart_productattribute_value 
+		 				  where productattribute_id = '.$baseAttrId.'
+		 				  and productattribute_value = '.$product->getAttributeValues($baseAttrId).'  
+		 				  and product_id IN('.$productIds.'))';		
+		 	
+		 	$productAttributeValue = PaycartFactory::getModel('productattributevalue')->loadProductAttributeValue($key, $productIds, $condition);
+		 	
+		 	$attributes[$key]['options'] 	   = implode(',', array_keys($productAttributeValue));
+		 	$attributes[$key]['selectedvalue'] = $product->getAttributeValues($key);
+		 	$attributes[$key]['optionMapping'] = $this->_buildAttributeOptionUrl($productAttributeValue);
+		}
+		
+		return $attributes;
+	}
+	
+	/**
+	 * 
+	 * @param Array $productAttributeValue
+	 */
+	protected function _buildAttributeOptionUrl($productAttributeValue)
+	{
+		$result = array();
+		
+		foreach ($productAttributeValue as $key => $value){
+				$result[$key] = array();
+				$result[$key]['url']   = PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$value['product_id'] ); 
+				$result[$key]['value'] = $value['productattribute_value'];
+		}
+		
+		return $result;
+	}
 }

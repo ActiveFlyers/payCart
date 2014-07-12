@@ -94,5 +94,55 @@ class PaycartModelProductAttributeValue extends PaycartModel
 		}
 		
 		return true;			
-	}	
+	}
+	
+	/**
+	 * 
+	 * return attribute records for which product and its variants have different values
+	 * @param Array $productIds : product ids for which to select attribute records
+	 * 
+	 * @return array containing following data :
+	 * 					productattribute_id => attribute id,	 
+	 * 					totalValues 		=> total number of different value for the attribute
+	 * 					totalProducts		=> total number of product that is having any value of attribute
+	 * 					values				=> comma separated values of attribute for mentioned products
+	 */
+	public function loadFilterableAttributes($productIds)
+	{
+		$query   =  new Rb_Query();
+		$records = $query->select('`productattribute_id`, COUNT(DISTINCT `productattribute_value`) as "totalValues", 
+		            			    COUNT(DISTINCT `product_id`) as "totalProducts", GROUP_CONCAT(DISTINCT(`productattribute_value`)) as "values"')
+			  			 ->from($this->getTable()->getTableName())
+			  			 ->group('`productattribute_id`')
+			  			 ->where('`product_id` IN ('.implode(",", $productIds).')')
+			  			 ->having('totalValues > 1')
+			  			 ->dbLoadQuery()
+			  			 ->loadAssocList('productattribute_id');
+			  			 
+		return $records;
+	}
+
+	/**
+	 * 
+	 * Loads product and it's value for current attribute
+	 * @param int $attributeId : attribute id for which to load value of mentioned productids
+	 * @param string $productIds : comma separated string containing product ids for which to load value
+	 * @param string $extraCondition (optional) : subquery that can be added in where condition
+	 */
+	public function loadProductAttributeValue($attributeId, $productIds, $extraCondition = '')
+	{
+		$query = new Rb_Query();
+		
+		if(!empty($extraCondition)){
+				$query->where($extraCondition);
+		}
+		
+		return $query->select('product_id, productattribute_value')
+					 ->from($this->getTable()->getTableName())
+					 ->where('`productattribute_id` = '.$attributeId)
+					 ->where('`product_id` IN('.$productIds.')')
+					 ->group('productattribute_value')
+					 ->dbLoadQuery()
+					 ->loadAssocList('productattribute_value');
+	}
 }

@@ -186,4 +186,44 @@ class PaycartAttributeColor extends PaycartAttribute
 	{
 		return false;
 	}
+	
+	/**
+	 * Returns html that will be used for selectors
+	 * 
+	 * @param $attribute : Instance of PaycartProductAttribute 
+	 * @param $optionMapping : Array contains following value
+	 * 						    'optionid' => array (
+	 * 										    'url' , 'value'
+	 *                                        ) 
+	 * @param $options : comma separaterd string containing optionids that would be considered in filters
+	 * @param $selectedOption : Option that should be selected by default
+	 */
+	function getSelectorHtml($attribute, $optionMapping, $options = '', $selectedOption = '')
+	{
+		$suffix   = '';		
+		$colors   = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode(),$options);
+		
+		if(empty($colors)){
+			return '';
+		}
+		
+		$html 	= '<div><select name="color'.$attribute->getId().'" onchange="location = this.options[this.selectedIndex].value;">';
+		
+		//build option html
+		foreach ($colors as $color){
+			$option = $optionMapping[$color['color_id']];
+			$url	= $option['url'];
+			$selected = '';
+			
+			if(!empty($selectedOption) && $selectedOption == $option['value']){
+				$selected = 'selected="selected"';
+				$suffix   = '<span class="pc-attribute-color" style="background-color:'.$color['hash_code'].'" title="'.$color['title'].'"></span>';
+			}
+			
+			$html  .= '<option value="'.$url.' " ' .$selected.' >'.$color['title'].'</option>' ;
+		}
+		
+		$html .= '</select>'.$suffix.'</div>';
+		return $html;
+	}
 }

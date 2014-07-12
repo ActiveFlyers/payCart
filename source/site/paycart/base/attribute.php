@@ -196,4 +196,40 @@ class PaycartAttribute
 	{
 		return $data;
 	}
+	
+	/**
+	 * Returns html that will be used for selector
+	 * 
+	 * @param $attribute : Instance of PaycartProductAttribute 
+	 * @param $optionMapping : Array contains following value
+	 * 						    'optionid' => array (
+	 * 										    'url' , 'value'
+	 *                                        ) 
+	 * @param $options : comma separaterd string containing optionids that would be considered in filters
+	 * @param $selectedOption : Option that should be selected by default
+	 */
+	function getSelectorHtml($attribute, $optionMapping, $options = '', $selectedOption = '')
+	{
+		$options  = PaycartFactory::getModel('productattributeoption')->loadOptions($attribute->getId(), $attribute->getLanguageCode(),$options);
+		if(empty($options)){
+			return '';
+		}	
+		
+		$html = '<select name="attr_'.$attribute->getId().'" onchange="location = this.options[this.selectedIndex].value;">';
+		
+		foreach ($options as $option){
+			$opt      = $optionMapping[$option['productattribute_option_id']];
+			$url      = $opt['url'];
+			$selected = '';
+			
+			if(!empty($selectedOption) && $selectedOption == $opt['value']){
+				$selected = "selected='selected'";
+			}
+			
+			$html  .= '<option value="'.$url.'" '.$selected.' >'.$option['title'].'</option>' ;
+		}
+		
+		$html .= '</select>';
+		return $html;
+	}
 }
