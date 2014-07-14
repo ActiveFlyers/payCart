@@ -36,7 +36,7 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			 				
 			 				<?php if ($cart->is_guestcheckout) :?>
 			 				<div>
-			 					<a href="#"> <i class="fa fa-edit"></i> <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
+			 					<a href="#" onclick="return paycart.checkout.confirm.edit.email();"> <i class="fa fa-edit"></i> <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
 			 				</div>
 			 				<?php endif; ?>
 			 			</div>
@@ -64,7 +64,7 @@ $currency_html = '<i class="fa fa-usd"></i>';
 				 				?>
 				 											
 								<div>
-			 						<a href="#" onclick="paycart.checkout.confirm.edit.billing_address(event);"> <i class="fa fa-edit"></i>  <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
+			 						<a href="#" onclick="return paycart.checkout.confirm.edit.address();"> <i class="fa fa-edit"></i>  <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
 			 					</div>
 			 					
 				 			</div>
@@ -83,12 +83,16 @@ $currency_html = '<i class="fa fa-usd"></i>';
 				 		<div id="pc-confirm-shipping-address" class="accordion-body in collapse"">
 				 			<div class="accordion-inner">
 				 				<?php
-				 					$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
-									echo $layout->render($shipping_address); 
+				 					if ( @$billing_to_shipping ) {
+				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('Same as a Billing Address');
+				 					} else {
+				 						$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+										echo $layout->render($shipping_address);
+				 					} 
 				 				?>	
 								
 								<div>
-			 						<a href="#"  onclick="paycart.checkout.confirm.edit.shipping_address(event);"> <i class="fa fa-edit"></i>  <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
+			 						<a href="#"  onclick="return paycart.checkout.confirm.edit.address();"> <i class="fa fa-edit"></i>  <?php echo JText::_('COM_PAYCART_EDIT')?> </a>
 			 					</div>
 								
 				 			</div>
@@ -265,43 +269,32 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			{
 				edit : 
 				{	
-					email_address : function() 
+					email : function() 
 					{
 						try
 						{
 							var data = {'back_to' : 'email_address'}
 							paycart.checkout.goback(data);
-						}catch (e) {
-							paycart.notification.console.log({'exception_was ' : e});
+						} catch (e) {
+							console.log({'exception_was ' : e});
 						}
 						
 						return false;
 					},
 				
 					//@PCFIXME :: Comments for all methods
-					billing_address : function()
+					address : function()
 					{
 						try {
-							var data = {'back_to' : 'billing_address'}
+							var data = {'back_to' : 'address'}
 							paycart.checkout.goback(data);
-						}catch (e) {
-							paycart.notification.console.log({'exception_was': e});	
+						} catch (e) {
+							console.log({'exception_was': e});	
 						}
 
 						return false;
 					},
 
-					shipping_address : function()
-					{
-						try {
-							var data = {'back_to' : 'shipping_address'}
-							paycart.checkout.goback(data);
-						}catch (e) {
-							paycart.notification.console.log({'exception_was': e});	
-						}
-
-						return false;
-					}
 				},
 
 				process :	function()

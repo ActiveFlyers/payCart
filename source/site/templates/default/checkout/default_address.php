@@ -14,39 +14,55 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
 
 	 <div class="pc-checkout-address row-fluid">
-		<?php
-			if (!empty($buyer_addresses)) :
-				echo $this->loadTemplate('buyeraddresses');
-			else:
-		?>		
-			<!--	Billing Address -->
-		 	<div class="span6 pc-checkout-billing ">
+				
+		<!--	Billing Address -->
+	 	<div class="span6 pc-checkout-billing ">
+	 	
+	 		<h3><?php echo JText::_('COM_PAYCART_BILLING_INFO'); ?></h3>
+	 		
+	 		<div class="pc-checkout-billing-html">
 			 	<?php
-			 		$this->assign('title', true); 
+			 		// load billing address template
 			 		echo $this->loadTemplate('billingaddress'); 
 			 	?>
-			</div>
+			 </div>
+			 
+		</div>
+	
+		<!--	Shipping Address	-->
+		<div class=" span6 pc-checkout-shipping clearfix">
 		
-			<!--	Shipping Address	-->
-			<div class=" span6 pc-checkout-shipping clearfix">
-			 	<?php
-			 		$this->assign('title', true);
-			 		$this->assign('billing_to_shipping', true);
-			 		echo $this->loadTemplate('shippingaddress'); ?>
-			</div>
-		
-			<!--	Continue Checkout	-->
-			<div class="clearfix">
-				
-				<button type="button" onClick="paycart.checkout.address.onContinue();" 
-						class="pc-whitespace btn btn-block btn-large btn-primary">
-					<?php JText::_('COM_PAYCART_BUTTON_CONTINUE')?> <i class="fa fa-angle-double-right"></i>
-				</button>
-				
-			</div>
+			<h3><?php echo JText::_('COM_PAYCART_SHIPPING_ADDRESS_TITLE'); ?></h3>
+
+			<label class="checkbox">
+				<input 	id='billing_to_shipping' type="checkbox" 
+						<?php echo ($billing_to_shipping)? 'checked="checked"' : ''?>		
+						name="paycart_form[billing_to_shipping]"
+						onClick="return paycart.checkout.buyeraddress.onBillingToShipping();"
+						value='true'
+				/><?php echo JText::_('COM_PAYCART_SAME_AS_BILLING_ADDRESS'); ?>
+					
+			</label>
 			
-		<?php 	endif;	?>
-		
+			<div class="pc-checkout-shipping-html">
+			 	<?php
+					// load shipping address template
+			 		echo $this->loadTemplate('shippingaddress');
+			 	?>
+		 	</div>
+		 	
+		</div>
+	
+		<!--	Continue Checkout	-->
+		<div class="clearfix">
+			
+			<button type="button" onClick="paycart.checkout.buyeraddress.onContinue();" 
+					class="pc-whitespace btn btn-block btn-large btn-primary">
+				<?php echo JText::_('COM_PAYCART_BUTTON_CONTINUE'); ?> <i class="fa fa-angle-double-right"></i>
+			</button>
+			
+		</div>
+			
 		<input	type="hidden"	name='step_name' value='address' />
 				
 	</div>
@@ -54,9 +70,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<script>
 			
 		(function($) {
+						
+			paycart.checkout.buyeraddress.init();
+			paycart.checkout.step.change('<?php echo $step_ready; ?>');	
 
-			paycart.checkout.address.billing_to_shipping();
-			paycart.checkout.step.change('<?php echo $step_ready; ?>');				
+			//$("#pc-checkout-form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation();
 			
 		})(paycart.jQuery);
 	

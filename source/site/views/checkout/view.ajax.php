@@ -82,28 +82,12 @@ class PaycartSiteViewCheckout extends PaycartSiteBaseViewCheckout
 	{
 		$back_to = $this->input->get('back_to');
 		
-		$ajax_response = PaycartFactory::getAjaxResponse();
-		
-		switch ($back_to) {
-			case 'billing_address':
-				parent::prepare_step_address();
-				//move_next
-				$this->response->addScriptCall("paycart.checkout.buyeraddress.billing_address_info['move_next'] = false; ");
-				$this->response->addScriptCall('paycart.checkout.buyeraddress.visible_address_info = paycart.checkout.buyeraddress.billing_address_info;');
-				
-			break;
-			
-			case 'shipping_address':
-				parent::prepare_step_address();
-				$this->response->addScriptCall("paycart.checkout.buyeraddress.shipping_address_info['move_next'] = false; ");
-				$this->response->addScriptCall('paycart.checkout.buyeraddress.visible_address_info = paycart.checkout.buyeraddress.shipping_address_info;');
-
-			case 'email_address' :
-			default:
-			break;
+		if ('address' == $back_to) {
+			parent::prepare_step_address();
 		}
 
 		$this->setTpl($this->step_ready);
+		
 		return true;
 	}
 	

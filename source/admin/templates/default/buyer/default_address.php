@@ -58,8 +58,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					// @PCTODO : should be formated and use template instead of hardcoded-sequence
 					echo 	"<b>{$address_details->to}</b><br/>".
 							"{$address_details->address}<br/>".
-							"{$address_details->city},{$address_details->state}<br/>".
-							"{$address_details->country} {$address_details->zipcode}<br/>".
+							"{$address_details->city},{$address_details->state_id}<br/>".
+							"{$address_details->country_id} {$address_details->zipcode}<br/>".
 							"{$address_details->phone1}, {$address_details->phone2} <br/>".
 							JText::_('COM_PAYCART_BUYERADDRESS_VAT_NUMBER'). " : {$address_details->vat_number}<br/>"
 						; 

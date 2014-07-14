@@ -38,7 +38,7 @@ class PaycartModelPaymentgateway extends PaycartModel
 		$paypal->processor_type = 'paypal';
 		
 		$stripe->processor_config  = '{"api_key":"sk_test_X13tGn9VbhcWDhfruzd8SLMN "}';
-		$paypal->processor_config  = '{"merchant_email":"testmerchant@readybytes.in","sandbox":"1","notify_url":"http:\/\/5.kappa.readybytes.in\/paycart\/7280\/index.php?option=com_paycart&view=invoice&task=notify&processor=paypal","cancel_url":"http:\/\/5.kappa.readybytes.in\/paycart\/7280\/index.php?option=com_paycart&view=invoice&task=cancel&processor=paypal","return_url":"http:\/\/5.kappa.readybytes.in\/paycart\/7280\/index.php?option=com_paycart&view=invoice&task=complete&processor=paypal"}';
+		$paypal->processor_config  = '{"merchant_email":"testmerchant@readybytes.in","sandbox":"1","notify_url":"http:\/\/5.kappa.readybytes.in\/paycart\/8318\/index.php?option=com_paycart&view=cart&task=notify&processor=paypal","cancel_url":"http:\/\/5.kappa.readybytes.in\/paycart\/8318\/index.php?option=com_paycart&view=cart&task=cancel&processor=paypal","return_url":"http:\/\/5.kappa.readybytes.in\/paycart\/8318\/index.php?option=com_paycart&view=cart&task=complete&processor=paypal"}';
 		
 		return Array(1 => $stripe, 2=>$paypal );
 	}

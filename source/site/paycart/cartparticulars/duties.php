@@ -32,6 +32,8 @@ class PaycartCartparticularDuties extends PaycartCartparticular
 		$this->price 			= $this->getPrice();
 		$this->total 			= $this->getTotal();
 		
+		$this->updateTotal();
+		
 		$this->title 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_DUTIES_TITLE'); 
 		$this->message 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_DUTIES_MESSAGE');
 		
@@ -48,5 +50,21 @@ class PaycartCartparticularDuties extends PaycartCartparticular
 	{
 		// empty discount rules
 		return array();
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see /components/com_paycart/paycart/base/PaycartCartparticular::save()
+	 */
+	public function save(PaycartCart $cart) 
+	{
+		$this->updateTotal();
+		
+		// no need to save if total is zero
+		if ($this->getTotal()) { 
+			return parent::save($cart);
+		}
+		
+		return $this;
 	}
 }

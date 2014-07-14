@@ -74,8 +74,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 * @author 	Manish
 	 */
 	public function init()
-	{
-	
+	{	
 		if (!$this->preProcess()) {
 			// Show error page
 			$this->getView()->set('step_ready', 'error');
@@ -87,13 +86,31 @@ class PaycartSiteControllerCheckout extends PaycartController
 		
 		// @NOTE:: Very necessary thing
 		// If user is cuming from outside then ALWAYS call init function. Ok  
-		// If user was doing guest chekout an movie anywhere on site then Checkout always start with First Step  
-		//@PCFIXME :: Check cart exist or not
+		// If user was doing guest chekout an move anywhere on site then Checkout always start with First Step  
+		// Check cart exist or not
 		$this->cart->setIsGuestCheckout(false);
 
 		// if user login then move next step
 		if ($this->_is_loggedin())  {
+			
+			// buyer already login then set thier detail into cart param
+			$loggedin_user =  PaycartFactory::getUser();
+		
+			$buyer = $this->cart->getParam('buyer', new stdClass());	
+			$buyer->email 	=	$loggedin_user->get('email');
+			$buyer->id		=	$loggedin_user->get('id');
+			
+			//set it not guest checkout
+			$this->cart->setIsGuestCheckout(false);
+			
+			// set buyer 
+			$this->cart->setParam('buyer', $buyer);
+			$this->cart->setBuyer($buyer->id);
+			
 			$this->step_current = $this->step_sequence[$this->step_current];
+			
+			//cart Process and save
+			$this->cart->calculate()->save();
 		}
 	
 		$this->getView()->set('step_ready', $this->step_current);
@@ -160,8 +177,6 @@ class PaycartSiteControllerCheckout extends PaycartController
 		
 		//3#.	Post-Processing
 		return $this->postProcess();
-		
-		
 	}
 	
 	/**
@@ -322,14 +337,16 @@ class PaycartSiteControllerCheckout extends PaycartController
 		$session_id =	PaycartFactory::getSession()->getId();
 		
 		// get cart data
-		$cart_data 	=	PaycartFactory::getModel('cart')->loadRecords(Array('session_id' => $session_id));
+		$cart_records 	=	PaycartFactory::getModel('cart')->loadRecords(Array('session_id' => $session_id, ));
 		
-		if (!$cart_data) {
+		if (empty($cart_records)) {
 			// @PCFIXME::for testing purpose, comment below code
 			//return false;
 		}
+		
+		$cart_record	=	array_pop($cart_records);
 
-		//return PaycartCart::getInstance(0, $cart_data);
+		//$cart =	PaycartCart::getInstance(0, $cart_record);
 		// @FIXME :: use only testing purpose
 		$cart = PaycartCart::getInstance(1);
 		
@@ -380,14 +397,16 @@ class PaycartSiteControllerCheckout extends PaycartController
 		
 		$loggedin_user =  PaycartFactory::getUser();
 		
-		$buyer = $this->cart->getParam('buyer', new stdClass());	
-		$buyer->email 	= $loggedin_user->get('email');
+		$buyer = new stdClass();	
+		$buyer->email 	=	$loggedin_user->get('email');
+		$buyer->id		=	$loggedin_user->get('id');
 		
 		//set it not guest checkout
 		$this->cart->setIsGuestCheckout(false);
 		
 		// set buyer 
 		$this->cart->setParam('buyer', $buyer);
+		$this->cart->setBuyer($buyer->id);
 
 		return true;
 	} 
@@ -433,22 +452,22 @@ class PaycartSiteControllerCheckout extends PaycartController
 		// get Billing Address
 		
 		// copy variable
-		$billing_to_shipping	=	isset($form_data['billing_to_shipping']) ? (bool)$form_data['billing_to_shipping'] : false;
-		$shipping_to_billing	=	isset($form_data['shipping_to_billing']) ? (bool)$form_data['shipping_to_billing'] : false;
+		$billing_to_shipping	=	isset($form_data['billing_to_shipping']) ? $form_data['billing_to_shipping'] : false;
+		$shipping_to_billing	=	isset($form_data['shipping_to_billing']) ? $form_data['shipping_to_billing'] : false;
 		
 		$billingaddress_id 	= 	0;
 		$shippingaddress_id	=	0;
 		
-		$billing_address_data 	=	new stdClass();
-		$shipping_address_data	=	new stdClass();
+		$billing_address_data 	=	'';
+		$shipping_address_data	=	'';
 		
 		//if buyer is loggin then might be user select address into existing address
 		if ($this->_is_loggedin() ) {
 			$buyer_id = PaycartFactory::getUser()->get('id');
 			
 			//if user selected address into existing address then get buyer address data and set into cart param 
-			$billingaddress_id	=	isset($form_data['billingaddress_id']) ? (bool)$form_data['billingaddress_id'] : false;
-			$shippingaddress_id	=	isset($form_data['shippingaddress_id']) ? (bool)$form_data['shippingaddress_id'] : false;
+			$billingaddress_id	=	isset($form_data['billingaddress_id']) ? $form_data['billingaddress_id'] : false;
+			$shippingaddress_id	=	isset($form_data['shippingaddress_id']) ? $form_data['shippingaddress_id'] : false;
 			
 			//@PCTODO ::  Cross check this address binded with loggedin user id
 			
@@ -457,33 +476,35 @@ class PaycartSiteControllerCheckout extends PaycartController
 			//get billing address data
 			if ( $billingaddress_id ) {
 				$data = PaycartBuyeraddress::getInstance($billingaddress_id)->toArray();
+				$billing_address_data = (object)($data);
 			}
 			
-			$billing_address_data = (object)($data);
 			
 			// get shipping address data
 			if ( $shippingaddress_id ) {
-				$data = PaycartBuyeraddress::getInstance($billingaddress_id)->toArray();
+				$data = PaycartBuyeraddress::getInstance($shippingaddress_id)->toArray();
+				$shipping_address_data = (object)($data);
 			}
 			
-			$shipping_address_data = (object)($data);
 			
 		}
 		
 		// if no need to copy from shipping to billing OR billing address data is not available in earliar processing
 		// its means billing data is posted (in req data) 
-		if ( !$shipping_to_billing || empty($billing_address_data) ) {
+		if ( !$shipping_to_billing && empty($billing_address_data) ) {
 			// get billing address details
-			$billing_address_data 				=	(object)$form_data['billing'];
-			$billing_address_data->buyer_id		=	$this->cart->getBuyer();
+			$billing_address_data 					=	(object)$form_data['billing'];
+			$billing_address_data->buyer_id			=	$this->cart->getBuyer();
+			$billing_address_data->buyeraddress_id	=	0;
 		}
 
 		// if no need to copy from billing to shipping OR shipping address data is not available in earliar processing
 		// its means shipping data is posted (in req data)
-		if ( !$billing_to_shipping || empty($shipping_address_data) ) {
+		if ( !$billing_to_shipping && empty($shipping_address_data) ) {
 			// get billing address details
-			$shipping_address_data 				=	(object)$form_data['shipping'];
-			$shipping_address_data->buyer_id	=	$this->cart->getBuyer();
+			$shipping_address_data 					=	(object)$form_data['shipping'];
+			$shipping_address_data->buyer_id		=	$this->cart->getBuyer();
+			$shipping_address_data->buyeraddress_id	=	0;
 		}
 		
 		//copy address data one entity to another entity
@@ -493,12 +514,20 @@ class PaycartSiteControllerCheckout extends PaycartController
 			$billing_address_data	=	clone $shipping_address_data;
 		}
 		
+		// Make sure if address are diffrent-diffrent submitted then we will create only one address  
+		if ( $billing_address_data == $shipping_address_data ) {
+			$billing_to_shipping	= true;
+		}
+		
 		//set address on cart-param 
 		$this->cart->setParam('billing_address', 		$billing_address_data);
 		$this->cart->setParam('shipping_address', 		$shipping_address_data);
-		$this->cart->setParam('billing_to_shipping', 	$billing_to_shipping);
-		$this->cart->setParam('shipping_to_billing', 	$shipping_to_billing);
+		$this->cart->setParam('billing_to_shipping', 	(bool)$billing_to_shipping);
+		$this->cart->setParam('shipping_to_billing', 	(bool)$shipping_to_billing);
 		
+		$this->cart->setBillingAddressId($billing_address_data->buyeraddress_id);
+		$this->cart->setShippingAddressId($shipping_address_data->buyeraddress_id);
+
 		return true;
 	}
 	
@@ -548,12 +577,11 @@ class PaycartSiteControllerCheckout extends PaycartController
 		
 		switch ($back_to) 
 		{
-			case 'email_address':
+			case 'email':
 				$this->step_current = Paycart::CHECKOUT_STEP_LOGIN;
 				break;
 				
-			case 'billing_address':
-			case 'shipping_address':
+			case 'address':
 				$this->step_current = Paycart::CHECKOUT_STEP_ADDRESS;
 			break;
 			
@@ -608,15 +636,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 */
 	public function checkout() 
 	{
-		// @PCTODO :: need discussion, If any notice or warning apear then we can not parse json string on client end
-		// and we are unable to take payment .
 		try {
-			
-			//register user, if guest checkout  
-			if ($this->cart->getIsGuestCheckout()) {
-				$this->_do_emailCheckout();
-			}
-			
 			// store all params data
 			$this->cart->checkout();
 			
@@ -633,44 +653,12 @@ class PaycartSiteControllerCheckout extends PaycartController
 	}
 	
 	/**
-	 * Email Checkout by user email-id
-	 *  - Create new account if user is not exist
-	 *  - Or get User id from existing db if user already register
-	 *
-	 * @since	1.0
-	 * @author	Manish
-	 * @return 	true if buyer successfully registered 
+	 * JSON task
+	 * //@PCTODO :: should be move into buyer address
 	 */
-	protected function _do_emailCheckout()
+	public function getBuyerAddress()
 	{
-		$buyer = $this->cart->getParam('buyer', new stdClass());
-		
-		/* @var PaycartHelperBuyer */
-		$buyer_helper = PaycartFactory::getHelper('buyer');
-		
-		//check user already exist or not
-		$username	= $buyer_helper->getUsername($buyer->email);
-		
-		if($username) {
-			//user already exist
-			$user_id = JUserHelper::getUserId($username);
-		} else {
-			// Create new account
-			$user_id = $buyer_helper->createAccount($buyer->email);
-		}
-		
-		// fail to get user-id
-		if (!$user_id) {
-			throw new RuntimeException(JText::_('COM_PAYCART_CHECKOUT_FAIL_TO_PROCESS_EMAIL_CHECKOUT'));
-		}
-		
-		$buyer->id 		= $user_id;
-
-		// set buyer 
-		$this->cart->setParam('buyer', $buyer);
-			
 		return true;
 	}
 	
-
 }

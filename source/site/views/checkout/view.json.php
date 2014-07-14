@@ -69,4 +69,28 @@ class PaycartSiteViewCheckout extends PaycartSiteBaseViewCheckout
 		
 		return true;
 	}
+	
+	public function getBuyerAddress()
+	{
+		$buyeraddress = PaycartBuyeraddress::getInstance($this->input->get('buyeraddress_id'));
+		// user is not loggedin , no need to serve any abbdress
+		
+		$user = JFactory::getUser();
+		if (!$user->get('id') && $buyeraddress->getBuyer() == $user->get('id') ) {
+			$this->json->message		=		JText::_('not permitted');
+			$this->json->message_type	=	 	Paycart::MESSAGE_TYPE_ERROR;
+			
+			return true;
+		}
+		
+		$this->json->selector_index		=	$this->input->get('selector_index');
+		$this->json->buyeraddress 		= 	$buyeraddress->toArray();
+		$this->json->callback			=	$this->input->get('callback'); 
+		
+		return true;
+	}
+	
+	function _basicFormSetup() {
+		return true;
+	}
 }

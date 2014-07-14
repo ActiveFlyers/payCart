@@ -36,7 +36,7 @@ class PaycartSiteControllerState extends PaycartController
 		
 		if(!$country_id) {
 			$ajax_response->addScriptCall
-					(	'paycart.notification', 
+					(	'console.log', 
 						Array('message' 		=> 	JText::_('Country is not availble'),
 							  'message_type'	=>	Paycart::MESSAGE_TYPE_ERROR )
 					);
@@ -45,7 +45,7 @@ class PaycartSiteControllerState extends PaycartController
 		
 		if(!$selector) {
 			$ajax_response->addScriptCall
-					(	'paycart.notification', 
+					(	'console.log', 
 						Array('message' 		=> 	JText::_('State selector is not available here'),
 							  'message_type'	=>	Paycart::MESSAGE_TYPE_ERROR )
 					);
@@ -58,7 +58,7 @@ class PaycartSiteControllerState extends PaycartController
 		$html = '';
 		
 		foreach ($states as $state_id => $state_detail) {
-			$html .= "<option value={$state_detail->isocode} > {$state_detail->title} </option>";
+			$html .= "<option value={$state_detail->state_id} > {$state_detail->title} </option>";
 		}
 		
 		
