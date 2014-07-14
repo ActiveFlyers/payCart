@@ -17,9 +17,6 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 
-<form class="payment-form-html" id="payment-form-html" method="post">
-
-	
 	<div class="row-fluid">
 	
 		<div class="span12">
@@ -31,5 +28,3 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		</button>
 		
 	</div>
-	
-</form>

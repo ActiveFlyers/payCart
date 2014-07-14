@@ -16,27 +16,39 @@
  * 
  */
 
+JHtml::_('formbehavior.chosen', 'select');
+ 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
-	<?php if (isset($title) && !empty($title)): ?>
-	 	<h3><?php echo JText::_('COM_PAYCART_BILLING_INFO'); ?></h3>
-	 <?php endif;?>
-	 
-	 <?php if (isset($shipping_to_billing) && !empty($shipping_to_billing)): ?>
-	 	<label class="checkbox">
-			<input 	id='billing_to_shipping' type="checkbox" 
-					checked="checked"		 name="paycart_form[shipping_to_billing]"
-					onClick="paycart.checkout.address.shipping_to_billing();"
-					value='true'
-			> <?php echo JText::_('COM_PAYCART_SAME_AS_SHIPPING_ADDRESS'); ?>
-		</label>
+	<?php if (!empty($buyer_addresses)) :?>
+
+		<select name='select_billing_address' onChange='paycart.checkout.buyeraddress.onSelect(this.value, "billing");'>
+		
+			<option value='0'> <?php echo JText::_(' Select Existing Address'); ?> </option>
+		<?php
+			foreach ($buyer_addresses as $buyeaddress_id => $buyeraddress_details):
+
+				$selected = (billing_address_id == $billing_address->buyeraddress_id)
+								? 'selected' : '';
+		?>
+			<option value='<?php echo $buyeraddress_details->buyeraddress_id?>'
+				<?php echo $selected; ?>
+			>
+				<?php echo $buyeraddress_details->address; ?>
+				<?php echo "{$buyeraddress_details->city}-{$buyeraddress_details->zipcode}"; ?>
+				<?php echo "{$buyeraddress_details->state_id}"; ?>
+				<?php echo "{$buyeraddress_details->country_id}"; ?>
+				<?php echo "{$buyeraddress_details->phone1}"; ?>
+			</option>
+		<?php endforeach;?>
+		</select>				
 	<?php endif; ?>
 	
 	 	 <fieldset>
 	 	 
 	 	 	<label class="control-label required" ><?php echo JText::_('ZIP code'); ?></label>
-			<input type="text" name="paycart_form[billing][zipcode]" class="input-block-level"  value="<?php echo @$billing_address->zipcode; ?>" >
+			<input type="text" name="paycart_form[billing][zipcode]" class="input-block-level required "  value="<?php echo @$billing_address->zipcode; ?>" >
 			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 
 			<label class="control-label required"><?php echo JText::_('Full Name'); ?></label>
@@ -49,14 +61,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			
 			<label  class="control-label required"><?php echo JText::_('Select Country'); ?></label>
 			<?php
-				echo PaycartHtmlCountry::getList('paycart_form[billing][country]',  @$billing_address->country,  'billing_country_id', Array('class'=>'span12'));
-
+				echo PaycartHtmlCountry::getList('paycart_form[billing][country_id]',  @$billing_address->country_id,  'billing_country_id', Array('class'=>'input-block-level'));
 			?>
 			<span class="hide help-block"><?php echo JText::_('Example block-level help text here.'); ?></span>
 			
 			<label  class="control-label required"><?php echo JText::_('Select State'); ?></label>
 			<?php 
-	  			echo PaycartHtmlState::getList('paycart_form[billing][state]', @$billing_address->state,  'billing_state_id', Array('class'=>'span12'), @$billing_address->country);
+	  			echo PaycartHtmlState::getList('paycart_form[billing][state_id]', @$billing_address->state_id,  'billing_state_id', Array('class'=>'input-block-level'), @$billing_address->country_id);
 	  		?>
 		  		<script>
 	

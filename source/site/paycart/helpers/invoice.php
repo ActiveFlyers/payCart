@@ -22,6 +22,23 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 // load rb-ecommerce pkg
 rb_import('ecommerce');
 
+//@PCFIXME :: move it on proper location
+define('PAYCART_LOG_CATEGORY', 'com_paycart' );
+JLog::addLogger(
+       array(
+            // Sets file name
+            'text_file' => 'com_paycart.logs.php',
+       		// Sets the format of each line
+            'text_entry_format' => '{DATETIME} {PRIORITY}  {CLIENTIP}  {MESSAGE}'
+       ),
+       // Sets messages of all log levels to be sent to the file
+       JLog::ALL,
+       // The log category/categories which should be recorded in this file
+       // In this case, it's just the one category from our extension, still
+       // we need to put it inside an array
+       array(PAYCART_LOG_CATEGORY)
+   );
+
 class PaycartHelperInvoice
 {
 	const STATUS_INVOICE_NONE					=	Rb_EcommerceInvoice::STATUS_NONE;			// 0
@@ -278,31 +295,14 @@ class PaycartHelperInvoice
 			// Process Payement : After request need to Process payament data 
 			$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $paymentResponseData);
 
-			//@PCFIXME :: setup log at proper localtion
-			if (defined('JDEBUG') && JDEBUG ) {
+			//@PCFIXME :: setup log at proper localtion		
 
-				JLog::addLogger(
-				       array(
-				            // Sets file name
-				            'text_file' => 'com_paycart.logs.php',
-				       		// Sets the format of each line
-            				'text_entry_format' => '{DATETIME} {PRIORITY}  {CLIENTIP}  {MESSAGE}'
-				       ),
-				       // Sets messages of all log levels to be sent to the file
-				       JLog::ALL,
-				       // The log category/categories which should be recorded in this file
-				       // In this case, it's just the one category from our extension, still
-				       // we need to put it inside an array
-				       array('com_paycart')
-				   );
-
-				  
-				 JLog::add('Payment response (at'.__FILE__." ) :: \n". $this->getString( $paymentResponseData, true), 
-				 			JLog::INFO, 'com_paycart');
+			if (defined('JDEBUG') && JDEBUG) {
+				JLog::add('Payment response (at'.__FILE__.": LINE : ".__LINE__." ) :: \n". $this->getString( $paymentResponseData), 
+				 			JLog::INFO, PAYCART_LOG_CATEGORY);
 				 			
-				 JLog::add('Processor response (at'.__FILE__." ) :: \n".$this->getString( $processResponseData, true), 
-				 			JLog::INFO, 'com_paycart');
-								
+				JLog::add('Processor response (at'.__FILE__.": LINE : ".__LINE__." ) :: \n". $this->getString( $processResponseData), 
+				 			JLog::INFO, PAYCART_LOG_CATEGORY);
 			}
 			
 			// if you still need to process like fist you need to create user profile at payment-gatway then process for payment
@@ -321,7 +321,7 @@ class PaycartHelperInvoice
 		return $response;
 	}
 	
-	// @FIXME:: using only debug purpose, move into our log file
+	// @PCFIXME:: using only debug purpose, move into our log file
 	function getString($message) 
 	{
 		ob_start();
@@ -343,9 +343,19 @@ class PaycartHelperInvoice
 	 * 
 	 * @return stdClass 
 	 */
-	private function _processNotification($invoiceId, $responseData) 
+	public function processNotification($invoiceId, $responseData) 
 	{
+		if (defined('JDEBUG') && JDEBUG) {
+			JLog::add( 'Before Notification Process, Response-data  (at'.__FILE__.": LINE : ".__LINE__." ) :: \n". $this->getString( $responseData), 
+			 			JLog::INFO, PAYCART_LOG_CATEGORY);
+		}
+		
 		$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $responseData);
+		
+		if (defined('JDEBUG') && JDEBUG) {
+			JLog::add( 'After Notification Process, Rb-ecommerce response data  (at'.__FILE__.": LINE : ".__LINE__." ) :: \n". $this->getString( $processResponseData), 
+			 			JLog::INFO, PAYCART_LOG_CATEGORY);
+		}
 
 		//Create new response and set required cart's stuff. 
 		$response = new stdClass();

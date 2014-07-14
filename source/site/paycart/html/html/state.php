@@ -30,7 +30,7 @@ class PaycartHtmlState
 			$options = PaycartFactory::getModel('state')->loadRecords(Array('country_id'=> $country_id));			
 		}
 		
-		$html	=	PaycartHtml::_('select.genericlist', $options, $name, $attr, 'isocode', 'title', $value, $idtag);
+		$html	=	PaycartHtml::_('select.genericlist', $options, $name, $attr, 'state_id', 'title', $value, $idtag);
 		
 		return $html;
 	}

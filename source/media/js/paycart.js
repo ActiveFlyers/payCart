@@ -100,30 +100,6 @@ if (typeof(paycart.element)=='undefined'){
 		}
 	};
 	
-/*--------------------------------------------------------------
-  Paycart notification related to works
-   	console 	: all console related function
-	user		: All user related notification methos
-
---------------------------------------------------------------*/	
-	paycart.notification = 
-	{
-		// copy console API reference
-		console : 
-		{	//Outputs a message to the Web Console.
-			log :	function(msg)
-			{
-				console.log(msg);
-			}
-		},
-		
-		user : function(response) 
-		{
-		
-		}
-		
-							
-	};
 
 // ENDING :
 // Scoping code for easy and non-conflicting access to $.

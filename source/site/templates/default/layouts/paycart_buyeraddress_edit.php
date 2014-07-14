@@ -95,7 +95,7 @@ $id_suffix++;
 	  </label>
 	  <div class="controls">
 	  		<?php
-	  			echo PaycartHtmlCountry::getList($prefix.'[country]', $displayData->country, "country_$id_suffix", array('class'=>"input-xlarge")); 
+	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', $displayData->country_id, "country_id_$id_suffix", array('class'=>"input-xlarge")); 
 	  		?>
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_COUNTRY_DESC');?></p>
 	  </div>
@@ -109,7 +109,7 @@ $id_suffix++;
 	  <label class="control-label" for="textinput"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE'); ?></label>
 	  <div class="controls">
 	  	<?php 
-	  		echo PaycartHtmlState::getList($prefix.'[state]',$displayData->state,  "state_$id_suffix", $displayData->state, array('class'=>"input-xlarge"),  $displayData->country);
+	  		echo PaycartHtmlState::getList($prefix.'[state_id]',$displayData->state_id,  "state_id_$id_suffix", array('class'=>"input-xlarge"),  $displayData->country_id);
 	  	?>
 	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE_DESC');?></p>
 	    
@@ -117,12 +117,15 @@ $id_suffix++;
 
 			(function($){
 
-				$(<?php echo "'#country_$id_suffix'"; ?>).on('change',  function() {
-					alert('ok');
-					paycart.address.state.onCountryChange(<?php echo "'#country_$id_suffix'" ?>, <?php echo "'#state_$id_suffix'" ?>);
+				$(<?php echo "'#country_id_$id_suffix'"; ?>).on('change',  function() {
+					paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
 				});
-
-				paycart.address.state.onCountryChange(<?php echo "'#country_$id_suffix'" ?>, <?php echo "'#state_$id_suffix'" ?>);
+				<?php
+					// if state already available then no need to get states  
+					if (!$displayData->state_id) :
+				?>
+					paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
+				<?php endif; ?>
 				
 			})(paycart.jQuery);
 			

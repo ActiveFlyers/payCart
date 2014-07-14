@@ -197,10 +197,10 @@ class PaycartCart extends PaycartLib
 
 		$shipping_address_instance = PaycartBuyeraddress::getInstance($this->shipping_address_id);
 		
-		//if cart is locked then no need to following processing
-		if (! $this->is_locked) {
+		//if address availble in cart param then bind it
+		$shipping_address	=	$this->getParam('shipping_address', Array());
+		if (!empty($shipping_address)) {
 			// get buyer detail form cart param 
-			$shipping_address	= 	$this->getParam('shipping_address', new stdclass());		
 			$shipping_address_instance->bind($shipping_address);
 		}
 
@@ -222,11 +222,10 @@ class PaycartCart extends PaycartLib
 
 		$billing_address_instance = PaycartBuyeraddress::getInstance($this->billing_address_id);
 		
-		//if cart is locked then no need to following processing
-		if (! $this->is_locked) {
-		
+		//if address availble in cart param then bind it
+		$billing_address	=	$this->getParam('shipping_address', Array());
+		if (!empty($billing_address)) {
 			// get buyer detail form cart param 
-			$billing_address 	= 	$this->getParam('billing_address', new stdclass());		
 			$billing_address_instance->bind($billing_address);
 		}
 
@@ -398,6 +397,8 @@ class PaycartCart extends PaycartLib
 	 *	   (according to configure sequence)
 	 * 3#. Craete and calculate Adjustment type Cart-Particular,if exist 
 	 * 
+	 * @return PaycartCart instance
+	 * 
 	 * @since 1.0
 	 * @author mManishTrivedi, Gaurav Jain
 	 */
@@ -556,8 +557,45 @@ class PaycartCart extends PaycartLib
 		
 		// before starting Process invoke calculate, usage tracking set or any price can effect it
 		//@PCTODO :: if any change in price then how to notify end-user and how to move forward 
-		//$this->calculate(); 
+		$this->calculate();
 		
+		//lock cart after calculation
+		$this->is_locked	=	true;
+		
+		//register user, if guest checkout  
+		if ($this->getIsGuestCheckout()) {
+			/**
+ 			 * Email Checkout by user email-id
+  			 *  - Create new account if user is not exist
+ 			 *  - Or get User id from existing db if user already register
+ 			 */
+			$buyer = $this->getParam('buyer', new stdClass());
+	
+			/* @var PaycartHelperBuyer */
+			$buyer_helper = PaycartFactory::getHelper('buyer');
+			
+			//check user already exist or not
+			$username	= $buyer_helper->getUsername($buyer->email);
+			
+			if($username) {
+				//user already exist
+				$user_id = JUserHelper::getUserId($username);
+			} else {
+				// Create new account
+				$user_id = $buyer_helper->createAccount($buyer->email);
+			}
+			
+			// fail to get user-id
+			if (!$user_id) {
+				throw new RuntimeException(JText::_('COM_PAYCART_CHECKOUT_FAIL_TO_PROCESS_EMAIL_CHECKOUT'));
+			}
+			$buyer->id 		= $user_id;
+			
+			// set buyer 
+			$this->setParam('buyer', $buyer);
+			
+			$this->setBuyer($user_id);
+		}
 		
 		// Step-1# Set buyer on cart
 		$buyer_instance = $this->getBuyer(true);
@@ -569,16 +607,19 @@ class PaycartCart extends PaycartLib
 		
 		//if address is not save  then save it
 		if ( !$billing_address_instance->getId() ) {
+			//set buyer id
+			$billing_address_instance->setBuyerId($this->getBuyer());
 			$billing_address_instance->save();
 		}
 		
 		// if address copy from one to another
-		if ( $this->params->get('billing_to_shipping', false) || $this->params->get('shipping_to_billing', false) ) {
+		if ( $this->params->get('billing_to_shipping', false)  || $this->params->get('shipping_to_billing', false)) {
 			$shipping_address_instance = $billing_address_instance->getClone(); 
 		}
 		
 		// if shipping address is not saved then save it 
 		if (! $shipping_address_instance->getId()) {
+			$shipping_address_instance->setBuyerId($this->getBuyer());
 			$shipping_address_instance->save();
 		}
 		
@@ -590,14 +631,12 @@ class PaycartCart extends PaycartLib
 		foreach ($this->getCartparticulars() as $type => $cartparticulars) {
 			foreach ($cartparticulars as $cartparticular) {
 				// @PCTODO : Error-Handling
-				// @PCTODO : If total-amount of either duties/promotion or both is zero then no need to store into particular table ??  
 				$cartparticular->save($this);  
 			}
 		}
 		
 		// Step-4# change status Lock cart
 		$this->status		=	Paycart::STATUS_CART_CHECKOUT;
-		$this->is_locked	=	true;
 		
 		// Step-5# Save cart
 		return $this->save();
@@ -715,17 +754,17 @@ class PaycartCart extends PaycartLib
 		// After Payment cart status must be changed
 		$this->processCart($invoice_beforeProecess, $invoice_afterProecess);	
 		
-		return true;
+		return $this;
 	}
 	
 	
 	/**
 	 * Invoke to process cart-notification on this cart
 	 * Payment collection on cart 
-	 * @param Array $payment_data : $data is post data from Payment Processor
+	 * @param Std Class $payment_data : $data is post data from Payment Processor
 	 * @throws RuntimeException
 	 */
-	public function processNotification(Array $processor_notification_data) 
+	public function processNotification( $processor_notification_data) 
 	{
 		/* @var $invoice_helper_instance PaycartHelperInvoice */
 		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
@@ -736,7 +775,7 @@ class PaycartCart extends PaycartLib
 		$invoice_beforeProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
 
 		// Process Notification data
-		$this->processNotification($invoiceId, $processor_notification_data);
+		$invoice_helper_instance->processNotification($invoice_id, $processor_notification_data);
 				
 		//after process invoice
 		$invoice_afterProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
@@ -744,7 +783,7 @@ class PaycartCart extends PaycartLib
 		// After Payment cart status must be changed
 		$this->processCart($invoice_beforeProecess, $invoice_afterProecess);	
 		
-		return true;
+		return $this;
 	}
 
 	/**

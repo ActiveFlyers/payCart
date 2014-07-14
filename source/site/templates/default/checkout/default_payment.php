@@ -56,7 +56,9 @@ $amount = 100;
 <!--	Payment gateway html display here-->
 			<div class="span6">
 				<div class="row-fluid payment-form-html-div ">
-					<?php echo $payment_gateway_html; ?>
+					<form class="payment-form-html" id="payment-form-html" method="post">
+						<?php echo $payment_gateway_html; ?>
+					</form>
 				</div>
 			</div>
 			
@@ -93,7 +95,7 @@ $amount = 100;
 				getPaymentForm : function(paymentgateway_id)
 				{
 					if (!paymentgateway_id) {
-						paycart.notification.console.log('Payment Gateway required for fetching payment form html');
+						console.log('Payment Gateway required for fetching payment form html');
 						return false;
 					}
 
@@ -107,18 +109,18 @@ $amount = 100;
 					    success: function( data ) {
 
 							if( typeof data['message_type'] != "undefined" ) { 
-								paycart.notification.console.log ("Error:  " + data );
+								console.log ("Error:  " + data );
 					    		return false;
 							}
 
 					    	// Payment-form setup into payment div
-					    	$('.payment-form-html-div').html(data['html']);
+					    	$('.payment-form-html').html(data['html']);
 
 					    	// Payment-form action setup
 					    	$('#payment-form-html').prop('action', data['post_url']); 
 					    },
 					    error: function( data ) {
-					    	paycart.notification.console.log ("Error:  " + data );
+					    	console.log ("Error:  " + data );
 					    }
 					  });
 
@@ -135,14 +137,14 @@ $amount = 100;
 					var postData = { 'task'	:	'checkout' }
 					
 					$.ajax({
-					    url: 'index.php?option=com_paycart&view=checkout&format=json',
+					    url		: 'index.php?option=com_paycart&view=checkout&format=json',
 					    cache	: false,
 						data	: postData,
 					    dataType: 'json',
 					    success: function( data ) {
 
 							if( typeof data['message_type'] != "undefined" ) { 
-								paycart.notification.console.log ("Error:  " + data );
+								console.log ("Error:  " + data );
 					    		return false;
 							}
 
@@ -152,14 +154,14 @@ $amount = 100;
 					    		return true;
 							}
 
-					    	paycart.notification.console.log ("Success:  " + data );
+					    	console.log ("Success:  " + data );
 
 					    	// Submit Form
 					    	$('#payment-form-html').submit();
 					    	
 					    },
 					    error: function( data ) {
-					    	paycart.notification.console.log ("Error:  " + data );
+					    	console.log ("Error:  " + data );
 					    }
 					  });
 

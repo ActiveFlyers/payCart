@@ -47,4 +47,55 @@ class PaycartSiteControllerCart extends PaycartController
 	}
 	
 	
+	function cancel()
+	{
+		echo "Payment cancelllllllllllllllllll";
+		exit;
+	}
+	
+	
+	
+	public function notify()
+	{
+		$get 				= $this->input->getArray($_GET);	//Rb_Request::get('GET'); 
+		$post 				= $this->input->getArray($_POST);	//Rb_Request::get('POST');
+		
+		$response_data 		= array_merge($get, $post);
+		
+		$response 			= new stdClass();
+		$response->data 	= $response_data;
+		$response->__post	= $post;
+		$response->__get	= $get;
+
+		//file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response_data,true), FILE_APPEND);
+		
+		if (defined('JDEBUG') && JDEBUG) {
+			// @PCFIXME:: dump data
+		}
+		
+		if(!isset($response_data['processor'])){
+			// @PCFIXME:: dump data and notify to admin	
+		}
+		
+		try {
+			/* @var $invoice_helper_instance PaycartHelperInvoice */
+			$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+			$invoice_id = $invoice_helper_instance->getNotificationInvoiceId($response);
+			
+			$cart_records	= 	PaycartFactory::getModel('cart')->loadRecords(Array('invoice_id' => $invoice_id));
+			$cart_record 	=	array_pop($cart_records);
+			
+			$cart = PaycartCart::getInstance(0, $cart_record);
+			
+			$cart->processNotification($response);
+
+		} catch (Exception $ex) {
+			//@PCTODO :: dump exception into log file
+			$ex->getMessage();
+		}
+		echo "Success!!";
+		exit;				
+	}
+	
+	
 }

@@ -142,6 +142,26 @@ class PaycartProduct extends PaycartLib
 		return $this->title;
 	}
 	
+	public function getWidth() 
+	{	
+		return $this->width;
+	}
+	
+	public function getWeight() 
+	{	
+		return $this->weight;
+	}
+
+	public function getHeight() 
+	{	
+		return $this->height;
+	}
+
+	public function getLength() 
+	{	
+		return $this->length;
+	}
+	
 	/**
 	 * @return name of Product Cover Media 
 	 */

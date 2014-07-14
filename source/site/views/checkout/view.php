@@ -157,13 +157,20 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 			$shipping_address	=	(object)$cart->params['shipping_address'];
 		}
 		
-		//setup basic stuff like steps		
-		$this->assign('step_ready',			$this->step_ready);
-		$this->assign('buyer', 				$buyer);
-		$this->assign('billing_address', 	$billing_address);
-		$this->assign('shipping_address', 	$shipping_address);
+		//default value 
+		$billing_to_shipping	=	true;
+		if ( isset($cart->params['billing_to_shipping'])) {
+			$billing_to_shipping	=	(bool)$cart->params['billing_to_shipping'];
+		}
 		
-		$this->assign('cart', 			$cart);
+
+		//setup basic stuff like steps		
+		$this->assign('step_ready',				$this->step_ready);
+		$this->assign('buyer', 					$buyer);
+		$this->assign('billing_address', 		$billing_address);
+		$this->assign('shipping_address', 		$shipping_address);
+		$this->assign('billing_to_shipping', 	$billing_to_shipping);
+		$this->assign('cart', 					$cart);
 		
 		return true;
 	}

@@ -25,8 +25,8 @@ class PaycartBuyeraddress extends PaycartLib
 	protected $to;
 	protected $address;
 	protected $city;
-	protected $state;
-	protected $country;
+	protected $state_id;
+	protected $country_id;
 	protected $zipcode;
 	protected $phone1;
 	protected $phone2;
@@ -55,8 +55,8 @@ class PaycartBuyeraddress extends PaycartLib
 		$this->to				=	'';
 		$this->address			=	'';
 		$this->city				=	'';
-		$this->state			=	'';
-		$this->country			=	'';
+		$this->state_id			=	'';
+		$this->country_id			=	'';
 		$this->zipcode			=	'';
 		$this->phone1			=	'';
 		$this->phone2			=	'';
@@ -112,9 +112,9 @@ class PaycartBuyeraddress extends PaycartLib
 	/**
 	 * @return buyeraddress state field
 	 */
-	public function getState()
+	public function getStateId()
 	{
-		return $this->state;
+		return $this->state_id;
 	}
 	
 	/**
@@ -144,9 +144,9 @@ class PaycartBuyeraddress extends PaycartLib
 	/**
 	* @return buyeraddress country field
 	 */
-	public function getCountry()
+	public function getCountryId()
 	{
-		return $this->country;
+		return $this->country_id;
 	}
 	
 	/**
@@ -155,6 +155,11 @@ class PaycartBuyeraddress extends PaycartLib
 	public function getVatnumber()
 	{
 		return $this->vat_number;
+	}
+	
+	public function setBuyerId($buyer_id)
+	{
+		$this->buyer_id = $buyer_id;
 	}
 	
 

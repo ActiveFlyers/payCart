@@ -89,10 +89,14 @@ $steps				=	array_keys($checkout_sequence);
 				var postData 	= $("#pc-checkout-form").serializeArray();
 				var link  		= 'index.php?option=com_paycart&view=checkout&task=process';
 	
+				if($("#pc-checkout-form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation("hasErrors")){
+					// Our validation work on submit call therefore first we will ensure that form is not properly fill 
+					// then we will call submit method. So proper msg display and focus on required element. 
+					//$("#pc-checkout-form").submit();
+					console.log('Validation fail');
+				}
+				
 				console.log('paycart.checkout.process');
-	
-				//@PCTODO :: Display Spinner{ request is processing }  
-	
 	
 				paycart.ajax.go(link, postData);
 	
@@ -128,13 +132,60 @@ $steps				=	array_keys($checkout_sequence);
 				console.log('paycart.checkout.process.success : end');
 			},
 	
-			/**
-			 * data is json object 
-			 */
-			notification :function(data)
+
+			getData : function(request)
 			{
-				console.log('paycart.checkout.process.error :: ' + data);
-			}		
+				var url = ( typeof request['url'] == "undefined"  ) 
+	    					? 'index.php?option=com_paycart&view=checkout'
+							: request['url'];
+
+				// json formate nd call back
+				url = url+'&format=json';
+				
+				$.ajax({
+				    url		: ( typeof request['url'] == "undefined"  ) 
+					    		? 'index.php?option=com_paycart&view=checkout&format=json'
+	    						: request['url']+'&format=json',
+	    						
+				    cache	: ( typeof request['cache'] == "undefined" ) 
+		    					? false
+								: request['cache'],
+								
+					data	: ( typeof request['data'] == "undefined" ) 
+					    		? {}
+								: request['data'],
+
+				    success : function( response ) {
+
+								//console.log ("Success:  " + response );
+
+								//clear data (remove warnings and error)
+								response = rb.ajax.junkFilter(response);
+								
+								 
+								if( typeof response['message_type'] != "undefined" ) { 
+									console.log ( {" response contain error :  " : response } );
+						    		return false;
+								}
+		
+								// Any callback available
+						    	if( typeof response['callback'] != "undefined"  && response['callback'] ) { 
+						    		var callback = response['callback'];
+						    		(eval(callback))(response);
+								}
+
+								return true;
+						    },
+
+					error : function( response ) {
+
+						    	console.log ({"Error on fetching JSON data :  " :response} );
+
+						    	return response;
+						    }
+				  });
+			}	
+				
 		};
 
 
@@ -208,7 +259,7 @@ $steps				=	array_keys($checkout_sequence);
 		*-------------------------------------------------------------
 		*/
 
-		paycart.checkout.address = 
+		paycart.checkout.buyeraddress = 
 		{
 			copy : function(from, to)
 			{
@@ -231,35 +282,77 @@ $steps				=	array_keys($checkout_sequence);
 					var index 		= matches[1];
 					var to_selector = '[name^="'+to_name+'['+index+']"]';
 
-					$(to_selector).val($(this).val())
+					$(to_selector).val($(this).val());
 				});
 
-				console.log('copy '+from+' to '+to);
+				//console.log('copy '+from+' to '+to);
 			},
+
+			init	: function()
+			{
+				// if billing to shipping already checked then need to copy all address
+				paycart.checkout.buyeraddress.onBillingToShipping();
+			},
+
+		   /**
+			* Invoke to get specific address detail and put into input containers
+			* 
+			* selected_address_id	: Selected address value 
+			* selector_index 		: Either billing or shipping
+			* 
+			*/
+			onSelect	: function(selected_address_id, selector_index)
+			{
+				selected_address_id = parseInt(selected_address_id);
+				
+				if (!selected_address_id) {
+					return true;
+				}
+
+				var request = [];
+				request['data'] = { 
+									'buyeraddress_id' 	: selected_address_id, 
+									'task' 				: 'getBuyerAddress',
+									'selector_index'	: selector_index,
+									'callback'			: 'paycart.checkout.buyeraddress.fill_address_values'
+								  };
+				  
+				paycart.checkout.getData(request);
+				
+			},
+
+		   /**
+			* Invoke to fill address values into selected address {either billing or shipping}
+			*/
+			fill_address_values : function(data) 
+			{
+				// paycart_form[billing] or paycart_form[shipping] 
+				var selecor_name 	= 'paycart_form['+data['selector_index'] +']';
+				
+				for (index in data['buyeraddress']) {
+					$('[name="'+selecor_name+'['+index+']"]').val(data['buyeraddress'][index]);
+				}
+			},
+			
 		
 			// Copy billing to shipping				
-			billing_to_shipping : function()
+			onBillingToShipping : function()
 			{
 				// Checked billing to shipping 
 				if( $('#billing_to_shipping').prop('checked') == true ) { 
 
-					paycart.checkout.address.copy('billing', 'shipping');
-					
-					$('.pc-checkout-shipping fieldset:first').fadeOut();
+					paycart.checkout.buyeraddress.copy('billing', 'shipping');
+
+					$('.pc-checkout-shipping-html').fadeOut();
 
 					return true;
 				} 
 
-				// unchecked billing to shipping 
-				
-				// delete all shipping input values
-				$('[name^="paycart_form[shipping]"]').val('');
+				// unchecked billing to shipping
 
-				// Open shipping address deatil field setfor
-				$('.pc-checkout-shipping fieldset:first').fadeIn();
+				// Open shipping address deatil field set 
+				$('.pc-checkout-shipping-html').fadeIn();
 				
-				console.log('delete input from shipping');
-
 				return true;
 			},
 
@@ -270,10 +363,10 @@ $steps				=	array_keys($checkout_sequence);
 			{
 				//Before Submit Copy billing to shipping address
 				if ( $('#billing_to_shipping').prop('checked') == true ) { 
-					paycart.checkout.address.copy('billing', 'shipping');
+					paycart.checkout.buyeraddress.copy('billing', 'shipping');
 				}
 
-				paycart.checkout.address.do();
+				paycart.checkout.buyeraddress.do();
 			},
 
 			/**
@@ -288,244 +381,7 @@ $steps				=	array_keys($checkout_sequence);
 				return false;					
 			}
 		};
-
-
-		/**
-		*-----------------------------------------------------------
-		* Checkout > Address Screen
-		*	All function required when buyer is login and address already exist 
-		*
-		*-------------------------------------------------------------
-		*/
-		paycart.checkout.buyeraddress = 
-		{
-			/**
-			 *  Invoke to get billing address stuff
-			 */			
-			billing_address_info	: 
-			{
-					// Paycart form name where billing info save
-					'name'				:	'billing',					
-					// billing id set on this selector if select existing billing address
-					'input_selector'	:	'#billingaddress_id',
-					//copy selector
-					'same_as_selector'	:	'#shipping_to_billing',
-					// Div Title text 		
-					'title_text'		:	'Select Billing Address',	
-					// div will be visible when try to add new address
-					'div_selector'		:	'.pc-checkout-billingaddress-addnew-html',
-					// next move 
-					'move_next_name'	:	'shipping_address_info',		
-					//next-move required (true then move to shipping address ) Otherwise move to next checkout step 
-					'move_next'			:	true	
-			},
-
-			/**
-			 *  Invoke to get shipping address stuff
-			 */
-			shipping_address_info	: 
-			{
-					'name'				:	'shipping',
-					'input_selector'	:	'#shippingaddress_id',
-					'same_as_selector'	:	'#billing_to_shipping',
-					'title_text'		:	'Select Shipping Address',
-					'div_selector'		:	'.pc-checkout-shippingaddress-addnew-html',
-					'move_next_name'	:	'billing_address_info',
-					'move_next'			:	false
-			},
-
-			visible_address_info	:	{},
-
-		   /**
-			* Initial setup for buyer address
-			*	- Which address will visible
-			*	- According to visible address set other stuff like title, hide dummy span which contain previous selected address 
-			*	
-			*/
-			init : function(visible_address)
-			{
-				if (visible_address) { 
-					// set current visble address
-					paycart.checkout.buyeraddress.visible_address_info = visible_address;
-				}
-
-				//if address is not available then set default address
-				if ($.isEmptyObject(paycart.checkout.buyeraddress.visible_address_info)) {
-					// if address is not avalable
-					paycart.checkout.buyeraddress.visible_address_info = paycart.checkout.buyeraddress.billing_address_info;
-				}
-
-				//get current visible address
-				var buyer_address = paycart.checkout.buyeraddress.visible_address_info;
-
-				// Show add-new buyer address span
-				$('.pc-checkout-buyeraddress-addnew').show();
-
-				// Current title
-				$('[data-pc-checkout-buyeraddresses-title="show"]').html('<h3>'+buyer_address['title_text']+'</h3>');
-			},
-			
-			/**
-			 * After selecting any address invoke this function to execute further
-			 * processing.
-			 */
-			onSelect : function (buyeraddress_id) 
-			{
-				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address_info;
-
-				// set buyeraddress id on hidden input element
-				$(visible_buyeraddress['input_selector']).val(buyeraddress_id);
-
-				// if next step required 
-				if( !visible_buyeraddress['move_next'] ) {
-					paycart.checkout.address.do();
-					return false;
-				}
-
-				// if first address is set then set next address
-
-				//change visible address
-				paycart.checkout.buyeraddress.init(paycart.checkout.buyeraddress[visible_buyeraddress['move_next_name']]);
-
-				// display span-0 (dummy span) which contain selected address
-				if ( buyeraddress_id ) {	
-					
-					var to 				=	$('[href="#pc-checkout-buyeraddress-'+buyeraddress_id+'"]').html();
-					var full_address 	=	$("#pc-checkout-buyeraddress-"+buyeraddress_id).find('address').html();
-
-					paycart.checkout.buyeraddress.display_selected_address(to+'<br />'+full_address);
-
-					// hide span
-					$('#pc-checkout-buyeraddress-accordion-'+buyeraddress_id).hide();
-				}
-
-				return true;
-									
-			},
-
-			/**
-			 * Invoke to take action after creating new address like first put billing address then shipping then
-			 *	- After billing address it will set "new craeted address" value into  span-0 (dummy span)
-			 *    and will move to next action (fill shipping information)
-			 *	- After Shipping information it will call to next checkout step (order review)
-			 *  	 
-			 */
-			create : function()
-			{
-				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address_info;
 				
-				// next address show for next task
-				if (paycart.checkout.buyeraddress.selected(0) === false) {
-					// it means ready to next step
-					return false;
-				};
-
-				var from_name 		=	visible_buyeraddress['name'];
-
-				var to 			=	$('[name^="paycart_form['+from_name+'][to]"]').val();
-				var address		=	$('[name^="paycart_form['+from_name+'][address]"]').val();
-				var zipcode		=	$('[name^="paycart_form['+from_name+'][zipcode]"]').val();
-				var country		=	$('[name^="paycart_form['+from_name+'][country]"]').find(":selected").text();
-				var state		=	$('[name^="paycart_form['+from_name+'][state]"]').find(":selected").text();
-				var city		=	$('[name^="paycart_form['+from_name+'][city]"]').val();
-				var phone		=	$('[name^="paycart_form['+from_name+'][phone1]"]').val();
-
-				//@PCFIXME:: add VAT var
-				
-				// @PCTODO::Address should be formated accoding to address formate
-				var full_address	 = 		to+'<br/>'+address+'<br/>'+city+'-'+zipcode+'<br/>'+state+'<br/>'+country + '<br /> <br />';
-					full_address	+=		'<abbr title="Phone"><i class="fa fa-phone"></i></abbr>' +  phone + '<br>';	
-				
-				
-				paycart.checkout.buyeraddress.display_selected_address(full_address);
-			},
-
-			/**
-			 * Display selected address into span0 (dummy span) 
-			 */
-			display_selected_address : function(full_address)
-			{
-				$('#pc-checkout-buyeraddress-accordion-0').show();
-				
-				//set to for address
-				//$('[href="#pc-checkout-buyeraddress-0"]').html('Use Same as {previous} Address');
-				
-				// set rest element
-				$('#pc-checkout-buyeraddress-0').find('address').html(full_address);
-
-				// intimate to selected address (this span is always render first so we have initimate by Title)
-				$('html, body').animate({scrollTop:$('.pc-checkout-state').position().top}, 'slow');
-			},
-
-			/**
-			 * Always invoke on second move to say "Continue with perevious action" like first select billing then shippingf address
-			 *	- If billing address selected into existing address then set same id into shipping address id
-			 	- If new billing address is created then this billing address will be copied to shipping address.
-			 *
-			 */
-			copy : function()
-			{
-				// if first address id (let say billing_address_id) set, It means buyer already choosed existing address
-				// so we will copy this address id to next address id (it means, Copy billing_address_id to shipping_address_id)
-				var visible_buyeraddress	=	paycart.checkout.buyeraddress.visible_address_info;
-				var previous_buyeraddress	=	paycart.checkout.buyeraddress[visible_buyeraddress['move_next_name']];
-
-				var previous_buyeraddress_id	=	$(previous_buyeraddress['input_selector']).val();
-
-
-				// if create new address then move-next and click on same as previous action then need to set same as selector other wise new address will be created)
-				// so set same as seletor
-				$(visible_buyeraddress['same_as_selector']).val(true);
-				
-									
-				if ( previous_buyeraddress_id ) {
-					// address will be set and next action will be handled by this method
-					paycart.checkout.buyeraddress.selected(previous_buyeraddress_id);		
-					return false;				
-				}
-
-				// if previous address is new created (i.e. billing address)t
-				// then copy previous address form data to new address form data (shipping address )
-				paycart.checkout.address.copy(previous_buyeraddress['name'], visible_buyeraddress['name']);
-				//take action after copy
-				paycart.checkout.buyeraddress.selected(0);
-			},
-
-			/**
-			 * hide existing selector. 
-			 */
-			view_address : function(selector) 
-			{
-				$(selector).hide();
-				return false;
-			},
-
-			/**
-			 * Click on cancel button
-			 */
-			onCancel : function()
-			{
-				// hide addnew-html
-				$('.pc-checkout-shippingaddress-addnew-html, .pc-checkout-billingaddress-addnew-html').hide();
-
-				// show add new span
-				$('.pc-checkout-buyeraddress-addnew').show();
-
-			},
-
-			/**
-			 * Click to add new address
-			 */
-			addNew	:	function()
-			{
-				$('.pc-checkout-buyeraddress-addnew').hide();
-				var visible_buyeraddress = paycart.checkout.buyeraddress.visible_address_info;
-				$(visible_buyeraddress['div_selector']).show();
-				
-			}
-		};
-			
-		
 	})(paycart.jQuery);
 
 
