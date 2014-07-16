@@ -171,6 +171,7 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 		$this->assign('shipping_address', 		$shipping_address);
 		$this->assign('billing_to_shipping', 	$billing_to_shipping);
 		$this->assign('cart', 					$cart);
+		$this->assign('cart_total', 			$this->cart->getTotal());
 		
 		return true;
 	}

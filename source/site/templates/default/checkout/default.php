@@ -86,20 +86,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	
 	<div class="pc-checkout-loader hide" id="pc-checkout-loader">
     	<i class="fa fa-spinner fa-3x fa-spin"></i>
-	</div>
-			
+	</div>			
 </div>
-
-<script>
-
-	(function($) {
-		//$('#pc-checkout-loader').hide();
-		$( document ).ajaxStart(function() {
-			  $('#pc-checkout-loader').show();
-			}).ajaxStop(function() {
-			  $('#pc-checkout-loader').hide();
-			});
-	})(paycart.jQuery);
-
-</script>
 

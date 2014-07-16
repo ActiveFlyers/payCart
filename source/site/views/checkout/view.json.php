@@ -85,7 +85,6 @@ class PaycartSiteViewCheckout extends PaycartSiteBaseViewCheckout
 		
 		$this->json->selector_index		=	$this->input->get('selector_index');
 		$this->json->buyeraddress 		= 	$buyeraddress->toArray();
-		$this->json->callback			=	$this->input->get('callback'); 
 		
 		return true;
 	}

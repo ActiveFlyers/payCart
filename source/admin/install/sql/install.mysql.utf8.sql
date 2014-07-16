@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `is_locked` 		int(11)  NOT NULL COMMENT 'Stop re-calculation',
   `created_date` 	datetime DEFAULT '0000-00-00 00:00:00',
   `modified_date` 	datetime DEFAULT '0000-00-00 00:00:00',
-  `checkedout_date` 	datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Date of either cart is checked out or reversal is created',
+  `locked_date` 	datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Date of either cart is checked out or reversal is created',
   `paid_date` 		datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Payment Completion date.',
   `cancelled_date` 	datetime DEFAULT '0000-00-00 00:00:00',
   `completed_date` 	datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'when final status done (paid+shipped)',
@@ -290,6 +290,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyer` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `buyeraddress_id` int(11) NOT NULL AUTO_INCREMENT,
+  `md5` varchar(32) NOT NULL,
   `buyer_id` int(11) NOT NULL DEFAULT '0',
   `to` varchar(100) NOT NULL COMMENT 'reference name',
   `address` text,
@@ -301,6 +302,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `phone1` varchar(32) NOT NULL,
   `phone2` varchar(32) NOT NULL,
   PRIMARY KEY (`buyeraddress_id`),
+  KEY `idx_md5` (`md5`),
   KEY `idx_buyer_id` (`buyer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

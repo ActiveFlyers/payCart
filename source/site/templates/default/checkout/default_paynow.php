@@ -23,7 +23,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			<?php echo $response_object->html;?>
 		</div>
 		
-		<button type="button" class="btn btn-large btn-block btn-primary" class="paycart-invoice-paynow" onClick="paycart.checkout.payment.onPaynow();" >
+		<button type="button" class="btn btn-large btn-block btn-primary" class="paycart-invoice-paynow" onClick="return paycart.checkout.payment.onCheckout();" >
 			<?php echo Rb_Text::_('Pay Now');?>
 		</button>
 		

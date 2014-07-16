@@ -92,11 +92,11 @@ if (typeof(paycart.element)=='undefined'){
 			
 		},
 
-		onCountryChange	:	function(country_selector, state_selector)
+		onCountryChange	:	function(country_selector, state_selector, default_selected_state)
 		{
 			var link = rb_vars.url.root +'index.php?option=com_paycart&view=state&task=getoptions';
 
-			paycart.ajax.go( link, {'country_id' : $(country_selector).val(), 'state_selector' : state_selector });
+			paycart.ajax.go( link, {'country_id' : $(country_selector).val(), 'state_selector' : state_selector, 'default_state' : default_selected_state });
 		}
 	};
 	

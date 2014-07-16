@@ -423,15 +423,16 @@ class PaycartSiteControllerCheckout extends PaycartController
 	 */
 	protected function _do_loginWithEmail(Array $form_data)
 	{
-		$buyer = $this->cart->getParam('buyer', new stdClass());
+		$buyer =	new stdClass();
 		
 		$buyer->email 	= $form_data['email'];
-		
+		$buyer->id		= 0;
 
 		$this->cart->setParam('buyer', $buyer);
 		
 		// guest checkout enabled on this cart 
 		$this->cart->setIsGuestCheckout(true);
+		$this->cart->setBuyer($buyer->id);
 	
 		return true;
 	}
