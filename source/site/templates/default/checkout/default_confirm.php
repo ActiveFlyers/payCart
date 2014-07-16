@@ -265,45 +265,6 @@ $currency_html = '<i class="fa fa-usd"></i>';
 
 <script>
 (function($){
-			paycart.checkout.confirm = 
-			{
-				edit : 
-				{	
-					email : function() 
-					{
-						try
-						{
-							var data = {'back_to' : 'email_address'}
-							paycart.checkout.goback(data);
-						} catch (e) {
-							console.log({'exception_was ' : e});
-						}
-						
-						return false;
-					},
-				
-					//@PCFIXME :: Comments for all methods
-					address : function()
-					{
-						try {
-							var data = {'back_to' : 'address'}
-							paycart.checkout.goback(data);
-						} catch (e) {
-							console.log({'exception_was': e});	
-						}
-
-						return false;
-					},
-
-				},
-
-				process :	function()
-				{
-					paycart.checkout.process()
-					
-				}
-				
-			};
 
 			paycart.checkout.step.change('<?php echo $step_ready; ?>');				
 			

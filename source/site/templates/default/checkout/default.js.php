@@ -30,6 +30,15 @@ $steps				=	array_keys($checkout_sequence);
 
 		//define checkout
 		
+		
+		// Loader 
+		$( document ).ajaxStart(function() {
+			  $('#pc-checkout-loader').show();
+			}).ajaxStop(function() {
+			  $('#pc-checkout-loader').hide();
+			});
+		
+		
 		/**
 		 * -----------------------------------------------------------
 		 * Checkout > Process
@@ -172,6 +181,13 @@ $steps				=	array_keys($checkout_sequence);
 						    	if( typeof response['callback'] != "undefined"  && response['callback'] ) { 
 						    		var callback = response['callback'];
 						    		(eval(callback))(response);
+									return true;
+								}
+
+						    	// Any callback available
+						    	if( typeof request['success_callback'] != "undefined"  && request['success_callback'] ) { 
+						    		var callback = request['success_callback'];
+						    		(eval(callback))(response);
 								}
 
 								return true;
@@ -253,8 +269,6 @@ $steps				=	array_keys($checkout_sequence);
 				to		:	data copy "to" seletor 
 		* 		Copy one form data to anaother form
 		* 
-		* 2. do 
-		*		Submit login data
 		*
 		*-------------------------------------------------------------
 		*/
@@ -263,28 +277,36 @@ $steps				=	array_keys($checkout_sequence);
 		{
 			copy : function(from, to)
 			{
-				var regExp 			=	/\[(\w*)\]$/;
-				var from_name 		=	'paycart_form['+from +']';
-				var to_name 		=	'paycart_form['+to +']';
-				
-				var form_selector	= '[name^="'+from_name+'"]';
+				var regExp 			=	/\[(\w*)\]$/, 
+					from_name 		=	'paycart_form['+from +']',
+					to_name 		=	'paycart_form['+to +']',
+					form_selector	= 	'[name^="'+from_name+'"]',
+					state_value		=	0,
+					matches, index, element;
 					
 				$(form_selector).each(function() {
 
 					// get index
-					var matches = this.name.match(regExp);
+					matches = this.name.match(regExp);
 
 					if (!matches) {
 						return false;
 					}
 
 					//matches[1] contains the value between the Square Bracket
-					var index 		= matches[1];
-					var to_selector = '[name^="'+to_name+'['+index+']"]';
+					index 		= matches[1];
+					
+					$('[name="'+to_name+'['+index+']"]').val($(this).val());
 
-					$(to_selector).val($(this).val());
+					if ('state_id' == index) {
+						state_value = $(this).val();
+					}
+
 				});
 
+				// special treatment for country and state value
+				$('[name="'+to_name+'[country_id]"]').trigger('change', {'state_id' : state_value});
+				
 				//console.log('copy '+from+' to '+to);
 			},
 
@@ -313,25 +335,33 @@ $steps				=	array_keys($checkout_sequence);
 				request['data'] = { 
 									'buyeraddress_id' 	: selected_address_id, 
 									'task' 				: 'getBuyerAddress',
-									'selector_index'	: selector_index,
-									'callback'			: 'paycart.checkout.buyeraddress.fill_address_values'
+									'selector_index'	: selector_index
 								  };
+				  request['success_callback']	=	'paycart.checkout.buyeraddress.afterFetchingAddress';
 				  
 				paycart.checkout.getData(request);
-				
 			},
 
 		   /**
 			* Invoke to fill address values into selected address {either billing or shipping}
 			*/
-			fill_address_values : function(data) 
+			afterFetchingAddress : function(data) 
 			{
 				// paycart_form[billing] or paycart_form[shipping] 
-				var selecor_name 	= 'paycart_form['+data['selector_index'] +']';
+				var selecor_name = 'paycart_form['+data['selector_index'] +']', 
+					state_value	= 0 ;
 				
 				for (index in data['buyeraddress']) {
 					$('[name="'+selecor_name+'['+index+']"]').val(data['buyeraddress'][index]);
+
+					if ('state_id' == index) {
+						state_value 	=	data['buyeraddress'][index];
+					}
 				}
+
+				// special treatment for country and state value
+				$('[name="'+selecor_name+'[country_id]"]').trigger('change', {'state_id' : state_value});
+				
 			},
 			
 		
@@ -380,6 +410,133 @@ $steps				=	array_keys($checkout_sequence);
 
 				return false;					
 			}
+		};
+
+	   /**
+		*-----------------------------------------------------------
+		* Checkout > Order confirm Screen 
+		*-------------------------------------------------------------
+		*/
+		paycart.checkout.confirm = 
+		{
+			edit : 
+			{	
+				email : function() 
+				{
+					try
+					{
+						var data = {'back_to' : 'email_address'};
+						paycart.checkout.goback(data);
+					} catch (e) {
+						console.log({'exception_was ' : e});
+					}
+					
+					return false;
+				},
+			
+				address : function()
+				{
+					try {
+						var data = {'back_to' : 'address'};
+						paycart.checkout.goback(data);
+					} catch (e) {
+						console.log({'exception_was': e});	
+					}
+
+					return false;
+				},
+
+			},
+
+			process :	function()
+			{
+				paycart.checkout.process()
+				
+			}
+			
+		};
+
+	   /**
+		*-----------------------------------------------------------
+		* Checkout > Payment Screen 
+		*-------------------------------------------------------------
+		*/
+		paycart.checkout.payment = 
+		{
+			onChangePaymentgateway : function() 
+			{
+				var paymentgateway_id = $('#pc-checkout-payment-gateway').val();
+
+				if (!paymentgateway_id) {
+					return false;
+				}
+				
+				paycart.checkout.payment.getPaymentForm(paymentgateway_id);
+			},			
+
+		   /**
+			*	Invoke to get payment form html 
+			*	 @param int paymentgateway_id : payment gatway id
+			*
+			* 	If successfully complete request then call  
+			*/
+			getPaymentForm : function(paymentgateway_id)
+			{
+				if (!paymentgateway_id) {
+					console.log('Payment Gateway required for fetching payment form html');
+					return false;
+				}
+
+				var request = [];
+				
+				request['data'] = { 
+									'paymentgateway_id'	:	paymentgateway_id, 
+									'task' 				: 'getPaymentFormHtml'
+								  };
+				  
+				request['success_callback']	= 'paycart.checkout.payment.afterFetchingPaymentForm'
+				  
+				paycart.checkout.getData(request);
+				
+			 	return true;
+			},
+
+		   /**
+			*	Invoke to after fetching payment form   
+			*/
+			afterFetchingPaymentForm : function(data)
+			{
+				// Payment-form setup into payment div
+		    	$('.payment-form-html').html(data['html']);
+
+		    	// Payment-form action setup
+		    	$('#payment-form-html').prop('action', data['post_url']); 
+			},
+
+		   /**
+			*	Invoke to checkout cart (Cart will be locked)  
+			*/
+			onCheckout : function()
+			{
+				var request = [];
+				
+				request['data'] = { 'task' : 'checkout'};
+				request['success_callback']	= 'paycart.checkout.payment.onPayNow'
+				  
+				paycart.checkout.getData(request);
+
+				return true;
+			},
+
+		   /**
+			*	Invoke to initiate Payment 
+			*/
+			onPayNow : function()
+			{
+				// Submit Form
+		    	$('#payment-form-html').submit();
+			}
+		
 		};
 				
 	})(paycart.jQuery);

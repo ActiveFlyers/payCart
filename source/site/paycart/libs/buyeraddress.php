@@ -31,6 +31,7 @@ class PaycartBuyeraddress extends PaycartLib
 	protected $phone1;
 	protected $phone2;
 	protected $vat_number;
+	protected $md5;
 	
 
 	/**
@@ -63,6 +64,25 @@ class PaycartBuyeraddress extends PaycartLib
 		$this->vat_number		=	'';
 		
 		return $this;
+	}
+	
+	public function bind($data, $ignore=Array()) 
+	{		
+		parent::bind($data, $ignore);
+		
+		$this->md5 = $this->getMD5();
+		
+		return $this;
+	}
+	
+	public function getMD5()
+	{
+		//@PCFIXME :: strtolower
+		$string = 	$this->buyer_id.$this->to.$this->address.$this->city.
+					$this->state_id.$this->country_id.$this->zipcode.
+					$this->phone1.$this->phone2.$this->vat_number;
+					
+		return md5($string);
 	}
 	
 	/**

@@ -14,21 +14,25 @@
  * $shipping_address 	:: 	stdclass object, contain previous address data 
  * 
  */
-
-JHtml::_('formbehavior.chosen', 'select');
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
+
+//@PCTODO:: define constant for it
+if (!PaycartFactory::getApplication()->client->mobile) {
+	JHtml::_('formbehavior.chosen', '.pc-buyeraddress');
+}
+
 ?>
 
 	<?php if (!empty($buyer_addresses)) :?>
 	
-		<select name='select_billing_address' onChange='paycart.checkout.buyeraddress.onSelect(this.value, "shipping");'>
+		<select name='select_billing_address' class="pc-buyeraddress input-block-level" onChange='paycart.checkout.buyeraddress.onSelect(this.value, "shipping");'>
 		
 			<option value='0'> <?php echo JText::_(' Select Existing Address'); ?> </option>
 		<?php
 			foreach ($buyer_addresses as $buyeaddress_id => $buyeraddress_details):
 
-				$selected = (billing_address_id == $billing_address->buyeraddress_id)
+				$selected = ($shipping_address_id == $buyeraddress_details->buyeraddress_id)
 								? 'selected' : '';
 		?>
 			<option value='<?php echo $buyeraddress_details->buyeraddress_id?>'
@@ -73,8 +77,14 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	
 				(function($){
 	
-					$('#shipping_country_id').on('change',  function() {
-						paycart.address.state.onCountryChange('#shipping_country_id', '#shipping_state_id');
+					$('#shipping_country_id').on('change',  function(event, data) {
+						var default_selected_state = 0;
+
+						if (typeof data !== 'undefined' && typeof data.state_id !== 'undefined') {
+							default_selected_state =  data.state_id;
+						}
+
+						paycart.address.state.onCountryChange('#shipping_country_id', '#shipping_state_id', default_selected_state);
 					});
 					
 

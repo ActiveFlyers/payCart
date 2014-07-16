@@ -29,6 +29,7 @@ class PaycartSiteControllerState extends PaycartController
 	public function getOptions() 
 	{
 		$country_id	=	$this->input->get('country_id');
+		$default_selected_state_id	=	$this->input->get('default_state', 0);
 		// get raw strin without any filter
 		$selector	=	$this->input->get('state_selector', NULL, 'RAW');
 		
@@ -58,7 +59,11 @@ class PaycartSiteControllerState extends PaycartController
 		$html = '';
 		
 		foreach ($states as $state_id => $state_detail) {
-			$html .= "<option value={$state_detail->state_id} > {$state_detail->title} </option>";
+			$selected = '';
+			if ($default_selected_state_id == $state_id) {
+				$selected = 'selected="selected"';
+			}
+			$html .= "<option value={$state_detail->state_id}  $selected > {$state_detail->title} </option>";
 		}
 		
 		

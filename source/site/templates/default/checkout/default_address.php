@@ -18,7 +18,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		<!--	Billing Address -->
 	 	<div class="span6 pc-checkout-billing ">
 	 	
-	 		<h3><?php echo JText::_('COM_PAYCART_BILLING_INFO'); ?></h3>
+	 		<h3><?php echo JText::_('COM_PAYCART_ADDRESS_BILLING'); ?></h3>
 	 		
 	 		<div class="pc-checkout-billing-html">
 			 	<?php
@@ -32,7 +32,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		<!--	Shipping Address	-->
 		<div class=" span6 pc-checkout-shipping clearfix">
 		
-			<h3><?php echo JText::_('COM_PAYCART_SHIPPING_ADDRESS_TITLE'); ?></h3>
+			<h3><?php echo JText::_('COM_PAYCART_ADDRESS_SHIPPING'); ?></h3>
 
 			<label class="checkbox">
 				<input 	id='billing_to_shipping' type="checkbox" 
@@ -40,7 +40,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						name="paycart_form[billing_to_shipping]"
 						onClick="return paycart.checkout.buyeraddress.onBillingToShipping();"
 						value='true'
-				/><?php echo JText::_('COM_PAYCART_SAME_AS_BILLING_ADDRESS'); ?>
+				/><?php echo JText::_('COM_PAYCART_SAME_ADDRESS_TEXT'); ?>
 					
 			</label>
 			

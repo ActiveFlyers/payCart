@@ -11,7 +11,6 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 $currency_html = '<i class="fa fa-usd"></i>';
-$amount = 100;
 ?>
 
 
@@ -32,7 +31,7 @@ $amount = 100;
 				<div class="row-fluid">
 					<blockquote>
 						<p class="muted"><?php echo JText::_('Payable Amount')?></p>
-						<p class="text-error"><?php echo $currency_html; ?>100</p>
+						<p class="text-error"><?php echo $currency_html;?> <?php echo $cart_total; ?></p>
 					</blockquote>
 				</div>
 				
@@ -73,104 +72,6 @@ $amount = 100;
 
 	(function($){
 		
-		paycart.checkout.payment = 
-			{
-				onChangePaymentgateway : function() 
-				{
-					var paymentgateway_id = $('#pc-checkout-payment-gateway').val();
-
-					if (!paymentgateway_id) {
-						return false;
-					}
-					
-					paycart.checkout.payment.getPaymentForm(paymentgateway_id);
-				},			
-
-			   /**
-				*	Invoke to get payment form html 
-				*	 @param int paymentgateway_id : payment gatway id
-				*
-				* 	If successfully complete request then call  
-				*/
-				getPaymentForm : function(paymentgateway_id)
-				{
-					if (!paymentgateway_id) {
-						console.log('Payment Gateway required for fetching payment form html');
-						return false;
-					}
-
-					var postData = { 'paymentgateway_id'	:	paymentgateway_id }
-					
-					$.ajax({
-					    url: 'index.php?option=com_paycart&view=checkout&task=getPaymentFormHtml&format=json',
-					    cache	: false,
-						data	: postData,
-					    dataType: 'json',
-					    success: function( data ) {
-
-							if( typeof data['message_type'] != "undefined" ) { 
-								console.log ("Error:  " + data );
-					    		return false;
-							}
-
-					    	// Payment-form setup into payment div
-					    	$('.payment-form-html').html(data['html']);
-
-					    	// Payment-form action setup
-					    	$('#payment-form-html').prop('action', data['post_url']); 
-					    },
-					    error: function( data ) {
-					    	console.log ("Error:  " + data );
-					    }
-					  });
-
-					  return true;
-					
-				},
-
-			   /**
-				*	Invoke to checkout cart 
-				*		- If successfully complete request then start payment collection  
-				*/
-				onPaynow : function()
-				{
-					var postData = { 'task'	:	'checkout' }
-					
-					$.ajax({
-					    url		: 'index.php?option=com_paycart&view=checkout&format=json',
-					    cache	: false,
-						data	: postData,
-					    dataType: 'json',
-					    success: function( data ) {
-
-							if( typeof data['message_type'] != "undefined" ) { 
-								console.log ("Error:  " + data );
-					    		return false;
-							}
-
-							// @PCTODO:: unused
-					    	if( typeof data['callback'] != "undefined" ) { 
-								data['callback']();
-					    		return true;
-							}
-
-					    	console.log ("Success:  " + data );
-
-					    	// Submit Form
-					    	$('#payment-form-html').submit();
-					    	
-					    },
-					    error: function( data ) {
-					    	console.log ("Error:  " + data );
-					    }
-					  });
-
-					  return true;
-					
-				}
-			
-			};
-
 		paycart.checkout.step.change('<?php echo $step_ready; ?>');
 		paycart.checkout.payment.getPaymentForm($('#pc-checkout-payment-gateway').val());
 

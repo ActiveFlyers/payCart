@@ -37,7 +37,7 @@ class PaycartCart extends PaycartLib
 	 */
 	protected $is_locked;						 		
 	
-	protected $request_date;					// Checout-Date (Request for Payment)
+	protected $request_date;					// Checkout/refund  Request date (Request for Payment)
 	protected $payment_date;					// Payment Completion date
 	protected $delivered_date;					// Cart deliver-date (Fill by manually) 
 	
@@ -622,37 +622,7 @@ class PaycartCart extends PaycartLib
 		
 		//register user, if guest checkout  
 		if ($this->getIsGuestCheckout()) {
-			/**
- 			 * Email Checkout by user email-id
-  			 *  - Create new account if user is not exist
- 			 *  - Or get User id from existing db if user already register
- 			 */
-			$buyer = $this->getParam('buyer', new stdClass());
-	
-			/* @var PaycartHelperBuyer */
-			$buyer_helper = PaycartFactory::getHelper('buyer');
-			
-			//check user already exist or not
-			$username	= $buyer_helper->getUsername($buyer->email);
-			
-			if($username) {
-				//user already exist
-				$user_id = JUserHelper::getUserId($username);
-			} else {
-				// Create new account
-				$user_id = $buyer_helper->createAccount($buyer->email);
-			}
-			
-			// fail to get user-id
-			if (!$user_id) {
-				throw new RuntimeException(JText::_('COM_PAYCART_CHECKOUT_FAIL_TO_PROCESS_EMAIL_CHECKOUT'));
-			}
-			$buyer->id 		= $user_id;
-			
-			// set buyer 
-			$this->setParam('buyer', $buyer);
-			
-			$this->setBuyer($user_id);
+			$this->guestRegistration();
 		}
 		
 		// Step-1# Set buyer on cart
@@ -667,7 +637,18 @@ class PaycartCart extends PaycartLib
 		if ( !$billing_address_instance->getId() ) {
 			//set buyer id
 			$billing_address_instance->setBuyerId($this->getBuyer());
-			$billing_address_instance->save();
+			
+			$md5 = $billing_address_instance->getMD5();
+
+			//if already save then no need to save it just bind address id
+			$existing_address = PaycartFactory::getModel('buyeraddress')->loadRecords(Array('md5' => $md5));
+
+			if (empty($existing_address)) {
+				$billing_address_instance->save();
+			} else {
+				$existing_address = array_shift($existing_address);
+				$billing_address_instance->setId($existing_address->buyeraddress_id);
+			}
 		}
 		
 		// if address copy from one to another
@@ -678,7 +659,19 @@ class PaycartCart extends PaycartLib
 		// if shipping address is not saved then save it 
 		if (! $shipping_address_instance->getId()) {
 			$shipping_address_instance->setBuyerId($this->getBuyer());
-			$shipping_address_instance->save();
+			
+			$md5 = $shipping_address_instance->getMD5();
+			
+			//if already save then no need to save it just bind address id
+			$existing_address = PaycartFactory::getModel('buyeraddress')->loadRecords(Array('md5' => $md5));
+
+			if (empty($existing_address)) {
+				$shipping_address_instance->save();
+			} else {
+				$existing_address = array_shift($existing_address);
+				$shipping_address_instance->setId($existing_address->buyeraddress_id);
+			}
+
 		}
 		
 		//Set address
@@ -695,9 +688,47 @@ class PaycartCart extends PaycartLib
 		
 		// Step-4# change status Lock cart
 		$this->status		=	Paycart::STATUS_CART_CHECKOUT;
+		$this->request_date	= 	Rb_Date::getInstance();
 		
 		// Step-5# Save cart
 		return $this->save();
+	}
+	
+	protected function guestRegistration()
+	{
+		/**
+ 		 * Email Checkout by user email-id
+  		 *  - Create new account if user is not exist
+ 		 *  - Or get User id from existing db if user already register
+ 		 */
+		$buyer = $this->getParam('buyer', new stdClass());
+
+		/* @var PaycartHelperBuyer */
+		$buyer_helper = PaycartFactory::getHelper('buyer');
+		
+		//check user already exist or not
+		$username	= $buyer_helper->getUsername($buyer->email);
+		
+		if($username) {
+			//user already exist
+			$user_id = JUserHelper::getUserId($username);
+		} else {
+			// Create new account
+			$user_id = $buyer_helper->createAccount($buyer->email);
+		}
+		
+		// fail to get user-id
+		if (!$user_id) {
+			throw new RuntimeException(JText::_('COM_PAYCART_CHECKOUT_FAIL_TO_PROCESS_EMAIL_CHECKOUT'));
+		}
+		$buyer->id 		= $user_id;
+		
+		// set buyer 
+		$this->setParam('buyer', $buyer);
+		
+		$this->setBuyer($user_id);
+		
+		return $this;
 	}
 	
 	/**
