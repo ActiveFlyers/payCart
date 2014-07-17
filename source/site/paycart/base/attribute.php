@@ -20,7 +20,7 @@ class PaycartAttribute
 {
 	static $instance = array();
 
-	public function getEditHtml($attribute, $value=null)
+	public function getEditHtml($attribute,$selectedValue ='', Array $options = array())
 	{
 		return true;
 	}
@@ -110,7 +110,7 @@ class PaycartAttribute
 	/**
 	 * get config Html
 	 */
-	function getConfigHtml($attribute)
+	function getConfigHtml($attribute,$selectedValue ='', Array $options = array())
 	{
 		$type = $attribute->getType();
 		
@@ -120,7 +120,10 @@ class PaycartAttribute
 		
 		$options = $this->getOptions($attribute);
 		$count	 = (count($options) >= 1)?count($options):1;
-		
+
+		//needed to reset keys for proper counter management
+		$options = array_values($options);		
+
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $options);
 		}  
@@ -201,32 +204,24 @@ class PaycartAttribute
 	 * Returns html that will be used for selector
 	 * 
 	 * @param $attribute : Instance of PaycartProductAttribute 
-	 * @param $optionMapping : Array contains following value
-	 * 						    'optionid' => array (
-	 * 										    'url' , 'value'
-	 *                                        ) 
-	 * @param $options : comma separaterd string containing optionids that would be considered in filters
 	 * @param $selectedOption : Option that should be selected by default
+	 * @param $options : comma separaterd string containing optionids that would be considered in filters
 	 */
-	function getSelectorHtml($attribute, $optionMapping, $options = '', $selectedOption = '')
+	function getSelectorHtml($attribute,  $selectedOption = '', Array $options = array())
 	{
 		$options  = PaycartFactory::getModel('productattributeoption')->loadOptions($attribute->getId(), $attribute->getLanguageCode(),$options);
 		if(empty($options)){
 			return '';
 		}	
 		
-		$html = '<select name="attr_'.$attribute->getId().'" onchange="location = this.options[this.selectedIndex].value;">';
+		$html = '<select id="pc-attr-'.$attribute->getId().'" name="attributes['.$attribute->getId().']" onchange="paycart.product.selector.onChange(this)">';
 		
 		foreach ($options as $option){
-			$opt      = $optionMapping[$option['productattribute_option_id']];
-			$url      = $opt['url'];
 			$selected = '';
-			
-			if(!empty($selectedOption) && $selectedOption == $opt['value']){
+			if(!empty($selectedOption) && $selectedOption == $option['productattribute_option_id']){
 				$selected = "selected='selected'";
 			}
-			
-			$html  .= '<option value="'.$url.'" '.$selected.' >'.$option['title'].'</option>' ;
+			$html  .= '<option value="'.$option['productattribute_option_id'].'" '.$selected.' >'.$option['title'].'</option>' ;
 		}
 		
 		$html .= '</select>';

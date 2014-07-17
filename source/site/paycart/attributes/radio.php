@@ -23,14 +23,14 @@ class PaycartAttributeRadio extends PaycartAttribute
 	/**
 	 *  return edit html that will be displayed on product edit screen
 	 */
-	function getEditHtml($attribute,  $value = null)
+	function getEditHtml($attribute, $selectedValue ='', Array $options = array())
 	{
 		$html    = '';
 		$options = parent::getOptions($attribute);
 		
 		if( !empty($options)){
 			foreach($options as $option){
-				$checked = ($option['productattribute_option_id'] == $value) ? "checked='checked'":'';
+				$checked = ($option['productattribute_option_id'] == $selectedValue) ? "checked='checked'":'';
 				$html    .= "<input type='radio' name='paycart_form[attributes][".$attribute->getId()."]' value='".$option['productattribute_option_id'] ."'".$checked.">".$option['title'];
 			}
 		}

@@ -17,6 +17,8 @@ if(!defined( '_JEXEC' )){
 <?php 
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/owl.carousel.min.js');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/owl.carousel.css');
+
+include_once 'default.js.php'; //PCTODO: won't work with template overriding
 ?>
 <script>
 paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');
@@ -52,19 +54,20 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		
 		 		<!-- Filterable Attributes -->
 		 		<div>
-		 		    <form>
+		 		    <form class="pc-product-attributes" method="post">
 		 		    	 <fieldset>
 		 		    	 	<?php if(!empty($variants)):?>
-							    	<?php foreach ($filters as $productAttributeId => $data):?>
+							    	<?php foreach ($selectors as $productAttributeId => $data):?>
 							    		<?php $instance  = PaycartProductAttribute::getInstance($productAttributeId);?>
-							    		<?php $attribute = PaycartAttribute::getInstance($instance->getType());?>
 							    		
 							    		 <div>
 							    			<label class="muted"><?php echo $instance->getTitle();?>:</label>
-							    			<?php echo $attribute->getSelectorHtml($instance, $data['optionMapping'], $data['options'], $data['selectedvalue']);?>
+							    			<?php echo $product->getAttributeHtml('selector', $productAttributeId, $data['selectedvalue'],$data['options']);?>
 							    		 </div>
 							        <?php endforeach;?>
 							<?php endif;?>
+							<!-- -->
+							<input type="hidden" name="pc-product-base-attribute" class="pc-product-base-attribute"/>
 					    </fieldset>
 				    </form>
     			</div>
@@ -95,7 +98,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 	 		<div class="accordion-group">
 		 		<div class="accordion-heading">
 		 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id" data-target=".accordion-body-id">
-		 				<h2><?php echo JText::_("COM_PAYCART_PRODUCT_DETAILS");?></h2>
+		 				<h2><?php echo JText::_("COM_PAYCART_DETAILS");?></h2>
 		 			</a>		
 		 		</div>
 		 		<!-- use class "in" for keeping it open -->
@@ -129,7 +132,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
                                           <?php echo $instance->getTitle();?>
                                       </td>
                                       <td width="75%">
-                                          <?php $options = $instance->getOptions(); echo $options[array_shift($optionId)]->title;?>
+                                          <?php $options = $instance->getOptions(); echo $options[$optionId]->title;?>
                                       </td>
                                   </tr>         
                               <?php endforeach;?>

@@ -55,6 +55,9 @@ class PaycartProduct extends PaycartLib
 	protected $metadata_title  	   = '';
 	protected $metadata_keywords   = '';
 	protected $metadata_description = '';	
+
+	//variants of current product
+	protected $_variants 			= array();
 	
 	/**
 	 * (non-PHPdoc)
@@ -97,6 +100,8 @@ class PaycartProduct extends PaycartLib
 		$this->metadata_title  	   = '';
 		$this->metadata_keywords   = '';
 		$this->metadata_description = '';	
+
+		$this->_variants 			= array();
 		
 		return $this;
 	}
@@ -269,18 +274,12 @@ class PaycartProduct extends PaycartLib
 			foreach ($this->_attributeValues as $attributeId => $attributeValue) {
 				//format Value before save
 				$attribute 		= PaycartProductAttribute::getInstance($attributeId);
-				$attributeValue = PaycartAttribute::getInstance($attribute->getType())->formatValue($attributeValue);
-				
-				if(!is_array($attributeValue)){
-					$attributeValue = (array)$attributeValue;
-				}
+				$value = PaycartAttribute::getInstance($attribute->getType())->formatValue($attributeValue);
 
-				//in case of multiple values
-				foreach ($attributeValue as $value){
-					$data[++$count]['product_id'] 		 = $productId;
-					$data[$count]['productattribute_id'] = $attributeId;
-					$data[$count]['productattribute_value'] = $value;
-				}
+				$data[++$count]['product_id'] 		 = $productId;
+				$data[$count]['productattribute_id'] = $attributeId;
+				$data[$count]['productattribute_value'] = $value;
+
 			}
 			PaycartFactory::getInstance('productAttributeValue', 'model')->save($data);
 		}
@@ -380,9 +379,9 @@ class PaycartProduct extends PaycartLib
 	
 	public function getAttributeValues($productAttributeId = null)
 	{
-		if(!is_null($productAttributeId) && isset($this->_attributeValues[$productAttributeId])){
-			$attributeValues = $this->_attributeValues[$productAttributeId];
-			return array_shift($attributeValues);
+		if(!empty($productAttributeId) && isset($this->_attributeValues[$productAttributeId])){
+			$attributeValue = $this->_attributeValues[$productAttributeId];
+			return $attributeValue;
 		}
 		return $this->_attributeValues;
 	}
@@ -464,15 +463,35 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function getVariants()
 	{
-		//FIXME : cache this records
-		return PaycartFactory::getModel('product')->loadRecords(array('variation_of' => $this->getVariationOf()));
+		if(empty($this->_variants)){
+			$records = PaycartFactory::getModel('product')->loadRecords(array('variation_of' => $this->getVariationOf()));
+			foreach ($records as $record){
+				$this->_variants[$record->product_id] = PaycartProduct::getInstance($record->product_id,$record);
+			}
+		}
+		
+		return $this->_variants; 
 	}
 	
 	/**
 	 * Load attributes from which product variants can be filtered
 	 */
-	public function getFilterableAttributes($productIds)
+	public function getSelectorAttributes(Array $productIds = array())
 	{
-		return PaycartFactory::getModel('productattributevalue')->loadFilterableAttributes($productIds);
+		return PaycartFactory::getModel('productattributevalue')->loadSelectorAttributes($productIds);
+	}
+	
+	/**
+	 * return html of specified type
+	 * @param String $type : Type of html to be render  (edit and selector etc)
+	 * @param $attributeId : attribute id
+	 * @param String $selectedValue : selected value if any
+	 * @param array $attributeOptions : options that is required to be displayed related to the current attribute
+	 */
+	public function getAttributeHtml($type, $attributeId, $selectedValue = '', Array $attributeOptions = array()) 
+	{
+		$attribute	  = PaycartProductAttribute::getInstance($attributeId);
+		$functionName = 'get'.ucfirst($type).'Html';
+		return $attribute->$functionName($selectedValue, $attributeOptions);
 	}
 }

@@ -64,17 +64,17 @@ class PaycartModelProductAttributeOption extends PaycartModel
 	 *
 	 * @param $attributeId : id for which options to be loaded
 	 * @param $languageCode : language code for which options' label are to be loaded
-	 * @param $optionIds(optional) : Comma separaterd string containing options for which data to be loaded,
+	 * @param $optionIds(optional) : option ids for which data to be loaded,
 	 * 								 otherwise all the options of current attributeId will be loaded 
 	 *
 	 * @return array of resultant rows
 	 */
-	function loadOptions($attributeId, $languageCode, $optionIds = '')
+	function loadOptions($attributeId, $languageCode, Array $optionIds = array())
 	{
 		$query = new Rb_Query();
 		
 		if(!empty($optionIds)){
-			$query->where('ao.productattribute_option_id IN('.$optionIds.')');
+			$query->where('ao.productattribute_option_id IN('.implode(',', $optionIds).')');
 		}
 		
 		return $query->select('*')

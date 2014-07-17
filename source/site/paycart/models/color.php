@@ -24,17 +24,17 @@ class PaycartModelColor extends PaycartModel
 	 * Load options of color attribute
 	 * 
 	 * @param $languageCode : language code for which options' data are to be loaded
-	 * @param $optionIds(optional) : Comma separaterd string containing options for which data to be loaded,
+	 * @param $optionIds(optional) : option ids for which data to be loaded,
 	 * 								 otherwise all the options of color attribute will be loaded 
 	 *
 	 * @return array of resultant rows 
 	 */
-	function loadOptions($languageCode, $optionIds = '')
+	function loadOptions($languageCode, Array $optionIds = array())
 	{
 		$query = new Rb_Query();
 		
 		if(!empty($optionIds)){
-			$query->where('ac.color_id IN('.$optionIds.')');
+			$query->where('ac.color_id IN('.implode(',', $optionIds).')');
 		}
 		
 		return $query->select('*')

@@ -146,14 +146,13 @@ class PaycartHelperProduct extends PaycartHelper
 	 */
 	public function buildSelectorAttributes($records, $baseAttrId, $variants, $product)
 	{
-		$productIds = implode(',', array_keys($variants));
+		$productIds = array_keys($variants);
 		$attributes = array();
 		
 		//for base attribute
 		$productAttributeValue = PaycartFactory::getModel('productattributevalue')->loadProductAttributeValue($baseAttrId, $productIds);
-		$attributes[$baseAttrId]['options'] 	  = $records[$baseAttrId]['values'];
+		$attributes[$baseAttrId]['options'] 	  = array_keys($productAttributeValue);
 		$attributes[$baseAttrId]['selectedvalue'] = $product->getAttributeValues($baseAttrId);
-		$attributes[$baseAttrId]['optionMapping'] = $this->_buildAttributeOptionUrl($productAttributeValue);
 		
 		unset($records[$baseAttrId]);
 		
@@ -165,32 +164,14 @@ class PaycartHelperProduct extends PaycartHelper
 		 	$condition = 'product_id IN(select product_id from #__paycart_productattribute_value 
 		 				  where productattribute_id = '.$baseAttrId.'
 		 				  and productattribute_value = '.$product->getAttributeValues($baseAttrId).'  
-		 				  and product_id IN('.$productIds.'))';		
+		 				  and product_id IN('.implode(',', $productIds).'))';		
 		 	
 		 	$productAttributeValue = PaycartFactory::getModel('productattributevalue')->loadProductAttributeValue($key, $productIds, $condition);
 		 	
-		 	$attributes[$key]['options'] 	   = implode(',', array_keys($productAttributeValue));
+		 	$attributes[$key]['options'] 	   = array_keys($productAttributeValue);
 		 	$attributes[$key]['selectedvalue'] = $product->getAttributeValues($key);
-		 	$attributes[$key]['optionMapping'] = $this->_buildAttributeOptionUrl($productAttributeValue);
 		}
 		
 		return $attributes;
-	}
-	
-	/**
-	 * 
-	 * @param Array $productAttributeValue
-	 */
-	protected function _buildAttributeOptionUrl($productAttributeValue)
-	{
-		$result = array();
-		
-		foreach ($productAttributeValue as $key => $value){
-				$result[$key] = array();
-				$result[$key]['url']   = PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$value['product_id'] ); 
-				$result[$key]['value'] = $value['productattribute_value'];
-		}
-		
-		return $result;
 	}
 }

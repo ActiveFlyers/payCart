@@ -42,7 +42,7 @@ class PaycartModelProductAttributeValue extends PaycartModel
 		$result = array();
 		//process records and create 
 		foreach ($records as $record){
-			$result[$record['productattribute_id']][] = $record['productattribute_value'];
+			$result[$record['productattribute_id']] = $record['productattribute_value'];
 		}
 		
 		return $result;
@@ -107,11 +107,15 @@ class PaycartModelProductAttributeValue extends PaycartModel
 	 * 					totalProducts		=> total number of product that is having any value of attribute
 	 * 					values				=> comma separated values of attribute for mentioned products
 	 */
-	public function loadFilterableAttributes($productIds)
+	public function loadSelectorAttributes(Array $productIds = array())
 	{
+		if(empty($productIds)){
+			return array();
+		}
+		
 		$query   =  new Rb_Query();
 		$records = $query->select('`productattribute_id`, COUNT(DISTINCT `productattribute_value`) as "totalValues", 
-		            			    COUNT(DISTINCT `product_id`) as "totalProducts", GROUP_CONCAT(DISTINCT(`productattribute_value`)) as "values"')
+		            			    COUNT(DISTINCT `product_id`) as "totalProducts"')
 			  			 ->from($this->getTable()->getTableName())
 			  			 ->group('`productattribute_id`')
 			  			 ->where('`product_id` IN ('.implode(",", $productIds).')')
@@ -126,11 +130,15 @@ class PaycartModelProductAttributeValue extends PaycartModel
 	 * 
 	 * Loads product and it's value for current attribute
 	 * @param int $attributeId : attribute id for which to load value of mentioned productids
-	 * @param string $productIds : comma separated string containing product ids for which to load value
+	 * @param Array $productIds : product ids for which to load value
 	 * @param string $extraCondition (optional) : subquery that can be added in where condition
 	 */
-	public function loadProductAttributeValue($attributeId, $productIds, $extraCondition = '')
+	public function loadProductAttributeValue($attributeId, Array $productIds = array(), $extraCondition = '')
 	{
+		if(empty($productIds)){
+			return array();
+		}
+		
 		$query = new Rb_Query();
 		
 		if(!empty($extraCondition)){
@@ -140,9 +148,44 @@ class PaycartModelProductAttributeValue extends PaycartModel
 		return $query->select('product_id, productattribute_value')
 					 ->from($this->getTable()->getTableName())
 					 ->where('`productattribute_id` = '.$attributeId)
-					 ->where('`product_id` IN('.$productIds.')')
+					 ->where('`product_id` IN('.implode(",", $productIds).')')
 					 ->group('productattribute_value')
 					 ->dbLoadQuery()
 					 ->loadAssocList('productattribute_value');
 	}
+	
+	/**
+	 * invoke to get product id from the given products that is matching 
+	 * each attribute value (given in @param $attributes)
+	 *  
+	 * @param Array $products 
+	 * @param Array $attributes
+	 * @return product id  
+	 */
+	public function loadProduct($products, $attributes)
+	{
+		$productIds = implode(',', $products);
+		
+		$prefix		= 'Select `product_id` from (';
+		$query      = 'Select `product_id` from '.$this->getTable()->getTableName().
+							' where product_id IN('.$productIds.') AND productattribute_id = '.key($attributes).' AND productattribute_value = '.$attributes[key($attributes)];
+		$count 		= count($attributes);
+				  
+		unset($attributes[key($attributes)]);
+		
+		if(!empty($attributes)){
+			$query	= $prefix.$query;
+			 
+			foreach ($attributes as $key => $value){				    
+				$subQuery = ' Union all'.
+							' Select `product_id` from '.$this->getTable()->getTableName().
+							' where product_id IN('.$productIds.') AND productattribute_id = '.$key.' AND productattribute_value = '.$value;
+				$query .= $subQuery;
+			}
+			$query .= ' ) tbl GROUP BY `product_id` HAVING count(*) = '.$count;
+		}
+		
+		return PaycartFactory::getDbo()->setQuery($query)->loadResult();
+	}
+	
 }

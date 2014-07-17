@@ -39,10 +39,9 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 		$data['type']	=  $this->input->get('attributeType',0);
 		
 		$attribute		=  PaycartProductAttribute::getInstance($attributeId)->bind($data);
-		
-		$instance = PaycartAttribute::getInstance($data['type']);
-		$html = $instance->getConfigHtml($attribute);
-		$js	  = $instance->getScript(); 
+
+		$html = $attribute->getConfigHtml();
+		$js	  = $attribute->getScript(); 
 
 		// replace specific div html and call script
 		$ajaxResponse = PaycartFactory::getAjaxResponse();
