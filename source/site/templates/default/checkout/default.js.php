@@ -105,7 +105,7 @@ $steps				=	array_keys($checkout_sequence);
 					console.log('Validation fail');
 				}
 				
-				console.log('paycart.checkout.process');
+				//console.log('paycart.checkout.process');
 	
 				paycart.ajax.go(link, postData);
 	
@@ -118,10 +118,7 @@ $steps				=	array_keys($checkout_sequence);
 			{
 				var link  		= 'index.php?option=com_paycart&view=checkout&task=goback';
 	
-				console.log('paycart.checkout.goback.do');
-	
-				//@PCTODO :: Display Spinner{ request is processing }  
-	
+				//console.log('paycart.checkout.goback.do');	
 				paycart.ajax.go(link, data);
 	
 				return false;
@@ -133,12 +130,12 @@ $steps				=	array_keys($checkout_sequence);
 			 */
 			success: function(data)
 			{
-				console.log('paycart.checkout.process.success : start');
+				//console.log('paycart.checkout.process.success : start');
 	
 				// replace string
 				$(".pc-checkout-step-html").html(data.html);
 	
-				console.log('paycart.checkout.process.success : end');
+				//console.log('paycart.checkout.process.success : end');
 			},
 	
 
@@ -178,16 +175,18 @@ $steps				=	array_keys($checkout_sequence);
 								}
 		
 								// Any callback available
-						    	if( typeof response['callback'] != "undefined"  && response['callback'] ) { 
-						    		var callback = response['callback'];
-						    		(eval(callback))(response);
+						    	if( typeof response['callback'] != "undefined"  && response['callback'] ) {
+							    	//@PCTODO:: cross check function existing into paycart namespace  
+						    		var callback = new Function(response['callback']);
+						    		callback(response);
 									return true;
 								}
 
 						    	// Any callback available
 						    	if( typeof request['success_callback'] != "undefined"  && request['success_callback'] ) { 
-						    		var callback = request['success_callback'];
-						    		(eval(callback))(response);
+						    		var callback = new Function(response['callback']);
+						    		callback(response);
+						    		return true;
 								}
 
 								return true;
@@ -240,7 +239,7 @@ $steps				=	array_keys($checkout_sequence);
 				
 				do : function()
 				{
-					console.log('paycart.checkout.login.do');
+					//console.log('paycart.checkout.login.do');
 					
 					paycart.checkout.process();
 
@@ -282,7 +281,10 @@ $steps				=	array_keys($checkout_sequence);
 					to_name 		=	'paycart_form['+to +']',
 					form_selector	= 	'[name^="'+from_name+'"]',
 					state_value		=	0,
-					matches, index, element;
+					byeraddress		= 	[],
+					data			=	[],
+					matches, index;
+				
 					
 				$(form_selector).each(function() {
 
@@ -295,18 +297,15 @@ $steps				=	array_keys($checkout_sequence);
 
 					//matches[1] contains the value between the Square Bracket
 					index 		= matches[1];
-					
-					$('[name="'+to_name+'['+index+']"]').val($(this).val());
 
-					if ('state_id' == index) {
-						state_value = $(this).val();
-					}
-
+					byeraddress[index]	=	$(this).val();
 				});
 
-				// special treatment for country and state value
-				$('[name="'+to_name+'[country_id]"]').trigger('change', {'state_id' : state_value});
+				data['selector_index']	=	to ;
+				data['buyeraddress']	=	byeraddress ;
 				
+				paycart.checkout.buyeraddress.setAddress(data);
+								
 				//console.log('copy '+from+' to '+to);
 			},
 
@@ -337,7 +336,7 @@ $steps				=	array_keys($checkout_sequence);
 									'task' 				: 'getBuyerAddress',
 									'selector_index'	: selector_index
 								  };
-				  request['success_callback']	=	'paycart.checkout.buyeraddress.afterFetchingAddress';
+				  request['success_callback']	=	'paycart.checkout.buyeraddress.setAddress';
 				  
 				paycart.checkout.getData(request);
 			},
@@ -345,7 +344,7 @@ $steps				=	array_keys($checkout_sequence);
 		   /**
 			* Invoke to fill address values into selected address {either billing or shipping}
 			*/
-			afterFetchingAddress : function(data) 
+			setAddress : function(data) 
 			{
 				// paycart_form[billing] or paycart_form[shipping] 
 				var selecor_name = 'paycart_form['+data['selector_index'] +']', 
@@ -404,7 +403,7 @@ $steps				=	array_keys($checkout_sequence);
 			 */
 			do : function()
 			{
-				console.log('paycart.checkout.address.do');
+				//console.log('paycart.checkout.address.do');
 
 				paycart.checkout.process();
 
