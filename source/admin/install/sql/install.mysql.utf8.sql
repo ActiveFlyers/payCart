@@ -499,7 +499,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_x_group` (
   `type` varchar(255) NOT NULL,
   KEY `idx_taxrule_id` (`taxrule_id`),
   KEY `idx_group_id` (`group_id`),
-  KEY `idx_type` (`type_id`)
+  KEY `idx_type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mapping of taxrule and groups' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
