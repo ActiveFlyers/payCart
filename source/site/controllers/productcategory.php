@@ -4,7 +4,7 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
-* @author		mManishTrivedi
+* @author		rimjhim
 * @contact		support+paycart@readybytes.in
 * 
 */
@@ -14,16 +14,17 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 
 /**
  * 
- * Product Controller
- * @author Manish
+ * Productcategory Controller
+ * @author rimjhim
  *
  */
 
-class PaycartSiteControllerProduct extends PaycartController 
+class PaycartSiteControllerProductCategory extends PaycartController 
 {
-	// display product
+	// display category
 	function display($cachable = false, $urlparams = array())
 	{
 		return parent::display();
 	}
+	
 }

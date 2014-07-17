@@ -230,4 +230,24 @@ class PaycartProductAttribute extends PaycartLib
 	{
 		return $this->_language;
 	}
+	
+	function getConfigHtml($selectedValue = '', Array $options = array())
+	{
+		return PaycartAttribute::getInstance($this->type)->getConfigHtml($this,$selectedValue,$options);
+	}
+	
+	function getEditHtml($selectedValue = '', Array $options = array())
+	{
+		return PaycartAttribute::getInstance($this->type)->getEditHtml($this,$selectedValue,$options);
+	}
+	
+	function getSelectorHtml($selectedValue = '', Array $options = array())
+	{
+		return PaycartAttribute::getInstance($this->type)->getSelectorHtml($this,$selectedValue,$options);
+	}
+	
+	function getScript()
+	{
+		return PaycartAttribute::getInstance($this->type)->getScript();
+	}
 }

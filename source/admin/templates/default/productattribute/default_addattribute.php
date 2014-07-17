@@ -15,17 +15,11 @@ if(empty($productAttributeIds)){
 ?>
 <?php foreach ($productAttributeIds as $id => $value):?>
   <?php $selected    = null;
-		$attributeId = $value;
-		if(is_array($value)){
-		 	$selected = array_shift($value);
-		 	$attributeId = $id;
-		}
-			
-		$instance = PaycartProductAttribute::getInstance($attributeId);?>
-		<div class="control-group paycart-product-attribute-<?php echo $attributeId?>">
+		$instance = PaycartProductAttribute::getInstance($id);?>
+		<div class="control-group paycart-product-attribute-<?php echo $id?>">
 			<div class="control-label"><label><?php echo $instance->getTitle();?></label></div>
-			<div class="controls"><?php echo PaycartAttribute::getInstance($instance->getType())->getEditHtml($instance, $selected);?>
-						<button class="btn" id="paycart-product-attribute-delete" type="button" onClick="paycart.admin.product.attribute.deleteAttributeValues('<?php echo $attributeId?>');">
+			<div class="controls"><?php echo $instance->getEditHtml($value);?>
+						<button class="btn" id="paycart-product-attribute-delete" type="button" onClick="paycart.admin.product.attribute.deleteAttributeValues('<?php echo $id?>');">
 							<?php echo JText::_('COM_PAYCART_DELETE');?>
 			 			</button>
 			</div>

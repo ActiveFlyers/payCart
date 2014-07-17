@@ -25,10 +25,8 @@ class PaycartAdminBaseViewProductAttribute extends PaycartView
 	    $language   = array('language'=> $attribute->getLanguage());
 	    $form->bind($language);
 		
-	    // get html of the specific 
-	    $type = $this->input->get('type', $attribute->getType());
-	    
-	    $html = PaycartAttribute::getInstance($type)->getConfigHtml($attribute);
+	    // get html of the specific 	    
+	    $html = $attribute->getConfigHtml();
 	    
 	    $this->assign('attributeHtml',$html);
 		$this->assign('form', $form);

@@ -23,7 +23,7 @@ class PaycartAttributeSelect extends PaycartAttribute
 	/**
 	 *  return edit html that will be displayed on product edit screen
 	 */
-	function getEditHtml($attribute,$value = null)
+	function getEditHtml($attribute, $selectedValue ='', Array $options = array())
 	{
 		$html 	 = '';
 		$options = parent::getOptions($attribute);
@@ -33,7 +33,7 @@ class PaycartAttributeSelect extends PaycartAttribute
 			
 			foreach($options as $option){
 				
-				$selected = ($option['productattribute_option_id'] == $value) ? "selected='selected'":'';
+				$selected = ($option['productattribute_option_id'] == $selectedValue) ? "selected='selected'":'';
 				
 				$html 	 .= "<option value='".$option['productattribute_option_id'] ."'". $selected .">".$option['title']."</option>";
 			}

@@ -24,7 +24,7 @@ class PaycartAttributeColor extends PaycartAttribute
 	/**
 	 *  return edit html that will be displayed on product edit screen
 	 */
-	function getEditHtml($attribute, $value = null)
+	function getEditHtml($attribute, $selectedValue ='', Array $options = array())
 	{
 		$html 	 = '';
 		$colors  = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
@@ -33,7 +33,7 @@ class PaycartAttributeColor extends PaycartAttribute
 			$html .= "<select id='attribute".$attribute->getId()."' name='paycart_form[attributes][".$attribute->getId()."]'>";
 			
 			foreach($colors as $color){
-				$selected = ($color['color_id'] == $value) ? "selected='selected'":'';
+				$selected = ($color['color_id'] == $selectedValue) ? "selected='selected'":'';
 				$html .= "<option value='".$color['color_id'] ."'".$selected.">".$color['title']."</option>";
 			}
 			$html.= '</select>';
@@ -44,7 +44,7 @@ class PaycartAttributeColor extends PaycartAttribute
 	/**
 	 * get config Html
 	 */
-	function getConfigHtml($attribute)
+	function getConfigHtml($attribute, $selectedValue ='', Array $options = array())
 	{
 		$html   = '';
 		$type   = $attribute->getType();
@@ -55,7 +55,10 @@ class PaycartAttributeColor extends PaycartAttribute
 		
 		$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
 		$count  = (count($colors) > 0)?count($colors):1;
-		
+
+		//needed to reset keys for proper counter management
+		$colors = array_values($colors);		
+
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $colors);
 		}
@@ -185,5 +188,37 @@ class PaycartAttributeColor extends PaycartAttribute
 	function deleteOptions($attributeId=null, $optionId=null)
 	{
 		return false;
+	}
+	
+	/**
+	 * Returns html that will be used for selectors
+	 * 
+	 * @param $attribute : Instance of PaycartProductAttribute 
+	 * @param $selectedOption : Option that should be selected by default
+	 * @param $options : comma separaterd string containing optionids that would be considered in filters
+	 */
+	function getSelectorHtml($attribute, $selectedOption = '', Array $options = array())
+	{
+		$suffix   = '';		
+		$colors   = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode(),$options);
+		
+		if(empty($colors)){
+			return '';
+		}
+		
+		$html 	= '<div><select id="pc-attr-'.$attribute->getId().'" name="attributes['.$attribute->getId().']" onChange = "paycart.product.selector.onChange(this)">';
+		
+		//build option html
+		foreach ($colors as $color){
+			$selected = '';
+			if(!empty($selectedOption) && $selectedOption == $color['color_id']){
+				$selected = 'selected="selected"';
+				$suffix   = '<span class="pc-attribute-color" style="background-color:'.$color['hash_code'].'" title="'.$color['title'].'"></span>';
+			}
+			$html  .= '<option value="'.$color['color_id'].' " ' .$selected.' >'.$color['title'].'</option>' ;
+		}
+		
+		$html .= '</select>'.$suffix.'</div>';
+		return $html;
 	}
 }

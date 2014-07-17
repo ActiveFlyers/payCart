@@ -59,10 +59,24 @@ class PaycartModelformProductAttribute extends PaycartModelform {}
 
 class PaycartModelProductAttributeOption extends PaycartModel
 {
-	function loadOptions($attributeId, $languageCode)
+	/**
+	 * Load options of the given attributeId
+	 *
+	 * @param $attributeId : id for which options to be loaded
+	 * @param $languageCode : language code for which options' label are to be loaded
+	 * @param $optionIds(optional) : option ids for which data to be loaded,
+	 * 								 otherwise all the options of current attributeId will be loaded 
+	 *
+	 * @return array of resultant rows
+	 */
+	function loadOptions($attributeId, $languageCode, Array $optionIds = array())
 	{
 		$query = new Rb_Query();
-
+		
+		if(!empty($optionIds)){
+			$query->where('ao.productattribute_option_id IN('.implode(',', $optionIds).')');
+		}
+		
 		return $query->select('*')
 		 		     ->from('#__paycart_productattribute_option as ao')
 		 		     ->join('INNER', '#__paycart_productattribute_option_lang as aol ON ao.productattribute_option_id = aol.productattribute_option_id')
@@ -70,7 +84,7 @@ class PaycartModelProductAttributeOption extends PaycartModel
 		 		     ->where('aol.lang_code = "'.$languageCode.'"')
 		 		     ->order('ao.option_ordering')
 		 		     ->dbLoadQuery()
-		 		     ->loadAssocList();
+		 		     ->loadAssocList('productattribute_option_id');
 	}
 	
 	/**
