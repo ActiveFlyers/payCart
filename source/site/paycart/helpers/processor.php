@@ -91,7 +91,7 @@ class PaycartHelperProcessor extends JObject
 		
 		if(!class_exists($className)) {
 			// if instance is not exist then need to autoload
-			require_once $processorList[$type][$className]['filepath'];
+			require_once $this->_processors[$type][$className]->filepath;
 		}
 		
 		// create processor instane 

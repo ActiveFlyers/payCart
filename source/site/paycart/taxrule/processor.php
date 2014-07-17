@@ -53,6 +53,7 @@ abstract class PaycartTaxruleProcessor
 	 */
 	public function getConfigHtml(PaycartTaxruleRequest $request, PaycartTaxruleResponse $response)
 	{
+		$response->configHtml =  "<div></div>";
 		return $response;
 	}
 	

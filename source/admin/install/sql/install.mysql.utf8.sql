@@ -380,8 +380,10 @@ CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_lang` (
 CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_x_group` (
   `discountrule_id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL,
+  `type` varchar(255) NOT NULL,
   KEY `idx_discountrule_id` (`discountrule_id`),
-  KEY `idx_group_id` (`group_id`)
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Discount-rule and class mapper table' AUTO_INCREMENT=1 ;
 
 
@@ -492,12 +494,12 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_lang` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_x_group` (
-  `taxrule_x_group_id` int(11) NOT NULL AUTO_INCREMENT,
   `taxrule_id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL,
-  PRIMARY KEY (`taxrule_x_group_id`),
+  `type` varchar(255) NOT NULL,
   KEY `idx_taxrule_id` (`taxrule_id`),
-  KEY `idx_class_id` (`group_id`)
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_type` (`type_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mapping of taxrule and groups' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -600,6 +602,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_group` (
   `published` tinyint(4) NOT NULL DEFAULT '1',
   `ordering` int(11) NOT NULL,
   `config` text,
+  `created_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL,
   PRIMARY KEY (`group_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

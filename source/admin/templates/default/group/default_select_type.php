@@ -15,9 +15,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 	<?php foreach($availiableGroupRules as $rule_type => $rule) : ?>
 		<?php $rule = (object) $rule; ?>		
 		<a class="btn btn-large" href="index.php?option=com_paycart&view=group&task=new&type=<?php echo $rule_type;?>">
-			<h1>
-				<?php echo JText::_($rule_type);?>
-			</h1>
+			<?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_'.$rule_type);?>			
 		</a>		
 	<?php endforeach; ?>
 </div>

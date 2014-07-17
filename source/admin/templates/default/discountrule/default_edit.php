@@ -91,46 +91,6 @@ paycart.admin.discountrule = {};
 					</div>					
 				</fieldset>
 			</div>
-		</div>		
-		
-		<hr />
-		
-		<div class="row-fluid">
-			<div class="span3">
-				<h2><?php echo JText::_('COM_PAYCART_ADMIN_DISCOUNTRULE_GROUPS_HEADER');?></h2>
-				<div>
-					<?php echo JText::_('COM_PAYCART_ADMIN_DISCOUNTRULE_GROUPS_HEADER_MSG');?>
-				</div>
-			</div>
-			<div class="span9">
-				<div class="row-fluid">				
-					<div class="control-group">
-						<?php $field = $form->getField('_buyergroups') ?>
-						<div class="control-label"><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_BUYER_SELECTION_MSG'); ?></div>
-						<div class="controls"><?php echo $field->input; ?></div>	
-					</div>
-				</div>
-				<br/>
-				<div class="row-fluid"><?php echo JText::_('COM_PAYCART_ADMIN_AND');?></div>
-				<br/>
-				<div class="row-fluid">
-					<div class="control-group">
-						<?php $field = $form->getField('_productgroups') ?>
-						<div class="control-label"><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_PRODUCT_SELECTION_MSG'); ?></div>
-						<div class="controls"><?php echo $field->input; ?></div>
-					</div>
-				</div>
-				<br/>
-				<div class="row-fluid"><?php echo JText::_('COM_PAYCART_ADMIN_AND');?></div>
-				<br/>
-				<div class="row-fluid">
-					<div class="control-group">
-						<?php $field = $form->getField('_cartgroups') ?>
-						<div class="control-label"><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_CART_SELECTION_MSG'); ?></div>
-						<div class="controls"><?php echo $field->input; ?></div>
-					</div>
-				</div>		
-			</div>
 		</div>
 		
 		<hr />
@@ -258,6 +218,52 @@ paycart.admin.discountrule = {};
 						</div>
 					</fieldset>
 				</div>
+			</div>
+		</div>
+		
+		<hr />
+		
+		<div class="row-fluid">
+			<div class="span3">
+				<h2><?php echo JText::_('COM_PAYCART_ADMIN_DISCOUNTRULE_GROUPS_HEADER');?></h2>
+				<div>
+					<?php echo JText::_('COM_PAYCART_ADMIN_DISCOUNTRULE_GROUPS_HEADER_MSG');?>
+				</div>
+			</div>
+			<div class="span9">
+				<div class="row-fluid">				
+					<div class="control-group">
+						<?php $field = $form->getField('_buyergroups') ?>
+						<?php // an hidden varialbe wih same name so that it will be posted if none is selected ?>
+						<input type="hidden" name="<?php echo $field->name; ?>" value="">
+						<div class="control-label"><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_BUYER_SELECTION_MSG'); ?></div>
+						<div class="controls"><?php echo $field->input; ?></div>	
+					</div>
+				</div>
+				<br/>
+				<div class="row-fluid"><?php echo JText::_('COM_PAYCART_ADMIN_AND');?></div>
+				<br/>
+				<div class="row-fluid">
+					<div class="control-group">
+						<?php $field = $form->getField('_productgroups') ?>
+						<?php // an hidden varialbe wih same name so that it will be posted if none is selected ?>
+						<input type="hidden" name="<?php echo $field->name; ?>" value="">
+						<div class="control-label"><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_PRODUCT_SELECTION_MSG'); ?></div>
+						<div class="controls"><?php echo $field->input; ?></div>
+					</div>
+				</div>
+				<br/>
+				<div class="row-fluid"><?php echo JText::_('COM_PAYCART_ADMIN_AND');?></div>
+				<br/>
+				<div class="row-fluid">
+					<div class="control-group">
+						<?php $field = $form->getField('_cartgroups') ?>
+						<?php // an hidden varialbe wih same name so that it will be posted if none is selected ?>
+						<input type="hidden" name="<?php echo $field->name; ?>" value="">
+						<div class="control-label"><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_CART_SELECTION_MSG'); ?></div>
+						<div class="controls"><?php echo $field->input; ?></div>
+					</div>
+				</div>		
 			</div>
 		</div>
 		<?php echo $form->getInput('discountrule_id'); ?>

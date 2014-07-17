@@ -55,9 +55,30 @@ class PaycartDiscountrule extends PaycartLib
 	protected $processor_config;
 	
 	//Lib Specific Fields
-	protected $_stopFurtherRules = true; 		//multiple discount further process or not.  
-	protected $message;							// Have mapped data. (language id => message) 
+	protected $_stopFurtherRules = true; 		//multiple discount further process or not.
 		
+	// language specific
+	protected $discountrule_lang_id		= 0;
+	protected $lang_code 			= '';
+	protected $message				= '';		
+	
+	// others
+	protected $_buyergroups			= array();
+	protected $_productgroups		= array();
+	protected $_cartgroups			= array();
+	
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+		
+		
+		// IMP :check for class existance
+		// 		if class is not loaded alread then it will autoload the class
+		// 		We have done this because other request classes are dependent on it 
+		if(!class_exists('PaycartDiscountRuleRequest', true)){
+			throw new Exception('Class PaycartDiscountRuleRequest not found');
+		}		
+	}
 	
 	public function reset() 
 	{		
@@ -83,6 +104,14 @@ class PaycartDiscountrule extends PaycartLib
 		
 		$this->processor_classname	= Null;
 		$this->processor_config		= new Rb_Registry();
+		
+		$this->discountrule_lang_id		= 0;
+		$this->lang_code			= PaycartFactory::getLanguage()->getTag(); //@PCFIXME
+		$this->message				= '';
+		
+		$this->_buyergroups			= array();
+		$this->_productgroups		= array();
+		$this->_cartgroups			= array();
 				
 		return $this;
 	}
@@ -296,37 +325,81 @@ class PaycartDiscountrule extends PaycartLib
 		return true;
 	}	
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
-	 */
-	protected function _save($previousObject) 
+	public function toArray()
 	{
-		// save core table data
+		$data = parent::toArray();
+
+		$data['_buyergroups'] 	= $this->_buyergroups;
+		$data['_productgroups'] = $this->_productgroups;
+		$data['_cartgroups'] 	= $this->_cartgroups;
+
+		return $data;
+	}
+	
+	protected function _save($previousObject)
+	{
 		$id = parent::_save($previousObject);
 		
-		if(!id) {
+		// if save fail
+		if (!$id) { 
 			return false;
 		}
 		
-		$data = Array();
-		
-		// Save multilanguage stuff
-		$modelLang = PaycartFactory::getModel('discountrulelang');
-		
-		foreach ($this->message as $langCode => $message) {
-			$data['discountrule_id'] = $id;
-			$data['lang_code'] 		 = $langCode;
-			$data['message'] 		 = $message;
-		}
-		
-		// Before save you need to delete previous data
-		$modelLang->deleteMany(Array('discountrule_id'=>$id));
-		
-		//@PCTODO:: notify to admin if save failed
-		// save language specific content
-		$modelLang->save($data);
+		$model = $this->getModel();
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_BUYER, $this->_buyergroups);
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_PRODUCT, $this->_productgroups);
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_CART, $this->_cartgroups);
 		
 		return $id;
+	}
+	
+	function bind($data, $ignore = Array()) 
+	{
+		if(is_object($data)){
+			$data = (array) ($data);
+		}
+		
+		//PCTODO: Change weight, height, width, length etc in a format as per set weight/dimension unit
+		
+		parent::bind($data, $ignore);		
+		
+		if(!isset($data['_buyergroups'])) {
+			$this->_buyergroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_BUYER);
+		}
+		else{
+			$this->_buyergroups = $data['_buyergroups'];
+		}
+		
+		if(!isset($data['_productgroups'])) {
+			$this->_productgroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_PRODUCT);
+		}
+		else{
+			$this->_productgroups = $data['_productgroups'];
+		}
+		
+		if(!isset($data['_cartgroups'])) {
+			$this->_cartgroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_CART);
+		}
+		else{
+			$this->_cartgroups = $data['_cartgroups'];
+		}	
+		
+		return $this;
+	}	
+	
+	protected function _getGroups($type)
+	{
+		if(!$this->getId()){
+			return array();
+		}
+		
+		return $this->getModel()->getGroups($this->getId(), $type);		
+	}
+	
+	public function getProcessorConfigHtml()
+	{
+		$response = $this->getResponseObject();
+		$this->getProcessor()->getConfigHtml(new PaycartDiscountRuleRequest, $response);
+		return $response->configHtml;
 	}
 }

@@ -23,7 +23,7 @@ class PlgPaycartTaxruleEuvat extends RB_Plugin
 		parent::__construct($subject, $config);
 
 		$helper = PaycartFactory::getHelper('processor');
-		$helper->push(paycart::PROCESSOR_TYPE_TAX,
+		$helper->push(Paycart::PROCESSOR_TYPE_TAXRULE,
 					 'PaycartTaxruleProcessorEuvat',
                           array(
                             'filepath'   => dirname(__FILE__).'/processors/euvat.php',
