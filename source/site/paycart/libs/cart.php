@@ -37,7 +37,7 @@ class PaycartCart extends PaycartLib
 	 */
 	protected $is_locked;						 		
 	
-	protected $request_date;					// Checkout/refund  Request date (Request for Payment)
+	protected $locked_date;					// Checkout/refund  Request date (Request for Payment)
 	protected $payment_date;					// Payment Completion date
 	protected $delivered_date;					// Cart deliver-date (Fill by manually) 
 	
@@ -108,7 +108,7 @@ class PaycartCart extends PaycartLib
 		$this->shipping_address_id	= 0;	
 		$this->is_locked			= 0;			
 		
-		$this->request_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->locked_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
 		$this->payment_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
 		$this->delivered_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
 		
@@ -577,6 +577,7 @@ class PaycartCart extends PaycartLib
 		
 		//if address is not save  then save it
 		if ( !$billing_address_instance->getId() ) {
+			//@PCTODO :: break into function {same job for billing nd shipping}
 			//set buyer id
 			$billing_address_instance->setBuyerId($this->getBuyer());
 			
@@ -630,19 +631,19 @@ class PaycartCart extends PaycartLib
 		
 		// Step-4# change status Lock cart
 		$this->status		=	Paycart::STATUS_CART_CHECKOUT;
-		$this->request_date	= 	Rb_Date::getInstance();
+		$this->locked_date	= 	Rb_Date::getInstance();
 		
 		// Step-5# Save cart
 		return $this->save();
 	}
 	
+	/**
+ 	 * Email Checkout by user email-id
+  	 *  - Create new account if user is not exist
+ 	 *  - Or get User id from existing db if user already register
+ 	 */
 	protected function guestRegistration()
 	{
-		/**
- 		 * Email Checkout by user email-id
-  		 *  - Create new account if user is not exist
- 		 *  - Or get User id from existing db if user already register
- 		 */
 		$buyer = $this->getParam('buyer', new stdClass());
 
 		/* @var PaycartHelperBuyer */

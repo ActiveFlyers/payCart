@@ -16,12 +16,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * Log Helper
  * @author 	mManishTrivedi
  */
-define('PAYCART_LOG_CATEGORY', 'com_paycart' );
-define('PAYCART_LOG_FILE', 'com_paycart.logs.php' );
   
 class PaycartHelperlog 
 {
-	static $_is_logger_added = false;
+	static $_is_logger_added 	= false;
+	
+	protected  $_log_category	= 'com_paycart';
+	protected  $_log_filename	= 'com_paycart.logs.php';
 	
 	/**
 	 * Add logger file
@@ -32,7 +33,7 @@ class PaycartHelperlog
 	 * @since	1.0
 	 * @author	Manish Trivedi
 	 */
-	public static function addLogger()
+	public function addLogger()
 	{
 		if (self::$_is_logger_added) {
 			return true;
@@ -41,7 +42,7 @@ class PaycartHelperlog
 		JLog::addLogger(
 	       array(
 	            // Sets file name
-	            'text_file' => PAYCART_LOG_FILE,
+	            'text_file' => $this->_log_filename,
 	       		// Sets the format of each line
 	            'text_entry_format' => '{DATETIME} {PRIORITY}  {CLIENTIP}  {MESSAGE}'
 	       ),
@@ -50,7 +51,7 @@ class PaycartHelperlog
 	       // The log category/categories which should be recorded in this file
 	       // In this case, it's just the one category from our extension, still
 	       // we need to put it inside an array
-	       array(PAYCART_LOG_CATEGORY)
+	       array($this->_log_category)
    		);
    		
    		self::$_is_logger_added = true;
@@ -67,7 +68,7 @@ class PaycartHelperlog
 	 * @since	1.0
 	 * @author	Manish Trivedi
 	 */
-	static function getString($message) 
+	public function getString($message) 
 	{
 		ob_start();
 		var_export($message);
@@ -89,16 +90,18 @@ class PaycartHelperlog
 	 *
 	 * @since   1.1
 	 */
-	public static function add($entry, $priority = JLog::INFO, $category = PAYCART_LOG_CATEGORY , $date = null)
+	public function add($entry, $priority = JLog::INFO, $category = '' , $date = 'now')
 	{
-		self::addLogger();
-		// @PCTODO :: use PCDEBUG instead of JDEBUG
-		if (defined('JDEBUG') && JDEBUG) {
-			JLog::add( self::getString( $responseData), $priority, $category);
+		if (!$category) {
+			$category	=	$this->_log_category;
 		}
 		
+		$this->addLogger();
+		
+		// @PCTODO :: use PCDEBUG instead of JDEBUG
+		if (defined('JDEBUG') && JDEBUG) {
+			JLog::add( $this->getString( $responseData), $priority, $category, $date);
+		}
 	}
-
-	
 	
 }

@@ -278,7 +278,7 @@ class PaycartHelperInvoice
 			// Process Payement : After request need to Process payament data 
 			$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $paymentResponseData);
 
-			PaycartHelperlog::add($processResponseData);
+			PaycartFactory::getHelper('log')->tHelper('log')->add($processResponseData);
 			
 			// if you still need to process like fist you need to create user profile at payment-gatway then process for payment
 			if($processResponseData->get('next_request', false) == false){
@@ -309,11 +309,11 @@ class PaycartHelperInvoice
 	 */
 	public function processNotification($invoiceId, $responseData) 
 	{
-		PaycartHelperlog::add($responseData);
+		PaycartFactory::getHelper('log')->add($responseData);
 		
 		$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $responseData);
 		
-		PaycartHelperlog::add($processResponseData);
+		PaycartFactory::getHelper('log')->add($processResponseData);
 		
 		//Create new response and set required cart's stuff. 
 		$response = new stdClass();

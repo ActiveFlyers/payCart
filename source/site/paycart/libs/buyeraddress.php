@@ -77,12 +77,15 @@ class PaycartBuyeraddress extends PaycartLib
 	
 	public function getMD5()
 	{
-		//@PCFIXME :: strtolower
 		$string = 	$this->buyer_id.$this->to.$this->address.$this->city.
 					$this->state_id.$this->country_id.$this->zipcode.
 					$this->phone1.$this->phone2.$this->vat_number;
 					
-		return md5($string);
+		//remove all white spaces
+		$string = preg_replace('/\s+/','',$string);
+		
+		//string should be lower beofre md5
+		return md5(strtolower($string));
 	}
 	
 	/**
