@@ -166,11 +166,11 @@ Products Display
 
 
 /** checkout page */
-.pc-checkout-wrapper .pc-item-attribute	{
+.pc-cart-wrapper .pc-item-attribute	{
 	text-transform: capitalize;
 }
 
-.pc-checkout-wrapper hr{
+.pc-cart-wrapper hr{
 	margin: 5px 0px;
 }
 
