@@ -19,7 +19,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 <div class="span2">
 	<?php
 			$helper = PaycartFactory::getHelper('adminmenu');			
-			echo $helper->render('index.php?option=com_paycart&view=group'); 
+			echo $helper->render('index.php?option=com_paycart&view=taxrule'); 
 	?>
 </div>
 <!-- ADMIN MENU -->
@@ -31,17 +31,20 @@ defined('_JEXEC') or die( 'Restricted access' );
 		<div class="center muted">
 			<div>
 				<h1>&nbsp;</h1>
-				<i class="fa fa-group fa-5x"></i>
+				<i class="fa fa-tax fa-5x"></i>
 			</div>
 			
 			<div>
-				<h3><?php echo JText::_('COM_PAYCART_ADMIN_GROUP_GRID_BLANK_MSG');?></h3>
+				<h3><?php echo JText::_('COM_PAYCART_ADMIN_TAXRULE_GRID_BLANK_MSG');?></h3>
 			</div>
 		</div>
 	</div>
 	<div class="row-fluid">	
 		<div class="center">
-			<?php echo $this->loadTemplate('select_type');?>
+			<a href="<?php echo JUri::base().'index.php?option=com_paycart&view=taxrule&task=new';?>" class="btn btn-success btn-large">
+				<i class="icon-plus-sign icon-white"></i>&nbsp;
+				<?php echo Rb_Text::_('COM_PAYCART_ADMIN_TAXRULE_ADD');?>
+			</a>			
 		</div>
 	</div>
 	

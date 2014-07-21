@@ -32,3 +32,14 @@ class PaycartModelGroup extends PaycartModel
  */
 class PaycartModelformGroup extends PaycartModelform 
 {}
+
+
+/**
+ * Table for Group
+ * 
+ * @since 1.0.0
+ *  
+ * @author Gaurav Jain
+ */
+class PaycartTableGroup extends PaycartTable 
+{}

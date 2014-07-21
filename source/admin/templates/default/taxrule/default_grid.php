@@ -13,36 +13,18 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 <div class="pc-product-wrapper clearfix">
 <div class="pc-group row-fluid">
+	<!-- CONTENT START -->
 
-<!-- CONTENT START -->
-
-<!-- ADMIN MENU -->
-<div class="span2">
-	<?php
-			$helper = PaycartFactory::getHelper('adminmenu');			
-			echo $helper->render('index.php?option=com_paycart&view=group'); 
-	?>
-</div>
-<!-- ADMIN MENU -->
-
-
-<div class="span10">
-<ul id="paycartAdminGroupTabs" class="nav nav-tabs">
-	<li class="active">
-		<a data-toggle="tab" href="#paycartAdminGroupTabsInstances"><?php echo JText::_('COM_PAYCART_ADMIN_INSTANCES');?></a>
-	</li>
-	<li class="">
-		<a data-toggle="tab" href="#paycartAdminGroupTabsType"><?php echo JText::_('COM_PAYCART_ADMIN_CREATE_NEW');?></a>
-	</li>
-</ul>
-
-<div id="paycartAdminGroupTabsContent" class="tab-content">
-	<div class="tab-pane" id="paycartAdminGroupTabsType">
-		<?php echo $this->loadTemplate('select_type');?>
+	<!-- ADMIN MENU -->
+	<div class="span2">
+		<?php
+				$helper = PaycartFactory::getHelper('adminmenu');			
+				echo $helper->render('index.php?option=com_paycart&view=taxrule'); 
+		?>
 	</div>
-	
-	<!-- Grid TAB -->
-	<div class="tab-pane active" id="paycartAdminGroupTabsInstances">			
+	<!-- ADMIN MENU -->
+
+	<div class="span10">		
 		<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 		
 			<?php // echo $this->loadTemplate('filter'); ?>
@@ -56,11 +38,11 @@ defined('_JEXEC') or die( 'Restricted access' );
 							<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" />
 						</th>
 						<th>
-							<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'group_id', $filter_order_Dir, $filter_order);?>
+							<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'taxrule_id', $filter_order_Dir, $filter_order);?>
 						</th>
 					    				
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
-						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TYPE", 'type', $filter_order_Dir, $filter_order);?></th>						
+						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME", 'processor_classname', $filter_order_Dir, $filter_order);?></th>						
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CREATED_DATE", 'created_date', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_MODIFIED_DATE", 'modified_date', $filter_order_Dir, $filter_order);?></th>			
@@ -75,14 +57,14 @@ defined('_JEXEC') or die( 'Restricted access' );
 					foreach ($records as $record):?>
 						<tr class="<?php echo "row".$count%2; ?>">	
 							<th>
-						    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->group_id ); ?>
+						    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->taxrule_id ); ?>
 						    </th>				
-							<td><?php echo $record->group_id;?></td>
+							<td><?php echo $record->taxrule_id;?></td>
 							<td>
-								<?php echo PaycartHtml::link('index.php?option=com_paycart&view=group&task=edit&group_id='.$record->group_id, $record->title);?>
+								<?php echo PaycartHtml::link('index.php?option=com_paycart&view=taxrule&task=edit&taxrule_id='.$record->taxrule_id, $record->title);?>
 								<p><small><?php echo $record->description;?></small></p>
 							</td>
-							<td><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_'.$record->type);?></td>
+							<td><?php echo JText::_($record->processor_classname);?></td>
 							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 							<td><?php echo $record->created_date?></td>
 							<td><?php echo $record->modified_date?></td>
@@ -107,8 +89,6 @@ defined('_JEXEC') or die( 'Restricted access' );
 			<input type="hidden" name="boxchecked" value="0" />
 		</form>
 	</div>
-</div>
-</div>
 </div>
 </div>
 <?php 

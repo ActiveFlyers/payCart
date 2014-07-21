@@ -13,7 +13,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <div class="control-group">
 	<label title="" class="hasTooltip control-label" for="paycart_form_title" id="paycart_form_title-lbl" 
-			data-original-title="&lt;strong&gt;<?php echo Rb_Text::_('Usergroups');?>&lt;/strong&gt;&lt;br /&gt;<?php echo Rb_Text::_('Description');?>">
+			data-original-title="&lt;strong&gt;<?php echo Rb_Text::_('Usergroups');?>&lt;/strong&gt;&lt;br /&gt;<?php echo Rb_Text::_('COM_PAYCART_ADMIN_DESCRIPTION');?>">
 		<?php echo Rb_Text::_('Usergroups');?>
 	</label>
 	<div class="controls">

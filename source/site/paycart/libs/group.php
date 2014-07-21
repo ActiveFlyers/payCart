@@ -25,6 +25,8 @@ class PaycartGroup extends PaycartLib
 	protected $description	= '';
 	protected $published	= true;
 	protected $ordering		= 0;
+	protected $created_date = null;
+	protected $modified_date= null;
 	
 	/**
 	 * @var Rb_Registry
@@ -73,6 +75,9 @@ class PaycartGroup extends PaycartLib
 		$this->published 	= 1;
 		$this->ordering 	= 0;
 		$this->params 		= new Rb_Registry();
+		
+		$this->created_date 	= Rb_Date::getInstance();
+		$this->modified_date 	= Rb_Date::getInstance();
 		return $this;
 	}
 	

@@ -31,7 +31,7 @@ defined('_JEXEC') OR die();
 
 	<?php // echo $this->loadTemplate('filter'); ?>
 	
-	<table class="table table-condensed ">
+	<table class="table table-striped ">
 		<thead>
 		<!-- TABLE HEADER START -->
 			<tr>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+	<fieldset name="discountrule">
+		<field 	
+			name="discountrule_id" 
+			type="hidden"
+			default="0"/>
+		
+		<field 
+			name="title" 
+			type="text"	
+			class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_TITLE"/>
+				
+		<field 
+			name="description" 
+			type="textarea"				
+			labelclass="control-label"
+			class="input-block-level"
+			label="COM_PAYCART_ADMIN_DESCRIPTION"/>
+			
+		<field
+			name="published"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"
+			label="COM_PAYCART_ADMIN_PUBLISHED"			
+			default="1">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		
+		<field
+			name="amount"
+			type="paycart.amount"
+			labelclass="control-label"
+			class="input-block-level"			
+			label="COM_PAYCART_ADMIN_AMOUNT"/>
+		
+		<field
+			name="apply_on"
+			type="paycart.applyon"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_APPLY_ON"/>
+					
+		<field
+			name="processor_classname"
+			type="paycart.processor"
+			labelclass="control-label"
+			processor_type="discountrule"		
+			label="COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME">
+			<option value="">COM_PAYCART_ADMIN_SELECT</option>
+		</field>
+			
+		<field
+			name="_buyergroups"
+			type="paycart.group"
+			class="input-block-level"
+			labelclass="control-label"
+			group_type="buyer"	
+			multiple="true"	
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_BUYER" />
+			
+		<field
+			name="_productgroups"
+			type="paycart.group"
+			class="input-block-level"
+			labelclass="control-label"
+			group_type="product"
+			multiple="true"		
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_PRODUCT" />
+			
+		<field
+			name="_cartgroups"
+			type="paycart.group"
+			class="input-block-level"
+			labelclass="control-label"
+			multiple="true"
+			group_type="cart"		
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_CART" />
+		
+		<field
+			name="is_percentage"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"			
+			label="COM_PAYCART_ADMIN_IS_PERCENTAGE">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		
+		<field
+			name="buyer_usage_limit"
+			type="text"
+			labelclass="control-label"
+			class="validate-number"			
+			label="COM_PAYCART_ADMIN_DISCOUNTRULE_BUYER_USAGE_LIMIT" />
+				
+		<field
+			name="usage_limit"
+			type="text"
+			labelclass="control-label"
+			class="validate-number"			
+			label="COM_PAYCART_ADMIN_DISCOUNTRULE_USAGE_LIMIT" />
+			
+		<field
+			name="is_clubbable"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"			
+			label="COM_PAYCART_ADMIN_DISCOUNTRULE_IS_CLUBBABLE">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		
+		<field
+			name="is_successive"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"			
+			label="COM_PAYCART_ADMIN_DISCOUNTRULE_IS_SUCCESSIVE">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		
+		<field
+			name="sequence"
+			type="text"
+			labelclass="control-label"
+			class="validate-number"			
+			label="COM_PAYCART_ADMIN_SEQUENCE" />
+			
+		<field
+			name="start_date"
+			type="calendar"
+			labelclass="control-label"						
+			label="COM_PAYCART_ADMIN_START_DATE" />
+			
+		<field
+			name="end_date"
+			type="calendar"
+			labelclass="control-label"						
+			label="COM_PAYCART_ADMIN_END_DATE" />
+						
+		<field 
+			name="coupon" 
+			type="text"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_DISCOUNTRULE_COUPON"/>
+			
+		<fields name="processor_config">
+		</fields>		
+	</fieldset>
+	
+	
+	<fieldset name='language'>
+		<field 	name="taxrule_lang_id" 
+				type="hidden"
+				default="0"/>
+				
+		<field 
+			name="message" 
+			type="text"	
+			class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_MESSAGE"/>
+		
+	</fieldset>		
+</form>
