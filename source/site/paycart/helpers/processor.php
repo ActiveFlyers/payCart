@@ -53,8 +53,9 @@ class PaycartHelperProcessor extends JObject
 	
 	/**
 	 * Get list of all avaialable processor
+	 * @param $type : processor type  [ 'taxrule', 'discountrule', 'shippingrule']
 	 * 
-	 * @return Array of all processors
+	 * @return Array of all available processors[type]
 	 */
 	public function getList($type)
 	{
@@ -62,7 +63,7 @@ class PaycartHelperProcessor extends JObject
 		
 		// if any processor of this type is not available yet then return fasle
 		if(!isset($this->_processors[$type])){
-			return false;
+			return Array();
 		}
 		
 		//load specific type plugins

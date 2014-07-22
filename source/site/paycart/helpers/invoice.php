@@ -50,6 +50,37 @@ class PaycartHelperInvoice
 	const STATUS_TRANSACTION_FAIL				= 	Rb_EcommerceResponse::FAIL;					//'fail';
 	
 
+	/**
+	 * 
+	 * Invoke to get all rb-ecommerce processor
+	 * 
+	 * @return array of all available payment processor 
+	 */
+	public function getProecessorList() 
+	{
+		return Rb_EcommerceAPI::get_processors_list();
+	}
+	
+	/**
+	 * 
+	 * Invoke to get Processor config file path
+	 * @param $type : processor type
+	 * @throws RuntimeException
+	 * 
+	 * @return processor config file path
+	 * @since 1.0
+	 */
+	public function getProcessorConfigFile($type) 
+	{
+		if (empty($type)) {
+			throw new RuntimeException('Processor Type required');
+		}
+		
+		$processor = Rb_EcommerceAPI::get_processor_instance($type);
+		$xml_file = $processor->getLocation().'/'.$processor->getName().'.xml';
+		
+		return $xml_file;
+	}
 
 	/**
 	 * 

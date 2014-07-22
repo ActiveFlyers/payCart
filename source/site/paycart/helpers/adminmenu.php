@@ -128,7 +128,7 @@ class PaycartHelperAdminmenu extends PaycartHelper
 										),
 										Array(
 											'title' => JText::_('COM_PAYCART_ADMIN_PAYMENT_GATEWAYS'),
-											'url' => 'index.php?option=com_paycart&view=gateways',
+											'url' => 'index.php?option=com_paycart&view=paymentgateway',
 											'class' => 'fa-credit-card'
 										),
 										Array(

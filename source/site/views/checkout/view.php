@@ -26,8 +26,7 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 	 * @var PaycartCart
 	 */
 	protected $cart;
-	
-	protected $step_ready = 'login';
+
 	
 	/**
 	 * 

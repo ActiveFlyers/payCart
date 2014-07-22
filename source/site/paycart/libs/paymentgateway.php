@@ -24,10 +24,13 @@ class PaycartPaymentgateway extends PaycartLib
 	 * Payment Gateway table fields
 	 */
 	protected $paymentgateway_id;
-	protected $title;
-	protected $status;
+	protected $published;
 	protected $processor_type;
 	protected $processor_config;
+	protected $title;
+	protected $description;
+	protected $paymentgateway_lang_id;
+	protected $lang_code;
 	
 	/**
 	 * 
@@ -52,8 +55,11 @@ class PaycartPaymentgateway extends PaycartLib
 	{		
 		$this->paymentgateway_id		=	0;
 		$this->title					=	'';
-		$this->status					=	Paycart::STATUS_PUBLISHED;
-		$this->processor_type				=	'';
+		$this->description				=	'';
+		$this->paymentgateway_lang_id	=	0;
+		$this->lang_code				=	PaycartFactory::getLanguage()->getTag();
+		$this->published				=	1;
+		$this->processor_type			=	'';
 		$this->processor_config			=	new Rb_Registry();
 		
 		return $this;
@@ -68,6 +74,52 @@ class PaycartPaymentgateway extends PaycartLib
 	public function getConfig()
 	{
 		return $this->processor_config;
+	}
+	
+	/**
+	* Invoke to get Processor configuration html
+	*/
+	public function getConfigHtml($type)
+	{
+		try {
+			$html	=	'';
+			$xml_file 	= 	PaycartFactory::getHelper('invoice')->getProcessorConfigFile($type);		
+			
+			$form = $this->getModelform()->getForm();
+			$form->loadFile($xml_file, true, '//config');
+			
+			// bind data on form
+			$form->bind($this->toArray());
+			
+			ob_start();
+			
+			// Put here help msg, if needed
+			foreach ($form->getFieldsets('processor_config') as $name => $fieldSet) {
+				foreach ($form->getFieldset($name) as $field) {
+				?>
+					<div class="control-group">
+						<div class="control-label">	<?php echo $field->label; ?> </div>
+						<div class="controls">		<?php echo $field->input; ?> </div>
+					</div>
+				<?php 
+				}
+			}
+			?>
+			<script>
+				paycart.radio.init();
+			</script>
+			<?php 
+			
+			
+			$html = ob_get_contents();
+			ob_clean();
+			
+			
+		} catch (Exception $ex ) {
+			PaycartFactory::getHelper('log')->addLog($ex->getMessage());
+		}
+		
+		return $html;
 	}
 
 	
