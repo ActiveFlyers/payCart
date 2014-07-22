@@ -6,7 +6,7 @@
 * @package 		PAYCART
 * @subpackage	front-end
 * @contact		support+paycart@readybytes.in
-* @author		mManishTrivedi
+* @author		mManishTrivedi , Rimjhim Jain
 */
 
 defined( '_JEXEC' ) or	die( 'Restricted access' );
@@ -32,4 +32,16 @@ class PaycartSiteBaseViewcart extends PaycartView
 		
 	}
 	
+	protected function _assignTmplVars()
+	{
+		$helper = PaycartFactory::getHelper('cart');
+		$cart 	= $helper->getCurrentCart();
+		
+		$productParticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		
+		$this->assign('products',$productParticulars);
+		$this->assign('cart', $cart);
+		
+		return true;
+	}	
 }

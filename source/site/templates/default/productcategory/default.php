@@ -5,7 +5,7 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Front-end
-* @contact		support@readybytes.in
+* @contact		support+paycart@readybytes.in
 */
 
 // no direct access

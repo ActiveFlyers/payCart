@@ -6,7 +6,7 @@
 * @package 		PAYCART
 * @subpackage	front-end
 * @contact		support+paycart@readybytes.in
-* @author		mManishTrivedi
+* @author		mManishTrivedi, Rimjhim Jain
 */
 
 defined( '_JEXEC' ) or	die( 'Restricted access' );
@@ -36,5 +36,14 @@ class PaycartSiteViewcart extends PaycartSiteBaseViewcart
 		
 		return true;
 	}
-
+	
+	/**
+	 * Display cart details
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_View::display()
+	 */
+	public function display($tpl = NULL)
+	{	
+		return parent::_assignTmplVars();
+	}
 }
