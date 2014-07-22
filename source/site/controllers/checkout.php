@@ -312,7 +312,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 			$is_processed = $this->_do_loginWithEmail($form_data);
 		} else {
 			//checkout by login
-			$user_id = $this->_do_login($form_data);
+			$is_processed = $this->_do_login($form_data);
 		}
 		
 		// if do not get any user id 
