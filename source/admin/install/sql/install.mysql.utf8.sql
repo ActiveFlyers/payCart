@@ -622,12 +622,29 @@ CREATE TABLE IF NOT EXISTS `#__paycart_group` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_paymentgateway` (
   `paymentgateway_id` int(11) NOT NULL AUTO_INCREMENT,
-  `status` enum('published','unpublished','trashed') NOT NULL,
+  `published` tinyint(4) NOT NULL DEFAULT '1',
   `processor_type` varchar(255) NOT NULL,
   `processor_config` text,
   PRIMARY KEY (`paymentgateway_id`),
   INDEX `idx_processor_type` (`processor_type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_paymentgateway_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_paymentgateway_lang` (
+  `paymentgateway_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `lang_code` char(7) NOT NULL,
+  `paymentgateway_id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY (`paymentgateway_lang_id`),
+  KEY `lang_code` (`lang_code`,`paymentgateway_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
 -- --------------------------------------------------------
