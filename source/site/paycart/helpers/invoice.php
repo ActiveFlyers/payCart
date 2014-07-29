@@ -369,4 +369,22 @@ class PaycartHelperInvoice
 		
 		return $invoiceId;
 	}	
+	
+	/**
+	 * return either the record of the given currencyId or all the existing records
+	 */
+	public function getCurrency($currencyId = null)
+	{
+		static $currencies = null;
+		
+		if(empty($currencies)){
+			$currencies = Rb_EcommerceAPI::currency_get_records();
+		}
+		
+		if(!empty($currencyId)){
+			return $currencies[$currencyId];  
+		}
+		
+		return $currencies;
+	}
 }

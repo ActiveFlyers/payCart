@@ -62,12 +62,12 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 		// collect variants
 		$variants   = $product->getVariants();
 		$selectors  = array();
+		$baseAttrId = 0;
 		
 		//collect filterable attributes
 		if(count($variants) > 1){
 			$productIds    = array_keys($variants); 
 			$attrRecords   = $product->getSelectorAttributes($productIds);
-			$baseAttrId    = 0;
 			$totalProducts = 0;
 			
 			foreach($attrRecords as $key => $record){

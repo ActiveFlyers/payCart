@@ -32,12 +32,6 @@ class Paycart
 	
 	const MEDIA_THUMB_FOLDER_NAME			= 'thumbs';
 	const MEDIA_OPTIMIZED_FOLDER_NAME		= 'optimized';
-	
-	const MEDIA_IMAGE_OPTIMIZE_WIDTH 		= 300;
-	const MEDIA_IMAGE_OPTIMIZE_HEIGHT		= 'auto';	
-	const MEDIA_IMAGE_THUMB_WIDTH 			= 64;
-	const MEDIA_IMAGE_THUMB_HEIGHT			= 'auto';	
-	const MEDIA_IMAGE_MAX_UPLOAD_SIZE 		= 2; 	// 2MB
 
 	const PRODUCT_FILTER_FIELD_PREFIX	= 'attr_';
 
@@ -85,9 +79,6 @@ class Paycart
 	const CART_PARTICULAR_TYPE_ADJUSTMENT			= 'adjustment';
 
 	const CART_PARTICULAR_QUANTITY_MINIMUM = 1;
-
-	const CHECKOUT_SEQUENCE_OPTION_VALUE_TAX_DISCOUNT = 'td';
-	const CHECKOUT_SEQUENCE_OPTION_VALUE_DISCOUNT_TAX = 'dt';
 	
 	const GROUPRULE_TYPE_PRODUCT = 'product';
 	const GROUPRULE_TYPE_BUYER 	 = 'buyer';

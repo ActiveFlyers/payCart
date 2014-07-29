@@ -25,7 +25,7 @@ class PaycartAdminViewBuyeraddress extends PaycartAdminBaseViewBuyeraddress
 	 */
 	public function edit($tpl=null)
 	{
-		$buyer_address_id	=  $this->getModel()->getState('id');
+		$buyer_address_id	=  $this->getModel()->getState('id',0);
 		$buyer_id			=  $this->getModel()->getState('buyer_id');
 		$buyer_address 		= PaycartBuyeraddress::getInstance($buyer_address_id);
 		

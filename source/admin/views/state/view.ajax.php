@@ -41,9 +41,9 @@ class PaycartAdminViewState extends PaycartAdminBaseViewState
 		$this->assign('form',  PaycartFactory::getModelForm('state')->getForm($state_data, false));
 		
 		// Tile of Modal
-		$title = 'COM_PAYCART_STATE_ADD_NEW';
+		$title = 'COM_PAYCART_ADMIN_STATE_ADD_NEW';
 		if($state_id) {
-			$title = 'COM_PAYCART_STATE_EDIT';
+			$title = 'COM_PAYCART_ADMIN_STATE_EDIT';
 		}
 
 		// Set window title 

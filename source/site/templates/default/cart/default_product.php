@@ -54,7 +54,7 @@ if(!defined( '_JEXEC' )){
 		<button class="btn btn-primary pull-left" onClick="rb.ui.dialog.close();"> 
 			<?php echo JText::_('Continue Shopping'); ?> 
 		</button>
-		<button class="btn" data-dismiss="modal" aria-hidden="true" onClick="rb.url.redirect('index.php?option=com_paycart&view=cart')">
+		<button class="btn" data-dismiss="modal" aria-hidden="true" type="button" onClick="rb.url.redirect('index.php?option=com_paycart&view=cart'); return false;">
 			<?php echo JText::_('View Cart') ?> 
 		</button>
 	</div>

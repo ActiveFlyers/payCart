@@ -20,39 +20,32 @@ class PaycartAdminControllerState extends PaycartController
 	 */
 	public function save() 
 	{
-		$post = $this->input->post->get('paycart_form', array(), 'array');
+		$post = $this->input->post->get('paycart_state_form', array(), 'array');
 		
 		// language data
 		$post['lang_code'] = PaycartFactory::getLanguage()->getTag();
 		
 		// validation will be done on Model
 		$entity =  $this->getModel()->save($post, $this->_getId());
-		
-		$response = Array('message' => '');
-		
-		$ajax = Rb_Factory::getAjaxResponse();
-	
-		// default callback method
-		$response['message'] =	'//PCTODO: Oops!! state fail to save. :(';
-		$callback 			 =	'paycart.admin.state.add.error';
-		$redirect			 =	'';
 
 		//@PCTODO : dont use hardcoded entry
 		$country_id	=	$post['country_id'];
 		
-		// if buyeraddress succesfully save  
-		if($entity) {			
-			$response['message']	= '//PCTODO: GOOD!! State successfully save. Now you need to fetch state html and append into state template ';
-			$callback 				= 'paycart.admin.state.add.success';
-	
-			//perform redirection
-			$redirect  = "index.php?option=com_paycart&view=country&task=edit&id={$country_id}";
+		//perform redirection
+		$redirect  = "index.php?option=com_paycart&view=country&task=edit&id={$country_id}";
+		
+		// if buyeraddress isn't saved succesfully  
+		if(!$entity) {			
+			$ajax 	  = Rb_Factory::getAjaxResponse();
+			$response = Array('message' => '');
+			$response['message'] =	'State was failed to save';
+			$callback 			 =	'paycart.admin.state.add.error';
+			$redirect			 =	'';
 			
+			// set call back function
+			$ajax->addScriptCall($callback, json_encode($response));
 		}
-		
-		// set call back function
-		$ajax->addScriptCall($callback, json_encode($response)); 
-		
+				
 		$this->setRedirect( $redirect , $this->getMessage(), Paycart::MESSAGE_TYPE_WARNING);
 
 		// no need to move at view
@@ -76,31 +69,26 @@ class PaycartAdminControllerState extends PaycartController
 	 */
 	public function remove()
 	{
-		$response = Array('message' => '');
-		
-		$ajax = Rb_Factory::getAjaxResponse();
-	
-		// default callback method
-		$response['message'] =	'//PCTODO: Oops!! state fail to remove. :(';
-		$callback 			 =	'paycart.admin.state.remove.error';
-		$redirect			 =	'';
-
 		$state_id		=	$this->_getId();
 		$state_details 	=	$this->getModel()->loadrecords();
 		$country_id		=	$state_details[$state_id]->country_id;
 		
-		// if buyeraddress succesfully save  
-		if($this->getModel()->delete($this->_getId())) {			
-			$response['message']	= '//PCTODO: GOOD!! State successfully deleted. ';
-			$callback 				= 'paycart.admin.state.remove.success';
-	
-			//perform redirection
-			$redirect  = "index.php?option=com_paycart&view=country&task=edit&id={$country_id}";
-			
-		}
+		//perform redirection
+		$redirect  = "index.php?option=com_paycart&view=country&task=edit&id={$country_id}";
 		
-		// set call back function
-		$ajax->addScriptCall($callback, json_encode($response)); 
+		// if buyeraddress is not successfully removed 
+		if(!$this->getModel()->delete($this->_getId())) {	
+			$response = Array('message' => '');
+			$ajax     = Rb_Factory::getAjaxResponse();
+		
+			// default callback method
+			$response['message'] =	'State was failed to remove';
+			$callback 			 =	'paycart.admin.state.remove.error';
+			$redirect			 =	'';
+			
+			//set call back function
+			$ajax->addScriptCall($callback, json_encode($response));
+		}
 		
 		$this->setRedirect( $redirect);
 		

@@ -1,51 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-	<fieldset name="image_details">
-		
-		<field 	name="image_maximum_upload_limit" 
+	<fieldset>				
+		<field 	name="catalogue_image_thumb_height" 
 				type="text"
-				label="COM_PAYCART_IMAGE_UPLOAD_LIMIT" 
-				description="COM_PAYCART_IMAGE_UPLOAD_LIMIT_DESC"
-				default="2"
-		        />
-        
-        <field 	name="image_extension" 
-				type="list"
-				label="COM_PAYCART_IMAGE_EXTENSION" 
-				description="COM_PAYCART_IMAGE_EXTENSION_DESC"
+				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_THUMB_HEIGHT" 
 				default="auto"
-		        >
-		        <option value='auto'>-- Use upload image extension--</option>
-		        <option value='.png'>PNG</option>
-		        <option value='.jpg'>JPEG</option>
-		        <option value='.gif'>GIF</option>
-		 </field>
-		 
-        <field 	name="image_upload_directory" 
-				type="text"
-				label="COM_PAYCART_IMAGE_UPLOAD_DIRECTORY" 
-				description="COM_PAYCART_IMAGE_UPLOAD_DIRECTORY_DESC"
 				/>
 		
-		<field 	name="image_render_url" 
+		<field 	name="catalogue_image_thumb_width" 
 				type="text"
-				label="COM_PAYCART_IMAGE_RENDER_URL" 
-				description="COM_PAYCART_IMAGE_RENDER_URL_DESC"
+				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_THUMB_WIDTH" 
+				default="64"
+				/>
+		
+		<field 	name="catalogue_image_optimized_height" 
+				type="text"
+				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_OPTIMIZED_HEIGHT" 
+				default="auto"
+				/>
+		
+		<field 	name="catalogue_image_optimized_width" 
+				type="text"
+				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_OPTIMIZED_WIDTH" 
+				default="300"
+				/>
+		
+		<field 	name="catalogue_image_upload_size" 
+				type="text"
+				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_UPLOAD_SIZE" 
+				default="2"
 				/>
 				
-		<field 	name="image_thumb_height" 
-				type="text"
-				label="COM_PAYCART_IMAGE_THUMB_HEIGHT" 
-				description="COM_PAYCART_IMAGE_THUMB_HEIGHT_DESC"
-				default="100"
-				/>
+		<field 	name="catalogue_weight_unit" 
+				type="list"
+				label="COM_PAYCART_ADMIN_CONFIG_WEIGHT_UNIT" 
+				default="kg"
+		        >
+		        <option value='gm'>Gm</option>
+		        <option value='kg'>Kg</option>
+		        <option value='pound'>Pound</option>
+		 </field>
+		 
+		 <field name="catalogue_dimension_unit" 
+				type="list"
+				label="COM_PAYCART_ADMIN_CONFIG_DIMENSION_UNIT" 
+				default="m"
+		        >
+		        <option value='cm'>Cm</option>
+		        <option value='m'>M</option>
+		 </field>
 		
-		<field 	name="image_thumb_width" 
-				type="text"
-				label="COM_PAYCART_IMAGE_THUMB_WIDTH" 
-				description="COM_PAYCART_IMAGE_THUMB_WIDTH_DESC"
-				default="133"
-				/>
+		 <field name="discountrule_issuccessive" 
+				type="radio"
+				label="COM_PAYCART_ADMIN_CONFIG_DISCOUNTRULE_ISSUCCESSIVE" 
+				default="1"
+				class="btn-group"
+				>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+		</field>
+		
+		<field name="invoice_serial_prefix"
+			   type="text"  
+			   label="COM_PAYCART_ADMIN_CONFIG_INVOICE_SERIAL_PREFIX"
+			   default="paycart">
+		</field>
+		
+		<field name="localization_date_format"
+			   type="list"  
+			   label="COM_PAYCART_ADMIN_CONFIG_DATE_FORMAT"
+			   default="%Y-%m-%d">
+			   <option value="%Y-%m-%d"></option>
+				   
+			   <option value="%m/%d/%Y"></option>
+			   <option value="%m-%d-%Y"></option>
+			   
+			   <option value="%d/%m/%Y"></option>
+			   <option value="%d-%m-%Y"></option>
+				
+			   <option value="%d %B %y"></option>
+			   <option value="%d %B %Y"></option>
+				
+			   <option value="%B %d, %y"></option>
+			   <option value="%B %d, %Y"></option>
+		</field>
+		
+		<field name="localization_currency"
+			   type="paycart.currency"  
+			   label="COM_PAYCART_ADMIN_CONFIG_CURRENCY"
+			   default="">
+		</field>
+		
+		<field name="localization_currency_format"
+			   type="radio"  
+			   label="COM_PAYCART_ADMIN_CONFIG_CURRENCY_FORMAT"
+			   default="symbol" 
+			   class="btn-group">
+			   <option value="fullname">COM_PAYCART_ADMIN_FULLNAME</option>
+			   <option value="isocode">COM_PAYCART_ADMIN_ISOCODE</option>
+			   <option value="symbol">COM_PAYCART_ADMIN_SYMBOL</option>
+		</field>
+		
+		<field name="localization_currency_position"
+			   type="radio"  
+			   label="COM_PAYCART_ADMIN_CONFIG_CURRENCY_POSITION"
+			   default="before"
+			   class="btn-group">
+			   <option value="before">COM_PAYCART_ADMIN_CONFIG_CURRENCY_BEFORE_PRICE</option>
+			   <option value="after">COM_PAYCART_ADMIN_CONFIG_CURRENCY_AFTER_PRICE</option>
+		</field>
+		
+		<field name="localization_decimal_separator"
+			   type="radio"  
+			   label="COM_PAYCART_ADMIN_CONFIG_DECIMAL_SEPARATOR"
+			   default="."
+			   class="btn-group">
+			   <option value=",">COM_PAYCART_ADMIN_CONFIG_CURRENCY_SEPARATOR_COMMA</option>
+			   <option value=".">COM_PAYCART_ADMIN_CONFIG_CURRENCY_SEPARATOR_DOT</option>
+		</field>
+		
+		<field name="localization_fraction_digit_count"
+			   type="list"
+			   label="COM_PAYCART_ADMIN_CONFIG_FRACTION_DIGIT_COUNT"
+			   default="2">
+			   <option value="0">0</option>
+			   <option value="1">1</option>
+			   <option value="2">2</option>
+			   <option value="3">3</option>
+			   <option value="4">4</option>
+			   <option value="5">5</option>
+		</field>
+		
+		<field name="company_name"
+			   type="text"
+			   label="COM_PAYCART_ADMIN_CONFIG_COMPANY_NAME"
+			   default=""
+			   />
+			 
+		<field name="company_address"
+			   type="textarea"
+			   label="COM_PAYCART_ADDRESS"
+			   default=""
+			   />
+			   
+		<field name="company_logo"
+			   type="paycart.media"
+			   label="COM_PAYCART_ADMIN_CONFIG_COMPANY_LOGO"
+			   default=""
+			   />
+		
 	</fieldset>
 	
 </form>

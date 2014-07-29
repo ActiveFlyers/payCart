@@ -23,7 +23,7 @@ class PaycartHtmlCountry
 	 */
 	public static function getList($name, $value='', $idtag = false, $attr = Array())
 	{
-		$available_countries = PaycartFactory::getModel('country')->loadRecords(Array('status' => paycart::STATUS_PUBLISHED));
+		$available_countries = PaycartFactory::getModel('country')->loadRecords(Array('published' => 1));
 		
 		return PaycartHtml::_('select.genericlist', $available_countries, $name, $attr, 'country_id', 'title', $value, $idtag);
 	}
