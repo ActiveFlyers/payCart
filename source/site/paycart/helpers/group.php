@@ -74,11 +74,11 @@ class PaycartHelperGroup extends JObject
 		
 		// get all loaded group rules
 		if(!isset($this->_rules[$type])){
-			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_GROUP_RULE_TYPE_NOT_EXIST'), $type);
+			throw new RuntimeException("Group-rule type {$type} does not exist ");
 		}
 
 		if(!isset($this->_rules[$type][$className])) {
-			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_GROUP_RULE_NOT_EXIST'), $className);
+			throw new RuntimeException("Group-rule class {$className} does not exist ");
 		}
 		
 		if(!class_exists($className)) {
@@ -116,7 +116,7 @@ class PaycartHelperGroup extends JObject
 			
 			//check group applicability on particular entity
 			if($group->isAppicable($entity_id)) {
-				$groups[] = $record_id;
+				$groups[] = $group_id;
 			}
 		}
 		return $groups;

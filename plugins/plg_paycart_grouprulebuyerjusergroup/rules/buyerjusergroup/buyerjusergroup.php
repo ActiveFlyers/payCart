@@ -18,11 +18,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartGroupruleBuyerjusergroup extends PaycartGrouprule
 {	
-	public function isApplicable($entity_id)
+	public function isApplicable($buyer_id)
 	{
-		// Entity id will be buyer_id
-		$buyer_id = $entity_id;		
-			
 		$config_jusergroup_assignment = $this->config->get('jusergroup_assignment', 'any');
 		
 		if('any' == $config_jusergroup_assignment){

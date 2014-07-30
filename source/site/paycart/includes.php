@@ -72,3 +72,6 @@ Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/requests',		'Request',	 '
 
 //Cartparticular
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/cartparticulars',	'cartparticular',	 'Paycart');
+
+//@PCFIXME : move to proper location
+Rb_HelperJoomla::loadPlugins('paycart');

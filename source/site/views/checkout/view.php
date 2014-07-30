@@ -55,30 +55,47 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 	{
 		
 		$product_particular	=	Array();
+		$product_total 	= 0;
+		$product_quantity	= 0;
 		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_PRODUCT) as  $key => $particular) {
 			/* @var $particular Paycartcartparticular */
 			$product_particular[] = $particular->toObject();
+			$product_total 	 +=	$particular->getTotal(true);
+			$product_quantity 	+=	$particular->getQuantity();
 		}
 		
 		$shipping_particular	=	Array();
+		$shipping_total			=	0;
 		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_SHIPPING) as  $key => $particular) {
 			/* @var $particular Paycartcartparticular */
 			$shipping_particular[] = $particular->toObject();
+			$shipping_total		  += $particular->getTotal(true);
 		}
 		
 		$promotion_particular	=	Array();
+		$promotion_total		=	0;
 		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_PROMOTION) as  $key => $particular) {
 			/* @var $particular Paycartcartparticular */
 			$promotion_particular[] = $particular->toObject();
+			$promotion_total		  += $particular->getTotal(true);
 		}
 		
 		$duties_particular	=	Array();
+		$duties_total		=	0;
 		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_DUTIES) as  $key => $particular) {
 			/* @var $particular Paycartcartparticular */
 			$duties_particular[] = $particular->toObject();
+			$duties_total  	    += $particular->getTotal(true);
 		}
 		
 		// set all particular details
+		$this->assign('product_total',			$product_total);
+		$this->assign('product_quantity',		$product_quantity);
+		$this->assign('shipping_total',		$shipping_total);
+		$this->assign('promotion_total',		$promotion_total);
+		$this->assign('duties_total',			$duties_total);
+		
+		
 		$this->assign('product_particular',		$product_particular);
 		$this->assign('shipping_particular',	$shipping_particular);
 		$this->assign('promotion_particular',	$promotion_particular);

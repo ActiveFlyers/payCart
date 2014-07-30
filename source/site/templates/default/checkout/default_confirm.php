@@ -140,25 +140,41 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			 		<div id="pc-confirm-products-summary" class="accordion-body in collapse"">
 			 			<div class="accordion-inner">
 			 			<?php 
-			 				$products_total 	= 0;
-			 				$products_quantity	= 0;
-			 				
 			 				foreach ($product_particular as $particular) :
-			 					$products_total 	+=	$particular->total;
-			 					$products_quantity 	+=	$particular->quantity;
 			 				?>
 			 				<div class="row-fluid">
-				 				<div class="span4"><?php echo $particular->title; ?> </div>
-				 				<div class="span3"><?php echo JText::_('Quantity'); ?> : <input type="number" class="input-mini" value="<?php echo $particular->quantity; ?>" /></div>  
+				 				<div class="span4">
+				 						<?php echo $particular->title; ?>
+				 						<?php echo JText::_('Unit-Price').':'.$particular->unit_price;  ?>
+				 						<?php if ($particular->tax) : 
+				 								echo JText::_('Tax').':'.$particular->tax;
+				 							 endif;  
+				 						?>
+				 						<?php if ($particular->discount) : 
+				 								echo JText::_('Discount').':'.$particular->discount;
+				 							 endif;  
+				 						?>
+				 								 
+				 				</div>
+				 				
+				 				<div class="span3"><?php echo JText::_('Quantity'); ?> : 
+				 					<input 
+				 							type="number" onblur="paycart.checkout.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"  class="input-mini" value="<?php echo $particular->quantity; ?>"
+				 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 0; ?>" 	
+				 							max="<?php echo isset($particular->max_quantity) ? $particular->max_quantity : $particular->quantity;?>" 
+				 						/>
+				 				</div>
+				 				  
 				 				<div class="span3"><?php echo JText::_('Price'); ?> : <?php echo $currency_html; ?><?php echo $particular->total; ?></div>
-				 				<div class="span1"><a href='#'><?php echo JText::_('Remove') ?></a></div>
+<!--				 				<div class="span1"><a href='#'><?php echo JText::_('Remove') ?></a></div>-->
+				 				<div class="span1"><a class="muted" href="javascript:void(0)" onClick="paycart.checkout.confirm.onRemoveProduct(<?php echo $particular->particular_id;?>)"><i class="fa fa-trash-o fa-lg">&nbsp;</i></a></div>
 				 			</div>
 				 			<hr />
 			 			<?php 
 			 				endforeach;
 			 			?>
 			 				<div class="row-fluid">
-				 				<span class="pull-right"><?php echo JText::_("Product's Total") ?> : <?php echo $currency_html?><?php echo $products_total; ?> </span>
+				 				<span class="pull-right"><?php echo JText::_("Product's Total") ?> : <?php echo $currency_html?><?php echo $product_total; ?> </span>
 				 			</div>
 				 			
 			 			</div>
@@ -188,44 +204,26 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			 					<thead>
 			 						<tr>
 			 							<td><?php echo JText::_('Quantity'); ?></td>
-			 							<td><?php echo $products_quantity;?></td>
+			 							<td><?php echo $product_quantity;?></td>
 			 						</tr>
 			 					</thead>
 			 					
 			 					<tbody>
 			 						<tr>
 			 							<td><?php echo JText::_('Cart Total'); ?></td>
-			 							<td><?php echo $currency_html.$products_total; ?></td>
+			 							<td><?php echo $currency_html.$product_total; ?></td>
 			 						</tr>
-			 						<?php
-			 								$shipping_total	=	0;
-			 								
-			 								foreach ($shipping_particular as $particular) :
-			 									$shipping_total	+=	$particular->total;
-			 								endforeach;
-			 						 ?>
-			 						 <tr>
+			 						
+			 						<tr>
 			 							<td><?php echo JText::_('Shipping'); ?></td>
 			 							<td><?php echo $currency_html.$shipping_total; ?></td>
 			 						</tr>
-			 						<?php
-			 								$duties_total	=	0;
-			 								
-			 								foreach ($duties_particular as $particular) :
-			 									$duties_total	+=	$particular->total;
-			 								endforeach;
-			 						 ?>
+			 						
 			 						<tr>
 			 							<td><?php echo JText::_('Tax'); ?></td>
 			 							<td><?php echo $currency_html.$duties_total; ?></td>
 			 						</tr>
-			 						<?php
-			 								$promotion_total	=	0;
-			 								
-			 								foreach ($promotion_particular as $particular) :
-			 									$promotion_total	+=	$particular->total;
-			 								endforeach;
-			 						 ?>
+			 						
 			 						<tr>
 			 							<td><?php echo JText::_('Discount'); ?></td>
 			 							<td><?php echo $currency_html.$promotion_total; ?></td>
@@ -233,7 +231,7 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			 						
 			 						<tr>
 			 							<td><?php echo JText::_('TOTAL'); ?></td>
-			 							<td><?php echo $currency_html.($products_total+$promotion_total+$duties_total); ?> </td>
+			 							<td><?php echo $currency_html.($product_total+$promotion_total+$duties_total); ?> </td>
 			 						</tr>
 			 					</tbody>
 			 				</table>	

@@ -12,6 +12,7 @@
 	<files>
 		<filename plugin="discountruleflat">discountruleflat.php</filename>
 		<filename>index.html</filename>
+		<folder>processors</folder>
 	</files>
 <!--	<languages>-->
 <!--		<language tag="en-GB">en-GB.plg_paycart_promotion.ini</language>-->

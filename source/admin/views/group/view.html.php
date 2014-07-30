@@ -39,17 +39,17 @@ class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
 		if(!$itemId){
 			$type = $this->input->get('type', '');
 			if(empty($type)){
-				throw new Exception(JText::_('COM_PAYCART_ERROR_GROUP_TYPE_ARGUMENT_MISSING'), 404);			
+				throw new Exception('Group type argument missing');			
 			}
 
 			$item->bind(array('type' => $type));
 		}
 		else{
 			$type 		= $item->getType();			
-			$config 	= $item->getParams(true, 'config');			
+			$params 	= $item->getParams();			
 			  
-			foreach($config as $rule){
-				$namePrefix = $this->_component->getNameSmall().'_form[config]['.$ruleCounter.']';
+			foreach($params as $rule){
+				$namePrefix = $this->_component->getNameSmall().'_form[params]['.$ruleCounter.']';
 				
 				// get instance of rule
 				$groupRule = PaycartFactory::getGrouprule($type, $rule->ruleClass, (array)$rule);

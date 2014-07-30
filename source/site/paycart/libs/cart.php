@@ -207,6 +207,10 @@ class PaycartCart extends PaycartLib
 		$this->buyer_id	=	$id; 
 	}
 	
+	public function setSessionId($id)
+	{
+		$this->session_id	=	$id;
+	}
 	
 	/**
 	 * 
@@ -302,7 +306,7 @@ class PaycartCart extends PaycartLib
 		
 		foreach ($this->getCartparticulars() as $type => $cartparticulars) {
 			foreach ($cartparticulars as $cartparticular) {
-				$this->_total = ($this->_total) + ($cartparticular->getTotal());
+				$this->_total = ($this->_total) + ($cartparticular->getTotal(true));
 			}			
 		}
 		
@@ -347,7 +351,27 @@ class PaycartCart extends PaycartLib
 				
 		return $this;
 	}
-	
+ 	/**
+     *
+     * delete product to cart
+     * @param $productId  
+     * @return PaycartCart instance
+     */
+     public function removeProduct($productId)
+     {
+     	$existing_products = $this->params->get('products', new stdClass());
+     	
+     	// product is not already added, set it with quantity 0
+     	if(isset($existing_products->{$productId})) {
+     		unset($existing_products->{$productId});
+     	}
+               
+        // set the updates products
+        $this->params->set('products', $existing_products);
+        
+        return $this;
+      }
+       
 	public function addPromotionCode($code)
 	{
 		$promotions = $this->params->get('promotions', array());
@@ -380,6 +404,46 @@ class PaycartCart extends PaycartLib
 		
 		return $this;
 	}	
+	
+	/**
+	 * 
+	 * Invoke to Load promotion particular on cart (from cart param)
+	 * 
+	 * @return PaycartCart
+	 */
+	public function loadPromotionCartparticulars()
+	{
+		$promotions = $this->params->get('promotions', new stdClass());
+		$bindData = new stdClass();
+		$bindData->promotions 	 = 	$promotions;
+		$bindData->unit_price	 =	$this->getTotal();
+		$bindData->particular_id =	$this->getId();
+		
+		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION][] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_PROMOTION, $bindData);
+		
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * Invoke to Load duties particular on cart (from cart param)
+	 * 
+	 * @return PaycartCart
+	 */
+	public function loadDutiesCartparticulars()
+	{
+		$bindData = new stdClass();
+		$bindData->unit_price	 =	0;
+		$bindData->particular_id =	$this->getId();
+		foreach ($this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT) as $product_particular) {
+			$bindData->unit_price += $product_particular->getTax();
+		}
+		
+		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_DUTIES][] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_DUTIES, $bindData);
+		
+		return $this;
+	}
+	
 	
 	/**
 	 * 
@@ -452,18 +516,25 @@ class PaycartCart extends PaycartLib
 		//@PCTODO : We'll give option for applying tax before discount, but as if now only one option
 	 
 		// STEP 2 : calculate promotion cartparticular
-		$promotions = $this->params->get('promotions', array());
-		$promotionCartparticular = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_PROMOTION, array('promotions', $promotions));
-		$promotionCartparticular->calculate($this);
-		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION][] = $promotionCartparticular; 
+		$this->loadPromotionCartparticulars();
+		
+		foreach ($this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION) as $promotion_cartparticular){
+			/* @var $promotion_cartparticular PaycartCartparticularPromotion */
+			$promotion_cartparticular->calculate($this);			
+		}
+			
 		$this->updateTotal();
 	
 		// STEP 3 : calculate duties cartparticular
-		$dutiesCartparticular = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_DUTIES);
-		$dutiesCartparticular->calculate($this);
-		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_DUTIES][] = $dutiesCartparticular;
+		$this->loadDutiesCartparticulars();
+		
+		foreach ($this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_DUTIES) as $product_id => $duties_cartparticular){
+			/* @var $duties_cartparticular PaycartCartparticularDuties */
+			$duties_cartparticular->calculate($this);			
+		}
+		
 		$this->updateTotal();
-	
+		
 		// STEP 4 : calculate shipping cartparticular
 		$this->loadShippingCartparticulars();
 		// reinitialize the cart total
@@ -753,6 +824,11 @@ class PaycartCart extends PaycartLib
 	public function addMessage($key, $type, $message, $cartparticular)
 	{
 		// @TODO
+	}
+	
+	public function getPromotions()
+	{
+		return $this->getParam('promotions','');
 	}
 	
 	/**

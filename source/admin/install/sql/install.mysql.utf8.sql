@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_discountrule` (
   `sequence` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Applied discount sequence/priority.',
   `start_date` datetime NOT NULL COMMENT 'Discount started date (date with time)',
   `end_date` datetime NOT NULL COMMENT 'Discount end date (date with time)',
-  `processor_type` varchar(100) NOT NULL COMMENT 'processor name in small-case',
+  `processor_classname` varchar(100) NOT NULL COMMENT 'processor class-name in small-case',
   `processor_config` text NOT NULL COMMENT 'processor configuration',
   `created_date` datetime NOT NULL,
   `modified_date` datetime NOT NULL,

@@ -23,19 +23,24 @@ class PaycartCartparticularDuties extends PaycartCartparticular
 	
 	public function bind($binddata = array()) 
 	{
-		$this->unit_price 		= 0;
-		$this->quantity			= 1;
+		if (!is_object($binddata)) {
+			$binddata = (object) $binddata;
+		}
+
+		$this->unit_price 		= $binddata->unit_price;
+		$this->quantity			= 1;		
 		$this->type 			= Paycart::CART_PARTICULAR_TYPE_DUTIES;
-		$this->particular_id	= 0;
+		$this->particular_id	= $binddata->particular_id;	
 		$this->tax				= 0;
 		$this->discount			= 0;
-		$this->price 			= $this->getPrice();
-		$this->total 			= $this->getTotal();
+		$this->price 			= $this->unit_price; 
 		
+		$this->total 			= $this->getTotal(true);
+			
 		$this->updateTotal();
 		
-		$this->title 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_DUTIES_TITLE'); 
-		$this->message 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_DUTIES_MESSAGE');
+		$this->title 	= JText::_('COM_PAYCART_CARTPARTICULAR_DUTIES_TITLE'); 
+		$this->message 	= JText::_('COM_PAYCART_CARTPARTICULAR_DUTIES_MESSAGE');
 		
 		return $this;
 	}

@@ -94,12 +94,12 @@ abstract class PaycartDiscountRuleProcessor
 	{
 		// validation
 		if (!$price) {
-			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NOT_ON_ZERO')); 
+			throw new InvalidArgumentException(JText::_('COM_PAYCART_DISCOUNTRULE_NOT_ON_ZERO')); 
 		}
 
 		// validation
 		if (!$discountAmount) {
-			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_DISCOUNTRULE_IS_NOT_ZERO')); 
+			throw new InvalidArgumentException(JText::_('COM_PAYCART_DISCOUNTRULE_IS_NOT_ZERO')); 
 		}
 		
 		if($isPercentage) {
