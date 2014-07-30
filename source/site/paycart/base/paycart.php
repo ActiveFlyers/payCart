@@ -36,11 +36,11 @@ class Paycart
 	const PRODUCT_FILTER_FIELD_PREFIX	= 'attr_';
 
 	// Cart Entity Status
-	const STATUS_CART_DRAFT		= 	'draft';		// none
-	const STATUS_CART_CHECKOUT	=	'checkout';
+	const STATUS_CART_DRAFTED	=	'drafted';		// none
+	const STATUS_CART_LOCKED	=	'locked';
 	const STATUS_CART_PAID 		=	'paid';
-	const STATUS_CART_CANCEL 	=	'cancel';
-	const STATUS_CART_COMPLETE 	=	'complete';
+	const STATUS_CART_CANCELLED	=	'cancelled';
+	const STATUS_CART_COMPLETED	=	'completed';
 	
 	
 	// JOOMLA System Message Type

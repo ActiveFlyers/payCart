@@ -1,108 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <form>
-		<fieldset name="basic-cart" label="COM_PAYCART_CART_BASIC_CART_FIELDSET_LABEL">
+		<fieldset name="basic-cart">
 			<field name="cart_id" type="text"
-				default="0"
-				label="COM_PAYCART_CART_ID_LABEL"
-				description="COM_PAYCART_CART_ID_DESC"
-				readonly="true"
-				size="10"
-				class="input-medium"
-			/>
-			<field name="buyer_id" type="text"
-				label="COM_PAYCART_CART_BUYER_LABEL"
-				description="COM_PAYCART_CART_BUYER_DESC"
+				label="COM_PAYCART_ADMIN_CART_ID"
 				required="true"
-				class="input-medium"
+				readonly="true"
 			/>
+			
+			<field name="buyer_id" type="user"
+				label="COM_PAYCART_ADMIN_BUYER"
+				required="true"
+				readonly="true"
+				class="readonly"
+			/>
+			
+			<field name="invoice_id" type="text"
+				label="COM_PAYCART_ADMIN_CART_INVOICE_ID"
+				required="true"
+				readonly="true"
+			/>
+			
 			<field name="status" type="paycart.cartstatus"
-				label="COM_PAYCART_CART_STATUS_LABEL"
-				description="COM_PAYCART_CART_STATUS_DESC"
-				default="0"
-				class="input-medium"
+				label="COM_PAYCART_ADMIN_STATUS"
 			/>
 			
-			<field name="subtotal" type="text"
-				label="COM_PAYCART_CART_SUBTOTAL_LABEL"
-				description="COM_PAYCART_CART_SUBTOTAL_DESC"
-				default="@global.version@0"
-				class="input-medium"
+			<field name="currency" type="text"
+				label="COM_PAYCART_ADMIN_CURRENCY"
+				readonly="true"
 			/>
 			
-			<field name="total" type="text"
-				label="COM_PAYCART_CART_TOTAL_LABEL"
-				description="COM_PAYCART_CART_TOTAL_DESC"
-				default="@global.version@0"
-				class="input-medium"
+			<field name="reversal_for" type="text"
+				label="COM_PAYCART_ADMIN_REVERSAL_FOR"
+				readonly="true"
 			/>
 			
-			<field name="modifiers" type="text"
-				label="COM_PAYCART_CART_MODIFIERS_LABEL" 
-				description="COM_PAYCART_CART_MODIFIERS_DESC"
-				default="@global.version@0"
-				class="input-medium"
+			<field name="ip_address" type="text"
+				label="COM_PAYCART_ADMIN_IP_ADDRESS"
+				readonly="true"	
 			/>
+			
+			<field name="billing_address_id" type="text"
+				label="COM_PAYCART_ADDRESS_BILLING"
+				readonly="true"	
+			/>
+			
+			<field name="shipping_address_id" type="text"
+				label="COM_PAYCART_ADDRESS_SHIPPING"
+				readonly="true"	
+			/>
+			
+			<field name="is_locked" type="text"
+				label="COM_PAYCART_ADMIN_CART_IS_LOCKED"
+				readonly="true"
+			/>
+			
 			
 		</fieldset>
 		
-		<fieldset name="cart-dates" label="COM_PAYCART_CART_DATES_FIELDSET_LABEL">
+		<fieldset name="cart-dates">
 			
 			<field name="created_date" type="calendar"
 				default=""
-				description="COM_PAYCART_CART_CREATED_DATE_DESC"
-				label="COM_PAYCART_CART_CREATED_DATE_LABEL" 
+				label="COM_PAYCART_ADMIN_CREATED_DATE" 
 				format="%Y-%m-%d %H:%M:%S"
 				readonly="true"
-				class="input-medium"
 			/>
 			
 			<field name="modified_date" type="calendar"
-				description="COM_PAYCART_CART_MODIFIED_DATE_DESC"
-				label="COM_PAYCART_CART_MODIFIED_DATE_LABEL" 
+				label="COM_PAYCART_ADMIN_MODIFIED_DATE" 
 				format="%Y-%m-%d %H:%M:%S"
 				readonly="true"
-				class="input-medium"
 			/>
 			
-			<field name="checkout_date" type="calendar"
+			<field name="locked_date" type="calendar"
 				default="0000-00-00 00:00:00"
-				description="COM_PAYCART_CART_CHECKOUT_DATE_DESC"
-				label="COM_PAYCART_CART_CHECKOUT_DATE_LABEL"
+				label="COM_PAYCART_ADMIN_CART_LOCKED_DATE"
 				format="%Y-%m-%d %H:%M:%S"
-				class="input-medium"
+				readonly="true"
 			/>
 			
 			<field name="paid_date" type="calendar"
 				default="0000-00-00 00:00:00"
-				description="COM_PAYCART_CART_PAID_DATE_DESC"
-				label="COM_PAYCART_CART_PAID_DATE_LABEL"		
+				label="COM_PAYCART_ADMIN_CART_PAID_DATE"		
 				format="%Y-%m-%d %H:%M:%S"
-				class="input-medium"		
+				readonly="true"	
 			/>
 			
-			<field name="complete_date" type="calendar"
+			<field name="completed_date" type="calendar"
 				default="0000-00-00 00:00:00"
-				description="COM_PAYCART_CART_COMPLETE_DATE_DESC"
-				label="COM_PAYCART_CART_COMPLETE_DATE_LABEL"		
+				label="COM_PAYCART_ADMIN_CART_COMPLETED_DATE"		
 				format="%Y-%m-%d %H:%M:%S"
-				class="input-medium"		
+				readonly="true"		
 			/>
 			
-			<field name="cancellation_date" type="calendar"
+			<field name="cancelled_date" type="calendar"
 				default="0000-00-00 00:00:00"
-				description="COM_PAYCART_CART_CANCELLATION_DATE_DESC"
-				label="COM_PAYCART_CART_CANCELLATION_DATE_LABEL"		
+				label="COM_PAYCART_ADMIN_CART_CANCELLED_DATE"		
 				format="%Y-%m-%d %H:%M:%S"
-				class="input-medium"		
+				readonly="true"
 			/>
 			
-			<field name="refund_date" type="calendar"
-				default="0000-00-00 00:00:00"
-				description="COM_PAYCART_CART_REFUND_DATE_DESC"
-				label="COM_PAYCART_CART_REFUND_DATE_LABEL"		
-				format="%Y-%m-%d %H:%M:%S"
-				class="input-medium"		
-			/>
 		</fieldset>
 </form>

@@ -27,3 +27,11 @@ class PaycartModelCartParticular extends PaycartModel
 }
 
 class PaycartModelformCartParticulars extends PaycartModelform { }
+
+/**
+ * 
+ * PaycartTableCartparticular
+ * @author manish
+ *
+ */
+class PaycartTableCartparticular extends PaycartTable{}
