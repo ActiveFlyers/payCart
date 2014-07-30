@@ -4,71 +4,60 @@
 			
 			<field 	name="buyeraddress_id" type="hidden"
 					default="0"
-					label="COM_PAYCART_BUYERADDRESS_BUYERADDRESS_ID_LABEL"
-					description="COM_PAYCART_BUYERADDRESS_BUYERADDRESS_ID_DESC"
+					label="COM_PAYCART_BUYERADDRESS_ID"
 					readonly="true"
 			/>
 			
 			<field 	name="buyer_id" type="hidden"
 					default="0"
 					label="COM_PAYCART_BUYERADDRESS_BUYER_ID_LABEL"
-					description="COM_PAYCART_BUYERADDRESS_BUYER_ID_DESC"
 					readonly="true"
 			/>
 			
 			
 			<field 	name="to" type="text"
 					label="COM_PAYCART_BUYERADDRESS_NAME_LABEL"
-					description="COM_PAYCART_BUYERADDRESS_NAME_DESC"
 					required="true"
 			/>
 			
 			<field 	name="address" type="textarea"
-					label="COM_PAYCART_BUYERADDRESS_ADDRESS"
-					description="COM_PAYCART_BUYERADDRESS_ADDRESS_DESC"	
+					label="COM_PAYCART_BUYERADDRESS_ADDRESS"	
 					required="true"
 			/>
 			
 			<field 	name="country" type="paycart.country"
 					label="COM_PAYCART_BUYERADDRESS_COUNTRY"
-					description="COM_PAYCART_BUYERADDRESS_COUNTRY_DESC"	
 					required="true"
 			/>
 			
 			<field 	name="state" type="paycart.state"
-					label="COM_PAYCART_BUYERADDRESS_STATE"
-					description="COM_PAYCART_BUYERADDRESS_STATE_DESC"	
+					label="COM_PAYCART_BUYERADDRESS_STATE"	
 					required="true"
 			/>
 			
 			<field 	name="city" type="text"
-					label="COM_PAYCART_BUYERADDRESS_CITY"
-					description="COM_PAYCART_BUYERADDRESS_CITY_DESC"	
+					label="COM_PAYCART_BUYERADDRESS_CITY"	
 					required="true"
 			/>
 			
 			<field 	name="zipcode" type="paycart.zipcode"
 					label="COM_PAYCART_BUYERADDRESS_ZIPCODE"
-					description="COM_PAYCART_BUYERADDRESS_ZIPCODE_DESC"	
 					required="true"
 			/>
 			
 			
 			<field 	name="vat_number" type="paycart.vatnumber"
-					label="COM_PAYCART_BUYERADDRESS_VAT_NUMBER"
-					description="COM_PAYCART_BUYERADDRESS_VAT_NUMBER_DESC"	
+					label="COM_PAYCART_BUYERADDRESS_VAT_NUMBER"	
 					required="true"
 			/>
 			
 			<field 	name="phone1" type="text"
-					label="COM_PAYCART_BUYERADDRESS_PHONE1"
-					description="COM_PAYCART_BUYERADDRESS_PHONE1_DESC"	
+					label="COM_PAYCART_BUYERADDRESS_PHONE1"	
 					required="true"
 			/>
 			
 			<field 	name="phone2" type="text"
 					label="COM_PAYCART_BUYERADDRESS_PHONE2"
-					description="COM_PAYCART_BUYERADDRESS_PHONE2_DESC"	
 					required="true"
 			/>
 

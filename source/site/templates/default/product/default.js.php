@@ -20,7 +20,7 @@ paycart.product = {};
 paycart.product.selector = {};
 
 paycart.product.selector.onChange= function(value){
-	if(value.id == '<?php echo 'pc-attr-'.$baseAttrId?>'){
+	if($baseAttrId && value.id == '<?php echo 'pc-attr-'.$baseAttrId?>'){
 		$('.pc-product-base-attribute').val('<?php echo $baseAttrId?>');
 	}
 	$('.pc-product-attributes').submit();

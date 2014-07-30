@@ -22,12 +22,18 @@ if(is_array($displayData)) {
 	$displayData = (object) $displayData;
 }
 
+if(!isset($displayData->state_name) && isset($displayData->state_id)){
+	$record = PaycartFactory::getModel('state')->loadRecords(array('state_id' => $displayData->state_id));
+	$state  = array_shift($record);
+	$displayData->state_name = $state->title;
+}
+
 ?>
 
 <address>
   <strong><?php echo@$displayData->to;  ?></strong><br>
   <?php echo @$displayData->address;  ?><br>
-  <?php echo @$displayData->city;  ?>, <?php echo @$displayData->state_id;  ?><br>
+  <?php echo @$displayData->city;  ?>, <?php echo @$displayData->state_name;  ?><br>
   <?php echo @$displayData->country_id;  ?> <?php echo @$displayData->zipcode;  ?><br>
   <abbr title="Phone"><i class="fa fa-phone"></i></abbr> <?php echo @$displayData->phone1;  ?><br>
 </address>

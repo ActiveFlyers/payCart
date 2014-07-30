@@ -129,8 +129,8 @@ class PaycartProductcategory extends PaycartLib
 			}
 			
 			$media->moveUploadedFile($this->_uploaded_files['cover_media']['tmp_name'], JFile::getExt($this->_uploaded_files['cover_media']['name']));
-			$media->createThumb(Paycart::MEDIA_IMAGE_THUMB_WIDTH, Paycart::MEDIA_IMAGE_THUMB_HEIGHT);
-			$media->createOptimized(Paycart::MEDIA_IMAGE_OPTIMIZE_WIDTH, Paycart::MEDIA_IMAGE_OPTIMIZE_HEIGHT);
+			$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'), Paycart::MEDIA_IMAGE_THUMB_HEIGHT);
+			$media->createOptimized(PaycartFactory::getConfig()->get('catalogue_image_optimized_width'),PaycartFactory::getConfig()->get('catalogue_image_optimized_height'));
 			$this->cover_media = $media->getId();
 		}
 				

@@ -493,4 +493,9 @@ abstract class PaycartCartparticular extends JObject
 		
 		return $object;
 	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
 }

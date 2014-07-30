@@ -107,7 +107,7 @@ class PaycartModelLang extends PaycartModel
 		$query = new Rb_Query();
 		$query->select('*')
 				->from($this->getLanguageTableName())
-				->where('`'.$key_name.'` = '.$pk);
+				->where('`'.$key_name.'` = '.$this->_db->quote($pk));
 				
 		$records 	= $query->dbLoadQuery()->loadObjectList();
 

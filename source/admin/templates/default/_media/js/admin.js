@@ -388,19 +388,6 @@ paycart.admin.state =
 			paycart.ajax.go(link, postData);
 		},
 		
-		// data is json string		
-		success : function(data)
-		{
-			var response = JSON.parse(data);
-			alert(response.message);
-			// @PCTODO::
-			// 1#.Close Model window
-			rb.ui.dialog.autoclose(1);
-			// 2#.Fetch html of new created state
-			// 3# append into state template
-			// 4#.Good Job
-		},
-		
 		// data is json string
 		error : function(data)
 		{

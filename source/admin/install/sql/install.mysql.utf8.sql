@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_country` (
   `isocode2` char(2) NOT NULL,
   `call_prefix` varchar(10) NOT NULL,
   `zip_format` varchar(12) NOT NULL,
-  `status` enum('published','unpublished','trashed') NOT NULL DEFAULT 'published',
+  `published` tinyint(1) NOT NULL ,
   `ordering` int(11) NOT NULL,
   PRIMARY KEY (`country_id`),
   KEY `idx_isocode2` (`isocode2`)
@@ -435,7 +435,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_state` (
   `state_id` int(11) NOT NULL AUTO_INCREMENT,
   `isocode` varchar(7) NOT NULL,
   `country_id` char(3) NOT NULL,
-  `status` enum('published','unpublished','trashed') NOT NULL,
+  `published` tinyint(1) NOT NULL,
   `ordering` int(11) NOT NULL,
   PRIMARY KEY (`state_id`),
   KEY `idx_isocode2` (`isocode`)

@@ -38,13 +38,13 @@ class PaycartCart extends PaycartLib
 	protected $is_locked;						 		
 	
 	protected $locked_date;					// Checkout/refund  Request date (Request for Payment)
-	protected $payment_date;					// Payment Completion date
-	protected $delivered_date;					// Cart deliver-date (Fill by manually) 
+	protected $paid_date;					// Payment Completion date
+	protected $completed_date;					// Cart deliver-date (Fill by manually) 
 	
 	protected $reversal_for;					// when reverse/return cart build. 
 												// Set here cart_id which is reversed 
 	
-	protected $cancellation_date;				// Before delivery, if cancel existing cart  
+	protected $cancelled_date;				// Before delivery, if cancel existing cart  
 	
 	protected $created_date;
 	protected $modified_date;
@@ -101,7 +101,7 @@ class PaycartCart extends PaycartLib
 		$this->buyer_id 		 	= 0;
 		$this->invoice_id			= 0;
 		
-		$this->status				= Paycart::STATUS_CART_DRAFT;
+		$this->status				= Paycart::STATUS_CART_DRAFTED;
 		$this->currency				= PaycartFactory::getConfig()->get('currency', 'USD');
 		$this->ip_address;
 		$this->billing_address_id	= 0;
@@ -109,11 +109,11 @@ class PaycartCart extends PaycartLib
 		$this->is_locked			= 0;			
 		
 		$this->locked_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
-		$this->payment_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
-		$this->delivered_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
+		$this->paid_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->completed_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
 		
 		$this->reversal_for			= 0; 
-		$this->cancellation_date	= Rb_Date::getInstance('0000-00-00 00:00:00');  
+		$this->cancelled_date	= Rb_Date::getInstance('0000-00-00 00:00:00');  
 		
 		$this->created_date			= Rb_Date::getInstance();
 		$this->modified_date		= Rb_Date::getInstance();
@@ -326,17 +326,22 @@ class PaycartCart extends PaycartLib
 	{
 		$existing_products = $this->params->get('products', new stdClass());
 		
-		// product is not already added, set it with quantity 0
+		// product is not already added, set it with quantity 1
 		if(!isset($existing_products->{$product->product_id})){
 			$existing_products->{$product->product_id}	=	new stdClass();
 			
 			$existing_products->{$product->product_id}->product_id 	= $product->product_id;
-			$existing_products->{$product->product_id}->quantity 	= 0;
+			$existing_products->{$product->product_id}->quantity 	= ($product->quatity)?$product->quatity:'1'; //PCTODO : Don't use 1, add minimum quantity of product 
 		}
-	
-		// update product quantity
-		$existing_products->{$product->product_id}->quantity	+= $product->quantity;
 		
+		/**
+		 * product has already been added and quantity is being updated
+		 * Case : If quantity is less than 1 then we will do nothing
+		 */
+		elseif($product->quantity > 0 && $existing_products->{$product->product_id}->quantity != $product->quantity){
+			$existing_products->{$product->product_id}->quantity 	= $product->quantity;
+		}
+
 		// set the new products
 		$this->params->set('products', $existing_products);
 				
@@ -631,7 +636,7 @@ class PaycartCart extends PaycartLib
 		}
 		
 		// Step-4# change status Lock cart
-		$this->status		=	Paycart::STATUS_CART_CHECKOUT;
+		$this->status		=	Paycart::STATUS_CART_LOCKED;
 		$this->locked_date	= 	Rb_Date::getInstance();
 		
 		// Step-5# Save cart

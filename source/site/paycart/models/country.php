@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @author manish
  *
  */
-class PaycartModelCountry extends PaycartModel
+class PaycartModelCountry extends PaycartModelLang
 {
 	public function delete($pk = null)
 	{
@@ -27,17 +27,23 @@ class PaycartModelCountry extends PaycartModel
 			$pk = $this->getId();
 		 }
 		 
-		// first we will delete all dependent information
+		// we will delete all dependent information
 		// so delete all state of this country
-		if (!PaycartFactory::getModel('state')->deleteMany(Array('country_id' => $pk))) {
-			// @PCTODO:: Specified error 
-			return false;
-		}
+		$query = new Rb_Query();
+		$db    = PaycartFactory::getDbo();
 		
-		// delete language specific data
-		if (!PaycartFactory::getModelLang('country')->deleteMany(Array('country_id' => "'$pk'"))) { 
-			// @PCTODO:: Specified error 
-			return false;
+		$stateIds = $query->select('state_id')
+						  ->from('#__paycart_state')
+						  ->where("country_id = ". $db->quote($pk))
+						  ->dbLoadQuery()
+						  ->loadColumn();
+						  
+		$model = PaycartFactory::getModel('state');
+		foreach ($stateIds as $stateId){
+			if(!$model->delete($stateId)){
+				// @PCTODO:: Specified error 
+				return false;
+			}
 		}
 		
 		// now we will delete country
@@ -50,63 +56,19 @@ class PaycartModelCountry extends PaycartModel
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see /plugins/system/rbsl/rb/rb/Rb_Model::deleteMany()
-	 */
-	public function X_deleteMany($condition, $glue='AND', $operator = '=')
-	{
-		//get all state from this condition
-		$query = new Rb_Query();
-		$query->select($this->getTable()->getKeyName())
-			  ->from($this->getTable()->getTableName());
-
-		$db = JFactory::getDbo();
-		
-		foreach($condition as $key => $value) {
-			$query->where(" $key $operator ". $db->quote($value) , $glue);
-		}
-
-		$country_ids = $query->dbLoadQuery()->loadColumn();
-		
-		// no country available for delete
-		if(empty($country_ids)) {
-			return true;
-		}
-		
-		// county id have string value so we need to add quote (') as suffix and prefix for MySql query
-    	$country_Ids = array_map(function($id){ return "'$id'"; }, $country_Ids);
-    	
-		// first we will delete all dependent information
-		// delete language specific data
-		$in_condition = implode(',', $country_ids);
-		
-		if ( PaycartFactory::getModelLang('country')->deleteMany(Array('country_id' => "($in_condition)"), 'AND' , 'IN')) {
-			// @PCTODO:: Specified error 
-			return false;
-		}
-		
-		//remove select clause and add delete clause into query
-		$query->clear('select');
-		
-		$query->delete();
-		
-		return $query->dbLoadQuery()->query();
-		
-	}
-	
-	/**
-	 * (non-PHPdoc)
 	 * @see/plugins/system/rbsl/rb/rb/Rb_Model::save()
 	 */
 	function save($data, $pk=null, $new=false)
     {
     	$new = $this->getTable()->load($pk)? false : true;
 		
-		if(!parent::save($data, $pk, $new)){
+    	$id  = parent::save($data, $pk, $new);
+    	
+		if(!$id){
 			return false;
-		};
+		}
 		
-		// store languagae data
-		return PaycartFactory::getModelLang($this->getName())->save($data); 
+		return $id; 
     }
     
     /**
@@ -116,64 +78,143 @@ class PaycartModelCountry extends PaycartModel
     public function loadRecords(Array $queryFilters=array(), Array $queryClean = array(), $emptyRecord=false, $indexedby = null)
     {
     	// load all country table records 
-    	$records = parent::loadRecords($queryFilters, $queryClean, $emptyRecord, $indexedby);
-    	
-    	//@PCTODO : bind lang property when you will call for $emptyRecord
-
-    	// bind lang specific data on country 
-    	if ( !empty($records) ) {
-    		$this->attachLanguageData($records);
-    	}
-    	
+    	$records = parent::loadRecords($queryFilters, $queryClean, $emptyRecord, $indexedby);   	
     	return $records;
     	
     }
     
-    protected function attachLanguageData($records)
-    {
-    	$country_Ids = array_keys($records);
-    	
-    	// county id have string value so we need to add quote (') as suffix and prefix for MySql query
-    	$country_Ids = array_map(function($id){ return "'$id'"; }, $country_Ids);
-					   
-
-
-    	$in_condition_data	=	implode(',', $country_Ids);
-    	$current_lang_code	=	PaycartFactory::getLanguage()->getTag();
-
-    	$filter = Array(
-	    	 	'country_id'	=> 	Array(Array('IN', "( $in_condition_data )")),
-	    		'lang_code'		=>	$current_lang_code
-    		);
-    	
-    	$lang_records = PaycartFactory::getModelLang($this->getName())->loadRecords($filter, array(), false, 'country_id');
-
-    	// bind lang property on country record
-    	foreach ($records as $country_id => $record) {
-    		//@PCTODO :: attache default lang stuff
-    		$record->title 				= '';
-    		$record->country_lang_id 	= '';
-    		
-    		if( isset($lang_records[$country_id]) && !empty($lang_records[$country_id]->title)) {
-    			$record->title	 			=	$lang_records[$country_id]->title;
-    			$record->country_lang_id 	= 	$lang_records[$country_id]->country_lang_id;
-    		}
-    	}
-    	
-    	return true;    	
-    }
-    
     
 }
-    
- /**
- * 
- * Country Lang model
- * @author mManishTrivedi
- *
- */
-class PaycartModelLangCountry extends PaycartModel
-{}
 
 class PaycartModelformCountry extends PaycartModelform 
 {}
+
+/**
+ * 
+ * Country Table
+ * @author manish
+ *
+ */
+class PaycartTableCountry extends PaycartTable
+{
+	/**
+	 * Issue :: We are using string as primary key. Joomla Compare string with zero with ( == )so we have overwrite this method   
+	 * @see /libraries/joomla/table/JTable::store()
+	 */
+	public function store($updateNulls = false)
+	{
+		$k = $this->_tbl_key;
+		if (!empty($this->asset_id))
+		{
+			$currentAssetId = $this->asset_id;
+		}
+
+		// here we are using (===)
+		if (0 === $this->$k)
+		{
+			$this->$k = null;
+		}
+
+		// The asset id field is managed privately by this class.
+		if ($this->_trackAssets)
+		{
+			unset($this->asset_id);
+		}
+
+		// If a primary key exists update the object, otherwise insert it.
+		if ($this->$k)
+		{
+			$this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
+		}
+		else
+		{
+			$this->_db->insertObject($this->_tbl, $this, $this->_tbl_key);
+		}
+
+		// If the table is not set to track assets return true.
+		if (!$this->_trackAssets)
+		{
+			return true;
+		}
+
+		if ($this->_locked)
+		{
+			$this->_unlock();
+		}
+
+		/*
+		 * Asset Tracking
+		 */
+
+		$parentId = $this->_getAssetParentId();
+		$name = $this->_getAssetName();
+		$title = $this->_getAssetTitle();
+
+		$asset = self::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$asset->loadByName($name);
+
+		// Re-inject the asset id.
+		$this->asset_id = $asset->id;
+
+		// Check for an error.
+		$error = $asset->getError();
+		if ($error)
+		{
+			$this->setError($error);
+			return false;
+		}
+
+		// Specify how a new or moved node asset is inserted into the tree.
+		if (empty($this->asset_id) || $asset->parent_id != $parentId)
+		{
+			$asset->setLocation($parentId, 'last-child');
+		}
+
+		// Prepare the asset to be stored.
+		$asset->parent_id = $parentId;
+		$asset->name = $name;
+		$asset->title = $title;
+
+		if ($this->_rules instanceof JAccessRules)
+		{
+			$asset->rules = (string) $this->_rules;
+		}
+
+		if (!$asset->check() || !$asset->store($updateNulls))
+		{
+			$this->setError($asset->getError());
+			return false;
+		}
+
+		// Create an asset_id or heal one that is corrupted.
+		if (empty($this->asset_id) || ($currentAssetId != $this->asset_id && !empty($this->asset_id)))
+		{
+			// Update the asset_id field in this table.
+			$this->asset_id = (int) $asset->id;
+
+			$query = $this->_db->getQuery(true)
+				->update($this->_db->quoteName($this->_tbl))
+				->set('asset_id = ' . (int) $this->asset_id)
+				->where($this->_db->quoteName($k) . ' = ' . (int) $this->$k);
+			$this->_db->setQuery($query);
+
+			$this->_db->execute();
+		}
+
+		return true;
+	}
+}
+
+/**
+ * 
+ * Language specific Table
+ * @author manish
+ *
+ */
+class PaycartTableCountryLang extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_country_lang', $tblPrimaryKey='country_lang_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}	
+}

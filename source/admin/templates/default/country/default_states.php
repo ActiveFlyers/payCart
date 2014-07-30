@@ -13,38 +13,49 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 ?>
-	
-<!-- Html begin	-->
-	<div class="" >
+<div>
 <?php
 	if (empty($states)):
 	?>	
-		<div class="center">
-			<a href="#" class="btn btn-success add-new-address" onClick="paycart.admin.state.window(<?php echo "'$record_id', 0";  ?>);" >
-				<i class="icon-plus-sign icon-white"></i>&nbsp; <?php echo JText::_('COM_PAYCART_ADD_NEW_STATE');?>
-			</a>
-			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-question-sign "></i>&nbsp;<?php echo JText::_('COM_PAYCART_SUPPORT_LINK');?></a>
-			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-book"></i>&nbsp;<?php echo JText::_('COM_PAYCART_DOCUMENTATION_LINK');?></a>
-		</div>
-<?php else : ?>
 	
 	<div class="row-fluid">
+		<div class="center muted">
+			<div>
+				<h1>&nbsp;</h1>
+				<i class="fa fa-flag fa-5x"></i>
+			</div>
+			
+			<div>
+				<h3><?php echo JText::_('COM_PAYCART_ADMIN_STATE_GRID_BLANK_MSG');?></h3>
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid">	
+		<div class="center">
+			<a href="#" class="btn btn-success btn-large" onClick="paycart.admin.state.window(<?php echo "'$record_id', 0";  ?>);">
+				<i class="icon-plus-sign icon-white"></i>&nbsp;
+				<?php echo Rb_Text::_('COM_PAYCART_ADMIN_STATE_ADD');?>
+			</a>			
+		</div>
+	</div>
+	
+<?php else : ?>
+
+	<div class="row-fluid">
 		<a href="#" class="btn btn-success add-new-address pull-right" onClick="paycart.admin.state.window(<?php echo "'$record_id', 0 "; ?>);" >
-				<i class="icon-plus-sign icon-white"></i>&nbsp; <?php echo JText::_('COM_PAYCART_ADD_NEW_STATE');?>
+				<i class="icon-plus-sign icon-white"></i>&nbsp; <?php echo JText::_('COM_PAYCART_ADMIN_STATE_ADD');?>
 		</a>
 	</div>
 		
-	<table class="table table-hover">
+	<table class="table table-striped">
 		<thead>
 		<!-- TABLE HEADER START -->
 			<tr>
-			
-				<th width="1%">	<?php echo '#'; ?></th>
-				<th >	<?php echo JText::_('COM_PAYCART_STATE_TITLE')?>			</th>
-				<th >	<?php echo JText::_('COM_PAYCART_STATE_ISOCODE')?>		</th>
-				<th >	<?php echo JText::_('COM_PAYCART_STATE_STATUS')?>		</th>
-				<th >	<?php echo JText::_('COM_PAYCART_STATE_OPERATION')?>	</th>
-				
+<!--				<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /></th>-->
+				<th><?php echo JText::_('COM_PAYCART_ADMIN_TITLE')?></th>
+				<th><?php echo JText::_('COM_PAYCART_ADMIN_ISOCODE')?></th>
+	 			<th><?php echo JText::_('COM_PAYCART_ADMIN_STATUS')?></th> 
+				<th><?php echo JText::_('COM_PAYCART_ADMIN_STATE_OPERATION')?></th>
 			</tr>
 		<!-- TABLE HEADER END -->
 		</thead>
@@ -54,30 +65,31 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<?php 
 			$count= count($states);
 			$counter = 1;
-			foreach ($states as $state_id => $state_details):?>
-			
-				<tr class="<?php echo "row".$count%2; ?>">								
-					<th><?php echo $counter++;?></th>
-					
-					<td><?php echo $state_details->title; ?></td>
-					<td><?php echo $state_details->isocode;?></td>
-					<td><?php echo $state_details->status;?></td>
+			$cbCount = 0;
+			foreach ($states as $state_id => $state_details):?>			
+				<tr class="<?php echo "row".$count%2; ?>">	
+<!--					<th><?php echo PaycartHtml::_('grid.id', $cbCount++, $state_id );?></th>-->
 					<td>
-							<a href="#" class="btn btn-success" onClick="paycart.admin.state.window(<?php echo "'$record_id', {$state_id}"; ?>);" >
-								<i class="icon-plus-sign icon-white"></i>&nbsp; <?php echo JText::_('COM_PAYCART_EDIT_STATE');?>
-							</a>
-							
-							<a href="#" class="btn btn-success" onClick="paycart.admin.state.remove.go(<?php echo $state_id; ?>);" >
-								<i class="icon-plus-sign icon-white"></i>&nbsp; <?php echo JText::_('COM_PAYCART_DELETE_STATE');?>
-							</a>
+						<a href="#" onClick="paycart.admin.state.window(<?php echo "'$record_id', {$state_id}"; ?>);" >
+								<?php echo $state_details->title; ?>
+						</a>
 					</td>
-					
+					<td><?php echo $state_details->isocode;?></td>
+					<td><?php echo ($state_details->published == '1')? '<span class="label label-success">'.JText::_('COM_PAYCART_ADMIN_PUBLISHED') : '<span class="label">'.JText::_('COM_PAYCART_ADMIN_UNPUBLISHED');?></span></td>
+					<td>
+						<a href="#" onClick="paycart.admin.state.window(<?php echo "'$record_id', {$state_id}"; ?>);" >
+								<i class="icon-edit icon-white"></i>
+						</a>
+						<a href="#" onClick="paycart.admin.state.remove.go(<?php echo $state_id; ?>);" >
+							<i class="icon-trash icon-white text-error"></i>
+						</a>
+					</td>
 				</tr>
 			<?php endforeach;?>
 		<!-- TABLE BODY END -->
 		</tbody>
-	</table>		
+	</table>
+	
 <?php endif; ?>
-
 </div>
-
+<?php 

@@ -26,28 +26,21 @@ class PaycartAdminControllerBuyeraddress extends PaycartController
 		$buyeraddress_id 	= $this->_getId();
 
 		$buyeraddress		= $this->_save($post, $buyeraddress_id);
-		
-		$response = Array('message' => '');
-		
-		$ajax = Rb_Factory::getAjaxResponse();
 	
-		// default callback method
-		$response['message'] =	'//PCTODO: Oops!! Buyeraddress fail to save. :(';
-		$callback 			 =	'paycart.admin.buyeraddress.add.error';
-		$redirect			 =	'';
+		//perform redirection
+		$redirect  = "index.php?option=com_paycart&view=buyer&task=edit&id={$buyeraddress->getBuyer()}";
 				
-		// if buyeraddress succesfully save  
-		if($buyeraddress instanceof PaycartBuyeraddress) {			
-			$response['message']	= '//PCTODO: GOOD!! Buyeraddress successfully save. Now you need to fetch buyeraddress html and append into buyeraddreess template ';
-			$callback 				= 'paycart.admin.buyeraddress.add.success';
-	
-			//perform redirection
-			$redirect  = "index.php?option=com_paycart&view=buyer&task=edit&id={$buyeraddress->getBuyer()}";
-			
+		// if buyeraddress do not save succesfully   
+		if(!($buyeraddress instanceof PaycartBuyeraddress)) {	
+			$response = Array('message' => '');
+			$ajax     = Rb_Factory::getAjaxResponse();
+			$response['message'] =	'Buyeraddress was failed to save';
+			$callback 			 =	'paycart.admin.buyeraddress.add.error';
+			$redirect			 =	'';
+
+			// set call back function
+			$ajax->addScriptCall($callback, json_encode($response)); 				
 		}
-		
-		// set call back function
-		$ajax->addScriptCall($callback, json_encode($response)); 
 		
 		$this->setRedirect( $redirect , $this->getMessage(), $msgType);
 

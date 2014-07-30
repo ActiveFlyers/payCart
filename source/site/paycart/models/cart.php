@@ -24,3 +24,8 @@ class PaycartModelCart extends PaycartModel
 }
 
 class PaycartModelformCart extends PaycartModelform { }
+
+/** 
+ * Cart Table
+ */
+class PaycartTableCart extends PaycartTable {}

@@ -60,30 +60,30 @@ $id_suffix++;
 		
 <!-- Buyer To -->
 	<div class="control-group">
-	  <label class="control-label" for="to"></label>
+	  <label class="control-label" for="to">
+	  		<?php echo JText::_('COM_PAYCART_TO');?>
+	  </label>
 	  <div class="controls">
 	    <input 
 	    		name="<?php echo $prefix; ?>[to]" 
 				id="to_<?php echo $id_suffix; ?>" 
 				value="<?php echo $displayData->to; ?>"
-				placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_TO_LABEL'); ?>" 
-				class="input-xlarge" required="" type="text"
+				type="text" required="true"
 		/>
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_TO_DESC');?></p>
 	  </div>
 	</div>
 		
 <!-- Buyer Address -->
 	<div class="control-group">
-	  <label class="control-label" for="address"></label>
+	  <label class="control-label" for="address">
+	  	<?php echo JText::_('COM_PAYCART_ADDRESS');?>
+	  </label>
 	  <div class="controls">                     
 	    <textarea 	name="<?php echo $prefix; ?>[address]" 
 					id="address_<?php echo $id_suffix; ?>"
-	    			placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_ADDRESS'); ?>"
-	    >
+					required="true">
 	    	<?php echo $displayData->address; ?>
 	    </textarea>
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_ADDRESS_DESC');?></p>
 	  </div>
 	</div>
 	
@@ -91,130 +91,115 @@ $id_suffix++;
 <!-- Buyeraddress country-->
 	<div class="control-group">
 	  <label class="control-label" for="textinput">
-	  	<?php echo JText::_('COM_PAYCART_BUYERADDRESS_COUNTRY');?>"
+	  		<?php echo JText::_('COM_PAYCART_COUNTRY');?>
 	  </label>
 	  <div class="controls">
 	  		<?php
-	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', $displayData->country_id, "country_id_$id_suffix", array('class'=>"input-xlarge")); 
+	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', $displayData->country_id, "country_id_$id_suffix"); 
 	  		?>
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_COUNTRY_DESC');?></p>
+	   
 	  </div>
 	</div>
 	
 	
 	
-	<!--	Buyeraddress State	-->
+<!--	Buyeraddress State	-->
 	<div class="control-group">
 	  
-	  <label class="control-label" for="textinput"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE'); ?></label>
+	  <label class="control-label" for="textinput">
+	  		<?php echo JText::_('COM_PAYCART_STATE');?>
+	  </label>
 	  <div class="controls">
-	  	<?php 
-	  		echo PaycartHtmlState::getList($prefix.'[state_id]',$displayData->state_id,  "state_id_$id_suffix", array('class'=>"input-xlarge"),  $displayData->country_id);
-	  	?>
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_STATE_DESC');?></p>
-	    
-	    <script>
-
-			(function($){
-
-				$(<?php echo "'#country_id_$id_suffix'"; ?>).on('change',  function() {
-					paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
-				});
-				<?php
-					// if state already available then no need to get states  
-					if (!$displayData->state_id) :
-				?>
-					paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
-				<?php endif; ?>
-				
-			})(paycart.jQuery);
-			
-		</script>
-		
+		  	<?php 
+		  		echo PaycartHtmlState::getList($prefix.'[state_id]',$displayData->state_id,  "state_id_$id_suffix", array(),  $displayData->country_id);
+		  	?>
+		   	    
+		    <script>
+				(function($){
+	
+					$(<?php echo "'#country_id_$id_suffix'"; ?>).on('change',  function() {
+						paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
+					});
+					<?php
+						// if state already available then no need to get states  
+						if (!$displayData->state_id) :
+					?>
+						paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
+					<?php endif; ?>
+					
+				})(paycart.jQuery);
+		   </script>
 	  </div>
 	</div>
 
 <!--	Buyeraddress City	-->
 	<div class="control-group">
-	  <label class="control-label" for="textinput"></label>
+	  <label class="control-label" for="textinput">
+	  		<?php echo JText::_('COM_PAYCART_CITY');?>
+	  </label>
 	  <div class="controls">
 	    <input 	name="<?php echo $prefix; ?>[city]" 
 				id="city_<?php echo $id_suffix; ?>" 
 				value="<?php echo $displayData->city; ?>"
-	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_CITY'); ?>" class="input-xlarge" type="text"
-	    		required="" >
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_CITY_DESC');?></p>
-	    
+	    	    type="text">
 	  </div>
 	</div>
 
 <!--	Buyeraddress Zipcode	-->
 	<div class="control-group">
-	  <label class="control-label" for="Zipcode"></label>
+	  <label class="control-label" for="Zipcode">
+	  		<?php echo JText::_('COM_PAYCART_ZIPCODE');?>
+	  </label>
 	  <div class="controls">
-	    <input 	name="<?php echo $prefix; ?>[zipcode]" 
-				id="zipcode_<?php echo $id_suffix; ?>" 
-				value="<?php echo $displayData->zipcode; ?>"
-				placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_ZIPCODE'); ?>" class="input-xlarge" type="text"
-				required=""
-				>
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_ZIPCODE_DESC');?></p>
+		    <input 	name="<?php echo $prefix; ?>[zipcode]" 
+					id="zipcode_<?php echo $id_suffix; ?>" 
+					value="<?php echo $displayData->zipcode; ?>"
+					type="text">
+	  
 	  </div>
 	</div>
 
 <!--	Buyeraddress Vatnumber	-->
 	<div class="control-group">
-	  <label class="control-label" for="textinput"></label>
+	  <label class="control-label" for="textinput">
+	  		<?php echo JText::_('COM_PAYCART_VATNUMBER');?>
+	  </label>
 	  <div class="controls">
-	    <input 	name="<?php echo $prefix; ?>[vat_number]" 
-				id="vat_number_<?php echo $id_suffix; ?>" 
-				value="<?php echo $displayData->vat_number; ?>" 
-	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_VAT_NUMBER'); ?>" class="input-xlarge" type="text">
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_VAT_NUMBER_DESC');?></p>
+		    <input 	name="<?php echo $prefix; ?>[vat_number]" 
+					id="vat_number_<?php echo $id_suffix; ?>" 
+					value="<?php echo $displayData->vat_number; ?>" 
+		    		type="text">
+	    
 	  </div>
 	</div>
 		
 <!--	Buyeraddress Phone1	-->
 	<div class="control-group">
-	  <label class="control-label" for="textinput"></label>
+	  <label class="control-label" for="textinput">
+	  		<?php echo JText::_('COM_PAYCART_PHONE1');?>
+	  </label>
 	  <div class="controls">
-	    <input	name="<?php echo $prefix; ?>[phone1]" 
-				id="phone1_<?php echo $id_suffix; ?>" 
-				value="<?php echo $displayData->phone1; ?>" 
-	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_PHONE1'); ?>" class="input-xlarge" type="text"
-	    		required=""
-	    		>
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_PHONE1_DESC');?></p>
+		    <input	name="<?php echo $prefix; ?>[phone1]" 
+					id="phone1_<?php echo $id_suffix; ?>" 
+					value="<?php echo $displayData->phone1; ?>" 
+		    		type="text" required="true">
 	  </div>
 	</div>
 
 
 <!--	Buyeraddress Phone2	-->
-	<div class="control-group">
-	  <label class="control-label" for="textinput"></label>
+	<!--<div class="control-group">
+	  <label class="control-label" for="textinput">
+	  		<?php echo JText::_('COM_PAYCART_PHONE2');?>
+	  </label>
 	  <div class="controls">
-	    <input	name="<?php echo $prefix; ?>[phone2]" 
-				id="phone2_<?php echo $id_suffix; ?>" 
-				value="<?php echo $displayData->phone2; ?>" 
-	    		placeholder="<?php echo JText::_('COM_PAYCART_BUYERADDRESS_PHONE2'); ?>" class="input-xlarge" type="text">
-	    <p class="help-block"><?php echo JText::_('COM_PAYCART_BUYERADDRESS_PHONE2_DESC');?></p>
+		    <input	name="<?php echo $prefix; ?>[phone2]" 
+					id="phone2_<?php echo $id_suffix; ?>" 
+					value="<?php echo $displayData->phone2; ?>" 
+		    		type="text">
+	    
 	  </div>
 	</div>
-
-
-</fieldset>
 	
-	<script>
-
-		(function($){
-	
-			$(document).ready(function($){
-				
-			});				
-		 	
-		})(paycart.jQuery);
-	</script>
-	
-
-
-
+--></fieldset>
+<?php 

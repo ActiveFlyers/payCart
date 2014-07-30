@@ -5,7 +5,7 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
-* @contact		team@readybytes.in
+* @contact		support+paycart@readybytes.in
 * @author		Puneet Singhal
 */
 

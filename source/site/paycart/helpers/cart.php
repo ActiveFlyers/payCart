@@ -27,11 +27,11 @@ class PaycartHelperCart extends PaycartHelper
 	{
 		return 
 			Array(
-					Paycart::STATUS_CART_DRAFT,
-					Paycart::STATUS_CART_CHECKOUT,
-					Paycart::STATUS_CART_PAID,
-					Paycart::STATUS_CART_CANCEL,
-					Paycart::STATUS_CART_COMPLETE
+					Paycart::STATUS_CART_DRAFTED   => JText::_('COM_PAYCART_CART_STATUS_DRAFTED'),
+					Paycart::STATUS_CART_LOCKED	   => JText::_('COM_PAYCART_CART_STATUS_LOCKED'),
+					Paycart::STATUS_CART_PAID      => JText::_('COM_PAYCART_CART_STATUS_PAID'),
+					Paycart::STATUS_CART_CANCELLED => JText::_('COM_PAYCART_CART_STATUS_CANCELLED'),
+					Paycart::STATUS_CART_COMPLETED => JText::_('COM_PAYCART_CART_STATUS_COMPLETED')
 				)	;
 	}
 	
