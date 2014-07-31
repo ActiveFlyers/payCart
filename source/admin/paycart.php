@@ -17,9 +17,6 @@ if(!defined('RB_FRAMEWORK_LOADED')){
 
 require_once JPATH_SITE.'/components/com_paycart/paycart/includes.php';
 
-//@PCFIXME : move to proper location
-Rb_HelperJoomla::loadPlugins('paycart');
-
 // find the controller to handle the request
 $option	= 'com_paycart';
 $view	= 'product';

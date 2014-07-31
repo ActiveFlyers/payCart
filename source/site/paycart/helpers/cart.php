@@ -51,8 +51,8 @@ class PaycartHelperCart extends PaycartHelper
 		// get cart data
 		$cart_data =	PaycartFactory::getModel('cart')->loadRecords(Array('session_id' => $session_id));
 		
-		if (!$cart_data) {
-			$cart = self::createNew();
+		if (empty($cart_data)) {
+			$cart = $this->createNew();
 		}
 		else {
 			$data = array_shift($cart_data);
@@ -77,6 +77,28 @@ class PaycartHelperCart extends PaycartHelper
 		$session_id =	PaycartFactory::getSession()->getId();
 		$cart		= 	PaycartCart::getInstance();
 		
-		return $cart->setSessionId($session_id)->save();
+		$cart->setSessionId($session_id);
+		return $cart->save();
+	}
+	
+	/**
+	 * 
+	 * Invoke to add product +calculate
+	 * @param INT $productId
+	 * @param INT $quantity
+	 * 
+	 * @return PaycartCart
+	 */
+	public function addProduct($productId, $quantity)
+	{
+		$cart 	= $this->getCurrentCart();
+		
+		//add product
+		$product = new stdClass();
+		$product->product_id = $productId;
+		$product->quantity   = $quantity;
+		
+		$cart->addProduct($product);
+		return $cart->calculate()->save();
 	}
 }

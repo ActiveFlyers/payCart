@@ -37,6 +37,12 @@ abstract class PaycartCartparticular extends JObject
 	protected $_rule_apply_on = '';
 	protected $_applied_promotions = array();
 	
+	// Product specific field	
+	protected $height 	= 0;
+	protected $width 	= 0;
+	protected $length 	= 0;
+	protected $weight 	= 0;
+	
 	
 	/**
 	 * 
@@ -71,7 +77,7 @@ abstract class PaycartCartparticular extends JObject
 		return $this;
 	}
 	
-	public function getTotal()
+	public function getTotal($is_calculated_amount = false)
 	{
 		return $this->total;
 	}
@@ -109,6 +115,26 @@ abstract class PaycartCartparticular extends JObject
 	public function getDiscount()
 	{
 		return $this->discount;
+	}
+	
+	public function getHeight()
+	{
+		return $this->height;
+	}
+
+	public function getWeight()
+	{
+		return $this->weight;
+	}
+
+	public function getWidth()
+	{
+		return $this->width;
+	}
+	
+	public function getLength()
+	{
+		return $this->length;
 	}
 	
 	public function setQuantity($value)
@@ -186,17 +212,13 @@ abstract class PaycartCartparticular extends JObject
 		// get appliable group rule on buyer and product bases
 		$applicableGrouprules = $this->getApplicableGrouprules($cart);
 		
-		//@PCTODO :: if we dont have any applicable group rule den no need to further processing 
-		if (empty($applicableGrouprules)) {
-			return $this;
-		}
-		
 		// get discount rule according to group applicability
 		$discountrules = $this->getDiscountrules($applicableGrouprules);
 		
-		foreach($discountrules as $discountruleId){
-			// discount rule is appied successfully then create its usage 
+		foreach($discountrules as $discountruleId) {
+			// @PCTODO :: error handling 
 			$this->_applyDiscountrule($cart, $discountruleId);
+			
 			if(isset($this->_stopFurtherRules) && $this->_stopFurtherRules){
 				break;
 			}
@@ -209,7 +231,7 @@ abstract class PaycartCartparticular extends JObject
 	{
 		$discountrule 	= PaycartDiscountrule::getInstance($ruleId);
 			
-		// first check its applicabiliy
+		//1#. first check its applicabiliy
 		$isApplicableResponse = $discountrule->isApplicable($cart, $this);
 		if($isApplicableResponse->error === true){
 			// $isApplicableResponse contains the messgage,
@@ -220,10 +242,10 @@ abstract class PaycartCartparticular extends JObject
 		$request	  	= $discountrule->getRequestObject($cart, $this);
 		$response		= $discountrule->getResponseObject();
 		
-		// V V V V IMP
+		//2#. Process discount rule
 		$processor->process($request, $response);
 		
-		// check if exception is occured
+		//3#. check if exception is occured
 		if ($response->exception && $response->exception instanceof Exception) {
 			throw new Exception($response->message);
 		}
@@ -237,18 +259,18 @@ abstract class PaycartCartparticular extends JObject
 		
 		// notify to admin
 		if ( Paycart::MESSAGE_TYPE_ERROR == $response->messageType) {
-			$cart->addMeesage($messageKey, Paycart::MESSAGE_TYPE_ERROR, $response->message, $this);
+			$cart->addMessage($messageKey, Paycart::MESSAGE_TYPE_ERROR, $response->message, $this);
 			return false;
 		}
 		
 		// show system message to end user 
 		// IMP : do not return in case of notice, warning and message
 		if (in_array($response->messageType, array(Paycart::MESSAGE_TYPE_NOTICE, Paycart::MESSAGE_TYPE_WARNING, Paycart::MESSAGE_TYPE_MESSAGE))){
-			$cart->addMeesage($messageKey, $response->messageType, $response->message, $this);
+			$cart->addMessage($messageKey, $response->messageType, $response->message, $this);
 		}
 
-		// if response amount is not set or less than equal to zero then do nothing
-		if(!isset($response->amount) && $response->amount <= 0){
+		// if response amount is not set or equal to zero then do nothing
+		if(!isset($response->amount) || $response->amount >= 0){
 			return false;
 		}
 		
@@ -262,20 +284,27 @@ abstract class PaycartCartparticular extends JObject
 			//@PCTODO :: notify to user or Log it
 			return false;
 		}
-		
+		//@PCTODO : When first is clubbable applied then apply non-clubbable. Now what happen??
 		// if applied discount is non-clubbable 
 		// then stop next all multiple rules
-		if (!$this->is_clubbable) {
+		if (!$discountrule->get('is_clubbable', false)) {
 			$this->_stopFurtherRules = true;
 		}			
 			
 		// apply discounted amount
 		$this->addDiscount($response->amount); 
-		$this->addUsage($cart, Paycart::PROCESSOR_TYPE_DISCOUNTRULE, $response);
+		$this->addUsage($cart, $discountrule, $response);
 		return true;
 	}
 	
-	public function addUsage(PaycartCart $cart, $rule, $response)
+	/**
+	 * 
+	 * Invoke to set usage into particular object
+	 * @param PaycartCart $cart
+	 * @param PaycartLib  $applied_rule
+	 * @param rule response $response
+	 */
+	public function addUsage(PaycartCart $cart, $rule,  $response)
 	{
 		//create usage data
 		$usage = new stdClass();
@@ -285,7 +314,8 @@ abstract class PaycartCartparticular extends JObject
 		$usage->buyer_id			= $cart->getBuyer();
 		$usage->price				= $response->amount;
 		$usage->message				= $response->message;
-		$usage->title				= $rule->getTitle();
+		$usage->title				= $response->message;
+		
 		$this->_usage[] = $usage;
 		
 		return $this;
@@ -300,7 +330,7 @@ abstract class PaycartCartparticular extends JObject
 			
 			$date = new Rb_Date();
 			$usage->applied_date 	= $date->toSql();
-			$usage->realized_date 	= $date->toSql(); // Is it really required now??? @PCTODO
+			//$usage->realized_date 	= $date->toSql(); // Is it really required now??? @PCTODO
 			$id = $model->save($data);
 			if(!$id){
 				throw new Exception('COM_PAYCART_ERROR_IN_SAVING_USAGE');
@@ -315,12 +345,7 @@ abstract class PaycartCartparticular extends JObject
 	public function applyTaxrules(PaycartCart $cart)
 	{
 		$applicableGrouprules = $this->getApplicableGrouprules($cart);
-		
-		//@PCTODO :: if we dont have any applicable group rule den get static rules or  no need to further processing 
-		if (empty($applicableGrouprules)) {
-			return $this;
-		}
-		
+				
 		$taxrules = $this->getTaxrules($applicableGrouprules);
 		
 		foreach($taxrules as $taxruleId){
@@ -339,7 +364,7 @@ abstract class PaycartCartparticular extends JObject
 		$request	  	= $taxrule->getRequestObject($cart, $this);
 		$response		= $taxrule->getResponseObject();
 		
-		// V V V IMP
+		// Process to apply tax
 		$processor->process($request, $response);
 		
 		// check if exception is occured
@@ -363,7 +388,7 @@ abstract class PaycartCartparticular extends JObject
 
 		// add tax
 		$this->addTax($response->amount);		
-		$this->addUsage($cart, Paycart::PROCESSOR_TYPE_TAXRULE, $response);
+		$this->addUsage($cart, $taxrule, $response);
 		return true;
 	}
 	
@@ -377,9 +402,10 @@ abstract class PaycartCartparticular extends JObject
 	{
 		$subquery = new Rb_Query();
 		$subquery->select('DISTINCT(`taxrule_id`)')
-				 ->from('#_paycart_taxrule_x_group');
+				 ->from('#__paycart_taxrule_x_group');
+				 
 		if(!empty($groupRules)){
-			$subquery->where('`group_id` IN ('.explode(',', $groupRules).')');
+			$subquery->where('`group_id` IN ('.implode(',', $groupRules).')');
 		}
 
 		$joinCondition  = '('.$subquery->__toString().') AS `rule_group` ON ( `rule`.`taxrule_id` = `rule_group`.`taxrule_id`)';
@@ -390,18 +416,33 @@ abstract class PaycartCartparticular extends JObject
 				->from('`#__paycart_taxrule` as `rule`')
 				->leftJoin($joinCondition)
 				->where('`rule`.`apply_on` = "'.$this->_rule_apply_on.'"', 'AND')
-				->order('`rule`.`ordering`');				
+				->where('`rule`.`published` =  1', 'AND')							// rule must be publish
+				->order('`rule`.`ordering`');
 		
-		return $query->dbLoadQuery()->loadAssoc();
+		$taxrules = $query->dbLoadQuery()->loadAssoc();
+		
+		if (empty($taxrules)) {
+			$taxrules = Array();
+		} 
+		
+		return $taxrules;
 	}
 	
+	/**
+	 * 
+	 * Invoke to get applvcable discount rule
+	 * @param Array $groupRules grouprules_id
+	 * 
+	 * @return Array()
+	 */
 	public function getDiscountrules(Array $groupRules = Array())
 	{
 		$subquery = new Rb_Query();
 		$subquery->select('DISTINCT(`discountrule_id`)')
-				 ->from('#_paycart_discountrule_x_group');
+				 ->from('#__paycart_discountrule_x_group');
+
 		if(!empty($groupRules)){
-			$subquery->where('`group_id` IN ('.explode(',', $groupRules).')');
+			$subquery->where('`group_id` IN ('.implode(',', $groupRules).')');
 		}
 
 		$joinCondition  = '('.$subquery->__toString().') AS `rule_group` ON ( `rule`.`discountrule_id` = `rule_group`.`discountrule_id`)';
@@ -411,15 +452,33 @@ abstract class PaycartCartparticular extends JObject
 		$query->select('DISTINCT `rule`.`discountrule_id`')
 				->from('`#__paycart_discountrule` as `rule`')
 				->leftJoin($joinCondition)
-				->where('`rule`.`apply_on` = "'.$this->_rule_apply_on.'"', 'AND')
+				->where('`rule`.`apply_on` = "'.$this->_rule_apply_on.'"', 'AND')	// rule apply on condition {product,cart, shipping}
+				->where('`rule`.`published` =  1', 'AND')							// rule must be publish
+				->where('`rule`.`start_date` <=  NOW()', 'AND')						// rule's start-date should be either today or past day
+				// rule's end-date should be either today or future-day. If its 0000-00-00 00:00:00 it means infinite day
+				->where('(`rule`.`end_date` >=  NOW() OR `rule`.`end_date` =  "0000-00-00 00:00:00")', 'AND')		
 				->order('`rule`.`ordering`');
 				
 		$where  = '`rule`.`coupon` = ""';
-		if(!empty($this->_applied_promotions)){
-			$query->where('( '.$where.' OR `rule`.`coupon` IN ("'.implode('", "', $this->_applied_promotions).'"))');
+		
+		$applied_promotions = $this->_applied_promotions;
+		
+		if (is_object($applied_promotions)) {
+			$applied_promotions = (array)$applied_promotions; 
+		}
+		
+		if(!empty($applied_promotions)){
+			//@FIXME :: coupon code must be clean with $quote method
+			$query->where('( '.$where.' OR `rule`.`coupon` IN ("'.implode('", "', $applied_promotions).'"))');
 		}		
 		
-		return $query->dbLoadQuery()->loadAssoc();
+		$discountrules =  $query->dbLoadQuery()->loadAssoc();
+		
+		if (empty($discountrules)) {
+			$discountrules = Array();
+		} 
+		
+		return $discountrules;
 	}
 	
 	/**
@@ -455,7 +514,7 @@ abstract class PaycartCartparticular extends JObject
 		$data['price']			= $this->price;
 		$data['tax']			= $this->tax;
 		$data['discount']		= $this->discount;
-		$data['total']			= $this->total;
+		$data['total']			= $this->getTotal(true);
 		$data['title']			= $this->title;
 		$data['message']		= $this->message;
 		

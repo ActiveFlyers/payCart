@@ -5,7 +5,6 @@
 		<field 	name="buyer_id"
 				type="text"
 				label="COM_PAYCART_ADMIN_BUYER_ID"
-				default="0"
 				readonly="true"/>
 
   		<field 	name="realname" 

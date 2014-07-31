@@ -59,8 +59,8 @@ class PaycartGroup extends PaycartLib
 		}
 
 		// reset config, previous config should be replaced with new config
-		if(isset($data->config)){
-			$this->config = new Rb_Registry() ;
+		if(isset($data->params)){
+			$this->params = new Rb_Registry() ;
 		}
 
 		return parent::bind($data, $ignore);
@@ -91,7 +91,7 @@ class PaycartGroup extends PaycartLib
 		$rules = (array) $this->params->toArray();
 		foreach($rules as $rule){		
 			$ruleInstance = $this->_helper->getInstance($this->type, $rule['ruleClass'], $rule);
-			if(!$ruleInstance->isApplicable($entity_id)){
+			if (!$ruleInstance->isApplicable($entity_id)) {
 				return false;
 			}
 		}

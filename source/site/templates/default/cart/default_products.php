@@ -39,7 +39,7 @@ if(!defined( '_JEXEC' )){
 	        <button class="btn btn-large" onClick="rb.url.redirect('<?php echo $returnUrl;?>')"><i class="fa fa-angle-left"></i> <?php echo JText::_('Back');?></button>
 	    </div>
 	    <div class="pull-right">	 			
-	       <button class="btn btn-large btn-primary" onClick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=checkout')?>')"><i class="fa fa-shopping-cart"></i><?php echo JText::_(' Place Order');?></button>
+	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_(' Place Order');?></button>
 	    </div>
 	</div>
 
@@ -94,7 +94,7 @@ if(!defined( '_JEXEC' )){
 	<h3 class="text-right">
 		<span><?php echo JText::_('Estimated Total = ');?></span><span class="text-error"><strong><?php echo $cart->getTotal();?></strong></span>
 	</h3>
-	<p class="small text-right"><a href="#" >Delivery charges may apply</a></p>
+	<p class="small text-right"><a href="#" ><?php echo JText::_('Delivery charges may apply');?></a></p>
 	 
 	 <!--  footer buttons --> 
 	 <div class="clearfix">
@@ -102,7 +102,7 @@ if(!defined( '_JEXEC' )){
 	        <button class="btn btn-large"><i class="fa fa-angle-left"></i> <?php echo JText::_('Back');?></button>
 	    </div>
 	    <div class="pull-right">	 			
-	       <button class="btn btn-primary btn-large"><i class="fa fa-shopping-cart"></i><?php echo JText::_(' Place Order')?></button>
+	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_(' Place Order');?></button>
 	    </div>
 	</div>
 </div>

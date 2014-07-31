@@ -21,6 +21,11 @@ $steps				=	array_keys($checkout_sequence);
 // $steps have string value so we need to add quote (') as suffix and prefix 
  $steps = array_map(function($step){ return "'$step'"; }, $steps);
  
+ // @PCTODO ::  define constant for plateform
+ if (!PaycartFactory::getApplication()->client->mobile) {
+	JHtml::_('formbehavior.chosen', '.pc-buyeraddress');
+ }
+ 
 ?>
 
 <script>
@@ -451,7 +456,36 @@ $steps				=	array_keys($checkout_sequence);
 			{
 				paycart.checkout.process()
 				
-			}
+			},
+
+			// update product-quantity into cart
+			onChangeProductQuantity : function(product_id, product_quantity)
+			{
+				var link, postData;
+
+				// @PCTODO:: Properly validate it
+				
+				// get all form data for post	
+				postData 	= {'product_id' : product_id, 'quantity' : product_quantity};
+				link  		= 'index.php?option=com_paycart&view=checkout&task=updateProductQuantity';
+				paycart.ajax.go(link, postData);
+				
+				return false;				
+			},
+
+			// update product-quantity into cart
+			onRemoveProduct : function(product_id)
+			{
+				var link, postData;
+
+				// get all form data for post	
+				postData 	= {'product_id' : product_id};
+				link  		= 'index.php?option=com_paycart&view=checkout&task=removeproduct';
+				paycart.ajax.go(link, postData);
+				
+				return false;
+				
+			}		
 			
 		};
 

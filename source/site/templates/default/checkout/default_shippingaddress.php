@@ -17,11 +17,6 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
-//@PCTODO:: define constant for it
-if (!PaycartFactory::getApplication()->client->mobile) {
-	JHtml::_('formbehavior.chosen', '.pc-buyeraddress');
-}
-
 ?>
 
 	<?php if (!empty($buyer_addresses)) :?>

@@ -59,7 +59,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 	public function __construct($options = array()) 
 	{
 		$this->helper			=	PaycartFactory::getHelper('checkout');
-		$this->cart				=	$this->getCart();
+		$this->cart				=	PaycartFactory::getHelper('cart')->getCurrentCart();
 		$this->step_sequence	=	$this->helper->getSequence();
 		
 		return parent::__construct($options);
@@ -161,7 +161,7 @@ class PaycartSiteControllerCheckout extends PaycartController
 		//1#.	Pre-Process
 		$form_data = $this->input->get('paycart_form',Array(), 'ARRAY');
 		
-		$this->step_current = $this->input->get('step_name');
+		$this->step_current = $this->input->get('step_name', $this->step_current);
 
 		//@TODO :: event fire
 		
@@ -323,40 +323,6 @@ class PaycartSiteControllerCheckout extends PaycartController
 		return true;
 	}
 	
-	/**
-	 * Invoke to get current cart whcih is mapped with current session id
-	 * 
-	 * @since 	1.0
-	 * @author 	Manish
-	 * 
-	 * @return Paycartcart if cart exits otherwise false
-	 */
-	protected function getCart() 
-	{
-		// get current session id
-		$session_id =	PaycartFactory::getSession()->getId();
-		
-		// get cart data
-		$cart_records 	=	PaycartFactory::getModel('cart')->loadRecords(Array('session_id' => $session_id, ));
-		
-		if (empty($cart_records)) {
-			// @PCFIXME::for testing purpose, comment below code
-			//return false;
-		}
-		
-		$cart_record	=	array_pop($cart_records);
-
-		//$cart =	PaycartCart::getInstance(0, $cart_record);
-		// @FIXME :: use only testing purpose
-		$cart = PaycartCart::getInstance(1);
-		
-		// Calculation should be done before any action
-		if ( $cart instanceof PaycartCart ) {
-			return $cart->calculate();
-		}
-			
-		return $cart;
-	}
 	
 	/**
 	 * Login user by their username and pwd
@@ -662,4 +628,54 @@ class PaycartSiteControllerCheckout extends PaycartController
 		return true;
 	}
 	
+
+	/**
+	 * 
+	 * Ajax Task :: 
+	 * Invoke to update product quantity
+	 * 
+	 */
+    public function updateProductQuantity()
+	{
+		// if we need preprocess this task then include this task into process
+		$productId = $this->input->get('product_id',0,'INT');
+		$quantity  = $this->input->get('quantity',1,'INT');
+		
+		try {
+			PaycartFactory::getHelper('cart')->addProduct($productId, $quantity);
+		} catch (Exception $ex) {
+			$this->message 			=	$ex->getMessage();
+			$this->message_type		=	Paycart::MESSAGE_TYPE_ERROR;
+		}
+		
+		//handling next step
+		$this->step_current = Paycart::CHECKOUT_STEP_ADDRESS;
+		
+		return $this->postProcess();
+	}
+	
+	/**
+	 * Ajax task:: Invoke to remove product from cart
+	 * 
+	 */
+	public function removeProduct()
+	{
+		// if we need preprocess this task then include this task into process
+		$productId = $this->input->get('product_id',0,'INT');
+		
+		try {
+			//@PCTODO:: Move into helper
+			$this->cart->removeProduct($productId);
+			$this->cart->calculate()->save();
+			
+		} catch (Exception $ex) {
+			$this->message 			=	$ex->getMessage();
+			$this->message_type		=	Paycart::MESSAGE_TYPE_ERROR;
+		}
+		
+		//handling next step
+		$this->step_current = Paycart::CHECKOUT_STEP_ADDRESS;
+		
+		return $this->postProcess();
+	}
 }

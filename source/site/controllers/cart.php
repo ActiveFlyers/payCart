@@ -155,16 +155,7 @@ class PaycartSiteControllerCart extends PaycartController
 		$productId = $this->input->get('product_id',0,'INT');
 		$quantity  = $this->input->get('quantity',1,'INT');
 		
-		//get current cart
-		$helper = PaycartFactory::getHelper('cart');
-		$cart 	= $helper->getCurrentCart();
-		
-		//add product
-		$product = new stdClass();
-		$product->product_id = $productId;
-		$product->quantity   = $quantity;
-		
-		$cart->addProduct($product);
-		$cart->calculate()->save();
+		// @PCTODO :: error handling
+		PaycartFactory::getHelper('cart')->addProduct($productId, $quantity);
 	}
 }

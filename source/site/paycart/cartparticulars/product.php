@@ -18,12 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  *
  */
 class PaycartCartparticularProduct extends PaycartCartparticular
-{	
-	protected $height 	= 0;
-	protected $width 	= 0;
-	protected $length 	= 0;
-	protected $weight 	= 0;
-	
+{		
 	protected $_rule_apply_on = Paycart::RULE_APPLY_ON_PRODUCT;
 
 	public function bind($binddata = array()) 
@@ -102,8 +97,13 @@ class PaycartCartparticularProduct extends PaycartCartparticular
 		$groupHelper = PaycartFactory::getHelper('group');
 		
 		//@PCTODO : caching on bases { group-rules type + type_id }
+		
+		// get grouprules which are applicable on buyer
 		$groups = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+		
+		//get grouprules which are applicable on Product then merge with buyergrouprules
 		$groups = array_merge($groups, $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $this->particular_id));
+		
 		$groups = array_unique($groups);
 		return $groups;	
 	}

@@ -167,9 +167,9 @@ class PaycartTaxrule extends PaycartLib
 		//rule specific data
 		$request->taxable_amount		= $this->amount;
 		$request->cartparticular 		= $helperRequest->getCartparticularObject($cartparticular);
-		$request->shipping_address		= $helperRequest->getBuyeraddressObject($cart->getShippingAddress());
-		$request->billing_address		= $helperRequest->getBuyeraddressObject($cart->getBillingAddress());
-		$request->buyer					= $helperRequest->getBuyerObject($cart->getBuyer());
+		$request->shipping_address		= $helperRequest->getBuyeraddressObject($cart->getShippingAddress(true));
+		$request->billing_address		= $helperRequest->getBuyeraddressObject($cart->getBillingAddress(true));
+		$request->buyer					= $helperRequest->getBuyerObject($cart->getBuyer(true));
 		
 		return $request;
 	}
@@ -281,4 +281,12 @@ class PaycartTaxrule extends PaycartLib
 		
 		return $id;
 	}	
+	
+	/**
+	 * Invoke on usage tracking 
+	 */
+	public function getType()
+	{
+		return Paycart::PROCESSOR_TYPE_TAXRULE; 
+	}
 }

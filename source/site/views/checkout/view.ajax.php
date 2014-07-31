@@ -74,6 +74,17 @@ class PaycartSiteViewCheckout extends PaycartSiteBaseViewCheckout
 		return true;
 	}
 	
+	public function updateProductQuantity()
+	{
+		return $this->process();
+	}
+	
+	public function removeProduct()
+	{
+		return $this->process();
+	}
+	
+	
 	/**
 	 * 
 	 * Enter description here ...

@@ -219,16 +219,17 @@ class PaycartDiscountrule extends PaycartLib
 		
 		$request 							= new PaycartDiscountruleRequest();		
 		$request->cartparticular 			= $helperRequest->getCartparticularObject($cartparticular);
-		$request->shipping_address			= $helperRequest->getBuyeraddressObject($cart->getShippingAddress());
-		$request->billing_address			= $helperRequest->getBuyeraddressObject($cart->getBillingAddress());
-		$request->buyer						= $helperRequest->getBuyerObject($cart->getBuyer());
+		$request->shipping_address			= $helperRequest->getBuyeraddressObject($cart->getShippingAddress(true));
+		$request->billing_address			= $helperRequest->getBuyeraddressObject($cart->getBillingAddress(true));
+		$request->buyer						= $helperRequest->getBuyerObject($cart->getBuyer(true));
 		
-		//@ PCTODO : verify in isApplicable function
-		$request->cartparticular->coupon		= $cart->coupon;// @PCTODO: get Posted coupon code from cart
+		//@PCTODO :: need coupon treatment
+		$request->cartparticular->coupon		= $cart->getPromotions();
 		
 		// amount on which discount should be applied
 		$request->discountable_amount = $request->cartparticular->price;
-		// If discount is successive/row total then applied on total amount.
+		
+		// If discount is successive/row total then applied on particular total.
 		// It will use on multi discount
 		if ($this->is_successive) {
 			$request->discountable_amount = $request->cartparticular->total;
@@ -402,4 +403,13 @@ class PaycartDiscountrule extends PaycartLib
 		$this->getProcessor()->getConfigHtml(new PaycartDiscountRuleRequest, $response);
 		return $response->configHtml;
 	}
+	
+	/**
+	 * Invoke on usage tracking 
+	 */
+	public function getType()
+	{
+		return Paycart::PROCESSOR_TYPE_DISCOUNTRULE; 
+	}
+	
 }
