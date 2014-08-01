@@ -102,7 +102,7 @@ class PaycartCart extends PaycartLib
 		$this->invoice_id			= 0;
 		
 		$this->status				= Paycart::STATUS_CART_DRAFTED;
-		$this->currency				= PaycartFactory::getConfig()->get('currency', 'USD');
+		$this->currency				= PaycartFactory::getConfig()->get('localization_currency');
 		$this->ip_address;
 		$this->billing_address_id	= 0;
 		$this->shipping_address_id	= 0;	
@@ -793,7 +793,7 @@ class PaycartCart extends PaycartLib
 		if (empty($processorData)) {
 			 
 			$payment_gateway	=	PaycartFactory::getModel('paymentgateway')
-										->loadRecords(Array('paymentgateway_id ' => $processor_id, 'status' => Paycart::STATUS_PUBLISHED));
+										->loadRecords(Array('paymentgateway_id' => $processor_id, 'published' => 1));
 
 			$processorData 		=	$payment_gateway[$processor_id];
 		}

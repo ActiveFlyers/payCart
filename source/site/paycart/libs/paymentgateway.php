@@ -116,7 +116,7 @@ class PaycartPaymentgateway extends PaycartLib
 			
 			
 		} catch (Exception $ex ) {
-			PaycartFactory::getHelper('log')->addLog($ex->getMessage());
+			PaycartFactory::getHelper('log')->add($ex->getMessage());
 		}
 		
 		return $html;

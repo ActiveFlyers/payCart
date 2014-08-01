@@ -180,6 +180,12 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 			$billing_to_shipping	=	(bool)$cart->params['billing_to_shipping'];
 		}
 		
+		/**
+		 * @var PaycartHelperFormat $formatter
+		 */
+		$this->assign('currency_id', $this->cart->getCurrency());
+		
+		
 
 		//setup basic stuff like steps		
 		$this->assign('step_ready',				$this->step_ready);

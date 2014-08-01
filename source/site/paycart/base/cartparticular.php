@@ -24,6 +24,7 @@ abstract class PaycartCartparticular extends JObject
 	protected $particular_id;
 	protected $type;
 	protected $unit_price;
+	protected $buyer_id;
 	protected $quantity;
 	protected $price;
 	protected $tax;
@@ -251,7 +252,7 @@ abstract class PaycartCartparticular extends JObject
 		}
 		
 		$messageKey = $ruleId;
-		$coupon = $discountrule->getCoupon();
+		$coupon = $cart->getPromotions();
 
 		if(!empty($coupon)){
 			$messageKey = $coupon;
@@ -330,10 +331,11 @@ abstract class PaycartCartparticular extends JObject
 			
 			$date = new Rb_Date();
 			$usage->applied_date 	= $date->toSql();
-			//$usage->realized_date 	= $date->toSql(); // Is it really required now??? @PCTODO
-			$id = $model->save($data);
+			$usage->buyer_id		= $this->buyer_id;
+
+			$id = $model->save($usage);
 			if(!$id){
-				throw new Exception('COM_PAYCART_ERROR_IN_SAVING_USAGE');
+				throw new Exception('Error on Usage-Save');
 			}
 			
 			$usage->usage_id = $id;
@@ -419,7 +421,7 @@ abstract class PaycartCartparticular extends JObject
 				->where('`rule`.`published` =  1', 'AND')							// rule must be publish
 				->order('`rule`.`ordering`');
 		
-		$taxrules = $query->dbLoadQuery()->loadAssoc();
+		$taxrules = $query->dbLoadQuery()->loadColumn();
 		
 		if (empty($taxrules)) {
 			$taxrules = Array();
@@ -472,7 +474,7 @@ abstract class PaycartCartparticular extends JObject
 			$query->where('( '.$where.' OR `rule`.`coupon` IN ("'.implode('", "', $applied_promotions).'"))');
 		}		
 		
-		$discountrules =  $query->dbLoadQuery()->loadAssoc();
+		$discountrules =  $query->dbLoadQuery()->loadColumn();
 		
 		if (empty($discountrules)) {
 			$discountrules = Array();
@@ -518,10 +520,11 @@ abstract class PaycartCartparticular extends JObject
 		$data['title']			= $this->title;
 		$data['message']		= $this->message;
 		
+		$this->buyer_id			= $cart->getBuyer();
 		$model = PaycartFactory::getModel('cartparticular');
 		$id = $model->save($data);
 		if(!$id){
-			throw new Exception(Rb_Text::_('COM_PAYCART_ERROR_IN_SAVING_CART_PARTICULAR'));
+			throw new Exception('Error on Particular Save');
 		}
 		
 		$this->cartparticular_id = $id;

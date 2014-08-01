@@ -10,7 +10,6 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-$currency_html = '<i class="fa fa-usd"></i>';
 ?>
 
 
@@ -31,7 +30,7 @@ $currency_html = '<i class="fa fa-usd"></i>';
 				<div class="row-fluid">
 					<blockquote>
 						<p class="muted"><?php echo JText::_('Payable Amount')?></p>
-						<p class="text-error"><?php echo $currency_html;?> <?php echo $cart_total; ?></p>
+						<p class="text-error"><?php echo $formatter->amount($cart_total, true, $currency_id); ?></p>
 					</blockquote>
 				</div>
 				
