@@ -23,7 +23,7 @@ class PaycartAttributeCheckbox extends PaycartAttribute
 	/**
 	 *  return edit html that will be displayed on product edit screen
 	 */
-	function getEditHtml($attribute, $value = null)
+	function getEditHtml($attribute, $value = null, Array $options = array())
 	{
 		$html    = '';
 		$options = parent::getOptions($attribute);

@@ -1,71 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-		<fieldset name="basic-attributes" label="COM_PAYCART_ATTRIBUTE_BASIC_ATTRIBUTES_FIELDSET_LABEL">
+	<fieldset name="basic-attributes" label="COM_PAYCART_ATTRIBUTE_BASIC_ATTRIBUTES_FIELDSET_LABEL">
 			
-			<field name="productattribute_id" type="hidden"
-				default="0"
-				label="COM_PAYCART_ATTRIBUTE_ID_LABEL"
-				description="COM_PAYCART_ATTRIBUTE_ID_DESC"
-				readonly="true"
-				size="10"
-			/>
+		<field 
+			name="productattribute_id" 
+			type="hidden"
+			default="0"/>
 			
-			<field 	name="status" type="list"
-					default="1"
-					description="COM_PAYCART_PRODUCT_STATUS_DESC"
-					label="COM_PAYCART_PRODUCT_STATUS_LABEL">
-					<option value='published'>COM_PAYCART_PUBLISHED</option>
-					<option value='unpublished'>COM_PAYCART_UNPUBLISHED</option>
-					<option value='invisible'>COM_PAYCART_INVISIBLE</option>
-					<option value='trashed'>COM_PAYCART_TRASHED</option>
-			</field>
+		<field 	
+			name="status" type="radio"
+			default="1"			
+			label="COM_PAYCART_ADMIN_PUBLISHED"
+			class="btn-group">
+			<option value='1'>JYES</option>
+			<option value='0'>JNO</option>
+		</field>
 			
-			<field name="type" type="paycart.attributetype"
-				label="COM_PAYCART_ATTRIBUTE_TYPE"
-				description="COM_PAYCART_ATTRIBUTE_TYPE_DESC"	
-				id="attribute_type"
-			/>
+		<field 
+			name="type" 
+			type="paycart.attributetype"
+			label="COM_PAYCART_ADMIN_TYPE"
+			id="attribute_type">
+			<option value="">com_paycart_admin_select</option>
+		</field>
 			
-			<field name="filterable" type="radio"
-				default="0"
-				description="COM_PAYCART_ATTRIBUTE_FILTERABLE_DESC"
-				label="COM_PAYCART_ATTRIBUTE_FILTERABLE_LABEL" 
-				class="btn-group">
-					<option value='0'>COM_PAYCART_NO</option>
-					<option value='1'>COM_PAYCART_YES</option>
-			</field>
+		<field 
+			name="filterable" 
+			type="radio"
+			default="0"
+			label="COM_PAYCART_ADMIN_FILTERABLE" 
+			class="btn-group">
+			<option value='1'>JYES</option>
+			<option value='0'>JNO</option>
+		</field>
 			
-			<field name="searchable" type="radio"
-				default="0"
-				description="COM_PAYCART_ATTRIBUTE_SEARCHABLE_DESC"
-				label="COM_PAYCART_ATTRIBUTE_SEARCHABLE_LABEL" 
-				class="btn-group">
-					<option value='0'>COM_PAYCART_NO</option>
-					<option value='1'>COM_PAYCART_YES</option>
-			</field>
+		<field 
+			name="searchable" 
+			type="radio"
+			default="0"			
+			label="COM_PAYCART_ADMIN_SEARCHABLE" 
+			class="btn-group">
+			<option value='1'>JYES</option>
+			<option value='0'>JNO</option>
+		</field>
 
-			<field 	name="css_class" type="text"
-					label="COM_PAYCART_ATTRIBUTE_CSS_CLASS"
-					description="COM_PAYCART_ATTRIBUTE_CSS_CLASS_DESC"	
-					default=""
-			/>
-		</fieldset>
+		<field 	
+			name="css_class" 
+			type="text"
+			label="COM_PAYCART_ADMIN_CSS_CLASS"/>
+			
+	</fieldset>
 	
-		<fields name="language">
-			<fieldset name='language'>
-				<field name="productattribute_lang_id" type="hidden"
-					default="0"
-					label="COM_PAYCART_PRODUCTATTRIBUTE_LANG_ID_LABEL"
-					description="COM_PAYCART_PRODUCTATTRIBUTE_LANG_ID_DESC"
-					readonly="true"
-					size="10"
-				/>
-				
-				<field name="title" type="text"
-				label="COM_PAYCART_PRODUCTATTRIBUTE_TITLE"
-				description="COM_PAYCART_PRODUCTATTRIBUTE_TITLE_DESC"
-				required="true"
-				/>
-			</fieldset>
-		</fields>					
+	<fieldset name='language'>
+		<field 
+			name="productattribute_lang_id" 
+			type="hidden"/>
+					
+		<field 
+			name="lang_code" 
+			type="hidden"/>
+			
+		<field 
+			name="title" type="text"
+			label="COM_PAYCART_ADMIN_TITLE"			
+			required="true"/>
+	</fieldset>							
 </form>

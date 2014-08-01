@@ -124,52 +124,6 @@ paycart.admin.product =
 			var productId = $('#paycart_form_product_id').val();
 			var data  = {'image_id': imageId, 'product_id':productId};
 			paycart.ajax.go(link,data);
-		},
-		
-		attribute :
-		{
-			window: function()
-			{
-				var link  = 'index.php?option=com_paycart&task=edit&view=productattribute';
-				paycart.url.modal(link, null);
-			},
-			
-			//PCTODO : Common function for validation
-			create : function()
-			{
-				//Validation Checking
-				if($("#paycart_productattribute_form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation("hasErrors")){
-					// Our validation work on submit call therefore first we will ensure that form is not properly fill 
-					// then we will call submit method. So proper msg display and focus on required element. 
-					$("#paycart_productattribute_form").submit();
-					return false;
-				}
-				
-				var link  = 'index.php?option=com_paycart&view=productattribute';
-				// get all form data for post	
-				var postData = $("#paycart_productattribute_form").serializeArray();
-		
-				var productId = $('#paycart_form_product_id', window.parent.document).val();
-				// Override task value to ajax task
-				postData.push({'name':'task','value':'create'});
-				postData.push({'name' : 'productId', 'value' : productId});
-				paycart.ajax.go(link, postData);
-			},
-			
-			attach : function(appliedAttributes)
-			{
-				var link  = 'index.php?option=com_paycart&task=getEditHtml&view=productattribute';
-				var data  = {'productattributeIds': appliedAttributes};
-				paycart.ajax.go(link,data);
-			},
-			
-			deleteAttributeValues : function(attributeId)
-			{
-				var link  = 'index.php?option=com_paycart&task=deleteAttributeValues&view=product';
-				var productId = $('#paycart_form_product_id').val();
-				var data  = {'productattribute_id': attributeId, 'product_id' :productId};
-				paycart.ajax.go(link,data);
-			}
 		}
 	};
 

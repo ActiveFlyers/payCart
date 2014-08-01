@@ -11,21 +11,11 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-PaycartHtml::_('behavior.framework', true);
-// validation for required fields
-PaycartHtml::_('behavior.formvalidation');
 ?>
 <script src="<?php echo Rb_HelperTemplate::mediaURI(PAYCART_PATH_CORE.'/attributes/color/jquery.minicolors.js',false)?>" type="text/javascript"></script>
 <link rel="stylesheet" href="<?php echo Rb_HelperTemplate::mediaURI(PAYCART_PATH_CORE.'/attributes/color/jquery.minicolors.css',false);?>"/>
 
 <script type="text/javascript">
-	Joomla.submitbutton = function(task)
-	{
-		if (task == 'cancel' || document.formvalidator.isValid(document.id('paycart_productattribute_form'))) {
-			Joomla.submitform(task, document.getElementById('paycart_productattribute_form'));
-		}
-	};
-
 	(function($)
 		{
 			$(document).ready(function()
@@ -47,14 +37,13 @@ PaycartHtml::_('behavior.formvalidation');
 	
 </script>
 
-<form action="<?php echo Rb_Route::_('index.php?option=com_paycart&view=productattribute'); ?>" method="post" name="adminForm" id="paycart_productattribute_form" class="rb-validate-form">
-<div class="row-fluid">
-	<div class=" span6 form-horizontal">
-		<?php $language = $form->getFieldset('language');?>
-		<?php $field    = $language['paycart_form_language_title']?>
+<div class="pc-product-wrapper clearfix">
+<div class="pc-product row-fluid">
+	<form action="index.php" onSubmit="return fasle;" method="post" data="pc-json-attribute-edit">
+	<div class=" span6">
 		<div class="control-group">
-			<div class="control-label"><?php echo $field->label; ?> </div>
-			<div class="controls"><?php echo $field->input; ?></div>								
+			<div class="control-label"><?php echo $form->getLabel('title'); ?> </div>
+			<div class="controls"><?php echo $form->getInput('title'); ?></div>								
 		</div>
 
 		<div class="control-group">
@@ -94,7 +83,7 @@ PaycartHtml::_('behavior.formvalidation');
 		</div>		
 	</div>
 	
-	<div class="span6 form-horizontal">
+	<div class="span6">
 			<div class="control-group">
 				<div class="control-label">
 					<?php echo $form->getLabel('type'); ?>
@@ -103,13 +92,19 @@ PaycartHtml::_('behavior.formvalidation');
 					<?php echo $form->getInput('type'); ?>
 				</div>
 			</div>
-			
-			<?php echo $attributeHtml;?>
+			<div id="paycart-attribute-config">
+				<?php echo $attributeHtml;?>
+			</div>
 	</div>	
-</div>
-
-<!--========	Hiddens variables	========-->	
+	
+	<!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
 	<?php echo $form->getInput('productattribute_id');?>
 	<?php echo $form->getInput('productattribute_lang_id');?>
-</form>
+	
+	</form>
+</div>
+</div>
+
+
+

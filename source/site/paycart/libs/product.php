@@ -362,6 +362,9 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 		
+		//IMP : should be reset before binding
+		$this->_attributeValues = array();
+		
 		//Get all attributes
 		foreach ($attributeData as $attributeId => $value){
 			//array of attribute values
@@ -401,6 +404,7 @@ class PaycartProduct extends PaycartLib
 			$condition['productattribute_id'] = $productattributeId;
 		}
 		
+		unset($this->_attributeValues[$productattributeId]);
 		return PaycartFactory::getModel('productattributevalue')->deleteMany($condition);
 	}
 	

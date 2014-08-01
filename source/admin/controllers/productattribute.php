@@ -18,6 +18,29 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 
 class PaycartAdminControllerProductAttribute extends PaycartController 
 {
+	public function save()
+	{
+		if($this->input->get('format', 'html') == 'json'){
+			$data 	= $this->input->post->get($this->_component->getNameSmall().'_form', array(), 'array');		
+			$itemId = $this->_getId();		
+			$ret 	= $this::_save($data, $itemId);
+			
+			$view = $this->getView();
+			if($ret){
+				$view->assign('success', true);
+				$view->assign('productattribute_id', $ret->getId());
+			}
+			else{
+				$view->assign('success', true);
+				$view->assign('productattribute_id', $itemId);				
+			}
+		
+			return true;
+		}
+		
+		return parent::save();
+	}
+	
 	/**
 	 * override it due to get all uploaded files 
 	 */
@@ -46,7 +69,7 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 		// replace specific div html and call script
 		$ajaxResponse = PaycartFactory::getAjaxResponse();
 		
-		$ajaxResponse->addScriptCall('paycart.jQuery("#paycart-attribute-config").replaceWith', $html);
+		$ajaxResponse->addScriptCall('paycart.jQuery("#paycart-attribute-config").html', $html);
 
 		if(!empty($js)){		
 			$ajaxResponse->addScriptCall($js);
@@ -108,6 +131,21 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 	
 	public function getEditHtml()
 	{
+		return true;
+	}
+	
+	public function deleteAttribute()
+	{
+		$productattribute_id   = $this->input->get('productattribute_id',0);		 
+					
+		$view = $this->getView();
+		if(PaycartProductAttribute::getInstance($productattribute_id)->delete()){
+			$view->assign('success', true);
+		}
+		else{
+			$view->assign('success', false);
+		}
+		
 		return true;
 	}
 }

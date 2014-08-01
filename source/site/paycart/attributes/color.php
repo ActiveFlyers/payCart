@@ -27,10 +27,15 @@ class PaycartAttributeColor extends PaycartAttribute
 	function getEditHtml($attribute, $selectedValue ='', Array $options = array())
 	{
 		$html 	 = '';
-		$colors  = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
+
+		$id = $attribute->getId(); 
+		$colors = array(); 
+		if($id){
+			$colors  = PaycartFactory::getModel('color')->loadOptions($id, $attribute->getLanguageCode());
+		}
 		
 		if( !empty($colors)){
-			$html .= "<select id='attribute".$attribute->getId()."' name='paycart_form[attributes][".$attribute->getId()."]'>";
+			$html .= "<select id='attribute".$id."' name='paycart_form[attributes][".$id."]'>";
 			
 			foreach($colors as $color){
 				$selected = ($color['color_id'] == $selectedValue) ? "selected='selected'":'';
@@ -41,6 +46,7 @@ class PaycartAttributeColor extends PaycartAttribute
 				
 		return $html;
 	}
+	
 	/**
 	 * get config Html
 	 */
@@ -48,12 +54,15 @@ class PaycartAttributeColor extends PaycartAttribute
 	{
 		$html   = '';
 		$type   = $attribute->getType();
-				
-		$html = '<div id="paycart-attribute-config">';
 		
-		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
+		$html = '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
 		
-		$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
+		$id = $attribute->getId(); 
+		$colors = array(); 
+		if($id){
+			$colors = PaycartFactory::getModel('color')->loadOptions($id, $attribute->getLanguageCode());
+		}
+		
 		$count  = (count($colors) > 0)?count($colors):1;
 
 		//needed to reset keys for proper counter management
@@ -62,8 +71,6 @@ class PaycartAttributeColor extends PaycartAttribute
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $colors);
 		}
-		
-		$html .= "</div>";
 		
 		return $html;
 	}
@@ -132,7 +139,7 @@ class PaycartAttributeColor extends PaycartAttribute
 		$colors = (isset($data['_options'])) ? $data['_options']: array();
 		
 		if(empty($colors) && $attribute->getId()){
-			$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
+			$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getId(), $attribute->getLanguageCode());
 		}
 		
 		$result = array();
@@ -158,25 +165,19 @@ class PaycartAttributeColor extends PaycartAttribute
 			return false;
 		}
 		
+		//save option data			
+		$colorModel 	   = PaycartFactory::getModel('color');
+			
 		foreach ($options as $option){
 			$data = array();
+			$data['hash_code'] = $option->hash_code;			
+			$data['lang_code'] = $attribute->getLanguageCode();
+			$data['productattribute_id'] = $attribute->getId();
+			$data['title']	   = $option->title;	
 			
-			//save option data
-			$data['hash_code'] = $option->hash_code;
-			$colorModel 	   = PaycartFactory::getModel('color');
 			$colorId 		   = $colorModel->save($data, $option->color_id);
 			if(!$colorId){
 				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $colorModel->getError());
-			}
-			//save langauge specific data of options
-			$data = array();
-			$data['color_id']  = $colorId;
-			$data['lang_code'] = $attribute->getLanguageCode();
-			$data['title']	   = $option->title;
-			$colorLangModel    = PaycartFactory::getModelLang('color');
-			$colorLangId 	   = $colorLangModel->save($data,$option->color_lang_id );
-			if(!$colorLangId){
-				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $colorLangModel->getError());
 			}
 		}
 		return true;
@@ -187,7 +188,9 @@ class PaycartAttributeColor extends PaycartAttribute
 	 */
 	function deleteOptions($attributeId=null, $optionId=null)
 	{
-		return false;
+		$attrColorModel = PaycartFactory::getModel('color');
+		
+		return $attrColorModel->deleteOptions($attributeId, $optionId);	
 	}
 	
 	/**

@@ -548,7 +548,9 @@ CREATE TABLE IF NOT EXISTS `#__paycart_media_lang` (
 CREATE TABLE IF NOT EXISTS `#__paycart_color` (
   `color_id` int(11) NOT NULL AUTO_INCREMENT,
   `hash_code` varchar(50) NOT NULL,
-  PRIMARY KEY (`color_id`)
+  `productattribute_id` int(11) NOT NULL,
+  PRIMARY KEY (`color_id`),
+  KEY `idx_productattribute_id` (`productattribute_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

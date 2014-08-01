@@ -136,7 +136,7 @@ class PaycartAdminControllerProduct extends PaycartController
 			$view->assign('success', true);
 		}
 		else{
-			$view->assign('success', true);
+			$view->assign('success', false);
 		}
 	
 		return true;

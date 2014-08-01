@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @author rimjhim
  *
  */
-class PaycartModelColor extends PaycartModel
+class PaycartModelColor extends PaycartModelLang
 {
 	/**
 	 * Load options of color attribute
@@ -29,7 +29,7 @@ class PaycartModelColor extends PaycartModel
 	 *
 	 * @return array of resultant rows 
 	 */
-	function loadOptions($languageCode, Array $optionIds = array())
+	function loadOptions($productattribute_id, $languageCode, Array $optionIds = array())
 	{
 		$query = new Rb_Query();
 		
@@ -41,15 +41,55 @@ class PaycartModelColor extends PaycartModel
 		 		     ->from('#__paycart_color as ac')
 		 		     ->join('INNER', '#__paycart_color_lang as acl ON ac.color_id = acl.color_id')
 		 		     ->where('acl.lang_code = "'.$languageCode.'"')
+		 		     ->where('ac.productattribute_id = '.intval($productattribute_id))
 		 		     ->dbLoadQuery()
 		 		     ->loadAssocList('color_id');
 	}
+	
+	/**
+	 * delete options data from both option and option_lang table
+	 */
+	function deleteOptions($attributeId, $optionId)
+	{
+		$query = new Rb_Query();
+		
+		if(!is_null($optionId)){
+			$query->where('b.color_id = '. $optionId);
+		}
+		if(!is_null($attributeId)){
+			$query->where('b.productattribute_id = '. $attributeId);
+		}	
+		
+		//Due to some limitation of joomla's delete function, here we used rb_delete to add elements
+		return $query->multiDelete(null, 'a.*, b.*')
+					 ->from('`#__paycart_color_lang` as a')
+					 ->from('`#__paycart_color` as b')
+					 ->where('a.color_id = b.color_id')
+					 ->dbLoadQuery()
+					 ->query();
+	}
 }
 
-/**
- * 
- * Color language Model
+/** 
+ * color Table
  * @author rimjhim
- *
  */
-class PaycartModelLangColor extends PaycartModel{}
+class PaycartTableColor extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_color', $tblPrimaryKey='color_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}
+
+/** 
+ * color language Table
+ * @author rimjhim
+ */
+class PaycartTableColorlang extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_color_lang', $tblPrimaryKey='color_lang_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}

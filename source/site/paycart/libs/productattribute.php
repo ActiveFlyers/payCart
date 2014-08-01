@@ -29,7 +29,10 @@ class PaycartProductAttribute extends PaycartLib
 	protected $ordering		 =	0;
 	
 	//language specific data
-	protected $_language;
+	protected $title 		= '';
+	protected $productattribute_lang_id = 0;
+	protected $lang_code 	= '';
+	
 	//attribute specific data
 	protected $_options = array();
 	
@@ -45,11 +48,9 @@ class PaycartProductAttribute extends PaycartLib
 		$this->config		 =  new Rb_Registry();
 		
 		//language specific data
-		$this->_language        = new stdClass();
-		$this->_language->title = '';
-		$this->_language->productattribute_lang_id 	= 0;
-		$this->_language->productattribute_id 		= 0;
-		$this->_language->lang_code  				= PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag
+		$this->title 		= '';
+		$this->productattribute_lang_id 	= 0;
+		$this->lang_code  		= PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag
 		
 		//attribute specific options
 		$this->_options = array();
@@ -57,6 +58,9 @@ class PaycartProductAttribute extends PaycartLib
 		return $this;
 	}
 	
+	/**
+	 * @return PaycartProductAttribute
+	 */
 	public static function getInstance($id = 0, $data = null, $dummy1 = null, $dummy2 = null)
 	{
 		return parent::getInstance('productattribute', $id, $data);
@@ -81,50 +85,10 @@ class PaycartProductAttribute extends PaycartLib
 			$this->_options = $data['_options'];
 		}
 		
-		//Collect langauge data
-		$language = (isset($data['language'])) ? $data['language']: array();
-		
-		//bind it to lib instance
-		$this->setLanguageData($language);
-		
 		//set attribute options
 		$this->setOptions(PaycartAttribute::getInstance($this->type)->buildOptions($this, $data));
 		
 		return $this;
-	}
-	
-	public function setLanguageData(Array $language = Array())
-	{
-		//if langauge data is not available and its an existing record
-		if(empty($language) && $this->getId()){
-			$language = PaycartFactory::getModelLang('productattribute')
-					                           ->loadRecords(Array('lang_code' => $this->_language->lang_code,
-																   'productattribute_id' => $this->getId()));
-			$language = (array)array_shift($language);
-		}
-		
-		if(empty($language)) {
-			return false;
-		}
-		
-		// set language data
-		foreach ($this->_language as $key => $value) { 
-			if(isset($language[$key])) {
-				$this->_language->$key = $language[$key];
-			}
-		}
-		
-		return $this;
-	}
-
-	public function save()
-	{
-		//title is mandatory
-		if(!$this->_language->title){
-			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_TITLE_REQUIRED', $this->getName()));
-		}	
-		
-		return parent::save();
 	}
 	
 	protected function _save($previousObject)
@@ -139,43 +103,14 @@ class PaycartProductAttribute extends PaycartLib
 		// Correct the id, for new records required
 		$this->setId($id);
 		
-		//save language data
-		$this->_saveLanguageData($previousObject);
-		
 		//save attribute config
 		PaycartAttribute::getInstance($this->type)->saveOptions($this);
 		
 		return $id;
 	}
 	
-	protected function _saveLanguageData($previousObject)
-	{
-		//PCTODO: Handle it 
-		if(empty($this->_language)){
-			return false;
-		}
-		
-		$data = (array)$this->_language;
-		$data['productattribute_id'] = $this->getId();
-		
-		//save data
-		$langModel = PaycartFactory::getModelLang('productattribute')->save($data, $data['productattribute_lang_id']);
-		
-		return $this;
-	}
-	
 	protected function _delete()
 	{
-		//Delete attribute
-		if(!$this->getModel()->delete($this->getId())) {
-			return false;
-		}
-		
-		//Delete language related data
-		if (!$this->_deleteLanguageData()) {
-			return false;
-		}
-		
 		//delete option data
 		if(!PaycartAttribute::getInstance($this->type)->deleteOptions($this->getId())){
 			return false;
@@ -185,13 +120,11 @@ class PaycartProductAttribute extends PaycartLib
 		if(!$this->_deleteProductAttributeValues()){
 			return false;
 		}
-	}
+		
+		//Delete attribute
+		return $this->getModel()->delete($this->getId()); 
+	}	
 	
-	protected function _deleteLanguageData()
-	{
-		return PaycartFactory::getModelLang('productattribute')->deleteMany(array('productattribute_id' => $this->getId()));
-	}
-
 	protected function _deleteProductAttributeValues()
 	{
 		return PaycartFactory::getModel('productattributevalue')->deleteMany(array('productattribute_id' => $this->getId()));
@@ -199,12 +132,12 @@ class PaycartProductAttribute extends PaycartLib
 	
 	public function getTitle()
 	{
-		return $this->_language->title;
+		return $this->title;
 	}
 	
 	public function getLanguageCode()
 	{
-		return $this->_language->lang_code;
+		return $this->lang_code;
 	}
 	
 	public function getOptions()
@@ -228,11 +161,15 @@ class PaycartProductAttribute extends PaycartLib
 	
 	function getLanguage()
 	{
-		return $this->_language;
+		return $this->lang_code;
 	}
 	
 	function getConfigHtml($selectedValue = '', Array $options = array())
 	{
+		if(empty($this->type)){
+			return '';
+		}
+		
 		return PaycartAttribute::getInstance($this->type)->getConfigHtml($this,$selectedValue,$options);
 	}
 	

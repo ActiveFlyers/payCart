@@ -15,7 +15,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 /** 
  * Product Custom Attribute  Model
  */
-class PaycartModelProductAttribute extends PaycartModel
+class PaycartModelProductAttribute extends PaycartModelLang
 {
 
 	/**
@@ -57,7 +57,7 @@ class PaycartModelProductAttribute extends PaycartModel
 
 class PaycartModelformProductAttribute extends PaycartModelform {}
 
-class PaycartModelProductAttributeOption extends PaycartModel
+class PaycartModelProductAttributeOption extends PaycartModelLang
 {
 	/**
 	 * Load options of the given attributeId
@@ -102,7 +102,7 @@ class PaycartModelProductAttributeOption extends PaycartModel
 		}	
 		
 		//Due to some limitation of joomla's delete function, here we used rb_delete to add elements
-		return $query->rb_delete(null, 'a.*, b.*')
+		return $query->multiDelete(null, 'a.*, b.*')
 					 ->from('`#__paycart_productattribute_option_lang` as a')
 					 ->from('`#__paycart_productattribute_option` as b')
 					 ->where('a.productattribute_option_id = b.productattribute_option_id')
@@ -111,8 +111,52 @@ class PaycartModelProductAttributeOption extends PaycartModel
 	}
 }
 
-class PaycartModellangProductAttribute extends PaycartModel{}
 
-class PaycartModellangProductAttributeOption extends PaycartModel{}
 
-class PaycartModellangProductAttributeOptionLang extends PaycartModel{}
+/** 
+ * product attribute Table
+ * @author rimjhim
+ */
+class PaycartTableProductAttribute extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_productattribute', $tblPrimaryKey='productattribute_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}
+
+/** 
+ * product attribute language Table
+ * @author rimjhim
+ */
+class PaycartTableProductAttributeLang extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_productattribute_lang', $tblPrimaryKey='productattribute_lang_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}
+
+/** 
+ * product attribute option Table
+ * @author rimjhim
+ */
+class PaycartTableProductAttributeOption extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_productattribute_option', $tblPrimaryKey='productattribute_option_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}
+
+/** 
+ * product attribute option language Table
+ * @author rimjhim
+ */
+class PaycartTableProductAttributeOptionLang extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_productattribute_option_lang', $tblPrimaryKey='productattribute_option_lang_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}

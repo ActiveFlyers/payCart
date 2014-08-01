@@ -9,21 +9,12 @@
 */
 defined('_JEXEC') or die();
 
-if(empty($productAttributeIds)){
-	return '';
-}
 ?>
-<?php foreach ($productAttributeIds as $id => $value):?>
-  <?php $selected    = null;
-		$instance = PaycartProductAttribute::getInstance($id);?>
-		<div class="control-group paycart-product-attribute-<?php echo $id?>">
-			<div class="control-label"><label><?php echo $instance->getTitle();?></label></div>
-			<div class="controls"><?php echo $instance->getEditHtml($value);?>
-						<button class="btn" id="paycart-product-attribute-delete" type="button" onClick="paycart.admin.product.attribute.deleteAttributeValues('<?php echo $id?>');">
-							<?php echo JText::_('COM_PAYCART_DELETE');?>
-			 			</button>
-			</div>
-			<hr/>
-		</div>
-<?php endforeach;?>
+<div class="control-group">
+	<div class="control-label"><label><?php echo $productAttribute->getTitle();?></label></div>
+	<div class="controls">
+		<?php echo $productAttribute->getEditHtml($productAttributeValue);?>
+	</div>	
+</div>
+<?php 
 		

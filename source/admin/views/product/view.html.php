@@ -47,8 +47,25 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		$this->assign('form', $form );
 		$this->assign('product', $product );
 		
-		$attributeModel = PaycartFactory::getModel('productattribute');
-		$this->assign('availableAttributes',  $attributeModel->loadRecords());
+		
+		// ATTRIBUTES
+		$attributes 					= PaycartFactory::getModel('productattribute')->loadRecords();
+		$availableAttributes 			= array();
+		$availableAttributesInstances 	= array();
+		foreach($attributes as $attribute){
+			$instance = PaycartProductAttribute::getInstance($attribute->productattribute_id, $attribute);
+			$availableAttributes[] = (object) $instance->toArray();
+		}	
+		$this->assign('availableAttributes',  $availableAttributes);
+		
+		// prepare addedAttributes
+		$productAttributes = $product->getAttributeValues();
+		$addedAttributes = array();
+		foreach($productAttributes as $attribute_id => $value){
+			$addedAttributes[] = array('productattribute_id' => $attribute_id, 'value' => $value);
+		}		
+		$this->assign('addedAttributes', $addedAttributes);
+		
 		
 		//set images
 		$this->assign('images', $product->getImages());

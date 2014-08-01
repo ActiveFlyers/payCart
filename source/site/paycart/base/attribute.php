@@ -81,7 +81,6 @@ class PaycartAttribute
 		}
 		
 		$attrOptionModel 	 = PaycartFactory::getModel('productattributeoption');
-		$attrOptionLangModel = PaycartFactory::getModelLang('productattributeoption');
 		
 		foreach ($options as $option){
 			$data = array();
@@ -89,19 +88,13 @@ class PaycartAttribute
 			//save option data
 			$data['option_ordering'] = $option->option_ordering;
 			$data['productattribute_id'] = $attribute->getId();
+			$data['lang_code'] = $attribute->getLanguageCode();
+			$data['productattribute_option_lang_id'] = $option->productattribute_option_lang_id;
+			$data['title']	   = $option->title;
+			
 			$optionId = $attrOptionModel->save($data, $option->productattribute_option_id);
 			if(!$optionId){
 				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $attrOptionModel->getError());
-			}
-			
-			//save langauge specific data of options
-			$data = array();
-			$data['productattribute_option_id'] = $optionId;
-			$data['lang_code'] = $attribute->getLanguageCode();
-			$data['title']	   = $option->title;
-			$optionLangId = $attrOptionLangModel->save($data,$option->productattribute_option_lang_id );
-			if(!$optionLangId){
-				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $attrOptionLangModel->getError());
 			}
 		}
 		return true;
@@ -114,9 +107,7 @@ class PaycartAttribute
 	{
 		$type = $attribute->getType();
 		
-		$html = '<div id="paycart-attribute-config">';
-		
-		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
+		$html = '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
 		
 		$options = $this->getOptions($attribute);
 		$count	 = (count($options) >= 1)?count($options):1;
@@ -126,9 +117,7 @@ class PaycartAttribute
 
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $options);
-		}  
-		
-		$html .= "</div>";
+		}
 		
 		return $html;
 	}

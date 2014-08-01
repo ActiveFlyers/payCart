@@ -38,7 +38,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {										         
-
+					data = rb.ajax.junkFilter(data);
 		            if (!data.success) {					            	
 		            	// if not successful, bind errors to error variables
 		                $scope.errMessage = data.message;											                											                
@@ -63,7 +63,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {										         
-
+					data = rb.ajax.junkFilter(data);
 		            if (!data.success) {					            	
 		            	// if not successful, bind errors to error variables
 		                $scope.errMessage = data.message;
@@ -74,6 +74,144 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		            }
 			});			
 		};
+	});
+
+
+	paycart.ng.product.controller('pcngProductAttributeCtrl', function($scope, $http){
+		$scope.available = pc_attributes_available;
+		$scope.added = pc_attributes_added;		
+		$scope.edit_html = '';
+		$scope.message 		= '';
+		$scope.errMessage 	= '';
+
+		// IMP : this variable is required to update the url of getting editHtml of attribute
+		//  	 Once you update the attribute then it must get reflected in the added attribute also, so random is used for this purpose
+		var random = Math.random();
+		
+		$scope.getUrl = function(attribute_id, value){
+			return 'index.php?option=com_paycart&task=getEditHtml&view=productattribute&productattribute_id=' + attribute_id +'&format=json&value='+value+'&r=' + random;
+		};
+		
+		$scope.addToProduct = function(attribute_id){
+			var index = $scope.addedAtIndex($scope.added, attribute_id);
+			if(index != null){
+				// do nothing
+				return false;
+			}
+
+			var data = {};			
+			data.productattribute_id 	= attribute_id;
+			data.value			 	= '';
+			
+			$scope.added.push(data);
+			return false;			
+		};
+		
+		$scope.removeFromProduct = function(attribute_id){
+			var index = $scope.addedAtIndex($scope.added, attribute_id);
+			if(index == null){
+				// do nothing
+				return false;
+			}
+
+			$scope.added.splice(index, 1);
+			return false;			
+		};
+
+		$scope.edit = function(productattribute_id){
+			$http({
+		        method  : 'POST',
+		        url     : 'index.php?option=com_paycart&task=edit&view=productattribute&format=json&productattribute_id='+productattribute_id,
+		        data    : '',
+		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+		    })
+		    .success(function(data) {
+		    	data = rb.ajax.junkFilter(data);
+		    	$scope.edit_html = data;
+		    });
+		};			
+
+		$scope.addedAtIndex = function(input, id) {
+		    var i=0, len=input.length;
+		    for (; i<len; i++) {
+		      if (input[i].productattribute_id == id) {
+		        return i;
+		      }
+		    }
+		    
+		    return null;
+		 };
+		  
+		$scope.save = function(){
+			var elem = rb.jQuery('[data="pc-json-attribute-edit"]');
+			var data = rb.jQuery(elem).serializeArray();
+			$http({
+		        method  : 'POST',
+		        url     : 'index.php?option=com_paycart&task=save&view=productattribute&format=json',
+		        data    : paycart.jQuery.param(data),  // pass in data as strings
+		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+		    })
+		    .success(function(data) {										         
+		    		data = rb.ajax.junkFilter(data);
+		    	
+		            if (!data.success) {					            	
+		            	// if not successful, bind errors to error variables
+		                $scope.errMessage = data.message;
+		            } else {
+		            	// if successful, bind success message to message
+		                $scope.message = data.message;
+
+		            	var index = $scope.addedAtIndex($scope.available, data.productattribute_id);
+		                if( index != null){
+		                	$scope.available[index] = data.productattribute; 
+		                }
+		                else{			
+		                	$scope.available.push(data.productattribute);
+		                }
+
+		                $scope.edit(data.productattribute_id);
+		                
+		                random = Math.random();
+		            }
+			});	
+		};
+
+		$scope.remove = function(productattribute_id){			
+			$http({
+		        method  : 'POST',
+		        url     : 'index.php?option=com_paycart&task=deleteAttribute&view=productattribute&format=json',
+		        data    : paycart.jQuery.param({'productattribute_id': productattribute_id}),  // pass in data as strings
+		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+		    })
+		    .success(function(data) {										         
+		    		data = rb.ajax.junkFilter(data);
+		            if (!data.success) {					            	
+		            	// if not successful, bind errors to error variables
+		                $scope.errMessage = data.message;
+		            } else {
+		            	// if successful, bind success message to message
+		                $scope.message = data.message;
+
+		                var index = $scope.addedAtIndex($scope.available, productattribute_id);
+		                if( index != null){
+		                	$scope.available.splice(index, 1);		                	
+		                }
+
+		                index = $scope.addedAtIndex($scope.added, productattribute_id);
+		                if( index != null){
+		    				// do nothing
+		                	$scope.added.splice(index, 1);
+		    			}
+		    			
+		                return false;		                								                										                
+		            }
+			});			
+		};
+		
+		$scope.cancel = function(){
+			$scope.edit_html = '';
+		};					         
+			
 	});
 </script>
 <?php 
