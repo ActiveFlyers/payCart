@@ -11,7 +11,7 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-$currency_html = '<i class="fa fa-usd"></i>';
+
 ?>
 
 
@@ -160,21 +160,19 @@ $currency_html = '<i class="fa fa-usd"></i>';
 				 				<div class="span3"><?php echo JText::_('Quantity'); ?> : 
 				 					<input 
 				 							type="number" onblur="paycart.checkout.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"  class="input-mini" value="<?php echo $particular->quantity; ?>"
-				 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 0; ?>" 	
-				 							max="<?php echo isset($particular->max_quantity) ? $particular->max_quantity : $particular->quantity;?>" 
+				 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" 	
 				 						/>
 				 				</div>
 				 				  
-				 				<div class="span3"><?php echo JText::_('Price'); ?> : <?php echo $currency_html; ?><?php echo $particular->total; ?></div>
-<!--				 				<div class="span1"><a href='#'><?php echo JText::_('Remove') ?></a></div>-->
-				 				<div class="span1"><a class="muted" href="javascript:void(0)" onClick="paycart.checkout.confirm.onRemoveProduct(<?php echo $particular->particular_id;?>)"><i class="fa fa-trash-o fa-lg">&nbsp;</i></a></div>
+				 				<div class="span3"><?php echo JText::_('Price'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></div>
+				 				<div class="span1 pull-right"><a class="muted" href="javascript:void(0)" onClick="paycart.checkout.confirm.onRemoveProduct(<?php echo $particular->particular_id;?>)"><i class="fa fa-trash-o fa-lg">&nbsp;</i></a></div>
 				 			</div>
 				 			<hr />
 			 			<?php 
 			 				endforeach;
 			 			?>
 			 				<div class="row-fluid">
-				 				<span class="pull-right"><?php echo JText::_("Product's Total") ?> : <?php echo $currency_html?><?php echo $product_total; ?> </span>
+				 				<span class="pull-right"><?php echo JText::_("Product's Total") ?> : <?php echo $formatter->amount($product_total, true, $currency_id); ?> </span>
 				 			</div>
 				 			
 			 			</div>
@@ -211,27 +209,27 @@ $currency_html = '<i class="fa fa-usd"></i>';
 			 					<tbody>
 			 						<tr>
 			 							<td><?php echo JText::_('Cart Total'); ?></td>
-			 							<td><?php echo $currency_html.$product_total; ?></td>
+			 							<td><?php echo $formatter->amount($product_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
 			 						<tr>
 			 							<td><?php echo JText::_('Shipping'); ?></td>
-			 							<td><?php echo $currency_html.$shipping_total; ?></td>
+			 							<td><?php echo $formatter->amount($shipping_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
 			 						<tr>
 			 							<td><?php echo JText::_('Tax'); ?></td>
-			 							<td><?php echo $currency_html.$duties_total; ?></td>
+			 							<td><?php echo $formatter->amount($duties_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
 			 						<tr>
 			 							<td><?php echo JText::_('Discount'); ?></td>
-			 							<td><?php echo $currency_html.$promotion_total; ?></td>
+			 							<td><?php echo $formatter->amount($promotion_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
 			 						<tr>
 			 							<td><?php echo JText::_('TOTAL'); ?></td>
-			 							<td><?php echo $currency_html.($product_total+$promotion_total+$duties_total); ?> </td>
+			 							<td><?php echo $formatter->amount(($product_total+$promotion_total+$duties_total), true, $currency_id); ?> </td>
 			 						</tr>
 			 					</tbody>
 			 				</table>	

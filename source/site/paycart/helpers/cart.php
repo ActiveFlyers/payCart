@@ -49,7 +49,8 @@ class PaycartHelperCart extends PaycartHelper
 		$session_id =	PaycartFactory::getSession()->getId();
 		
 		// get cart data
-		$cart_data =	PaycartFactory::getModel('cart')->loadRecords(Array('session_id' => $session_id));
+		$cart_data =	PaycartFactory::getModel('cart')
+							->loadRecords(Array('session_id' => $session_id, 'status' => Paycart::STATUS_CART_DRAFTED));
 		
 		if (empty($cart_data)) {
 			$cart = $this->createNew();

@@ -189,7 +189,7 @@ $steps				=	array_keys($checkout_sequence);
 
 						    	// Any callback available
 						    	if( typeof request['success_callback'] != "undefined"  && request['success_callback'] ) { 
-						    		var callback = new Function(response['callback']);
+						    		var callback = request['success_callback'];
 						    		callback(response);
 						    		return true;
 								}
@@ -341,7 +341,7 @@ $steps				=	array_keys($checkout_sequence);
 									'task' 				: 'getBuyerAddress',
 									'selector_index'	: selector_index
 								  };
-				  request['success_callback']	=	'paycart.checkout.buyeraddress.setAddress';
+				  request['success_callback']	=	paycart.checkout.buyeraddress.setAddress;
 				  
 				paycart.checkout.getData(request);
 			},
@@ -527,7 +527,7 @@ $steps				=	array_keys($checkout_sequence);
 									'task' 				: 'getPaymentFormHtml'
 								  };
 				  
-				request['success_callback']	= 'paycart.checkout.payment.afterFetchingPaymentForm'
+				request['success_callback']	= paycart.checkout.payment.afterFetchingPaymentForm;
 				  
 				paycart.checkout.getData(request);
 				
@@ -554,7 +554,7 @@ $steps				=	array_keys($checkout_sequence);
 				var request = [];
 				
 				request['data'] = { 'task' : 'checkout'};
-				request['success_callback']	= 'paycart.checkout.payment.onPayNow'
+				request['success_callback']	= paycart.checkout.payment.onPayNow;
 				  
 				paycart.checkout.getData(request);
 
