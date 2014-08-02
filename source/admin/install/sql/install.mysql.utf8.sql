@@ -9,11 +9,9 @@
 -- Table structure for table `#__paycart_config`
 --
 CREATE TABLE IF NOT EXISTS `#__paycart_config` (
-  `config_id` int(11) NOT NULL AUTO_INCREMENT,
   `key` varchar(255) NOT NULL,
   `value` text,
-  UNIQUE KEY `idx_key` (`key`),
-  UNIQUE KEY `idx_config_id` (`config_id`)
+  UNIQUE KEY `idx_key` (`key`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 -- --------------------------------------------------------
 
@@ -682,13 +680,22 @@ CREATE TABLE IF NOT EXISTS `#__paycart_usage` (
 -- Table structure for table `#__paycart_config`
 --
 INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
-('image_extension', '.png'),
-('image_maximum_upload_limit', '2'),
-('image_render_url', NULL),
-('image_thumb_height', '100'),
-('image_thumb_width', '133'),
-('image_upload_directory', NULL),
-('discountrule_issuccessive', 1);
+('catalogue_dimension_unit', 'm'),
+('catalogue_image_optimized_height', 'auto'),
+('catalogue_image_optimized_width', '300'),
+('catalogue_image_thumb_height', 'auto'),
+('catalogue_image_thumb_width', '64'),
+('catalogue_image_upload_size', '2'),
+('catalogue_weight_unit', 'kg'),
+('company_address', ''),
+('company_name', ''),
+('invoice_serial_prefix', 'paycart'),
+('localization_currency', 'USD'),
+('localization_currency_format', 'symbol'),
+('localization_currency_position', 'before'),
+('localization_date_format', '%Y-%m-%d'),
+('localization_decimal_separator', '.'),
+('localization_fraction_digit_count', '2');
 
 INSERT IGNORE INTO `#__paycart_productcategory_lang` (`productcategory_lang_id`, `productcategory_id`, `title`, `alias`, `lang_code`, `description`, `metadata_title`, `metadata_keywords`, `metadata_description`) VALUES
 (1, 1, 'root', 'root', 'en-GB', NULL, NULL, NULL, NULL);
