@@ -55,5 +55,27 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 		$data['_uploaded_files'] = $this->input->files->get('paycart_form', false);	
 		
 		return parent::_save($data, $itemId, $type);
-	}		
+	}	
+
+	/**
+	 * Ajax task : Delete image attached to productCategory
+	 */
+	public function deleteImage()
+	{
+		$id = $this->input->get('productCategory_id',0);
+		$instance  = PaycartProductcategory::getInstance($id);
+				 
+		$ret = $instance->deleteImage($instance->getCoverMedia(false));
+		
+		$view = $this->getView();
+		if($ret){
+			$instance->save();
+			$view->assign('success', true);
+		}
+		else{
+			$view->assign('success', false);
+		}
+	
+		return true;
+	}
 }

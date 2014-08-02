@@ -24,7 +24,7 @@ class PaycartProductcategory extends PaycartLib
 	protected $productcategory_id	= 0; 
 	protected $published			= 1;
 	protected $parent_id	 		= Paycart::PRODUCTCATEGORY_ROOT_ID;
-	protected $cover_media	 		= null; 	
+	protected $cover_media	 		= 0; 	
 	protected $created_date  		= '';	
 	protected $modified_date 		= '';
 	
@@ -47,7 +47,7 @@ class PaycartProductcategory extends PaycartLib
 		$this->productcategory_id	= 0; 
 		$this->published		 	= 1;
 		$this->parent_id	 		= Paycart::PRODUCTCATEGORY_ROOT_ID; //set id of root 
-		$this->cover_media	 		= null; 	
+		$this->cover_media	 		= 0; 	
 		$this->created_date  		= Rb_Date::getInstance();	
 		$this->modified_date 		= Rb_Date::getInstance();		
 		$this->productcategory_lang_id = 0;
@@ -137,22 +137,60 @@ class PaycartProductcategory extends PaycartLib
 		return parent::save();
 	}
 	
-	public function getCoverMedia()
+	/**
+	 * @return media id/media set as productcategory's Cover Media 
+	 */
+	public function getCoverMedia($requireMediaArray = true) 
 	{
 		if(empty($this->cover_media)){
 			return false;
 		}
 		
-		$media = PaycartMedia::getInstance($this->cover_media);
-		if($media != false){
-			return $media->toArray();
+		if($requireMediaArray && !empty($this->cover_media)){
+			return PaycartMedia::getInstance($this->cover_media)->toArray();
 		}
-		
-		return false;
+		return $this->cover_media;
 	}
 
 	function getTitle()
 	{
 		return $this->title;
+	}
+	
+	protected function _delete()
+	{
+		//Delete product
+		if(!$this->getModel()->delete($this->getId())) {
+			return false;
+		}
+		
+		//Delete product images
+		if(!$this->deleteImage()){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Delete image if image id is given
+	 * @param $imageId : Imgae id that is required to be deleted (optional)
+	 */
+	public function deleteImage($imageId = null)
+	{
+		$mediaId = $this->cover_media;
+		
+		if(!empty($imageId)){
+			$mediaId = $imageId;
+		}
+		
+		if(!empty($mediaId)){
+			$media = PaycartMedia::getInstance($mediaId);
+			// @PCTODO : error handling
+			$media->delete();	
+			$this->cover_media = 0;
+			return $this;
+		}
+		return false;
 	}
 }

@@ -171,7 +171,7 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function getCoverMedia($requireMediaArray = true) 
 	{	
-		if($requireMediaArray){
+		if($requireMediaArray && !empty($this->cover_media)){
 			return PaycartMedia::getInstance($this->cover_media)->toArray();
 		}
 		return $this->cover_media;

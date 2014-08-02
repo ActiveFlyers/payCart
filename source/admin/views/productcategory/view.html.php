@@ -44,6 +44,7 @@ class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategor
 		$this->assign('cover_media', $category->getCoverMedia());
 		
 		$this->assign('form', $form );
+		$this->assign('productCategory',$category);
 		
 		return parent::edit($tpl);
 	}

@@ -13,10 +13,18 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 JHtml::_('behavior.formvalidation');
-
+Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
-<div class="pc-product-wrapper clearfix">
-<div class="pc-product row-fluid" data-ng-app="pcngProductApp">
+
+<script type="text/javascript">
+	paycart.ng.productCategory = angular.module('pcngProductCategoryApp', []);
+</script>
+
+<?php 
+echo $this->loadTemplate('edit.ng');
+?>
+<div class="pc-productCategory-wrapper clearfix">
+<div class="pc-productCategory row-fluid" data-ng-app="pcngProductCategoryApp">
 
 <!-- CONTENT START -->
 
@@ -98,20 +106,26 @@ JHtml::_('behavior.formvalidation');
 			</div>
 		</div>
 		<div class="span9">
-			<fieldset class="form">				
-				<?php if(!empty($cover_media)):?>				
-					<ul class="thumbnails">
+			<fieldset class="form">	
+				<?php if(!empty($cover_media)):?>
+				<script>
+					var pc_productCategory_id		= <?php echo $record_id;?>;
+					var pc_cover_media				= <?php echo json_encode($productCategory->getCoverMedia());?>;
+				</script>
+				<div data-ng-controller="pcngProductCategoryImagesCtrl">				
+					<ul data-ng-show="cover_media" class="thumbnails">
 		    			<li class="thumbnail">		    									
     						<a href="#" onClick="return false;">
-    						<img src="<?php echo $cover_media['thumbnail']; ?>" alt="">
+    							<img data-ng-src="{{ cover_media.thumbnail }}" alt="">
     						</a>
     						<div>		    										
-    							<span class="pull-right"><a href="#" onClick="return false;" class="muted">
+    							<span class="pull-right"><a href="#" onClick="return false;" class="muted" data-ng-click="remove()">
     								<i class="fa fa-trash-o"></i></a>
     							</span>
     						</div>
     					</li>		    									    								
     				</ul>
+    			</div>
 				<?php endif;?>	    			
 				<div class="row-fluid">								
 					<input type="file" name="paycart_form[cover_media]" multiple="true">
