@@ -23,7 +23,13 @@ class PaycartMedia extends PaycartLib
 	protected $filename = '';
 	protected $mime_type = '';
 	protected $is_free = true;
-	protected $_language = null;
+	protected $media_lang_id = 0;
+	protected $lang_code     = '';
+	protected $title 		 = '';
+	protected $decsription   = '';
+	protected $metadata_title    = '';
+	protected $metadata_keywords = '';
+	protected $metadata_description = '';
 	
 	/**
 	 * @var PaycartHelperMedia
@@ -54,108 +60,17 @@ class PaycartMedia extends PaycartLib
 		$this->filename = '';
 		$this->mime_type = '';
 		$this->is_free = true;
-			
-		$this->_language = new stdClass();
-		$this->_language->media_lang_id = 0;
-		$this->_language->media_id = 0;
-		$this->_language->lang_code = PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag
-		$this->_language->title = '';
-		$this->_language->decsription = '';
-		$this->_language->metadata_title = '';
-		$this->_language->metadata_keywords = '';
-		$this->_language->metadata_description = '';
+		$this->media_lang_id = 0;
+		$this->lang_code = PaycartFactory::getCurrentLanguageCode(); //Current Paycart language Tag
+		$this->title = '';
+		$this->decsription = '';
+		$this->metadata_title = '';
+		$this->metadata_keywords = '';
+		$this->metadata_description = '';
 		
 		return $this;
 	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
-	 */
-	public function bind($data,  $ignore=array())
-	{
-		if(is_object($data)){
-			$data = (array) ($data);
-		}
-		
-		//1#. Bind Table specific fields
-		parent::bind($data, $ignore);
-		
-		//2#. Bind related table fields (language specific)
-		$records = array();
-		//@PCTODO :: improve condition as per your requirment
-		if(isset($data['language'])){
-			// like data is Posted
-			$records = $data['language'];
-		} else if($this->getId()){
-			//@PCTODO :: move to helper and array_shift record
-			$records	 = PaycartFactory::getModelLang('media')
-										->loadRecords(Array('lang_code' => $this->_language->lang_code,
-															'media_id' => $this->getId()
-															));
-			$records = (array)array_shift($records);															
-		}
-		
-		$this->setLanguageData($records);
-		
-		return $this;
-	}
-	
-	/**
-	 *
-	 * Set language specific data on $this _language property
-	 * @param $data, Array of available data which are set on $this language
-	 * 
-	 * @return $this
-	 */
-	public function setLanguageData($data)
-	{
-		if(!is_array($data)){
-			$data = (array) ($data);
-		}
-		
-		// set _language stuff
-		foreach ($this->_language as $key => $value) {
-			// set data value on $this if key is set on data 
-			if(isset($data[$key])) {
-				$this->_language->$key = $data[$key];
-			}
-		}
-		
-		return $this;
-	}	
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
-	 */
-	protected function _save($previousObject) 
-	{
-		// Save Table fields data
-		$saveId = parent::_save($previousObject);
-		
-		if (!$saveId) {
-			return false;
-		}
-		
-		$this->setId($saveId);
-		
-		// Save Related table fields (Language stuff)
-		$languageData = (Array)$this->_language;
-		$languageData['media_id'] = $saveId;
-				
-		// store new data
-		if(!PaycartFactory::getModelLang('media')->save($languageData,$this->_language->media_lang_id)) {
-			//@PCTODO :: notify to admin
-		}
-		
-		// few class properties might be changed by model validation or might be chage related fields
-		// so we need to reflect these kind of changes to lib object
-		$this->reload();
-		
-		return $saveId;
-	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_delete()
@@ -164,11 +79,6 @@ class PaycartMedia extends PaycartLib
 	{
 		//1#. Delete Table fields
 		if(!$this->getModel()->delete($this->getId())) {
-			return false;
-		}
-		
-		//2#. Delete Related table fields
-		if (!$this->_deleteLanguageData()) {
 			return false;
 		}
 		
@@ -188,33 +98,9 @@ class PaycartMedia extends PaycartLib
 		return true;
 	}
 	
-	/**
-	 * 
-	 * Delete language specific data for product category
-	 * @param string $langCode, have language code if need to delete specificlanguage code data
-	 * 
-	 */
-	protected function _deleteLanguageData($langCode = '')
-	{
-		// Product category id
-		$condition['media_id'] = $this->getId();
-		
-		// specific language code
-//		if ($langCode) {
-//			$condition['lang_code'] = $langCode;
-//		}
-		
-		return PaycartFactory::getModelLang('media')->deleteMany($condition);
-	}
-	
-	function getLanguage()
-	{
-		return $this->_language;
-	}
-	
 	function getTitle()
 	{
-		return $this->_language->title;
+		return $this->title;
 	}
 	
 	function moveUploadedFile($source, $ext)
@@ -243,7 +129,6 @@ class PaycartMedia extends PaycartLib
 		$data['original'] 	= $this->_baseurl.$this->filename;
 		$data['optimized'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename : $data['original'];
 		$data['thumbnail'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename : $data['original'];
-		$data['language'] 	= (array)$this->_language;		
 		return $data;
 	}
 	

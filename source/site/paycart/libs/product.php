@@ -25,7 +25,7 @@ class PaycartProduct extends PaycartLib
 	protected $quantity		 	= 0;
 	protected $sku			 	= '';	
 	protected $variation_of		= 0;  		// This product is variation of another product. 	
-	protected $cover_media		= NULL;
+	protected $cover_media		= 0;
 	protected $created_date  	= '';	
 	protected $modified_date 	= ''; 
 	protected $ordering		 	= 0;
@@ -73,7 +73,7 @@ class PaycartProduct extends PaycartLib
 		$this->quantity		 	= 0;
 		$this->sku			 	= '';	
 		$this->variation_of		= 0;  		// This product is variation of another product. 	
-		$this->cover_media		= NULL;
+		$this->cover_media		= 0;
 		$this->ordering		 	= 0;
 		$this->featured			= 0;
 	
@@ -169,8 +169,11 @@ class PaycartProduct extends PaycartLib
 	/**
 	 * @return media id set as product Cover Media 
 	 */
-	public function getCoverMedia() 
+	public function getCoverMedia($requireMediaArray = true) 
 	{	
+		if($requireMediaArray){
+			return PaycartMedia::getInstance($this->cover_media)->toArray();
+		}
 		return $this->cover_media;
 	}
 

@@ -21,6 +21,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		$scope.message 		= '';
 		$scope.errMessage 	= '';
 		$scope.productId 	= pc_product_id;
+		$scope.cover_media  = pc_cover_media;
 		
 		$scope.setActiveImage = function(index){
 				$scope.message = '';

@@ -190,6 +190,7 @@ echo $this->loadTemplate('edit.ng');
 									<script>
 										var pc_product_images 	= <?php echo json_encode($images);?>;
 										var pc_product_id		= <?php echo $record_id;?>;
+										var pc_cover_media		= <?php echo $product->getCoverMedia(false);?>;
 									</script>
 									
 									<div data-ng-controller="pcngProductImagesCtrl">
@@ -201,6 +202,7 @@ echo $this->loadTemplate('edit.ng');
 		    									<div>		    										
 		    										<span class="pull-right"><a href="#" onClick="return false;" class="muted" data-ng-click="remove(index);"><i class="fa fa-trash-o"></i></a></span>
 		    									</div>
+		    									<input type="radio" name="paycart_form[cover_media]" value="{{image.media_id}}" data-ng-model="cover_media">
 		    								</li>		    									    								
 		    							</ul>
 		    							
@@ -225,7 +227,7 @@ echo $this->loadTemplate('edit.ng');
 																<label id="title_lbl"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_TITLE')?></label>
 															</div>
 															 <div class="controls">
-																<input type="text" data-ng-model="activeImage.language.title" value=""/>																
+																<input type="text" data-ng-model="activeImage.title" value=""/>																
 															</div>
 														</div>
 													</div>
