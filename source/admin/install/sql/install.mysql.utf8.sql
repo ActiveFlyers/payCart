@@ -247,6 +247,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cartparticular` (
   `particular_id` int(11) DEFAULT '0',
   `title` varchar(255) DEFAULT NULL,
   `quantity` int(11) DEFAULT '0',
+  `type` varchar(100) NOT NULL COMMENT 'particular-type',  
   `unit_cost` decimal(15,5) DEFAULT '0.00000',
   `tax` decimal(15,5) DEFAULT '0.00000',
   `discount` decimal(15,5) DEFAULT '0.00000',
