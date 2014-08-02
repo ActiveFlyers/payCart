@@ -24,7 +24,7 @@ class PaycartProductAttribute extends PaycartLib
 	protected $css_class	 =	'';
 	protected $filterable	 = 	0;
 	protected $searchable	 =	0;
-	protected $status 		 =	'';
+	protected $published	 =	1;
 	protected $config		 =  null;
 	protected $ordering		 =	0;
 	
@@ -43,7 +43,7 @@ class PaycartProductAttribute extends PaycartLib
 		$this->css_class	 =	'';
 		$this->filterable	 = 	0;
 		$this->searchable	 =	0;
-		$this->status 		 =	'';
+		$this->published 	 =	1;
 		$this->ordering		 =	0;
 		$this->config		 =  new Rb_Registry();
 		

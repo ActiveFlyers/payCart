@@ -39,3 +39,11 @@ class PaycartModelAddress extends PaycartModel
 }
 
 class PaycartModelformAddress extends PaycartModelform { }
+
+/** 
+ * Address Table
+ */
+class PaycartTableAddress extends PaycartTable
+{
+	
+}

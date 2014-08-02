@@ -8,10 +8,11 @@
 			default="0"/>
 			
 		<field 	
-			name="status" type="radio"
-			default="1"			
-			label="COM_PAYCART_ADMIN_PUBLISHED"
-			class="btn-group">
+			name="published" 
+			type="radio"
+			default="1"		
+			class="btn-group"	
+			label="COM_PAYCART_ADMIN_PUBLISHED">
 			<option value='1'>JYES</option>
 			<option value='0'>JNO</option>
 		</field>

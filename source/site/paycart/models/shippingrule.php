@@ -32,3 +32,15 @@ class PaycartModelShippingRule extends PaycartModel
  */
 class PaycartModelformShippingRule extends PaycartModelform 
 {}
+
+/**
+ * Table for Shipping Rules
+ * 
+ * @since 1.0.0
+ *  
+ * @author Gaurav Jain
+ */
+class PaycartTableShippingRule extends PaycartTable 
+{	
+		
+}

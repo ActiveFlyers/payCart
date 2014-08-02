@@ -64,7 +64,7 @@ JHtml::_('behavior.formvalidation');
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
 					
-					<?php $field = $form->getField('status') ?>
+					<?php $field = $form->getField('published') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								

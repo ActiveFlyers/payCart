@@ -22,7 +22,7 @@ class PaycartProductcategory extends PaycartLib
 {
 	// Table Fields
 	protected $productcategory_id	= 0; 
-	protected $status				= Paycart::STATUS_PUBLISHED;
+	protected $published			= 1;
 	protected $parent_id	 		= Paycart::PRODUCTCATEGORY_ROOT_ID;
 	protected $cover_media	 		= null; 	
 	protected $created_date  		= '';	
@@ -45,7 +45,7 @@ class PaycartProductcategory extends PaycartLib
 	{		
 		// Table Fields
 		$this->productcategory_id	= 0; 
-		$this->status		 		= Paycart::STATUS_PUBLISHED;
+		$this->published		 	= 1;
 		$this->parent_id	 		= Paycart::PRODUCTCATEGORY_ROOT_ID; //set id of root 
 		$this->cover_media	 		= null; 	
 		$this->created_date  		= Rb_Date::getInstance();	

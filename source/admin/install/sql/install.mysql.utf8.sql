@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productattribute` (
   `css_class` varchar(100) DEFAULT NULL,
   `filterable` tinyint(1) NOT NULL COMMENT 'Treat as a filter',
   `searchable` tinyint(1) DEFAULT '0' COMMENT 'Use for keyword search',
-  `status` enum('published','invisible','unpublished','trashed') NOT NULL ,
+  `published` tinyint(1) NOT NULL DEFAULT '1',
   `config` text,
   `ordering` int(11) DEFAULT '0',
   PRIMARY KEY (`productattribute_id`),
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
   `lft` int(11) NOT NULL DEFAULT '0',
   `rgt` int(11) NOT NULL DEFAULT '0',
   `level` int(10) unsigned NOT NULL DEFAULT '0',
-  `status` enum('published','invisible','unpublished','trashed') NOT NULL,
+  `published` tinyint(1) NOT NULL DEFAULT '1',
   `created_date` datetime NOT NULL,
   `modified_date` datetime NOT NULL,
   `ordering` int(11) NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `product_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Unique identification of product',
   `productcategory_id` int(11) DEFAULT 0,
   `type` varchar(50) NOT NULL COMMENT 'Type of Product',
-  `status` enum('published','invisible','unpublished','trashed') NOT NULL,
+  `published` tinyint(1) NOT NULL DEFAULT '1',
   `variation_of` int(11) NOT NULL DEFAULT '0' COMMENT 'This product is variation of another product. ',
   `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
   `price` double(15,4) NOT NULL,
@@ -693,6 +693,6 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 INSERT IGNORE INTO `#__paycart_productcategory_lang` (`productcategory_lang_id`, `productcategory_id`, `title`, `alias`, `lang_code`, `description`, `metadata_title`, `metadata_keywords`, `metadata_description`) VALUES
 (1, 1, 'root', 'root', 'en-GB', NULL, NULL, NULL, NULL);
 
-INSERT IGNORE INTO `#__paycart_productcategory` (`productcategory_id`, `cover_media`, `parent_id`, `lft`, `rgt`, `level`, `status`, `created_date`, `modified_date`, `ordering`) VALUES
-(1, NULL, 0, 0, 1, 0, 'published', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0);
+INSERT IGNORE INTO `#__paycart_productcategory` (`productcategory_id`, `cover_media`, `parent_id`, `lft`, `rgt`, `level`, `published`, `created_date`, `modified_date`, `ordering`) VALUES
+(1, NULL, 0, 0, 1, 0, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0);
 

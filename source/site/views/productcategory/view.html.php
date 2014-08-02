@@ -32,8 +32,8 @@ class PaycartSiteViewProductcategory extends PaycartSiteBaseViewProductcategory
 		$categoryFilters = array();
 		$productFilters	 = array();
 		
-		$categoryFilters = array('status'=>'published', 'parent_id'=>$categoryId);
-		$productFilters  = array('status'=>'published', 'productcategory_id' => $categoryId);
+		$categoryFilters = array('published' => 1, 'parent_id'=>$categoryId);
+		$productFilters  = array('published' => 1, 'productcategory_id' => $categoryId);
 		
 		$this->assign('products', PaycartFactory::getModel('product')->loadRecords($productFilters));	
 		$this->assign('categories',$this->getModel()->loadRecords($categoryFilters));

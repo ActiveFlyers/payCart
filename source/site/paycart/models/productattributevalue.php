@@ -189,3 +189,16 @@ class PaycartModelProductAttributeValue extends PaycartModel
 	}
 	
 }
+
+
+/** 
+ * ProductAttributeValue Table
+ * @author rimjhim
+ */
+class PaycartTableProductAttributeValue extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_productattribute_value', $tblPrimaryKey='', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}

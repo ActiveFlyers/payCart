@@ -48,10 +48,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 		<div class="control-group">
 			<div class="control-label">
-				<?php echo $form->getLabel('status'); ?>
+				<?php echo $form->getLabel('published'); ?>
 			</div>
 			<div class="controls">
-				<?php echo $form->getInput('status'); ?>	
+				<?php echo $form->getInput('published'); ?>	
 			</div>
 		</div>
 		

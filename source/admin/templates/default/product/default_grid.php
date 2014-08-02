@@ -45,6 +45,7 @@ defined('_JEXEC') OR die();
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PRICE", 'price', $filter_order_Dir, $filter_order);?></th>
+				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
 				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ORDERING", 'ordering', $filter_order_Dir, $filter_order);?></th>			
 			</tr>
 		<!-- TABLE HEADER END -->
@@ -64,6 +65,7 @@ defined('_JEXEC') OR die();
 					</td>
 					<td><?php echo $record->sku;?></td>
 					<td><?php echo $record->price;?></td>
+					<td class="center"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 					<td class="center">
 						<span><?php echo $pagination->orderUpIcon( $count , true, 'orderup', 'Move Up'); ?></span>
 						<span><?php echo $pagination->orderDownIcon( $count , count($records), true , 'orderdown', 'Move Down', true ); ?></span>

@@ -23,4 +23,13 @@ class PaycartModelUsage extends PaycartModel
 	
 }
 
-//class PaycartModelformUsage extends PaycartModelform { }
+/**
+ * 
+ * Usage Table
+ * @author manish
+ *
+ */
+class PaycartTableUsage extends PaycartTable
+{
+	
+}

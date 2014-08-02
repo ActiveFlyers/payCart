@@ -34,20 +34,18 @@
 					type="radio"
 					default="0"				
 					label="JFEATURED" 
-					class="btn-group">
-					<option value='0'>JNO</option>
+					class="btn-group">					
 					<option value='1'>JYES</option>
+					<option value='0'>JNO</option>
 			</field>
 			
-			<field 	name="status" 
-					type="list"
-					class="input-block-level"
-					default="1"					
-					label="COM_PAYCART_ADMIN_STATUS">
-					<option value='published'>JPUBLISHED</option>
-					<option value='unpublished'>JUNPUBLISHED</option>
-					<option value='invisible'>COM_PAYCART_ADMIN_INVISIBLE</option>
-					<option value='trashed'>JTRASHED</option>
+			<field 	name="published" 
+					type="radio"					
+					default="1"			
+					class="btn-group"		
+					label="COM_PAYCART_ADMIN_PUBLISHED">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>					
 			</field>			
 			
 			<!-- Custom Element for paycart product category			-->

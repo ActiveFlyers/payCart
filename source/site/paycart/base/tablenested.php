@@ -41,4 +41,32 @@ class PaycartTableNested extends JTableNested
 		$this->setLocation($this->parent_id, 'last-child');		
 		return $this->store();
 	}
+	
+	public function boolean($columnName, $value, $switch)
+	{
+		//check if column exist
+		$columnName		= strtolower($columnName);
+		if(($oldValue=$this->get($columnName, null)) === null)
+		{
+			$this->setError(sprintf("COLUMN %S DOES NOT EXIST IN TABLE %S",$columnName, $this->getName()));
+			return false;
+		}
+
+		//figure do we need switch
+		if($switch === false)
+			$this->set($columnName, $value);
+		else
+			$this->set($columnName, $oldValue ? 0 : 1);
+
+		//now save
+		if($this->rb_save()===false)
+		{
+			$this->setError( $this->_db->stderr() );
+			return false;
+		}
+
+		//reload new values
+		$this->load($this->get('id'));
+		return true;
+	}
 }
