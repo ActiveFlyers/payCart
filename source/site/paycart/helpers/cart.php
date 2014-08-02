@@ -93,6 +93,15 @@ class PaycartHelperCart extends PaycartHelper
 	public function addProduct($productId, $quantity)
 	{
 		$cart 	= $this->getCurrentCart();
+		$prevQuantity = isset($cart->getParam('products')->$productId)?$cart->getParam('products')->$productId->quantity:1;
+		
+		//validate quantity before adding product
+		//if the given quantity is greater than the avaiable quantity of product 
+		// PCFIXME #123: then through a message to user showing the maximum quantity he can order for this item 
+		$allowedQuantity = PaycartProduct::getInstance($productId)->getQuantity(); 
+		if($quantity > $allowedQuantity){
+			return array(false,$prevQuantity,$productId,$allowedQuantity);
+		}
 		
 		//add product
 		$product = new stdClass();
@@ -100,7 +109,22 @@ class PaycartHelperCart extends PaycartHelper
 		$product->quantity   = $quantity;
 		
 		$cart->addProduct($product);
-		return $cart->calculate()->save();
+		$cart->calculate()->save();
+		
+		return array(true,$prevQuantity,$productId,$allowedQuantity);
+	}
+	
+	public function isProductExist($productId)
+	{
+		$cart = $this->getCurrentCart();
+		$existingProducts = $cart->getParam('products');
+		
+		// product is not already added, set it with quantity 1
+		if(!isset($existingProducts->$productId)){
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**

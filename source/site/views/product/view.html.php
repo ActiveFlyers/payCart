@@ -79,7 +79,12 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 			
 			$selectors = PaycartFactory::getHelper('product')->buildSelectorAttributes($attrRecords, $baseAttrId, $variants, $product);
 		}
-
+		
+		$isExist = PaycartFactory::getHelper('cart')->isProductExist($productId);
+		$isAvailableInStock = ($product->getQuantity() > 0)?true:false; 
+		
+		$this->assign('isAvailableInStock',$isAvailableInStock);
+		$this->assign('isExistInCart', $isExist);
 		$this->assign('baseAttrId',$baseAttrId);		
 		$this->assign('selectors', $selectors);
 		$this->assign('variants', $variants);

@@ -47,9 +47,9 @@ class PaycartModelLang extends PaycartModel
     {
     	parent::_buildQueryJoins($query);
     	
-    	$lang_code = $this->get('lang_code');
-    	//@PCTODO : Remove it 
-    	$lang_code= 'en-GB';
+    	// @PCTODO : will be removed when multi language support will be given
+    	$lang_code = PaycartFactory::getCurrentLanguageCode();    	 
+    	
     	if(empty($lang_code)){
     		throw new Exception(JText::_('COM_PAYCART_ERROR_LANG_CODE_MISSING'));
     	}

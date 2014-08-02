@@ -45,6 +45,18 @@ class PaycartModelProduct extends PaycartModelLang
 //		// Invoke parent validation
 //		return parent::validate($data, $pk, $filter, $ignore);
 //	}
+
+	public function updateStock($productId, $quantity)
+	{
+		$query = new Rb_Query();
+		
+		return $query->update($this->getTable()->get('_tbl'))
+					 ->set('quantity = quantity - '.$quantity)
+					 ->where('product_id = '.$productId)
+					 ->dbLoadQuery()
+					 ->query();
+			  
+	}
 }
 
 class PaycartModelformProduct extends PaycartModelform {}

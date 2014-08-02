@@ -57,7 +57,7 @@ class PaycartPaymentgateway extends PaycartLib
 		$this->title					=	'';
 		$this->description				=	'';
 		$this->paymentgateway_lang_id	=	0;
-		$this->lang_code				=	PaycartFactory::getLanguage()->getTag();
+		$this->lang_code				=	PaycartFactory::getCurrentLanguageCode();
 		$this->published				=	1;
 		$this->processor_type			=	'';
 		$this->processor_config			=	new Rb_Registry();

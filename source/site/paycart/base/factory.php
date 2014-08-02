@@ -170,4 +170,9 @@ class PaycartFactory extends Rb_Factory
 	{
 		return self::getHelper('group')->getInstance($type, $className, $config);
 	}
+	
+	public static function getCurrentLanguageCode()
+	{
+		return PaycartFactory::getLanguage()->getTag();
+	}
 }

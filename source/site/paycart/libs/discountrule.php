@@ -105,8 +105,8 @@ class PaycartDiscountrule extends PaycartLib
 		$this->processor_classname	= Null;
 		$this->processor_config		= new Rb_Registry();
 		
-		$this->discountrule_lang_id		= 0;
-		$this->lang_code			= PaycartFactory::getLanguage()->getTag(); //@PCFIXME
+		$this->discountrule_lang_id	= 0;
+		$this->lang_code			= PaycartFactory::getCurrentLanguageCode();
 		$this->message				= '';
 		
 		$this->_buyergroups			= array();

@@ -34,6 +34,16 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
     	    		var data  = {'product_id': productId, 'quantity': quantity};
     	    		paycart.ajax.go(link,data);
     	    	},
+
+    	    	error : function(data){
+    				var response     = $.parseJSON(data);
+    				var prevQuantity = response.prevQuantity;
+    				var allowedQuantity = response.allowedQuantity;
+    				var productId 	 = response.productId;
+    				var message      = response.message;
+    				$('.pc-cart-quantity-error-'+productId).text(message);
+    				$('.pc-cart-quantity-'+productId).val(prevQuantity);
+    	    	},
     	    	
     	        remove : function(productId)
     	        {

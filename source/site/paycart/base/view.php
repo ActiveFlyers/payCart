@@ -36,6 +36,7 @@ class PaycartView extends PaycartViewbase
 		
 		// intialize input
 		$this->input = PaycartFactory::getApplication()->input;
+		$this->assign('formatter', PaycartFactory::getHelper('format'));
 		return $this;
 	}
 	

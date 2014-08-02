@@ -51,7 +51,7 @@ class PaycartProductcategory extends PaycartLib
 		$this->created_date  		= Rb_Date::getInstance();	
 		$this->modified_date 		= Rb_Date::getInstance();		
 		$this->productcategory_lang_id = 0;
-		$this->lang_code 			= PaycartFactory::getLanguage()->getTag(); //@PCFIXME
+		$this->lang_code 			= PaycartFactory::getCurrentLanguageCode();
 		$this->title				= '';
 		$this->alias				= '';
 		$this->description			= '';		
@@ -129,7 +129,7 @@ class PaycartProductcategory extends PaycartLib
 			}
 			
 			$media->moveUploadedFile($this->_uploaded_files['cover_media']['tmp_name'], JFile::getExt($this->_uploaded_files['cover_media']['name']));
-			$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'), Paycart::MEDIA_IMAGE_THUMB_HEIGHT);
+			$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'),PaycartFactory::getConfig()->get('catalogue_image_thumb_height'));
 			$media->createOptimized(PaycartFactory::getConfig()->get('catalogue_image_optimized_width'),PaycartFactory::getConfig()->get('catalogue_image_optimized_height'));
 			$this->cover_media = $media->getId();
 		}

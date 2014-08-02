@@ -13,7 +13,13 @@ if(!defined( '_JEXEC' )){
 	die( 'Restricted access' );
 }?>
 
-<?php
+<?php if(!empty($categories)):?>
+	<div class="row-fluid"><h2 class=" span12 page-header"><?php echo JText::_("COM_PAYCART_CATEGORIES");?></h2></div>
+	<?php echo $this->loadTemplate('categories', compact('categories'));?>
+<?php endif;?>
 
-echo $this->loadTemplate('categories', compact('categories'));
-echo $this->loadTemplate('products', compact('products'));
+<?php if(!empty($products)):?>
+	<div class="row-fluid"><h2 class=" span12 page-header"><?php echo JText::_("COM_PAYCART_PRODUCTS");?></h2></div>
+	<?php echo $this->loadTemplate('products', compact('products'));?>
+<?php endif;?> 
+<?php 

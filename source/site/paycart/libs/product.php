@@ -92,8 +92,8 @@ class PaycartProduct extends PaycartLib
 		$this->_images			= array();
 		
 		$this->product_lang_id	   = 0;		
-		$this->lang_code 		   = PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag	
-		$this->title	 			   = '';	
+		$this->lang_code 		   = PaycartFactory::getCurrentLanguageCode();	
+		$this->title	 		   = '';	
 		$this->alias  			   = '';
 		$this->teaser 			   = '';
 		$this->description 		   = '';	
@@ -240,7 +240,7 @@ class PaycartProduct extends PaycartLib
 				$media->save();
 
 				$media->moveUploadedFile($image['tmp_name'], JFile::getExt($image['name']));
-				$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'), Paycart::MEDIA_IMAGE_THUMB_HEIGHT);
+				$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'), PaycartFactory::getConfig()->get('catalogue_image_thumb_height'));
 				$media->createOptimized(PaycartFactory::getConfig()->get('catalogue_image_optimized_width'),PaycartFactory::getConfig()->get('catalogue_image_optimized_height'));
 
 				$media_ids[] = $media->getId();
@@ -524,5 +524,10 @@ class PaycartProduct extends PaycartLib
 		$attribute	  = PaycartProductAttribute::getInstance($attributeId);
 		$functionName = 'get'.ucfirst($type).'Html';
 		return $attribute->$functionName($selectedValue, $attributeOptions);
+	}
+	
+	public function getQuantity()
+	{
+		return $this->quantity;
 	}
 }

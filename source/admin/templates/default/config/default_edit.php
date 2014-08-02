@@ -49,9 +49,6 @@ echo $helper->render('index.php?option=com_paycart&view=config');
 			<?php echo $this->loadTemplate('catalogue');?>
 			<hr/>
 			
-			<?php echo $this->loadTemplate('tds');?>
-			<hr/>
-			
 			<?php echo $this->loadTemplate('invoice');?>
 		</div>
 		
