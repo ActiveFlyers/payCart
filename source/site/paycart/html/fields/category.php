@@ -76,7 +76,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 				//append new oprion to select list
 				$('.paycart_category_class').append(option);
 				// default selected
-				$('.paycart_category_class').val(response.productcategory_id);
+				$('.paycart_category_class').val(response.productcategory_id).trigger("liszt:updated");
 			};
 			<!-- Callback function when error occur during category adding operation	-->
 			var callbackOnError = function ()

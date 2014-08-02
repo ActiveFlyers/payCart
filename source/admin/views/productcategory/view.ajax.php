@@ -30,7 +30,7 @@ class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategor
 		$categoryId	=	$this->getModel()->getId();
 		$category	=	PaycartProductcategory::getInstance($categoryId);
 		
-		$this->_response->addRawData('response',(array)$category->getLanguage());
+		$this->_response->addRawData('response',$category->toArray());
 		//set ajax response and return it
 		$this->_response->sendResponse();
 	}

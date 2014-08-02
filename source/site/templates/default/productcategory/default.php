@@ -15,11 +15,11 @@ if(!defined( '_JEXEC' )){
 
 <?php if(!empty($categories)):?>
 	<div class="row-fluid"><h2 class=" span12 page-header"><?php echo JText::_("COM_PAYCART_CATEGORIES");?></h2></div>
-	<?php echo $this->loadTemplate('categories', compact('categories'));?>
+	<?php echo $this->loadTemplate('categories', compact('categories','formatter'));?>
 <?php endif;?>
 
 <?php if(!empty($products)):?>
 	<div class="row-fluid"><h2 class=" span12 page-header"><?php echo JText::_("COM_PAYCART_PRODUCTS");?></h2></div>
-	<?php echo $this->loadTemplate('products', compact('products'));?>
+	<?php echo $this->loadTemplate('products', compact('products','formatter'));?>
 <?php endif;?> 
 <?php 
