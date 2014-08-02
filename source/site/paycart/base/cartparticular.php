@@ -470,8 +470,11 @@ abstract class PaycartCartparticular extends JObject
 		}
 		
 		if(!empty($applied_promotions)){
-			//@FIXME :: coupon code must be clean with $quote method
+			//@PCFIXME :: coupon code must be clean with $quote method
 			$query->where('( '.$where.' OR `rule`.`coupon` IN ("'.implode('", "', $applied_promotions).'"))');
+		}else {
+			//get without coupon code discount rules 
+			$query->where($where);
 		}		
 		
 		$discountrules =  $query->dbLoadQuery()->loadColumn();
