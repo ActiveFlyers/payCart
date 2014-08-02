@@ -50,7 +50,7 @@ class PaycartProductAttribute extends PaycartLib
 		//language specific data
 		$this->title 		= '';
 		$this->productattribute_lang_id 	= 0;
-		$this->lang_code  		= PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag
+		$this->lang_code  	= PaycartFactory::getCurrentLanguageCode();
 		
 		//attribute specific options
 		$this->_options = array();

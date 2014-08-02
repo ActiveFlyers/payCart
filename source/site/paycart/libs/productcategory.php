@@ -51,7 +51,7 @@ class PaycartProductcategory extends PaycartLib
 		$this->created_date  		= Rb_Date::getInstance();	
 		$this->modified_date 		= Rb_Date::getInstance();		
 		$this->productcategory_lang_id = 0;
-		$this->lang_code 			= PaycartFactory::getLanguage()->getTag(); //@PCFIXME
+		$this->lang_code 			= PaycartFactory::getCurrentLanguageCode();
 		$this->title				= '';
 		$this->alias				= '';
 		$this->description			= '';		
