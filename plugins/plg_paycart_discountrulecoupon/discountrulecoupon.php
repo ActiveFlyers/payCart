@@ -31,7 +31,7 @@ class PlgPaycartDiscountrulecoupon extends Rb_Plugin
 		parent::__construct($subject, $config);
 		
 		// processor file path
-		$fileLocation 	= dirname(__FILE__).'/processor/coupon.php';
+		$fileLocation 	= dirname(__FILE__).'/processors/coupon.php';
 		
 		$processor 		= PaycartFactory::getHelper('processor');
 		// push into processor list

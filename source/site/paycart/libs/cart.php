@@ -376,6 +376,9 @@ class PaycartCart extends PaycartLib
 	{
 		$promotions = $this->params->get('promotions', array());
 		
+		// @PCTODO :: its far better if we will add {code => discount-rule-id} 
+		// so we can utlize discount-rule-id on getDiscountRule method (in Query performance) 
+		  
 		// product is not already added, set it with quantity 0
 		if(!in_array($code, $promotions)){
 			$promotions[] = $code;

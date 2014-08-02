@@ -102,4 +102,18 @@ class PaycartHelperCart extends PaycartHelper
 		$cart->addProduct($product);
 		return $cart->calculate()->save();
 	}
+	
+	/**
+	 * 
+	 * Invoke to apply promotion on {Producr/cart + Calculate}
+	 * @param string $promotion_code
+	 * 
+	 * @return PaycartCart instance 
+	 */
+	public function applyPromotion($promotion_code)
+	{
+		$cart = $this->getCurrentCart();
+		$cart->addPromotionCode($promotion_code);
+		return $cart->calculate()->save();
+	}
 }

@@ -4,7 +4,7 @@
 * @license			GNU GPL 3
 * @package			paycart
 * @subpackage		Backend
-* @contact			@contact@
+* @contact			support+paycart@readybytes.in
 */
 
 // no direct access

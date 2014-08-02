@@ -240,10 +240,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 
 			<!-- Cart Discount		 -->
 			 <div class="row-fluid">
-			 	<p>Discount Code</p>
+			 	<p><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_LABEL')?></p>
 			 	<div class="input-append" >
-				  <input class="span9" id="appendedInputButton" type="text">
-				  <button class="btn" type="button">Apply</button>
+				  <input class="span9" id="paycart-promotion-code-input-id" type="text">
+				  <button class="btn" type="button" onclick="paycart.checkout.confirm.onApplyPromotionCode()"><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_APPLY')?></button>
 				</div>
 			 </div>
 			 

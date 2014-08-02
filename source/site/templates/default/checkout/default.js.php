@@ -484,8 +484,18 @@ $steps				=	array_keys($checkout_sequence);
 				paycart.ajax.go(link, postData);
 				
 				return false;
+			},
+
+			// update product-quantity into cart
+			onApplyPromotionCode : function()
+			{
+				// get all form data for post	
+				postData 	= {'promotion_code' : $('#paycart-promotion-code-input-id').val()};
+				link  		= 'index.php?option=com_paycart&view=checkout&task=applyPromotion';
+				paycart.ajax.go(link, postData);
 				
-			}		
+				return false;
+			}
 			
 		};
 

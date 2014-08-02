@@ -84,6 +84,10 @@ class PaycartSiteViewCheckout extends PaycartSiteBaseViewCheckout
 		return $this->process();
 	}
 	
+	public function applyPromotion()
+	{
+		return $this->process();
+	}
 	
 	/**
 	 * 

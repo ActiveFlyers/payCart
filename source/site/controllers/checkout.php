@@ -233,7 +233,6 @@ class PaycartSiteControllerCheckout extends PaycartController
 		$response_data['messgae'] 		= $this->message;
 		$response_data['messgae_type'] 	= $this->message_type;
 
-		//@PCTODO  :: 
 		$ajax_response->addScriptCall('console.log', $response_data);
 		
 		// return false no need to execute view 
@@ -268,7 +267,6 @@ class PaycartSiteControllerCheckout extends PaycartController
 					return $this->step_payment($form_data);
 					
 				default:
-					// @PCTODO:: throw exception unknown step. 
 					$this->message = JText::_('COM_PAYCART_UNKNOWN_CHECKOUT_STEP');
 					$this->message_type = Paycart::MESSAGE_TYPE_ERROR;
 			}
@@ -667,6 +665,30 @@ class PaycartSiteControllerCheckout extends PaycartController
 			//@PCTODO:: Move into helper
 			$this->cart->removeProduct($productId);
 			$this->cart->calculate()->save();
+			
+		} catch (Exception $ex) {
+			$this->message 			=	$ex->getMessage();
+			$this->message_type		=	Paycart::MESSAGE_TYPE_ERROR;
+		}
+		
+		//handling next step
+		$this->step_current = Paycart::CHECKOUT_STEP_ADDRESS;
+		
+		return $this->postProcess();
+	}
+	
+	/**
+	 * 
+	 * Ajax Task :: Invoke to apply promotion code on cart
+	 */
+	public function applyPromotion()
+	{
+		// get promotion code
+		$promotion_code = $this->input->get('promotion_code', null, 'ALNUM');	
+		try {
+			if (!empty($promotion_code)) {
+				PaycartFactory::getHelper('cart')->applyPromotion($promotion_code);
+			}
 			
 		} catch (Exception $ex) {
 			$this->message 			=	$ex->getMessage();

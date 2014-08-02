@@ -30,7 +30,7 @@ class PlgPaycartDiscountruleflat extends Rb_Plugin
 	{
 		parent::__construct($subject, $config);
 		
-		$fileLocation = dirname(__FILE__).'/processor/flat.php';
+		$fileLocation = dirname(__FILE__).'/processors/flat.php';
 		
 		$processor = PaycartFactory::getHelper('processor');
 		
