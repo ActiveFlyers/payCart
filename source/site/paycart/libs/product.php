@@ -446,6 +446,12 @@ class PaycartProduct extends PaycartLib
 		$existing = $this->config->get('images', array());
 		$current  = array_merge($existing, $images);
 		$this->config->set('images', $current);
+		
+		//if cover media is not set then set first image as cover media
+		if(empty($this->cover_media) && !empty($current)){
+			$this->set('cover_media',array_pop($current));
+		}
+		
 		return $this;
 	}
 	
@@ -475,6 +481,11 @@ class PaycartProduct extends PaycartLib
 			$media = PaycartMedia::getInstance($mediaId);
 			// @PCTODO : error handling
 			$media->delete();
+			
+			//if the deleting image was set as covermedia then also reset covermedia
+			if($mediaId == $this->cover_media){
+				$this->cover_media = 0;
+			}
 		}
 		
 		$imageIds = array_diff($allMediaIds, $imageIds);
