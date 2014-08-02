@@ -14,7 +14,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 PaycartHtml::_('behavior.formvalidation');
 
-$helper = PaycartFactory::getHelper('format');
 $currencyId = $cart->getCurrency();
 ?>
 <script type="text/javascript">
@@ -89,11 +88,11 @@ $currencyId = $cart->getCurrency();
 				<?php $total    += $particular->total;?>
 				<tr>
 					<td><?php echo $particular->title; ?></td>
-					<td><?php echo $helper->amount($particular->unit_cost, $currencyId); ?></td>
+					<td><?php echo $formatter->amount($particular->unit_cost, true, $currencyId); ?></td>
 					<td><?php echo $particular->quantity; ?></td>
-					<td><?php echo $helper->amount($particular->price, $currencyId); ?></td>
+					<td><?php echo $formatter->amount($particular->price, true, $currencyId); ?></td>
 					<td>
-						<?php echo $helper->amount($particular->tax, $currencyId); ?>
+						<?php echo $formatter->amount($particular->tax, true, $currencyId); ?>
 						&nbsp;
 							<?php if(isset($taxDetails[$particular->cartparticular_id])):?>
 							  <a href="#" class="pc-popover" title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
@@ -103,7 +102,7 @@ $currencyId = $cart->getCurrency();
 							<?php endif;?>
 					</td>
 					<td>
-						<?php echo $helper->amount($particular->discount, $currencyId); ?>
+						<?php echo $formatter->amount($particular->discount, true, $currencyId); ?>
 						&nbsp;
 						<?php if(isset($discountDetails[$particular->cartparticular_id])):?>
 							  <a href="#" class="pc-popover" title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
@@ -112,7 +111,7 @@ $currencyId = $cart->getCurrency();
 							  </a>
 						<?php endif;?>
 					</td>
-					<td><?php echo $helper->amount($particular->total, $currencyId); ?></td>
+					<td><?php echo $formatter->amount($particular->total, true, $currencyId); ?></td>
 				</tr>
 			<?php endforeach;?>
 				
@@ -124,10 +123,10 @@ $currencyId = $cart->getCurrency();
 					<td colspan="3">
 						<strong><?php echo JText::_("COM_PAYCART_TOTAL")?></strong>
 					</td>
-					<td><?php echo $helper->amount($price, $currencyId); ?></td>
-					<td><?php echo $helper->amount($tax, $currencyId); ?></td>
-					<td><?php echo $helper->amount($discount, $currencyId); ?></td>
-					<td><?php echo $helper->amount($total, $currencyId); ?></td>
+					<td><?php echo $formatter->amount($price, true, $currencyId); ?></td>
+					<td><?php echo $formatter->amount($tax, true, $currencyId); ?></td>
+					<td><?php echo $formatter->amount($discount, true, $currencyId); ?></td>
+					<td><?php echo $formatter->amount($total, true, $currencyId); ?></td>
 				</tr>
 						
 			<!--=========================================
@@ -151,7 +150,7 @@ $currencyId = $cart->getCurrency();
 							?>
 						</small>
 					</td>
-					<td><?php echo $helper->amount($promotion_particular->total, $currencyId);?></td>
+					<td><?php echo $formatter->amount($promotion_particular->total, true, $currencyId);?></td>
 					
 					<?php $finalTotal += $promotion_particular->total;?>
 				</tr>
@@ -169,7 +168,7 @@ $currencyId = $cart->getCurrency();
 							?>
 						</small>
 					</td>
-					<td><?php echo $helper->amount($duties_particular->total, $currencyId);?></td>
+					<td><?php echo $formatter->amount($duties_particular->total, true, $currencyId);?></td>
 				
 					<?php $finalTotal += $duties_particular->total;?>
 				</tr>
@@ -193,7 +192,7 @@ $currencyId = $cart->getCurrency();
 			==========================================-->
 				<tr>
 					<td colspan="6"><h3><?php echo JText::_('COM_PAYCART_AMOUNT_PAYABLE')?></h3></td>
-					<td><strong><?php echo $helper->amount($finalTotal,$currencyId);?></strong></td>
+					<td><strong><?php echo $formatter->amount($finalTotal, true, $currencyId);?></strong></td>
 				</tr>
 			
 		</tbody>

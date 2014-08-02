@@ -174,4 +174,20 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		return $attributes;
 	}
+
+	/**
+	 * Decrease the quanity of given products 
+	 * @param array $productParticulars 
+	 */
+	public function updateProductStock(Array $productParticulars = array())
+	{
+		foreach ($productParticulars as $particular){
+			$productId = $particular->particular_id;
+			if(!PaycartFactory::getModel('product')->updateStock($productId, $quantity)){
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

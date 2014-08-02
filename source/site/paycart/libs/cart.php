@@ -963,6 +963,9 @@ class PaycartCart extends PaycartLib
 		
 		// 2#. save cart
 		$this->save();
+
+		// 3#. update products' quatity
+		PaycartFactory::getHelper('product')->updateProductStock($this->loadProductCartparticulars());
 		
 		return true;
 	}

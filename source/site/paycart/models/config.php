@@ -71,3 +71,5 @@ class PaycartModelConfig extends PaycartModel
 }
 
 class PaycartModelformConfig extends PaycartModelform {}
+
+class PaycartTableConfig extends PaycartTable{}

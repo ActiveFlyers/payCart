@@ -19,6 +19,13 @@ Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/owl.carousel.min.js');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/owl.carousel.css');
 
 include_once 'default.js.php'; //PCTODO: won't work with template overriding
+
+/**
+ * Template Parameters
+ * @param $isAvailableInStock
+ * @param $product
+ * 
+ */
 ?>
 <script>
 paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');
@@ -49,9 +56,10 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				Right Layout
 		 =========================== -->
 		 <div class="span6">
-				<h1 class="hidden-phone"><?php echo $product->getTitle(); ?></h1> 		
-		 		<h2><?php JText::_("Price");?> : <span class="currency">$</span><span class="amount"><?php echo $product->getPrice();?></span></h2>	
-		 		
+				<h1 class="hidden-phone"><?php echo $product->getTitle(); ?></h1>	
+		 		<h2><?php echo JText::_("COM_PAYCART_PRICE");?> : 
+		 			<span><?php echo $formatter->amount($product->getPrice(),true);?></span>	
+		 		</h2>
 		 		<!-- Filterable Attributes -->
 		 		<div>
 		 		    <form class="pc-product-attributes" method="post">
@@ -73,19 +81,25 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
     			</div>
 		 		
 		 		<!-- buy now -->
-		 		<div class="row-fluid clearfix">
-					<div class="span6">	 			
-				       <a class="btn btn-block btn-large btn-primary" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>"><?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?></a>
-				    </div>
-					<div class="span6">	 
-						<?php ?>			
-				        <button class="btn btn-block btn-large" onClick="paycart.url.modal('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=addProduct&product_id='.$product->getId()) ?>')"><?php echo JText::_("COM_PAYCART_PRODUCT_ADD_TO_CART");?></button>
-				    </div>
-				</div>
-		 		
-		 		
+		 		<?php if($isAvailableInStock):?>
+			 		<div class="row-fluid clearfix">
+						<div class="span6">	 			
+					       <a class="btn btn-block btn-large btn-primary pc-btn-buynow" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>"><?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?></a>
+					    </div>
+						<div class="span6">	 
+							<?php ?>			
+					        <button class="btn btn-block btn-large pc-btn-addtocart" onClick="paycart.product.addtocart(<?php echo $product->getId();?>);"><?php echo JText::_("COM_PAYCART_PRODUCT_ADD_TO_CART");?></button>
+					    </div>
+					</div>
+				<?php else :?>
+					<div class="row-fluid">
+						<h2 class="text-error"><?php echo JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK");?></h2>
+					</div>
+				<?php endif;?>
 		 </div>
 	 </div>
+	 
+	 <br>
 	 
 	 <!-- ===============================
 	 		    Full layout 
@@ -123,7 +137,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		 	<div class="accordion-inner">
                         <table class="pc-product-specification table table-responsive">
                           		<tr>
-                          			<th colspan="2" bgcolor="#F5F5F5">General Details</th>
+                          			<th colspan="2" bgcolor="#F5F5F5"><?php echo JText::_("COM_PAYCART_GENERAL_DETAILS");?></th>
                           		</tr>
                               <?php foreach ($product->getAttributeValues() as $attributeId => $optionId):?>
                                   <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>

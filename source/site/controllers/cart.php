@@ -115,8 +115,7 @@ class PaycartSiteControllerCart extends PaycartController
 	 */
 	public function addProduct()
 	{
-		$this->_addProduct();
-		return true;
+		return $this->_addProduct();
 	}
 	
 	/**
@@ -144,7 +143,23 @@ class PaycartSiteControllerCart extends PaycartController
 	 */
 	public function updateQuantity()
 	{
-		return $this->_addProduct();
+		//PCTODO : Clean this code
+		list($result,$prevQuantity,$productId,$allowedQuanity) = $this->_addProduct();
+		
+		if(!$result){
+			$response 			   = Array();
+			$ajax    			   = Rb_Factory::getAjaxResponse();
+			$response['message']   = JText::_("COM_PAYCART_PRODUCT_INVALID_QUANTITY").": ".$allowedQuanity;
+			$response['productId'] = $productId;
+			$response['prevQuantity'] = $prevQuantity;
+			$response['allowedQuantity'] = $allowedQuantity;
+			$callback 			   = 'paycart.cart.product.error';
+
+			// set call back function
+			$ajax->addScriptCall($callback, json_encode($response)); 
+			return false;			
+		}
+		return true;		
 	} 
 
 	/**
@@ -156,6 +171,6 @@ class PaycartSiteControllerCart extends PaycartController
 		$quantity  = $this->input->get('quantity',1,'INT');
 		
 		// @PCTODO :: error handling
-		PaycartFactory::getHelper('cart')->addProduct($productId, $quantity);
+		return PaycartFactory::getHelper('cart')->addProduct($productId, $quantity);
 	}
 }

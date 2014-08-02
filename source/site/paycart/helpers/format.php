@@ -21,10 +21,12 @@ class PaycartHelperFormat extends JObject
 	/**
 	 * Format the price/amount as per paycart configuration
 	 * @param $amount : To be formatted
-	 * @param $currencyId : currency id if amount to be get with currency
+	 * @param $addCurreny : Set it to true if you want to add currency with amount like $ 10.00
+	 * @param $currencyId : currency id if amount to be get with currency. To use it set $addCurreny to true. 
+	 * 						(If $addCurreny is true and $currencyId is null then default currency will be added)
 	 * @return amount or amount with currency as per the configuration
 	 */
-	public function amount($amount, $currencyId = null)
+	public function amount($amount, $addCurreny = true, $currencyId = null)
 	{
 		$config = PaycartFactory::getConfig();
 		
@@ -32,7 +34,11 @@ class PaycartHelperFormat extends JObject
 		
 		$formatedAmount = number_format(round($amount, $fractionDigitCount), $fractionDigitCount, $config->get('localization_decimal_separator'), '');
 		
-		if(!empty($currencyId)){
+		if($addCurreny){
+			if(empty($currencyId)){
+				$currencyId = $config->get('localization_currency');
+			}
+			
 			$currency = $this->currency($currencyId);
 			
 			if($config->get('localization_currency_position') == 'before'){

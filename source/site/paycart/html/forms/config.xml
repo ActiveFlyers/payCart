@@ -50,16 +50,6 @@
 		        <option value='m'>M</option>
 		 </field>
 		
-		 <field name="discountrule_issuccessive" 
-				type="radio"
-				label="COM_PAYCART_ADMIN_CONFIG_DISCOUNTRULE_ISSUCCESSIVE" 
-				default="1"
-				class="btn-group"
-				>
-				<option value="0">JNO</option>
-				<option value="1">JYES</option>
-		</field>
-		
 		<field name="invoice_serial_prefix"
 			   type="text"  
 			   label="COM_PAYCART_ADMIN_CONFIG_INVOICE_SERIAL_PREFIX"

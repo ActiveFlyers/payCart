@@ -276,7 +276,7 @@ paycart.admin.buyeraddress =
 		// data is json string		
 		success : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window
@@ -289,7 +289,7 @@ paycart.admin.buyeraddress =
 		// data is json string
 		error : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window and handle error
@@ -345,7 +345,7 @@ paycart.admin.state =
 		// data is json string
 		error : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window and handle error
@@ -368,7 +368,7 @@ paycart.admin.state =
 		// data is json string		
 		success : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window
@@ -381,7 +381,7 @@ paycart.admin.state =
 		// data is json string
 		error : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window and handle error
