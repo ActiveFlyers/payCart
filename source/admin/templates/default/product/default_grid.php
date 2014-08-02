@@ -46,7 +46,8 @@ defined('_JEXEC') OR die();
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PRICE", 'price', $filter_order_Dir, $filter_order);?></th>
 				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
-				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ORDERING", 'ordering', $filter_order_Dir, $filter_order);?></th>			
+				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ORDERING", 'ordering', $filter_order_Dir, $filter_order);?></th>	
+				<th class="pull-right"></th>						
 			</tr>
 		<!-- TABLE HEADER END -->
 		</thead>
@@ -70,6 +71,11 @@ defined('_JEXEC') OR die();
 						<span><?php echo $pagination->orderUpIcon( $count , true, 'orderup', 'Move Up'); ?></span>
 						<span><?php echo $pagination->orderDownIcon( $count , count($records), true , 'orderdown', 'Move Down', true ); ?></span>
 					</td>
+					<td class="center">
+						<?php if($record->product_id == $record->variation_of):?>
+							<a href="<?php echo $uri.'&task=addVariant&variant_of='.$record->product_id; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_ADD_VARIANT');?></a>
+						<?php endif;?>
+					</td>
 				</tr>
 			<?php $count++;?>
 			<?php endforeach;?>
@@ -78,7 +84,7 @@ defined('_JEXEC') OR die();
 		
 		<tfoot>
 			<tr>
-				<td colspan="7">
+				<td colspan="8">
 					<?php echo $pagination->getListFooter(); ?>
 				</td>
 			</tr>

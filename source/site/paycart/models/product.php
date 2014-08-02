@@ -57,6 +57,17 @@ class PaycartModelProduct extends PaycartModelLang
 					 ->query();
 			  
 	}
+	
+	public function loadLanguageRecords($filter = array())
+	{
+		$query = new Rb_Query();
+		$query->select('*')				
+				->from($this->getLanguageTableName().' as  `tbl`');
+				
+		$this->_buildWhereClause($query, $filter);
+		
+		return $query->dbLoadQuery()->loadObjectList($this->getLanguageTable()->getKeyName());		
+	}
 }
 
 class PaycartModelformProduct extends PaycartModelform {}

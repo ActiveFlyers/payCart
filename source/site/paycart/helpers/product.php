@@ -87,46 +87,64 @@ class PaycartHelperProduct extends PaycartHelper
 	/**
 	 * Create new variation of Product. 
 	 */
-	public function addVariant($product)
+	public function addVariant(PaycartProduct $product)
 	{
-		$newProduct 	= $product->getClone();
-		$newProduct->set('variation_of',$product->getId());
-		// New created variant will be always variation of ROOT product. 
-		// @see Discuss#39
-		if($variantOf = $product->getVariationOf()) {
-			$newProduct->set('variation_of',$variantOf);
-		}
-		//### Attribute Changes in Variants
-		//1. Product id and product lang id should be 0
-		$newProduct->set('product_id', 0) ;
+		$newProduct = PaycartProduct::getInstance();
 		
-		//2. New image file name save nd create new after save
-		if($product->getCoverMedia()) { 
-			$extension = PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
-			// set Image name  
-			$newProduct->set('cover_media',PaycartHelper::getHash($product->getTitle()));
-			$newProduct->set('cover_media', $product->getName().'/'.$newProduct->cover_media.$extension);
-			// set source path. It will required on image processing
-			$newProduct->set("_uploaded_files['cover_media']",$product->getCoverMedia());
-		}
+		// prepare bind data
+		$data = $product->toArray();
+		foreach(array('product_id', 'variation_of', 'created_date', 'modified_date', 'cover_media' ) as $key){
+			unset($data[$key]);
+		}		
+		$data['variation_of'] = $product->getId();		
+		$newProduct->bind($data);
 		
-		//3. set attribute values
-		$newProduct->set('_attributeValues',$product->getAttributeValues());
 		
-		//4. Changable Property 	
-		$newProduct->set('created_date', Rb_Date::getInstance());	
-		$newProduct->set('modified_date',Rb_Date::getInstance()); 
+		// set attribute values
+		$newProduct->set('_attributeValues', $product->getAttributeValues());
 		
-		//5. fetch all the language records and save one by one
-		$records   = PaycartFactory::getModelLang('product')->loadRecords(array('product_id' => $product->getId()));
+		// fetch all the language records and save one by one
+		$records   = PaycartFactory::getModel('product')->loadLanguageRecords(array('product_id' => $product->getId()));
 		
 		foreach ($records as $record){
-			$record->product_id = 0;
+			unset($record->product_id);
 			$record->product_lang_id = 0;
-			$data->language = (array)$record;
+			$data = (array)$record;
 			$newProduct->bind($data)->save();
 		}
 
+		// copy all images
+		$images = $product->getImages();
+		$cover_media = $product->getCoverMedia(false); 
+		$media_ids = array();
+		$config = PaycartFactory::getConfig();
+		
+		$newCoverMedia = 0;
+		foreach($images as $image){	
+			$image_id = $image['media_id'];
+			
+			$media = PaycartMedia::getInstance();
+			$data = array();
+			foreach(array('media_id', 'filename', 'media_lang_id' ) as $key){
+				unset($image[$key]);
+			}
+			$media->bind($image);
+			$media->save();			
+			
+			$media->moveUploadedFile($image['path_original'], JFile::getExt($image['path_original']));
+			$media->createThumb($config->get('catalogue_image_thumb_width'), $config->get('catalogue_image_thumb_height'));
+			$media->createOptimized($config->get('catalogue_image_optimized_width'),$config->get('catalogue_image_optimized_height'));
+			
+			if($image_id == $cover_media){
+				$newCoverMedia = $media->getId();
+			}
+						
+			$media_ids[] = $media->getId();
+		}
+		
+		$newProduct->set('cover_media', $newCoverMedia);
+		$newProduct->setImages($media_ids);
+		$newProduct->save();
 		return $newProduct;
 	}
 

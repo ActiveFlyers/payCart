@@ -176,8 +176,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `modified_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `ordering` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`product_id`),
-  KEY `productcategory_id` (`productcategory_id`),
-  UNIQUE KEY `idx_sku` (`sku`)
+  KEY `productcategory_id` (`productcategory_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Table have all PayCart Products and thier core element.' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

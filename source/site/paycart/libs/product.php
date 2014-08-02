@@ -238,7 +238,7 @@ class PaycartProduct extends PaycartLib
 				
 				$media = PaycartMedia::getInstance();
 				$data = array();
-				$data['language']['title'] = $image['name'];
+				$data['title'] = $image['name'];
 				$media->bind($data);
 				$media->save();
 

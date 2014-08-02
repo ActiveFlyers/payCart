@@ -81,14 +81,19 @@ class PaycartAdminControllerProduct extends PaycartController
 		// Check variantof 
 		if(!$variantOf) {
 			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_PARENT_REQUIRED'),'error');
+			$this->setRedirect('index.php?option=com_paycart&view=product');
 			return false;
 		}
+		
 		$product = PaycartProduct::getInstance($variantOf);
+		
 		//Validate Variant exist or not
 		if (!$product) {
 			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_PARENT_NOT_EXIST'),'error');
+			$this->setRedirect('index.php?option=com_paycart&view=product');
 			return false;
 		} 
+		
 		// if everything is ok then create new variant
 		$productHelper = PaycartFactory::getHelper('product');
 		$variant       = $productHelper->addVariant($product);

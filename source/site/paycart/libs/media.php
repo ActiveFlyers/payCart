@@ -113,7 +113,7 @@ class PaycartMedia extends PaycartLib
 		}
 		
 		$dest = $dest.$this->getId().'.'.$ext;
-		if(!JFile::upload($source, $dest)){
+		if(!JFile::copy($source, $dest)){
 			throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
 		}
 		
@@ -129,6 +129,11 @@ class PaycartMedia extends PaycartLib
 		$data['original'] 	= $this->_baseurl.$this->filename;
 		$data['optimized'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename : $data['original'];
 		$data['thumbnail'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename : $data['original'];
+		
+		$data['path_original'] 	= $this->_basepath.$this->filename;
+		$data['path_optimized']	= JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename) ? $this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename : $data['original'];
+		$data['path_thumbnail']	= JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename) ? $this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename : $data['original'];
+	
 		return $data;
 	}
 	
