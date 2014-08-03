@@ -14,6 +14,7 @@ if(!defined( '_JEXEC' )){
 	die( 'Restricted access' );
 }
 
+include_once 'default.js.php';
 /**
  * Available variables 
  * 

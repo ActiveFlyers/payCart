@@ -32,8 +32,9 @@ if(!defined( '_JEXEC' )){
 	paycart.product.selector = {};
 	
 	paycart.product.selector.onChange= function(value){
-		if($baseAttrId && value.id == '<?php echo 'pc-attr-'.$baseAttrId?>'){
-			$('.pc-product-base-attribute').val('<?php echo $baseAttrId?>');
+		var baseAttrId = <?php echo $baseAttrId; ?>;
+		if(baseAttrId && value.id == 'pc-attr-' + baseAttrId){
+			$('.pc-product-base-attribute').val(baseAttrId);
 		}
 		$('.pc-product-attributes').submit();
 	},

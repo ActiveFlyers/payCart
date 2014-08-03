@@ -41,7 +41,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				Left Layout
 		 =========================== -->
 		 <div class="span6">
-		 	<div id="pc-screenshots-carousel" class="owl-carousel pc-screenshots">
+		 	<div id="pc-screenshots-carousel" class="owl-carousel pc-screenshots center">
 			 	<?php $counter = 0; ?>
 			    <?php foreach($product->getImages() as $mediaId => $detail):?>
 				    <div>

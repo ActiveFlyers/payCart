@@ -58,7 +58,7 @@ $currencyId = $cart->getCurrency();
 		<div class="row-fluid pc-item">
 			
 			<div class="pull-left pc-grid-4">
-				<h4><img class="thumbnail" src="<?php $media = $product->getCoverMedia(); echo $media['optimized']?>" /></h4>
+				<h4><img class="thumbnail" src="<?php $media = $product->getCoverMedia(); echo $media['thumbnail']?>" /></h4>
 			</div>
 			
 			<div class="pull-right pc-grid-8">

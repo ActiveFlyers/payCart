@@ -203,7 +203,7 @@ class PaycartAttributeColor extends PaycartAttribute
 	function getSelectorHtml($attribute, $selectedOption = '', Array $options = array())
 	{
 		$suffix   = '';		
-		$colors   = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode(),$options);
+		$colors   = PaycartFactory::getModel('color')->loadOptions($attribute->getId(), $attribute->getLanguageCode(),$options);
 		
 		if(empty($colors)){
 			return '';
