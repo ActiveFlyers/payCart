@@ -112,17 +112,17 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	 		
 			 		<div id="pc-confirm-shipping-option" class="accordion-body in collapse"">
 			 			<div class="accordion-inner">
-			 				<div class='pc-checkout-shipping-list'>
-				 				<select>
-				 					<option value='express'>Express (1 Business Day)</option>
-				 				</select>
-				 			</div>
-				 			<div class='pc-checkout-shipping-notes'>
-				 				<b>Price-$9.00</b><br/>
-				 				Estimated Delivery Date : 25Jun2014 <br />
-				 				<span class='text-error'>Your oreder may arrivein multiple package</span>				 				
-				 			</div> 
-
+<!--			 				<div class='pc-checkout-shipping-list'>-->
+<!--				 				<select>-->
+<!--				 					<option value='express'>Express (1 Business Day)</option>-->
+<!--				 				</select>-->
+<!--				 			</div>-->
+<!--				 			<div class='pc-checkout-shipping-notes'>-->
+<!--				 				<b>Price-$9.00</b><br/>-->
+<!--				 				Estimated Delivery Date : 25Jun2014 <br />-->
+<!--				 				<span class='text-error'>Your oreder may arrivein multiple package</span>				 				-->
+<!--				 			</div> -->
+								Coming Soon
 			 			</div>
 			 		</div>
 	 			</div>

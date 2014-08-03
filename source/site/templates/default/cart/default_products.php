@@ -66,7 +66,7 @@ $currencyId = $cart->getCurrency();
 				 <p class="pc-item-attribute">
 				 	 <?php foreach ($product->getAttributeValues() as $attributeId => $optionId):?>
 	                     <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
-					 	<span><?php echo $instance->getTitle();?></span> &nbsp;<span><?php $options = $instance->getOptions(); echo $options[array_shift($optionId)]->title;?></span><br /> 	
+					 	<span><?php echo $instance->getTitle();?></span> &nbsp;<span><?php $options = $instance->getOptions(); echo $options[$optionId]->title;?></span><br /> 	
 					<?php endforeach;?>
 						<span><?php echo JText::_("COM_PAYCART_UNIT_PRICE")?> :</span>
 						

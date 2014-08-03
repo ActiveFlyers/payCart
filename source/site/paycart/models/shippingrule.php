@@ -17,7 +17,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  *  
  * @author Gaurav Jain
  */
-class PaycartModelShippingRule extends PaycartModel 
+class PaycartModelShippingRule extends PaycartModelLang
 {	
 		
 }

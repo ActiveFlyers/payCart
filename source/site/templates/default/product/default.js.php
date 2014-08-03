@@ -21,6 +21,11 @@ if(!defined( '_JEXEC' )){
 		if(<?php echo ($isExistInCart)?1:0;?>){
 			paycart.product.changeButtonText();
 		}
+
+		$("#pc-screenshots-carousel").owlCarousel({ 
+			lazyLoad : true, singleItem:true, 
+			autoHeight : true, pagination:true 
+		});
 	});
 	
 	paycart.product = {};

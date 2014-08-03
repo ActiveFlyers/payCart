@@ -32,6 +32,23 @@ class PaycartAdminViewShippingRule extends PaycartAdminBaseViewShippingRule
 		$this->_helper = PaycartFactory::getHelper('shippingrule');
 	}
 	
+	//@PCTODO : Temporary Fix
+	public function getModel($name = null)
+	{
+		return false;	
+	}
+	//@PCTODO : Temporary Fix
+	function display($tpl=null)
+	{
+		$this->setTpl('blank');
+		return true;
+	}
+	//@PCTODO : Temporary Fix	
+	protected function _basicFormSetup($task)
+	{
+		return true;
+	}
+	
 	public function edit($tpl=null) 
 	{	
 		$itemId	=  $this->getModel()->getId();

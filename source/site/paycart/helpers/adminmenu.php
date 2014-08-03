@@ -23,11 +23,11 @@ class PaycartHelperAdminmenu extends PaycartHelper
 	{
 		$adminMenus = array();
 
-		$adminMenus['dashboard'] = Array(
-										'title' => JText::_('COM_PAYCART_ADMIN_DASHBOARD'),
-										'url' => 'index.php?option=com_paycart&view=dashboard',
-										'class' => 'fa-home'
-									);
+//		$adminMenus['dashboard'] = Array(
+//										'title' => JText::_('COM_PAYCART_ADMIN_DASHBOARD'),
+//										'url' => 'index.php?option=com_paycart&view=dashboard',
+//										'class' => 'fa-home'
+//									);
 					
 		$adminMenus['catalogue'] =	Array(
 										'title' => JText::_('COM_PAYCART_ADMIN_CATALOGUE'),
@@ -43,12 +43,12 @@ class PaycartHelperAdminmenu extends PaycartHelper
 												'title' => JText::_('COM_PAYCART_ADMIN_CATEGORIES'),
 												'url' => 'index.php?option=com_paycart&view=productcategory',
 												'class' => 'fa-sitemap'
-											),
-											Array(
-												'title' => JText::_('COM_PAYCART_ADMIN_ATTRIBUTES'),
-												'url' => 'index.php?option=com_paycart&view=attribute',
-												'class' => 'fa-bars'
 											)
+//											Array(
+//												'title' => JText::_('COM_PAYCART_ADMIN_ATTRIBUTES'),
+//												'url' => 'index.php?option=com_paycart&view=productattribute',
+//												'class' => 'fa-bars'
+//											)
 										)
 									);
 
@@ -68,26 +68,26 @@ class PaycartHelperAdminmenu extends PaycartHelper
 											'url' => 'index.php?option=com_paycart&view=cart',
 											'class' => 'fa-shopping-cart'
 										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_INVOICES'),
-											'url' => 'index.php?option=com_paycart&view=invoice',
-											'class' => 'fa-inbox'
-										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_TRANSATIONS'),
-											'url' => 'index.php?option=com_paycart&view=transaction',
-											'class' => 'fa-money'
-										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_SHIPMENTS'),
-											'url' => 'index.php?option=com_paycart&view=shipments',
-											'class' => 'fa-plane'
-										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_REPORTS'),
-											'url' => 'index.php?option=com_paycart&view=report',
-											'class' => 'fa-tasks'
-										)
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_INVOICES'),
+//											'url' => 'index.php?option=com_paycart&view=invoice',
+//											'class' => 'fa-inbox'
+//										),
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_TRANSATIONS'),
+//											'url' => 'index.php?option=com_paycart&view=transaction',
+//											'class' => 'fa-money'
+//										),
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_SHIPMENTS'),
+//											'url' => 'index.php?option=com_paycart&view=shipments',
+//											'class' => 'fa-plane'
+//										),
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_REPORTS'),
+//											'url' => 'index.php?option=com_paycart&view=report',
+//											'class' => 'fa-tasks'
+//										)
 									)
 								);	
 					
@@ -101,11 +101,11 @@ class PaycartHelperAdminmenu extends PaycartHelper
 											'url' => 'index.php?option=com_paycart&view=config',
 											'class' => 'fa-gear'
 										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_LOCALIZATION'),
-											'url' => 'index.php?option=com_paycart&view=localization',
-											'class' => 'fa-globe'
-										),
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_LOCALIZATION'),
+//											'url' => 'index.php?option=com_paycart&view=localization',
+//											'class' => 'fa-globe'
+//										),
 										Array(
 											'title' => JText::_('COM_PAYCART_ADMIN_GROUP_RULES'),
 											'url' => 'index.php?option=com_paycart&view=group',
@@ -136,46 +136,41 @@ class PaycartHelperAdminmenu extends PaycartHelper
 											'url' => 'index.php?option=com_paycart&view=country',
 											'class' => 'fa-flag'
 										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_STATES'),
-											'url' => 'index.php?option=com_paycart&view=state',
-											'class' => ''
-										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_INTEGRATION_APPS'),
-											'url' => 'index.php?option=com_paycart&view=integration',
-											'class' => 'fa-cubes'
-										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_APPSTORE'),
-											'url' => 'index.php?option=com_paycart&view=appstore',
-											'class' => 'fa-th'
-										)
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_INTEGRATION_APPS'),
+//											'url' => 'index.php?option=com_paycart&view=integration',
+//											'class' => 'fa-cubes'
+//										),
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_APPSTORE'),
+//											'url' => 'index.php?option=com_paycart&view=appstore',
+//											'class' => 'fa-th'
+//										)
 									)
 								);
 					
-		$adminMenus['history'] = Array(
-									'title' => JText::_('COM_PAYCART_ADMIN_HISTORY'),
-									'url' => '#',
-									'class' => 'fa-history',
-									'children' => Array(
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_LOGS'),
-											'url' => 'index.php?option=com_paycart&view=log',
-											'class' => 'fa-file-text'
-										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_ADMIN_ALERTS'),
-											'url' => 'index.php?option=com_paycart&view=alert',
-											'class' => 'fa-warning'
-										),
-										Array(
-											'title' => JText::_('COM_PAYCART_ADMIN_CUSTOMER_NOTIFICATIONS'),
-											'url' => 'index.php?option=com_paycart&view=notification',
-											'class' => 'fa-volume-up'
-										)
-									)
-								);
+//		$adminMenus['history'] = Array(
+//									'title' => JText::_('COM_PAYCART_ADMIN_HISTORY'),
+//									'url' => '#',
+//									'class' => 'fa-history',
+//									'children' => Array(
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_LOGS'),
+//											'url' => 'index.php?option=com_paycart&view=log',
+//											'class' => 'fa-file-text'
+//										),
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_ADMIN_ALERTS'),
+//											'url' => 'index.php?option=com_paycart&view=alert',
+//											'class' => 'fa-warning'
+//										),
+//										Array(
+//											'title' => JText::_('COM_PAYCART_ADMIN_CUSTOMER_NOTIFICATIONS'),
+//											'url' => 'index.php?option=com_paycart&view=notification',
+//											'class' => 'fa-volume-up'
+//										)
+//									)
+//								);
 					
 		$this->_menus = $adminMenus;		
 	}

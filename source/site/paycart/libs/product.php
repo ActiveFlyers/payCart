@@ -535,6 +535,10 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function getAttributeHtml($type, $attributeId, $selectedValue = '', Array $attributeOptions = array()) 
 	{
+		if(empty($attributeId)){
+			return '';
+		}
+		
 		$attribute	  = PaycartProductAttribute::getInstance($attributeId);
 		$functionName = 'get'.ucfirst($type).'Html';
 		return $attribute->$functionName($selectedValue, $attributeOptions);
