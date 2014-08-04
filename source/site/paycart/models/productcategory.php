@@ -76,6 +76,17 @@ class PaycartModelProductcategory extends PaycartModelLang
 		
 		return $alias;
 	}
+
+	/**
+	 * Overring this method to order categories according to lft proper 
+	 * i.e parent->child ordering  
+	 * @see plugins/system/rbsl/rb/rb/Rb_Model::_buildWhereClause()
+	 */
+	function _buildWhereClause(Rb_Query $query, Array $queryFilters)
+	{
+		parent::_buildWhereClause($query,$queryFilters);
+		return $query->order('lft');
+	}
 }
 
 class PaycartModelformProductCategory extends PaycartModelform { }

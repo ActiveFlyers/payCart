@@ -50,7 +50,12 @@ class PaycartFormFieldCategory extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$category = self::getCategory();		
+		$category = self::getCategory();
+
+		foreach ($category as $key => $cat){
+			$category[$key]->title = str_repeat('&mdash;', ($cat->level - 1)<0?0:($cat->level - 1)).' '.$cat->title;
+		}
+		
 		return PaycartHtml::buildOptions($category);		
 	}
 	
@@ -129,7 +134,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 		$model = PaycartFactory::getModel('productcategory');
 		// Should be sorted according to 'title' so need to write query with "order by"
 		$model->clearQuery();  
-		$query = $model->getQuery()->clear('order')->order('title');
+		$query = $model->getQuery()->clear('order')->order('lft');
 		
 		$result = $model->loadRecords();
 		 
