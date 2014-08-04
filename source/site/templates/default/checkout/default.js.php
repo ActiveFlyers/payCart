@@ -38,11 +38,25 @@ $steps				=	array_keys($checkout_sequence);
 		
 		// Loader 
 		$( document ).ajaxStart(function() {
-			  $('#pc-checkout-loader').show();
+			paycart.ajax.loader.show();
 			}).ajaxStop(function() {
-			  $('#pc-checkout-loader').hide();
+				paycart.ajax.loader.hide();
 			});
 		
+		paycart.ajax.loader = 
+		{
+			show : function() 
+			{
+				$('#pc-checkout-loader').show();
+			},
+
+			hide : function()
+			{
+				$('#pc-checkout-loader').hide();
+			}
+		
+		};
+
 		
 		/**
 		 * -----------------------------------------------------------
@@ -576,6 +590,9 @@ $steps				=	array_keys($checkout_sequence);
 			*/
 			onPayNow : function()
 			{
+				//disabled pay now button and payment-gateways
+				$('#paycart-invoice-paynow, #pc-checkout-payment-gateway ').prop('disabled','disabled');
+				
 				// Submit Form
 		    	$('#payment-form-html').submit();
 			}
