@@ -80,8 +80,8 @@ $currencyId = $cart->getCurrency();
 					<div class="pull-left pc-grid-4">
 					 	 <label><big><?php echo Jtext::_("COM_PAYCART_QUANTITY")?></big></label>
 				 		 <span>
-				 		 	<input class="pc-grid-6 pc-cart-quantity-<?php echo $product->getId()?>" type="number" min="1" value="<?php echo $item->getQuantity(); ?>" onBlur="paycart.cart.product.updateQuantity(<?php echo $product->getId();?>,this.value)"/>&nbsp;
-				 		 	<a class="hidden-phone" href="javascript:void(0);"><i class="fa fa-refresh"></i></a>
+				 		 	<input class="pc-grid-6 pc-cart-quantity-<?php echo $product->getId()?>" type="number" min="1" value="<?php echo $item->getQuantity(); ?>"/>&nbsp;
+				 		 	<a href="javascript:void(0);" onClick="paycart.cart.product.updateQuantity(<?php echo $product->getId();?>)"><i class="fa fa-refresh"></i></a>
 				 		 </span>
 				 		 <div class="pc-grid-12 text-error pc-cart-quantity-error-<?php echo $product->getId()?>"></div>
 					</div>

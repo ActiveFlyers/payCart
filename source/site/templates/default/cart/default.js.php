@@ -28,9 +28,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 	    paycart.cart.product = {
 
-	    	    updateQuantity : function(productId, quantity)
+	    	    updateQuantity : function(productId)
 	    	    {
     	    		var link  = 'index.php?option=com_paycart&task=updateQuantity&view=cart';
+    	    		var quantity = $('.pc-cart-quantity-'+productId).val();
     	    		var data  = {'product_id': productId, 'quantity': quantity};
     	    		paycart.ajax.go(link,data);
     	    	},
