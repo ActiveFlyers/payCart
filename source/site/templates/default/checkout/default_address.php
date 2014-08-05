@@ -72,7 +72,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		(function($) {
 						
 			paycart.checkout.buyeraddress.init();
-			paycart.checkout.step.change('<?php echo $step_ready; ?>');	
+			paycart.checkout.step.change('<?php echo json_encode($available_steps) ?>');	
 
 			//$("#pc-checkout-form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation();
 			

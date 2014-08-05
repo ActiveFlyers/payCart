@@ -53,6 +53,12 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	{
 	    content: '*';
 	}
+	
+	.paycart .pc-checkout-cursor-pointer
+	{	
+		cursor: pointer;
+	}
+	
 </style>
 
 

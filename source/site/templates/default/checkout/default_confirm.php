@@ -262,7 +262,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <script>
 (function($){
 
-			paycart.checkout.step.change('<?php echo $step_ready; ?>');				
+			paycart.checkout.step.change('<?php echo json_encode($available_steps) ?>');				
 			
 		})(paycart.jQuery);
 </script>

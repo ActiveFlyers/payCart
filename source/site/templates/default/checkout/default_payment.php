@@ -71,7 +71,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 	(function($){
 		
-		paycart.checkout.step.change('<?php echo $step_ready; ?>');
+		paycart.checkout.step.change('<?php echo json_encode($available_steps) ?>');
 		paycart.checkout.payment.getPaymentForm($('#pc-checkout-payment-gateway').val());
 
 	})(paycart.jQuery);

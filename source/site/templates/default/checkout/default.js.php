@@ -83,30 +83,38 @@ $steps				=	array_keys($checkout_sequence);
 		{
 			step :
 			{
-				change : function(step_ready)
+				change : function(steps)
 				{
-					// @PCTODO: do not use hard-coding
-					// availble steps 
-					var steps 		= [ <?php echo implode(',', $steps); ?> ];
-					var class_name	= '';
-	
-					// set incomplet class to all (remove previous class and add default classes);
-					$('.pc-checkout-step').removeClass('text-success').addClass('muted');
+					var selector, on_click, steps = $.parseJSON(steps);
 					
-					for (i=0; i<steps.length; i++) {
-	
-						class_name = '.pc-checkout-step-'+steps[i];
-	
-						$(class_name).removeClass('muted');
+					// set in-complete class to all (remove previous class and add default classes);
+					$('.pc-checkout-step').removeClass('text-success pc-checkout-cursor-pointer').addClass('muted').unbind('click');
+					
+					for ( var key in steps ) {
 						
-						if (step_ready == steps[i]){
-							// active mark it
-							$(class_name).removeClass('muted');
-							break; 
+						selector = '.'+steps[key].class;
+
+						$(selector).removeClass('muted');
+						
+						if (steps[key].isActive) {
+							break;
 						}
-	
-						//Previous step mark completed
-						$(class_name).addClass('text-success');
+
+						// add success
+						$(selector).addClass('text-success');
+
+						on_click = steps[key].onclick;
+						 
+						// bind click function on completed stage 
+						if ( on_click  ) {
+							$(selector).addClass('pc-checkout-cursor-pointer').
+								on('click', { 'method' : on_click },
+									function(event)
+									{	//@PCTODO ::Remove eval and create paycart utility function
+										// take reference http://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string
+										eval(event.data.method);
+									});
+					    }
 					}
 				}
 		 	},
@@ -463,6 +471,18 @@ $steps				=	array_keys($checkout_sequence);
 
 					return false;
 				},
+
+				confirm : function()
+				{
+					try {
+						var data = {'back_to' : 'confirm'};
+						paycart.checkout.goback(data);
+					} catch (e) {
+						console.log({'exception_was': e});	
+					}
+
+					return false;
+				}
 
 			},
 

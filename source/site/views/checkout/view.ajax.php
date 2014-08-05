@@ -99,6 +99,8 @@ class PaycartSiteViewCheckout extends PaycartSiteBaseViewCheckout
 		
 		if ('address' == $back_to) {
 			parent::prepare_step_address();
+		}else if ('confirm' === $back_to ) {
+			parent:: prepare_step_confirm();
 		}
 
 		$this->setTpl($this->step_ready);

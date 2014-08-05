@@ -57,7 +57,7 @@ if(!defined( '_JEXEC' )){
 				
 		(function($){
 
-			paycart.checkout.step.change('<?php echo $step_ready; ?>');
+			paycart.checkout.step.change('<?php echo json_encode($available_steps) ?>');
 			paycart.checkout.login.init();
 			
 		})(paycart.jQuery);

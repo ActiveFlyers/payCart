@@ -550,6 +550,10 @@ class PaycartSiteControllerCheckout extends PaycartController
 				$this->step_current = Paycart::CHECKOUT_STEP_ADDRESS;
 			break;
 			
+			case 'confirm':
+				$this->step_current = Paycart::CHECKOUT_STEP_CONFIRM;
+			break;
+			
 			default:
 				;
 			break;

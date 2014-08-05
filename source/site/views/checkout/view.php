@@ -184,7 +184,8 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 		
 		$this->assign('is_platform_mobile', PaycartFactory::getApplication()->client->mobile);
 
-		//setup basic stuff like steps		
+		//setup basic stuff like steps
+		$this->assign('available_steps', 		$this->getSteps());		
 		$this->assign('step_ready',				$this->step_ready);
 		$this->assign('buyer', 					$buyer);
 		$this->assign('billing_address', 		$billing_address);
@@ -194,5 +195,54 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 		$this->assign('cart_total', 			$this->cart->getTotal());
 		
 		return true;
+	}
+	
+	/**
+	 * 
+	 * Invoke to get all available steps
+	 * 
+	 * @return all available steps
+	 */
+	protected  function getSteps() 
+	{
+		$steps 				=  Array();
+		
+		//Step :: Address
+		$step  = new stdClass();
+		$step->icon		= 'fa-user';
+		$step->class	= 'pc-checkout-step-'.Paycart::CHECKOUT_STEP_LOGIN;
+		$step->title	=  JText::_('COM_PAYCART_CHECKOUT_STEP_LOGIN');
+		$step->onclick	= ($this->cart->getIsGuestCheckout()) ? 'paycart.checkout.confirm.edit.email();' : false;
+		$step->isActive	= ($this->step_ready == Paycart::CHECKOUT_STEP_LOGIN)? 1 : 0;
+		$steps[0]= $step;
+		
+		//Step :: Address
+		$step  = new stdClass();
+		$step->icon = 'fa-truck';
+		$step->class = 'pc-checkout-step-'.Paycart::CHECKOUT_STEP_ADDRESS;
+		$step->title	=  JText::_('COM_PAYCART_CHECKOUT_STEP_ADDRESS');
+		$step->onclick	= 'paycart.checkout.confirm.edit.address()';
+		$step->isActive	= ($this->step_ready == Paycart::CHECKOUT_STEP_ADDRESS)? 1 : 0;
+		$steps[1]= $step;
+
+		//Step :: Order-Confirm
+		$step  = new stdClass();
+		$step->icon = 'fa-thumbs-up';
+		$step->class = 'pc-checkout-step-'.Paycart::CHECKOUT_STEP_CONFIRM;
+		$step->title	=  JText::_('COM_PAYCART_CHECKOUT_STEP_CONFIRM');
+		$step->onclick	= ' paycart.checkout.confirm.edit.confirm()';
+		$step->isActive	= ($this->step_ready == Paycart::CHECKOUT_STEP_CONFIRM)? 1 : 0;
+		$steps[2]= $step;
+		
+		//Step :: Payment
+		$step  = new stdClass();
+		$step->icon = 'fa-credit-card';
+		$step->class = 'pc-checkout-step-'.Paycart::CHECKOUT_STEP_PAYMENT;
+		$step->title	=  JText::_('COM_PAYCART_CHECKOUT_STEP_PAYMENT');
+		$step->onclick	= false;
+		$step->isActive	= ($this->step_ready == Paycart::CHECKOUT_STEP_PAYMENT)? 1 : 0;
+		$steps[3]= $step;
+		
+		return $steps;
 	}
 }
