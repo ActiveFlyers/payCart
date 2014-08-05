@@ -21,8 +21,8 @@ $steps				=	array_keys($checkout_sequence);
 // $steps have string value so we need to add quote (') as suffix and prefix 
  $steps = array_map(function($step){ return "'$step'"; }, $steps);
  
- // @PCTODO ::  define constant for plateform
- if (!PaycartFactory::getApplication()->client->mobile) {
+ //load chosen when client platform is not mobile
+ if (!$is_platform_mobile) {
 	JHtml::_('formbehavior.chosen', '.pc-buyeraddress');
  }
  

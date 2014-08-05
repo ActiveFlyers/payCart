@@ -182,7 +182,7 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 		
 		$this->assign('currency_id', $this->cart->getCurrency());
 		
-		
+		$this->assign('is_platform_mobile', PaycartFactory::getApplication()->client->mobile);
 
 		//setup basic stuff like steps		
 		$this->assign('step_ready',				$this->step_ready);

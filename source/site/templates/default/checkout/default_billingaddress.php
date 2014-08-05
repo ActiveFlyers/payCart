@@ -22,13 +22,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
 	<?php if (!empty($buyer_addresses)) :?>
 
-		<select name='select_billing_address' class="pc-buyeraddress input-block-level" onChange='paycart.checkout.buyeraddress.onSelect(this.value, "billing");'>
+		<select name='select_billing_address' id="pc-buyeraddress-billing-address" class="pc-buyeraddress input-block-level" onChange='paycart.checkout.buyeraddress.onSelect(this.value, "billing");'>
 		
 			<option value='0'> <?php echo JText::_(' Select Existing Address'); ?> </option>
 		<?php
 			foreach ($buyer_addresses as $buyeaddress_id => $buyeraddress_details):
 
-				$selected = ($billing_address_id == $billing_address->buyeraddress_id)
+				$selected = ($billing_address_id == $buyeraddress_details->buyeraddress_id)
 								? 'selected' : '';
 		?>
 			<option value='<?php echo $buyeraddress_details->buyeraddress_id?>'
@@ -105,7 +105,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<script>
 			
 		(function($){
-					
+				<?php if (!$is_platform_mobile) : ?>
+					<?php echo "$('#pc-buyeraddress-billing-address').chosen()";?>
+				<?php endif;?>	
 			
 		})(paycart.jQuery);
 	
