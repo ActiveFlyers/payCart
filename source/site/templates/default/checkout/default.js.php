@@ -15,12 +15,6 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
-$checkout_sequence 	= 	PaycartFactory::getHelper('checkout')->getsequence();
-$steps				=	array_keys($checkout_sequence); 
-
-// $steps have string value so we need to add quote (') as suffix and prefix 
- $steps = array_map(function($step){ return "'$step'"; }, $steps);
- 
  //load chosen when client platform is not mobile
  if (!$is_platform_mobile) {
 	JHtml::_('formbehavior.chosen', '.pc-buyeraddress');

@@ -55,7 +55,9 @@ class PaycartDiscountrule extends PaycartLib
 	protected $processor_config;
 	
 	//Lib Specific Fields
-	protected $_stopFurtherRules = true; 		//multiple discount further process or not.
+	protected $_stopFurtherRules  = true; 		//multiple discount further process or not.
+	protected $_total_consumption 			= null;
+	protected $_total_consumption_by_byer 	= null;
 		
 	// language specific
 	protected $discountrule_lang_id		= 0;
@@ -112,6 +114,8 @@ class PaycartDiscountrule extends PaycartLib
 		$this->_buyergroups			= array();
 		$this->_productgroups		= array();
 		$this->_cartgroups			= array();
+		$this->_total_consumption 			= null;
+		$this->_total_consumption_by_byer 	= null;
 				
 		return $this;
 	}
@@ -160,14 +164,43 @@ class PaycartDiscountrule extends PaycartLib
 		return array(); //@PCTODO :
 	}
 	
+	/**
+	 * 
+	 * Invoke to get total consumption of this discount rule
+	 * 
+	 * @return INT value
+	 */
 	public function getTotalConsumption()
 	{
-		return 0; //@PCTODO :
+		if (null === $this->_total_consumption) {
+			$filter = Array(	'rule_type' => $this->getType(), 
+								'rule_id' 	=> $this->getId()
+							);
+			
+			$this->_total_consumption = PaycartFactory::getModel('usage')->getCount($filter);
+		}
+		
+		return $this->_total_consumption;
 	}
 	
+	/**
+	 * Invoke to get total consumption of this discount rule for specific buyer 
+	 * @param INT $buyer_id
+	 * 
+	 * @return INT value
+	 */
 	public function getTotalConsumptionByBuyer($buyer_id)
 	{
-		return 0; //@PCTODO :
+		if (null === $this->_total_consumption_by_byer) {
+			$filter = Array(	'rule_type' => $this->getType(), 
+								'rule_id' 	=> $this->getId(),
+								'buyer_id'	=> $buyer_id
+							);
+			$this->_total_consumption_by_byer = PaycartFactory::getModel('usage')->getCount($filter);
+		}
+		
+		return $this->_total_consumption_by_byer;
+		
 	}
 	
 	/**
@@ -410,6 +443,16 @@ class PaycartDiscountrule extends PaycartLib
 	public function getType()
 	{
 		return Paycart::PROCESSOR_TYPE_DISCOUNTRULE; 
+	}
+	
+	public function getMessage()
+	{
+		return $this->message;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
 	}
 	
 }

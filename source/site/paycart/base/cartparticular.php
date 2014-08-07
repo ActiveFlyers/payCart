@@ -314,8 +314,8 @@ abstract class PaycartCartparticular extends JObject
 		$usage->cart_id				= $cart->getId();
 		$usage->buyer_id			= $cart->getBuyer();
 		$usage->price				= $response->amount;
-		$usage->message				= $response->message;
-		$usage->title				= $response->message;
+		$usage->message				= $rule->getMessage();
+		$usage->title				= $rule->getTitle();
 		
 		$this->_usage[] = $usage;
 		

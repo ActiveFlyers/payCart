@@ -143,21 +143,28 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 				foreach ($product_particular as $particular) :
 			 				?>
 			 				<div class="row-fluid">
-				 				<div class="span4">
-				 						<?php echo $particular->title; ?>
-				 						<?php echo JText::_('Unit-Price').':'.$particular->unit_price;  ?>
+								
+								<!-- Product Image			 				-->
+			 					<div class="span3">
+			 					 	<img class="thumbnail" 
+			 					 		 src="<?php echo @$product_media[$particular->particular_id]['thumbnail'];?>" 
+			 					 		/>
+			 					</div>
+			 					
+				 				<div class="span3">
+				 						<?php echo '<div>'.$particular->title.'</div>'; ?>
+				 						<?php echo '<div>'.JText::_('Unit-Price').':'.$formatter->amount($particular->unit_price, true, $currency_id).'</div>';  ?>
 				 						<?php if ($particular->tax) : 
-				 								echo JText::_('Tax').':'.$particular->tax;
+				 								echo '<div>'.JText::_('Tax').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
 				 							 endif;  
 				 						?>
 				 						<?php if ($particular->discount) : 
-				 								echo JText::_('Discount').':'.$particular->discount;
+				 								echo '<div>'.JText::_('Discount').':'.$formatter->amount($particular->discount, true, $currency_id).'</div>';
 				 							 endif;  
 				 						?>
-				 								 
 				 				</div>
 				 				
-				 				<div class="span3"><?php echo JText::_('Quantity'); ?> : 
+				 				<div class="span2"><?php echo JText::_('Quantity'); ?> : 
 				 					<input 
 				 							type="number" onblur="paycart.checkout.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"  class="input-mini" value="<?php echo $particular->quantity; ?>"
 				 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" 	

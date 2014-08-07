@@ -289,4 +289,14 @@ class PaycartTaxrule extends PaycartLib
 	{
 		return Paycart::PROCESSOR_TYPE_TAXRULE; 
 	}
+	
+	public function getMessage()
+	{
+		return $this->message;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
 }

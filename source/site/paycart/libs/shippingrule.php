@@ -156,4 +156,14 @@ class PaycartShippingrule extends PaycartLib
 		$config->package_by		  = $this->getPackageBy(); // per item or per order
 		return $config;
 	}
+	
+	public function getMessage()
+	{
+		return $this->message;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
 }

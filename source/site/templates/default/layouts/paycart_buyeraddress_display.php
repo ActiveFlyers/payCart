@@ -25,7 +25,7 @@ if(is_array($displayData)) {
 if(!isset($displayData->state_name) && isset($displayData->state_id)){
 	$record = PaycartFactory::getModel('state')->loadRecords(array('state_id' => $displayData->state_id));
 	$state  = array_shift($record);
-	$displayData->state_name = $state->title;
+	$displayData->state_name = @$state->title;
 }
 
 ?>

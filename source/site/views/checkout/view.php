@@ -55,13 +55,19 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 	{
 		
 		$product_particular	=	Array();
-		$product_total 	= 0;
+		$product_total	 	= 0;
 		$product_quantity	= 0;
+		$product_media		=	Array();
 		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_PRODUCT) as  $key => $particular) {
 			/* @var $particular Paycartcartparticular */
 			$product_particular[] = $particular->toObject();
 			$product_total 	 +=	$particular->getTotal(true);
 			$product_quantity 	+=	$particular->getQuantity();
+			
+			// get product media
+			$product_id = $particular->getParticularId();
+			
+			$product_media[$product_id]	=	PaycartProduct::getInstance($product_id)->getCoverMedia();
 		}
 		
 		$shipping_particular	=	Array();
@@ -91,11 +97,11 @@ class PaycartSiteBaseViewCheckout extends PaycartView
 		// set all particular details
 		$this->assign('product_total',			$product_total);
 		$this->assign('product_quantity',		$product_quantity);
-		$this->assign('shipping_total',		$shipping_total);
+		$this->assign('shipping_total',			$shipping_total);
 		$this->assign('promotion_total',		$promotion_total);
 		$this->assign('duties_total',			$duties_total);
 		
-		
+		$this->assign('product_media',			$product_media);
 		$this->assign('product_particular',		$product_particular);
 		$this->assign('shipping_particular',	$shipping_particular);
 		$this->assign('promotion_particular',	$promotion_particular);
