@@ -313,7 +313,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 												  </a>
 												  
 											<?php endif;?>
-			 								<?php echo PaycartFactory::getHelper('buyer')->getClientIP().JText::_('Discount'); ?>
+			 								<?php echo JText::_('Discount'); ?>
 			 							</td>
 			 							<td><?php echo $formatter->amount($promotion_total, true, $currency_id); ?></td>
 			 						</tr>
