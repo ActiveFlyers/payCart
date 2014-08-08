@@ -141,6 +141,17 @@ abstract class PaycartCartparticular extends JObject
 		return $this->length;
 	}
 	
+	/**
+	 * 
+	 * Invoke to get cartpartiocular usage
+	 * 
+	 * @return Array of std class
+	 */
+	public function getUsage()
+	{
+		return $this->_usage;
+	}
+	
 	public function setQuantity($value)
 	{
 		$this->quantity = $value;
@@ -323,7 +334,7 @@ abstract class PaycartCartparticular extends JObject
 		$model = PaycartFactory::getModel('usage');
 
 		foreach ($this->_usage as $usage) {
-			$usage->carparticular_id = $this->carparticular_id;
+			$usage->cartparticular_id = $this->particular_id;
 			
 			$date = new Rb_Date();
 			$usage->applied_date 	= $date->toSql();

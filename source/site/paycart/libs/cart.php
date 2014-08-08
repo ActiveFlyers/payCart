@@ -6,7 +6,7 @@
 * @package 		PAYCART
 * @subpackage	Front-end
 * @contact		support+paycart@readybytes.in
-* @author 		Puneet Singhal
+* @author 		Puneet Singhal , mManishTrivedi
 */
 
 // no direct access
@@ -103,7 +103,7 @@ class PaycartCart extends PaycartLib
 		
 		$this->status				= Paycart::STATUS_CART_DRAFTED;
 		$this->currency				= PaycartFactory::getConfig()->get('localization_currency');
-		$this->ip_address;
+		$this->ip_address			= PaycartFactory::getHelper('buyer')->getClientIP();
 		$this->billing_address_id	= 0;
 		$this->shipping_address_id	= 0;	
 		$this->is_locked			= 0;			
@@ -113,7 +113,7 @@ class PaycartCart extends PaycartLib
 		$this->completed_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
 		
 		$this->reversal_for			= 0; 
-		$this->cancelled_date	= Rb_Date::getInstance('0000-00-00 00:00:00');  
+		$this->cancelled_date		= Rb_Date::getInstance('0000-00-00 00:00:00');  
 		
 		$this->created_date			= Rb_Date::getInstance();
 		$this->modified_date		= Rb_Date::getInstance();
@@ -966,6 +966,8 @@ class PaycartCart extends PaycartLib
 		
 		// 2#. save cart
 		$this->save();
+		
+		// @PDCTODO :: Fire event obPaycartCartPaid
 
 		// 3#. update products' quatity
 		PaycartFactory::getHelper('product')->updateProductStock($this->loadProductCartparticulars());

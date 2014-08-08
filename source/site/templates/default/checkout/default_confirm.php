@@ -12,6 +12,24 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
+	// Promotion msg
+	$promotion_message = '';	
+ 	foreach ($promotion_usage as $usages ) :
+ 		foreach ($usages as $usage) :
+ 			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_DISCOUNTRULE)
+ 				$promotion_message .= $usage->message;
+ 		endforeach;
+  	endforeach;
+  	
+  	// Duties msg
+	$duties_message = '';
+ 	foreach ($duties_usage as $usage ) :
+ 		foreach ($usages as $usage) :
+ 			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_TAXRULE)
+ 				$duties_message .= $usage->message;
+ 		endforeach;
+  	endforeach;
+  	
 ?>
 
 
@@ -179,11 +197,18 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 					<div>
 					 					<?php echo JText::_('Quantity'); ?> : 
 					 					<input 
-					 							type="number" onblur="paycart.checkout.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"  
+					 							type="number"   
 					 							class="input-mini" 
+					 							id='pc-checkout-quantity-<?php echo $particular->particular_id; ?>'
 					 							value="<?php echo $particular->quantity; ?>"
 					 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" 	
 					 						/>
+					 						<a 	href="javascript:void(0);" 
+					 							onClick="paycart.checkout.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"
+					 							>
+					 								<i class="fa fa-refresh"></i>
+					 						</a>
+					 					
 					 				</div>
 					 				
 					 				<div>
@@ -255,12 +280,41 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 						</tr>
 			 						
 			 						<tr>
-			 							<td><?php echo JText::_('Tax'); ?></td>
+										<td>
+											<?php
+			 									if(!empty($duties_message) ):
+			 								?>
+												  
+												  <a 	href="javascript:void(0)"  
+												  		class="pc-popover" 
+												  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+												  		data-content="<?php echo $duties_message;?>" data-trigger="hover">
+												  		
+												 	 	<i class="fa fa-info-circle"></i>
+												  </a>
+												  
+											<?php endif;?>
+			 							<?php echo JText::_('Tax'); ?></td>
 			 							<td><?php echo $formatter->amount($duties_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
 			 						<tr>
-			 							<td><?php echo JText::_('Discount'); ?></td>
+			 							<td>
+			 								<?php
+			 										if(!empty($promotion_message) ):
+			 								?>
+												  
+												  <a 	href="javascript:void(0)"  
+												  		class="pc-popover" 
+												  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+												  		data-content="<?php echo $promotion_message;?>" data-trigger="hover">
+												  		
+												 	 	<i class="fa fa-info-circle"></i>
+												  </a>
+												  
+											<?php endif;?>
+			 								<?php echo PaycartFactory::getHelper('buyer')->getClientIP().JText::_('Discount'); ?>
+			 							</td>
 			 							<td><?php echo $formatter->amount($promotion_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
@@ -300,7 +354,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 (function($){
 
 			paycart.checkout.step.change('<?php echo json_encode($available_steps) ?>');				
-			
+			$(".pc-popover").popover();
 		})(paycart.jQuery);
 </script>
 <?php

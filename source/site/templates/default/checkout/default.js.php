@@ -487,10 +487,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			},
 
 			// update product-quantity into cart
-			onChangeProductQuantity : function(product_id, product_quantity)
+			onChangeProductQuantity : function(product_id)
 			{
-				var link, postData;
+				var link, postData, product_quantity;
 
+				product_quantity = $('#pc-checkout-quantity-'+product_id).val();
 				// @PCTODO:: Properly validate it
 				
 				// get all form data for post	

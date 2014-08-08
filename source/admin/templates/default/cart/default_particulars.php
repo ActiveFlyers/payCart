@@ -94,9 +94,9 @@ $currencyId = $cart->getCurrency();
 					<td>
 						<?php echo $formatter->amount($particular->tax, true, $currencyId); ?>
 						&nbsp;
-							<?php if(isset($taxDetails[$particular->cartparticular_id])):?>
+							<?php if(isset($taxDetails[$particular->particular_id])):?>
 							  <a href="#" class="pc-popover" title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-							  	 data-content="<?php echo $taxDetails[$particular->cartparticular_id];?>" data-trigger="hover">
+							  	 data-content="<?php echo $taxDetails[$particular->particular_id];?>" data-trigger="hover">
 							 	 <i class="fa fa-info-circle"></i>
 							  </a>
 							<?php endif;?>
@@ -104,9 +104,9 @@ $currencyId = $cart->getCurrency();
 					<td>
 						<?php echo $formatter->amount($particular->discount, true, $currencyId); ?>
 						&nbsp;
-						<?php if(isset($discountDetails[$particular->cartparticular_id])):?>
+						<?php if(isset($discountDetails[$particular->particular_id])):?>
 							  <a href="#" class="pc-popover" title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-							  data-content="<?php echo $discountDetails[$particular->cartparticular_id];?>" data-trigger="hover">
+							  data-content="<?php echo $discountDetails[$particular->particular_id];?>" data-trigger="hover">
 							 	 <i class="fa fa-info-circle"></i>
 							  </a>
 						<?php endif;?>

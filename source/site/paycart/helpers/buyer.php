@@ -92,4 +92,38 @@ class PaycartHelperBuyer extends PaycartHelper
 		
 		return $user->id;
 	}
+	
+	
+	/**
+	 * 
+	 * Invoke to get Client IP address
+	 * @reference to  : http://forum.joomla.org/viewtopic.php?p=2000096#p2000096
+	 * 
+	 * @return Client IP address of 
+	 */
+	public function getClientIP()
+	{
+		$ip = "";
+		$server = PaycartFactory::getApplication()->input->server->getArray();
+		if (!empty($server) ) {
+			// get IP from HTTP Proxy or load-balancer
+			if (isset($server["HTTP_X_FORWARDED_FOR"])) {
+				$ip = $server["HTTP_X_FORWARDED_FOR"];
+            } elseif (isset($server["HTTP_CLIENT_IP"])) {
+            	$ip = $server["HTTP_CLIENT_IP"];
+            } else {
+            	$ip = $server["REMOTE_ADDR"];
+            }
+		} else {
+			if ( getenv( 'HTTP_X_FORWARDED_FOR' ) ) {
+	            $ip = getenv( 'HTTP_X_FORWARDED_FOR' );
+            } elseif ( getenv( 'HTTP_CLIENT_IP' ) ) {
+            	$ip = getenv( 'HTTP_CLIENT_IP' );
+            } else {
+            	$ip = getenv( 'REMOTE_ADDR' );
+            }
+         }
+         
+	return $ip;
+   } 
 }

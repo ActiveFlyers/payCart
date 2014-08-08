@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `buyer_id` 		int(11) DEFAULT '0',
   `session_id` 		varchar(200) DEFAULT '',
   `invoice_id` 		int(11) DEFAULT '0' COMMENT 'mapped invoice id with rb_ecommerce_invoice table',
-  `status` 			enum('drafted','checkedout','paid','cancelled','completed') NOT NULL,
+  `status` 			enum('drafted','locked','paid','cancelled','completed') NOT NULL,
   `currency` 		char(3) NOT NULL COMMENT 'isocode 3',
   `reversal_for` 	int(11) DEFAULT '0' COMMENT 'reversal of cart (parent) : When cart is reversal then new entry is created into cart and set here cart_id which is reversed  (might be cart partial refunded)',
   `ip_address` 		varchar(255) DEFAULT '0' COMMENT 'cart created from',
