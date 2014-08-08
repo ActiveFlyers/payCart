@@ -146,14 +146,23 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 								
 								<!-- Product Image			 				-->
 			 					<div class="span3">
-			 					 	<img class="thumbnail" 
+			 					 	<img class="img-polaroid " 
 			 					 		 src="<?php echo @$product_media[$particular->particular_id]['thumbnail'];?>" 
 			 					 		/>
 			 					</div>
 			 					
-				 				<div class="span3">
-				 						<?php echo '<div>'.$particular->title.'</div>'; ?>
-				 						<?php echo '<div>'.JText::_('Unit-Price').':'.$formatter->amount($particular->unit_price, true, $currency_id).'</div>';  ?>
+			 					<!-- Product Details			 				-->
+				 				<div class="span5">
+				 						<div>
+				 							<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$particular->particular_id);?>" >
+				 								<?php echo $particular->title; ?>
+				 							</a>
+				 						</div>
+				 						
+				 						<div>
+				 							<?php echo JText::_('Unit-Price').':'.$formatter->amount($particular->unit_price, true, $currency_id);  ?>
+				 						</div>
+				 						
 				 						<?php if ($particular->tax) : 
 				 								echo '<div>'.JText::_('Tax').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
 				 							 endif;  
@@ -164,16 +173,37 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 						?>
 				 				</div>
 				 				
-				 				<div class="span2"><?php echo JText::_('Quantity'); ?> : 
-				 					<input 
-				 							type="number" onblur="paycart.checkout.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"  class="input-mini" value="<?php echo $particular->quantity; ?>"
-				 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" 	
-				 						/>
+				 				<!-- Product Price and quantity			 				-->
+				 				<div class="span4">
+				 					
+				 					<div>
+					 					<?php echo JText::_('Quantity'); ?> : 
+					 					<input 
+					 							type="number" onblur="paycart.checkout.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"  
+					 							class="input-mini" 
+					 							value="<?php echo $particular->quantity; ?>"
+					 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" 	
+					 						/>
+					 				</div>
+					 				
+					 				<div>
+					 					<h4><?php echo JText::_('Price'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></h4>
+					 				</div>
+													 				
 				 				</div>
-				 				  
-				 				<div class="span3"><?php echo JText::_('Price'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></div>
-				 				<div class="span1 pull-right"><a class="muted" href="javascript:void(0)" onClick="paycart.checkout.confirm.onRemoveProduct(<?php echo $particular->particular_id;?>)"><i class="fa fa-trash-o fa-lg">&nbsp;</i></a></div>
+
 				 			</div>
+
+				 			<div class="row-fluid">
+				 				
+				 				<div class="pull-right">
+				 					<a 	class="muted" href="javascript:void(0)" 
+										onClick="paycart.checkout.confirm.onRemoveProduct(<?php echo $particular->particular_id;?>)"><i class="fa fa-trash-o fa-lg">&nbsp;</i>
+									</a>
+								</div>
+								
+				 			</div>
+
 				 			<hr />
 			 			<?php 
 			 				endforeach;

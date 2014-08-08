@@ -55,7 +55,6 @@ class PaycartDiscountrule extends PaycartLib
 	protected $processor_config;
 	
 	//Lib Specific Fields
-	protected $_stopFurtherRules  = true; 		//multiple discount further process or not.
 	protected $_total_consumption 			= null;
 	protected $_total_consumption_by_byer 	= null;
 		
@@ -158,11 +157,6 @@ class PaycartDiscountrule extends PaycartLib
 	{		
 		return $this->processor_config->toObject();
 	}
-		
-	public function getAlreadyAppliedRules()
-	{
-		return array(); //@PCTODO :
-	}
 	
 	/**
 	 * 
@@ -200,46 +194,6 @@ class PaycartDiscountrule extends PaycartLib
 		}
 		
 		return $this->_total_consumption_by_byer;
-		
-	}
-	
-	/**
-	 * 
-	 * Applicability check  
-	 * @param Paycartcart $cart
-	 * @param PaycartCartparticular $cartparticular
-	 * @return boolean type if applicable otherwise false
-	 */
-	public function isApplicable(Paycartcart $cart, PaycartCartparticular $cartparticular)
-	{		
-		$response = new stdClass();
-		$response->error = true;
-		
-		// if discount is already applied and current discount is non-clubbale
-		// then return false 
-		$appliedRules = $this->getAlreadyAppliedRules();
-		if (!empty($appliedRules) && !$this->is_clubbable) {
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NON_CLUBBABLE');
-			$response->messageType	= Paycart::MESSAGE_TYPE_MESSAGE;
-			return $response; 
-		}
-				
-		// stop further rule-processing, if usage limit exceeded		
-		if ($this->getTotalConsumption() >= $this->usage_limit) { // @PCTODO: what about unlimited 
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_USAGE_LIMIT_EXCEEDED');
-			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
-			return $response;
-		}
-		
-		// stop further processing, if rule's buyer-usage limit exceeded
-		if ($this->getTotalConsumptionByBuyer($cart->getBuyer()) >= $this->buyer_usage_limit) {
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED');
-			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
-			return $response;
-		}
-
-		$response->error = false;
-		return $response;
 	}
 	
 	/**
@@ -308,56 +262,6 @@ class PaycartDiscountrule extends PaycartLib
 	{
 		return new PaycartDiscountruleResponse();
 	}
-	
-	/**
-	 * @PCTODO :: Discountrule-Helper.php 
-	 * @param PayacartCart $cart
-	 * @param PaycartCartparticular $cartparticular
-	 * @param array $ruleIds Applicable rules
-	 * 
-	 * @return bool value
-	 */
-	protected function _processDiscountRule(PayacartCart $cart, PaycartCartparticular $cartparticular, Array $ruleIds)
-	{
-		//@PCTODO : define constant for applicable_on
-		// {product_price, shipping_price, cart-price}
-		$appliedOn = 'product_price';
-		
-		//@PCTODO :: move into model 
-		// get applicable rules
-		$condition = ' 	`discountrule_id` IN ('.array_values($ruleIds).') AND '.
-					 '	`published` = 1 AND '.
-					 '	`start_date` <= now() AND '.
-					 '	`end_date` >= now() AND '. 
-					 '	`applied_on` LIKE '."'$appliedOn'" ;
-		
-		// sort applicable rule as per sequence.
-		$records = PaycartFactory::getModel('discountrule')
-							->getData($condition, '`sequence`');
-
-		// no rule for processing
-		if (!$records) {
-			return true;
-		}
-		
-		foreach ($records as $id=>$record) {
-			
-			$discountRule = PaycartDiscountRule::getInstance($id, $record);
-			
-			// process discount
-			$discounRule->process($cart, $cartparticular);
-			
-			//@PCTODO:: set previous applied rules on particular
-			$cartparticular->_appliedDiscountRules[] = $discountRule; 
-			
-			// no further process
-			if ($discountRule->get('_stopFurtherRules')) {
-				break;
-			}			
-		}
-		
-		return true;
-	}	
 	
 	public function toArray()
 	{

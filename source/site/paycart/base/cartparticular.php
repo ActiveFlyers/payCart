@@ -38,6 +38,9 @@ abstract class PaycartCartparticular extends JObject
 	protected $_rule_apply_on = '';
 	protected $_applied_promotions = array();
 	
+	//multiple discount further process or not.
+	protected $_stopFurtherDiscounts  = false; 		
+	
 	// Product specific field	
 	protected $height 	= 0;
 	protected $width 	= 0;
@@ -218,9 +221,12 @@ abstract class PaycartCartparticular extends JObject
 		
 		foreach($discountrules as $discountruleId) {
 			// @PCTODO :: error handling 
-			$this->_applyDiscountrule($cart, $discountruleId);
+			$discountrule 	= PaycartDiscountrule::getInstance($discountruleId);
 			
-			if(isset($this->_stopFurtherRules) && $this->_stopFurtherRules){
+			$this->_applyDiscountrule($cart, $discountrule);
+			
+			// if discount rule not allow further process
+			if ($this->_stopFurtherDiscounts) {
 				break;
 			}
 		}
@@ -228,16 +234,12 @@ abstract class PaycartCartparticular extends JObject
 		return $this;
 	} 
 	
-	public function _applyDiscountrule(PaycartCart $cart, $ruleId)
+	public function _applyDiscountrule(PaycartCart $cart, PaycartDiscountrule $discountrule)
 	{
-		$discountrule 	= PaycartDiscountrule::getInstance($ruleId);
-			
 		//1#. first check its applicabiliy
-		$isApplicableResponse = $discountrule->isApplicable($cart, $this);
-		if($isApplicableResponse->error === true){
-			// $isApplicableResponse contains the messgage,
+		if( !$this->isApplicableDiscountRule($cart, $discountrule) ){
 			return false;
-		}
+		} 
 	
 		$processor	  	= $discountrule->getProcessor();
 		$request	  	= $discountrule->getRequestObject($cart, $this);
@@ -251,7 +253,7 @@ abstract class PaycartCartparticular extends JObject
 			throw new Exception($response->message);
 		}
 		
-		$messageKey = $ruleId;
+		$messageKey = $discountrule->getId();
 		$coupon = $cart->getPromotions();
 
 		if(!empty($coupon)){
@@ -281,17 +283,11 @@ abstract class PaycartCartparticular extends JObject
 		
 		// Check limit of discount 
 		if ($total+($response->amount) < 0) { // @PCTODO: should not less than minimum-price limit.
-			$this->_stopFurtherRules = true;
-			//@PCTODO :: notify to user or Log it
+			//@PCTODO :: It should be convey to end user.
+			//$cart->addMessage();
 			return false;
 		}
-		//@PCTODO : When first is clubbable applied then apply non-clubbable. Now what happen??
-		// if applied discount is non-clubbable 
-		// then stop next all multiple rules
-		if (!$discountrule->get('is_clubbable', false)) {
-			$this->_stopFurtherRules = true;
-		}			
-			
+		
 		// apply discounted amount
 		$this->addDiscount($response->amount); 
 		$this->addUsage($cart, $discountrule, $response);
@@ -563,4 +559,66 @@ abstract class PaycartCartparticular extends JObject
 	{
 		return $this->title;
 	}
+	
+	/**
+	 * 
+	 * Invoke to get if any specific rule-type already applied on particular
+	 * @param $rule_type Processor type {discountrule,taxrule}
+	 * 
+	 * @return Boolen value
+	 */
+	public function isAnyRuleApplied($rule_type)
+	{
+		foreach ($this->_usage as $usage) {
+			if ($usage->rule_type === $rule_type) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * 
+	 * Invoke to check discountrule Applicability  
+	 * @param Paycartcart $cart
+	 * @param PaycartDiscountrule $discountrule
+	 * 
+	 * @return boolean type 
+	 */
+	public function isApplicableDiscountRule(Paycartcart $cart, PaycartDiscountrule $discountrule)
+	{		
+		
+		// if $discountrule is a first discount which in non-clubbable 
+		// then it should be applied and then say stop further discountrules.
+		if ( !$this->isAnyRuleApplied($this->getType()) && !$discountrule->get('is_clubbable') ) {
+			// stop further discountrule processing
+			$this->_stopFurtherDiscounts = true;
+		}
+		 
+		// if few discount is already applied and current discount is non-clubbale
+		// then return false 
+		if ($this->isAnyRuleApplied($discountrule->getType()) && !$discountrule->get('is_clubbable')) {		
+			$cart->addMessage(	$discountrule->getId(), Paycart::MESSAGE_TYPE_MESSAGE, 
+								JText::_('COM_PAYCART_DISCOUNTRULE_NON_CLUBBABLE'), $this);
+			return false;
+		}
+				
+		// stop further rule-processing, if usage limit exceeded		
+		if ( $discountrule->getTotalConsumption() >= $discountrule->get('usage_limit') ) {
+			$cart->addMessage(	$discountrule->getId(), Paycart::MESSAGE_TYPE_WARNING, 
+								JText::_('COM_PAYCART_DISCOUNTRULE_USAGE_LIMIT_EXCEEDED'), $this);
+			return false;
+		}
+		
+		// stop further processing, if rule's buyer-usage limit exceeded
+		if ($discountrule->getTotalConsumptionByBuyer($cart->getBuyer()) >= $discountrule->get('buyer_usage_limit')) {
+			$cart->addMessage(	$discountrule->getId(), Paycart::MESSAGE_TYPE_WARNING, 
+								JText::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED'), $this);
+			return false;
+		}
+
+		return true;
+	}
+	
 }
