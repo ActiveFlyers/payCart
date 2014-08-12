@@ -50,7 +50,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		$category = self::getCategory();
+		$category = PaycartFactory::getHelper('productcategory')->getCategory();
 
 		foreach ($category as $key => $cat){
 			$category[$key]->title = str_repeat('&mdash;', ($cat->level - 1)<0?0:($cat->level - 1)).' '.$cat->title;
@@ -61,7 +61,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 	
 	private function _addScript()
 	{
-		$result = self::getCategory();
+		$result = PaycartFactory::getHelper('productcategory')->getCategory();
 		
 		$category 	= Array();
 		foreach ($result as $categoryId => $value) {
@@ -119,25 +119,5 @@ class PaycartFormFieldCategory extends JFormFieldList
 		ob_end_clean();
 		JFactory::getDocument()->addScriptDeclaration($script); 
 		;
-	}
-		
-	 /**
-	 * @return all available category array('category_id'=>'Array of category stuff')
-	 */
-	private static function getCategory($reset = false)
-	{
-		static $result ;
-		if ($result && !$reset ) {
-			return $result;
-		}
-		
-		$model = PaycartFactory::getModel('productcategory');
-		// Should be sorted according to 'title' so need to write query with "order by"
-		$model->clearQuery();  
-		$query = $model->getQuery()->clear('order')->order('lft');
-		
-		$result = $model->loadRecords();
-		 
-		return $result;
 	}
 }

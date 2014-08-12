@@ -98,13 +98,17 @@ class PaycartCartparticularProduct extends PaycartCartparticular
 		
 		//@PCTODO : caching on bases { group-rules type + type_id }
 		
+		$groups = array();
+
 		// get grouprules which are applicable on buyer
-		$groups = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+		$groups[Paycart::GROUPRULE_TYPE_BUYER]   = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
 		
-		//get grouprules which are applicable on Product then merge with buyergrouprules
-		$groups = array_merge($groups, $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $this->particular_id));
+		//get grouprules which are applicable on Cart 
+		$groups[Paycart::GROUPRULE_TYPE_CART]    =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
-		$groups = array_unique($groups);
+		// get grouprules which are applicable on Product
+		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $this->particular_id);	
+		
 		return $groups;	
 	}
 }

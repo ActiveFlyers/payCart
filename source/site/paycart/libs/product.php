@@ -548,4 +548,16 @@ class PaycartProduct extends PaycartLib
 	{
 		return $this->quantity;
 	}
+	
+	/**
+	 * return productcategory id or instance
+	 */
+	public function getProductCategory($requireInstance = false)
+	{
+		if($requireInstance){
+			return PaycartCategory::getInstance($this->productcategory_id);
+		}
+		
+		return $this->productcategory_id;
+	}
 }

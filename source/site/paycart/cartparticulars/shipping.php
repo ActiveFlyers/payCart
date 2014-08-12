@@ -52,16 +52,19 @@ class PaycartCartparticularShipping extends PaycartCartparticular
 	{
 		/* @var $groupHelper PaycartHelperGroup */
 		$groupHelper = PaycartFactory::getHelper('group');
+		$groups		 = array();
 		
 		//@PCTODO : caching
-		$groups = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+	    $groups[Paycart::GROUPRULE_TYPE_BUYER] = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+
+		$groups[Paycart::GROUPRULE_TYPE_CART] =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
+		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array();
 		$products = $this->_details['product_list'];
 		foreach($products as $productId){
-			$groups = array_merge($groups, $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $productId));	
+			$groups[Paycart::GROUPRULE_TYPE_PRODUCT] =  array_merge($groups[Paycart::GROUPRULE_TYPE_PRODUCT],$groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $productId));	
 		}
 		
-		$groups = array_unique($groups);
 		return $groups;	
 	}
 }

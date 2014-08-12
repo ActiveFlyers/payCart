@@ -409,21 +409,42 @@ abstract class PaycartCartparticular extends JObject
 	 */
 	public function getTaxrules(Array $groupRules = Array())
 	{
+		$query    = new Rb_Query();
 		$subquery = new Rb_Query();
-		$subquery->select('DISTINCT(`taxrule_id`)')
-				 ->from('#__paycart_taxrule_x_group');
-				 
-		if(!empty($groupRules)){
-			$subquery->where('`group_id` IN ('.implode(',', $groupRules).')');
-		}
+		
+		if(!empty($groupRules[paycart::GROUPRULE_TYPE_BUYER]) || 
+		   !empty($groupRules[paycart::GROUPRULE_TYPE_PRODUCT]) || 
+		   !empty($groupRules[paycart::GROUPRULE_TYPE_CART])){
+			   	$subquery->select('DISTINCT(`taxrule_id`)')
+					 	 ->from('#__paycart_taxrule_x_group');
+					 	 
+			  	foreach ($groupRules as $ruleType => $rules){
+			  		$allGroupIds = implode(',', $rules);
 
-		$joinCondition  = '('.$subquery->__toString().') AS `rule_group` ON ( `rule`.`taxrule_id` = `rule_group`.`taxrule_id`)';
-				
+					// if grouprule of the current type exists
+                    // then add condition to find matching records of individual grouptype
+                    // (i.e. cart,product and buyer)
+					if(!empty($groupRules[$ruleType])){
+						$subquery->where("`taxrule_id` IN (
+						                   SELECT `taxrule_id`  FROM `#__paycart_taxrule_x_group`
+						                   WHERE `group_id` in(".implode(',', $rules)."))");
+					}
+					// if grouprule of the current type doesn't exist
+					// then add condition to discard those taxes which has any applicable rule of this type
+					else{
+						$subquery->where("`taxrule_id` NOT IN (
+						                   SELECT  `taxrule_id`  FROM `#__paycart_taxrule_x_group`
+						                   WHERE `type` = '".$ruleType."')");
+					}
+				}
+			$joinCondition  = '('.$subquery->__toString(). ') AS `rule_group` ON ( `rule`.`taxrule_id` = `rule_group`.`taxrule_id`)';
+			$query->innerJoin($joinCondition);
+		}
+		
 		// get al rules
 		$query = new Rb_Query();
 		$query->select('DISTINCT `rule`.`taxrule_id`')
 				->from('`#__paycart_taxrule` as `rule`')
-				->leftJoin($joinCondition)
 				->where('`rule`.`apply_on` = "'.$this->_rule_apply_on.'"', 'AND')
 				->where('`rule`.`published` =  1', 'AND')							// rule must be publish
 				->order('`rule`.`ordering`');
@@ -446,29 +467,51 @@ abstract class PaycartCartparticular extends JObject
 	 */
 	public function getDiscountrules(Array $groupRules = Array())
 	{
+		$query    = new Rb_Query();
 		$subquery = new Rb_Query();
-		$subquery->select('DISTINCT(`discountrule_id`)')
-				 ->from('#__paycart_discountrule_x_group');
 
-		if(!empty($groupRules)){
-			$subquery->where('`group_id` IN ('.implode(',', $groupRules).')');
+		if(!empty($groupRules[paycart::GROUPRULE_TYPE_BUYER]) || 
+		   !empty($groupRules[paycart::GROUPRULE_TYPE_PRODUCT]) || 
+		   !empty($groupRules[paycart::GROUPRULE_TYPE_CART])){
+			   	$subquery->select('DISTINCT(`discountrule_id`)')
+					 	 ->from('#__paycart_discountrule_x_group');
+					 	 
+			  	foreach ($groupRules as $ruleType => $rules){
+			  		$allGroupIds = implode(',', $rules);
+
+					// if grouprule of the current type exists
+                    // then add condition to find matching records of individual grouptype
+                    // (i.e. cart,product and buyer)
+					if(!empty($groupRules[$ruleType])){
+						$subquery->where("`discountrule_id` IN (
+						                   SELECT `discountrule_id`  FROM `#__paycart_discountrule_x_group`  
+						                   WHERE `group_id` in(".implode(',', $rules)."))");
+					}
+
+					// if grouprules of the current type don't exist
+					// then add condition to discard those discounts which has any applicable rule of this type
+					else{
+						$subquery->where("`discountrule_id` NOT IN (
+						                   SELECT  `discountrule_id`  FROM `#__paycart_discountrule_x_group`  
+						                   WHERE `type` = '".$ruleType."')");
+					}
+				}
+
+				$joinCondition  = '('.$subquery->__toString().') AS `rule_group` ON ( `rule`.`discountrule_id` = `rule_group`.`discountrule_id`)';
+				$query->innerJoin($joinCondition);
 		}
 
-		$joinCondition  = '('.$subquery->__toString().') AS `rule_group` ON ( `rule`.`discountrule_id` = `rule_group`.`discountrule_id`)';
-				
 		// get al rules
-		$query = new Rb_Query();
 		$query->select('DISTINCT `rule`.`discountrule_id`')
 				->from('`#__paycart_discountrule` as `rule`')
-				->leftJoin($joinCondition)
 				->where('`rule`.`apply_on` = "'.$this->_rule_apply_on.'"', 'AND')	// rule apply on condition {product,cart, shipping}
 				->where('`rule`.`published` =  1', 'AND')							// rule must be publish
 				->where('`rule`.`start_date` <=  NOW()', 'AND')						// rule's start-date should be either today or past day
 				// rule's end-date should be either today or future-day. If its 0000-00-00 00:00:00 it means infinite day
 				->where('(`rule`.`end_date` >=  NOW() OR `rule`.`end_date` =  "0000-00-00 00:00:00")', 'AND')		
-				->order('`rule`.`ordering`');
+				->order('`rule`.`sequence`');
 				
-		$where  = '`rule`.`coupon` = ""';
+		$where  = "`rule`.`coupon` = ''";
 		
 		$applied_promotions = $this->_applied_promotions;
 		
@@ -503,15 +546,18 @@ abstract class PaycartCartparticular extends JObject
 		/* @var $groupHelper PaycartHelperGroup */
 		$groupHelper = PaycartFactory::getHelper('group');
 		
+		$groups = array();
+		
 		//@PCTODO : caching
-		$groups = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+		$groups[Paycart::GROUPRULE_TYPE_BUYER] = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+		$groups[Paycart::GROUPRULE_TYPE_CART]  = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
 		$productCartparticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array();
 		foreach($productCartparticulars as $productCartparticular){
-			$groups = array_merge($groups, $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $productCartparticular->particular_id));	
+			$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array_merge($groups[Paycart::GROUPRULE_TYPE_PRODUCT],$groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $productCartparticular->particular_id));	
 		}
 		
-		$groups = array_unique($groups);
 		return $groups;	
 	}
 	
