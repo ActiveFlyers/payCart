@@ -14,7 +14,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <div class="control-group">
 	<label title="" class="hasTooltip control-label" for="paycart_form_title" id="paycart_form_title-lbl">
-		<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_CATEGORY');?>
+		<?php echo JText::_('PLG_PAYCART_GROUPRULE_PRODUCT_CATEGORY');?>
 	</label>
 	<div class="controls">
 		<select class="paycart-grouprule-product-category" name="<?php echo $namePrefix;?>[category_assignment]">

@@ -14,13 +14,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 <div class="control-group">
 	<label title="" class="hasTooltip control-label" for="paycart_form_title" id="paycart_form_title-lbl">
-		<?php echo JText::_('COM_PAYCART_ADMIN_CART_PRICE');?>
+		<?php echo JText::_('PLG_PAYCART_GROUPRULE_CART_TOTAL');?>
 	</label>
 	<div class="controls">
 		<select class="paycart-grouprule-cart-price" name="<?php echo $namePrefix;?>[operator]">
-			<option value="=" <?php echo isset($config['operator']) && $config['operator'] == '=' ? 'selected="selected"' : '';?>><?php echo JText::_('COM_PAYCART_ADMIN_EQUAL');?></option>
-			<option value="&lt" <?php echo isset($config['operator']) && $config['operator'] == '<' ? 'selected="selected"' : '';?>><?php echo JText::_('COM_PAYCART_ADMIN_LESS_THEN');?></option>
-			<option value="&gt" <?php echo isset($config['operator']) && $config['operator'] == '>' ? 'selected="selected"' : '';?>><?php echo JText::_('COM_PAYCART_ADMIN_GREATER_THAN');?></option>
+			<option value="=" <?php echo isset($config['operator']) && $config['operator'] == '=' ? 'selected="selected"' : '';?>><?php echo JText::_('PLG_PAYCART_GROUPRULE_CART_TOTAL_EQUAL');?></option>
+			<option value="&lt" <?php echo isset($config['operator']) && $config['operator'] == '<' ? 'selected="selected"' : '';?>><?php echo JText::_('PLG_PAYCART_GROUPRULE_CART_TOTAL_LESS_THAN');?></option>
+			<option value="&gt" <?php echo isset($config['operator']) && $config['operator'] == '>' ? 'selected="selected"' : '';?>><?php echo JText::_('PLG_PAYCART_GROUPRULE_CART_TOTAL_GREATER_THAN');?></option>
 		</select>
 		
 		<input type="text" name="<?php echo $namePrefix;?>[amount]" value="<?php echo isset($config['amount'])?$config['amount']:0;?>"/> 

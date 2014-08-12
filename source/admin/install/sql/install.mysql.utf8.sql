@@ -607,7 +607,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_group` (
   `type` varchar(255) NOT NULL,
   `published` tinyint(4) NOT NULL DEFAULT '1',
   `ordering` int(11) NOT NULL,
-  `config` text,
+  `params` text,
   `created_date` datetime NOT NULL,
   `modified_date` datetime NOT NULL,
   PRIMARY KEY (`group_id`)
