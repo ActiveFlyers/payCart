@@ -107,7 +107,7 @@ paycart.admin.group.ruleCounter = <?php echo $ruleCounter;?>;
 						<select id="paycart-grouprule-list">
 							<option value=""><?php echo JText::_('COM_PAYCART_ADMIN_SELECT');?></option>
 							<?php foreach($group_rules as $class => $rule):?>
-								<option value="<?php echo $class;?>"><?php echo $rule->title;?></option>
+								<option value="<?php echo $class;?>"><?php echo JText::_($rule->title);?></option>
 							<?php endforeach;?>
 						</select>
 						

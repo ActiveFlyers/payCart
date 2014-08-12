@@ -25,8 +25,8 @@ class PlgPaycartGroupruleBuyeraddress extends RB_Plugin
 						array(
 							'filepath' 	=> dirname(__FILE__).'/rules/buyeraddress/buyeraddress.php',
 							'type'		=> paycart::GROUPRULE_TYPE_BUYER,
-							'title' 	=> Rb_Text::_('PLG_PAYCART_GROUPRULEBUYERADDRESS_TITLE'),
-							'description'=> Rb_Text::_('PLG_PAYCART_GROUPRULEBUYERADDRESS_DESC'),
+							'title' 	=> 'PLG_PAYCART_GROUPRULEBUYERADDRESS_TITLE',
+							'description'=> 'PLG_PAYCART_GROUPRULEBUYERADDRESS_DESC',
 							'icon' 		=> ''
                       ));
 	}
