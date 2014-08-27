@@ -72,4 +72,13 @@ class PaycartCartparticularDuties extends PaycartCartparticular
 		
 		return $this;
 	}
+	
+	public function getTotal($is_calculated_amount = false) 
+	{
+		if ($is_calculated_amount) {
+			return $this->tax;
+		}
+		
+		return parent::getTotal($is_calculated_amount);
+	}
 }

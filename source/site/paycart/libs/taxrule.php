@@ -165,11 +165,11 @@ class PaycartTaxrule extends PaycartLib
 		$request 	= new PaycartTaxruleRequest();
 		
 		//rule specific data
-		$request->taxable_amount		= $this->amount;
 		$request->cartparticular 		= $helperRequest->getCartparticularObject($cartparticular);
 		$request->shipping_address		= $helperRequest->getBuyeraddressObject($cart->getShippingAddress(true));
 		$request->billing_address		= $helperRequest->getBuyeraddressObject($cart->getBillingAddress(true));
 		$request->buyer					= $helperRequest->getBuyerObject($cart->getBuyer(true));
+		$request->taxable_amount		= $request->cartparticular->price;
 		
 		return $request;
 	}
