@@ -710,6 +710,62 @@ CREATE TABLE IF NOT EXISTS `#__paycart_notification_lang` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_shippingrule`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule` (
+  `shippingrule_id` int(11) NOT NULL AUTO_INCREMENT,
+  `published` tinyint(1) NOT NULL,
+  `grade` tinyint(1) NOT NULL COMMENT '0-9 (according to speed of shipping delivery) 9 is fastest and 0 is slowest',
+  `min_days` tinyint(2) NOT NULL,
+  `max_days` tinyint(2) NOT NULL,
+  `packaging_weight` decimal(12,4) DEFAULT '0.0000',
+  `handling_charge` double(15,5) NOT NULL,
+  `tracking_url` text NOT NULL COMMENT 'Common url related to shipping method that will be used to tracks shipments',
+  `processor_classname` varchar(100) NOT NULL COMMENT 'Classname of processor in small-case',
+  `processor_config` text NOT NULL COMMENT 'processor configuration',
+  `created_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL,
+  `ordering` int(11) NOT NULL,
+  PRIMARY KEY (`shippingrule_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `#__paycart_shippingrule_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule_lang` (
+  `shippingrule_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `shippingrule_id` int(11) NOT NULL,
+  `lang_code` char(7) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
+  PRIMARY KEY (`shippingrule_lang_id`),
+  KEY `idx_shippingrule_id` (`shippingrule_id`),
+  KEY `idx_lang_code` (`lang_code`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_shippingrule_x_group`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule_x_group` (
+  `shippingrule_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  KEY `idx_shippingrule_id` (`shippingrule_id`),
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_type` (`type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mapping of shippingrule and groups' AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
 -- ------------------- DEFAULT VALUES ---------------------
 -- --------------------------------------------------------
 

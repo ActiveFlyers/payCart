@@ -68,6 +68,8 @@ class Paycart
 	const SHIPPINGRULE_LIST_ORDER_BY_ORDERING 	= 'ordering';
 	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
 	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
+	const SHIPPING_BEST_IN_PRICE				= 'price';
+	const SHIPPING_BEST_IN_TIME					= 'time';
 
 
 	// Cart Particulars Type

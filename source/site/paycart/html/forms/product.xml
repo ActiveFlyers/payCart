@@ -101,14 +101,16 @@
 			<field 	name="dimension_unit" 
 					type="paycart.dimension"	
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_DIMENSION_UNIT">
+					label="COM_PAYCART_ADMIN_DIMENSION_UNIT"
+					readonly="true">
 					<option>COM_PAYCART_ADMIN_SELECT</option>
 			</field>
 			
 			<field 	name="weight_unit" 
 					type="paycart.weight"	
 					class="input-block-level"				
-					label="COM_PAYCART_ADMIN_WEIGHT_UNIT">
+					label="COM_PAYCART_ADMIN_WEIGHT_UNIT"
+					readonly="true">
 					<option>COM_PAYCART_ADMIN_SELECT</option>
 			</field>			
 				

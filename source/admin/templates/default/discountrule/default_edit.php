@@ -268,6 +268,8 @@ paycart.admin.discountrule = {};
 		</div>
 		<?php echo $form->getInput('discountrule_id'); ?>
 		<input type="hidden" name="task" value="" />
+		<?php echo $form->getInput('discountrule_lang_id');?>
+		<?php echo $form->getInput('lang_code');?>
 	</form>
 </div>
 </div>

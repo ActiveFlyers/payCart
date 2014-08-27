@@ -578,27 +578,41 @@ class PaycartCart extends PaycartLib
 	
 	public function loadShippingCartparticulars()
 	{
-		//@PCFIXME :: work without shipping
-		return $this;
 		
 		$shippingOptions 			= $this->getShippingOptionList();	
-		$selectedShippingMethods 	= $this->params->get('shipping', new stdClass());
-		
-		//@PCFIXME ::  $addressId		
-		if(empty($selectedShippingMethods) || !isset($shippingOptions[$addressId][$selectedShippingMethods])) {
+		$selectedShippingMethods 	= $this->params->get('shipping',null);
+		$address					= $this->getShippingAddress(true);
+		$md5Address					= $address->getMD5();
+
+		//@PCFIXME ::  $addressId
+		//@PCFIXME :: handle when some selected any shipping method, defaultshipping must be removed at that time		
+		if(empty($selectedShippingMethods) || !isset($shippingOptions[$md5Address][$selectedShippingMethods])) {
 			// IMP
 			// shipping method is not selected or invalid
-			// so reset the previous selected shipping method or set default shipping method				
-			//@PCFIXME ::  $defaultShipping
-			$selectedShippingMethods = $defaultShipping.','; //@PCTODO
-			$this->params->set('shipping', $selectedShippingMethods);
+			// so reset the previous selected shipping method or set default shipping method
+			$default = PaycartFactory::getConfig()->get('shippingrule_default_type');
+			
+			foreach ($shippingOptions as $addressId => $shippingOption){
+				foreach ($shippingOption as $key => $option){
+					if($default == Paycart::SHIPPING_BEST_IN_PRICE && $option['is_best_price'] == true){
+						$selectedShippingMethods = $key;
+						$this->params->set('shipping', $key);
+						break;
+					}
+					elseif ($default == Paycart::SHIPPING_BEST_IN_TIME && $option['is_best_grade'] == true){
+						$selectedShippingMethods = $key;
+						$this->params->set('shipping', $key);
+						break;
+					}
+				}
+			}
 		}
 		
-		if(isset($shippingOptions[$addressId][$selectedShippingMethods])){
-			foreach($shippingOptions[$addressId][$selectedShippingMethods]['shippingrule_list'] as $shippingrule_id => $shippingOption){
+		if(isset($shippingOptions[$md5Address][$selectedShippingMethods])){
+			foreach($shippingOptions[$md5Address][$selectedShippingMethods]['shippingrule_list'] as $shippingrule_id => $shippingOption){
 				$binddata = $shippingOption;
 				$binddata['shippingrule_id'] = $shippingrule_id;
-				$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_SHIPPING][$shippingrule_id] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_DUTIES, $binddata);
+				$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_SHIPPING][$shippingrule_id] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_SHIPPING, $binddata);
 			}
 		}
 		else{
@@ -617,15 +631,14 @@ class PaycartCart extends PaycartLib
 	 */
 	public function getShippingOptionList()
 	{
-		//@PCFIXME:: work on it
-		return array();
-		
 		/* @var $shippingruleHelper PaycartHelperShippingrule */
 		$shippingruleHelper 	= PaycartFactory::getHelper('shippingrule'); 
 		$productCartparticulars = $this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
-		$addressId 				= $this->shipping_address_id;
-		$product_grouped_by_address[$addressId] = $productCartparticulars;
-		$shippingrules_grouped_by_product = $shippingruleHelper->getRulesGroupedByProducts();
+		$address				= $this->getShippingAddress(true);
+		$md5Address				= $address->getMD5();
+		
+		$product_grouped_by_address[$md5Address] = $productCartparticulars;
+		$shippingrules_grouped_by_product = $shippingruleHelper->getRulesGroupedByProducts($this);
 		
 		return $shippingruleHelper->getDeliveryOptionList($product_grouped_by_address, $shippingrules_grouped_by_product);
 	}

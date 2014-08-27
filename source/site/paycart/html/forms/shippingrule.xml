@@ -1,20 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <form>
-		<fieldset name="shippingrule">
-			<field 	
-				name="shippingrule_id" 
-				type="text"
-				default="0"
-				label="COM_PAYCART_SHIPPINGRULE_ID_LABEL"
-				description="COM_PAYCART_SHIPPINGRULE_ID_DESC"
-				readonly="true"/>
+	<fieldset name="shippingrule">
+		<field 	
+			name="shippingrule_id" 
+			type="hidden"
+			default="0"
+			label="COM_PAYCART_SHIPPINGRULE_ID_LABEL"
+			description="COM_PAYCART_SHIPPINGRULE_ID_DESC"
+			readonly="true"/>
+		
+		<field 
+			name="title" 
+			type="text"	
+			class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_TITLE"/>
+				
+		<field 
+			name="description" 
+			type="textarea"				
+			labelclass="control-label"
+			class="input-block-level"
+			label="COM_PAYCART_ADMIN_DESCRIPTION"/>
+				
+		<field
+			name="published"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"
+			label="COM_PAYCART_ADMIN_PUBLISHED"			
+			default="1">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		
+		<field
+			name="processor_classname"
+			type="paycart.processor"
+			labelclass="control-label"
+			processor_type="shippingrule"		
+			label="COM_PAYCART_ADMIN_SHIPPINGRULE_PROCESSOR_CLASSNAME">
+			<option value="">COM_PAYCART_ADMIN_SELECT</option>
+		</field>
+		
+		<field
+			name="_buyergroups"
+			type="paycart.group"
+			labelclass="control-label"
+			class="input-block-level"
+			group_type="buyer"	
+			multiple="true"	
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_BUYER" />
+				
+		<field
+			name="_productgroups"
+			type="paycart.group"
+			labelclass="control-label"
+			class="input-block-level"
+			group_type="product"
+			multiple="true"		
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_PRODUCT" />
 			
-			<field 
-				name="processor_type" 
-				type="text"				
-				label="COM_PAYCART_SHIPPINGRULE_PROCESSOR_TYPE_LABEL"
-				description="COM_PAYCART_SHIPPINGRULE_PROCESSOR_TYPE_DESC"/>
-					
-		</fieldset>
+		<field
+			name="_cartgroups"
+			type="paycart.group"
+			class="input-block-level"
+			labelclass="control-label"
+			multiple="true"
+			group_type="cart"		
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_CART" />
+			
+		<field 
+			name="message" 
+			type="text"	
+			class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_MESSAGE"/>
+		
+		<field 
+			name="grade"
+			type="list"
+			class="input-block-level"
+			labelclass="control-label"
+			label="COM_PAYCART_ADMIN_SHIPPINGRULE_GRADE">
+			<option value="0">0</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+		</field>
+		
+		<field 
+			name="min_days"
+			type="text"
+			class="input-block-level"
+			labelclass="control-label"
+			label="COM_PAYCART_ADMIN_SHIPPINGRULE_MIN_DAYS"/>
+			
+		<field 
+			name="max_days"
+			type="text"
+			class="input-block-level"
+			labelclass="control-label"
+			label="COM_PAYCART_ADMIN_SHIPPINGRULE_MAX_DAYS"/>
+			
+		<field 
+			name="tracking_url"
+			type="text"
+			class="input-block-level"
+			labelclass="control-label"
+			label="COM_PAYCART_ADMIN_SHIPPINGRULE_TRACKING_URL"/>
+				
+		<fields name="processor_config">
+		</fields>
+			
+		<field 
+			name="shippingrule_lang_id"
+			type="hidden"
+			default="0"/>	
+	
+		<field 
+			name="lang_code"
+			type="hidden"
+			default="en-GB"/>
+						
+	</fieldset>
 </form>

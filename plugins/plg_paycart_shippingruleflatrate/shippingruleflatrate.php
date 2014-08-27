@@ -25,7 +25,7 @@ class PlgPaycartShippingruleFlatrate extends RB_Plugin
 		$helper->push(paycart::PROCESSOR_TYPE_SHIPPINGRULE,
 						'PaycartShippingruleProcessorFlatrate',
 						array(
-							'filepath' => dirname(__FILE__).'/processors/flatrate.php',
+							'filepath' => dirname(__FILE__).'/processors/flatrate/flatrate.php',
 							'title' => Rb_Text::_('PLG_PAYCART_SHIPPINGRULE_FLATRATE_TITLE'),
 							'description'=> Rb_Text::_('PLG_PAYCART_SHIPPINGRULE_FLATRATE_DESC'),
 							'icon' => ''

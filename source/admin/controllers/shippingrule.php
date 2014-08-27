@@ -17,9 +17,8 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartAdminControllerShippingrule extends PaycartController 
 {	
-	// @PCTODO : Temporary fix
-	public function getModel($name = '', $prefix = '', $config = array())
+	public function getProcessorConfig()
 	{
-		return false;
+		return true;
 	}
 }

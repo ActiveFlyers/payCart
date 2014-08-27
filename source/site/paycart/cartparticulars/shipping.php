@@ -24,19 +24,21 @@ class PaycartCartparticularShipping extends PaycartCartparticular
 	
 	public function bind($binddata = array()) 
 	{
-		$this->unit_price 		= $data['total_price_without_tax'];
+		$this->unit_price 		= $binddata['price_without_tax'];
 		$this->quantity			= 1;		
 		$this->type 			= Paycart::CART_PARTICULAR_TYPE_SHIPPING;
 		$this->particular_id	= $binddata['shippingrule_id'];		
 		$this->tax				= 0;
 		$this->discount			= 0;
-		$this->price 			= $this->getPrice();
+		$this->price 			= $binddata['price_without_tax'];
 		$this->total 			= $this->getTotal();
 
+		$this->updateTotal();
+		
 		$this->title 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_SHIPPING_TITLE');  // @PCTODO : Calulate dynamically
 		$this->message 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_SHIPPING_MESSAGE'); // @PCTODO : Calulate dynamically
 		
-		$this->_details 		= $data;
+		$this->_details 		= $binddata;
 		
 		return $this;
 	}

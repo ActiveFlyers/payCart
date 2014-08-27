@@ -25,7 +25,7 @@ class PaycartHelperShippingrule extends PaycartHelper
 	 * 
 	 * @return array array($best_price_shippingrule, $best_grade_shippingrule, $shippingrules_price)
 	 */
-	public function getBestRule($shippingrule_list, $product_list, $delivery_address_id, $product_details)
+	public function getBestRule($shippingrule_list, $product_list, $product_details)
 	{
 		$best_price = null;
 		$best_price_shippingrule = null;
@@ -38,7 +38,7 @@ class PaycartHelperShippingrule extends PaycartHelper
 			$shippingrule_instance = PaycartShippingrule::getInstance($id_shippingrule);
 
 			// TODO : can be combined below two function calls
-			list($price_without_tax, $price_with_tax) = $shippingrule_instance->getPackageShippingCost($product_list, $delivery_address_id, $product_details);			
+			list($price_without_tax, $price_with_tax) = $shippingrule_instance->getPackageShippingCost($product_list, $product_details);			
 			if (is_null($best_price) || $price_with_tax < $best_price){
 				$best_price = $price_with_tax;
 				$best_price_shippingrule = $id_shippingrule;
@@ -209,11 +209,11 @@ class PaycartHelperShippingrule extends PaycartHelper
 	{	
 		$package_list = $this->getPackageList($product_grouped_by_address, $shippingrules_grouped_by_product);
 		// Foreach addresses
-		foreach ($package_list as $id_address => $packages)
+		foreach ($package_list as $md5Address => $packages)
 		{
 			// Initialize vars
-			$delivery_option_list[$id_address] = array();
-			$shippingrules_price[$id_address] = array();
+			$delivery_option_list[$md5Address] = array();
+			$shippingrules_price[$md5Address] = array();
 			$common_shippingrules = null;
 			$best_price_shippingrules = array();
 			$best_grade_shippingrules = array();						
@@ -228,7 +228,7 @@ class PaycartHelperShippingrule extends PaycartHelper
 					return $cache;
 				}
 
-				$shippingrules_price[$id_address][$id_package] = array();
+				$shippingrules_price[$md5Address][$id_package] = array();
 
 				// Get all common shippingrules for each packages to the same address
 				if (is_null($common_shippingrules))
@@ -244,17 +244,17 @@ class PaycartHelperShippingrule extends PaycartHelper
 				// get best shipping rule according to price and grade
 				list($best_price_shippingrules[$id_package], 
 						$best_grade_shippingrules[$id_package],           // IMP : Third argument is for sending details regarding product details
-						$shippingrules_price[$id_address][$id_package]) =  $this->getBestRule($package['shippingrule_list'], $package['product_list'], $id_address, $product_grouped_by_address[$id_address]);
+						$shippingrules_price[$md5Address][$id_package]) =  $this->getBestRule($package['shippingrule_list'], $package['product_list'], $product_grouped_by_address[$md5Address]);
 			}
 
 			// LIST TYPE 1: Add the delivery option with best price as best price
-			$delivery_option_list[$id_address] = $this->getBestPriceDeliveryOption($packages, $delivery_option_list[$id_address], $best_price_shippingrules, $shippingrules_price[$id_address]);
+			$delivery_option_list[$md5Address] = $this->getBestPriceDeliveryOption($packages, $delivery_option_list[$md5Address], $best_price_shippingrules, $shippingrules_price[$md5Address]);
 		
 			// LIST TYPE 2: Add the delivery option with best price as best grade
-			$delivery_option_list[$id_address] = $this->getBestGradeDeliveryOption($packages, $delivery_option_list[$id_address], $best_grade_shippingrules, $shippingrules_price[$id_address]);
+			$delivery_option_list[$md5Address] = $this->getBestGradeDeliveryOption($packages, $delivery_option_list[$md5Address], $best_grade_shippingrules, $shippingrules_price[$md5Address]);
 				
 			// LIST TYPE 3: Get all delivery options with a unique shippingrule
-			$delivery_option_list[$id_address] = $this->getUniqueDeliveryOption($packages, $delivery_option_list[$id_address], $common_shippingrules, $shippingrules_price[$id_address]);
+			$delivery_option_list[$md5Address] = $this->getUniqueDeliveryOption($packages, $delivery_option_list[$md5Address], $common_shippingrules, $shippingrules_price[$md5Address]);
 
 		}
 		
@@ -262,7 +262,7 @@ class PaycartHelperShippingrule extends PaycartHelper
 		//    - Set the shippingrule list
 		//    - Calculate the price
 		//    - Calculate the average position
-		foreach ($delivery_option_list as $id_address => $delivery_option)
+		foreach ($delivery_option_list as $md5Address => $delivery_option)
 			foreach ($delivery_option as $key => $value)
 			{
 				$total_price_with_tax = 0;
@@ -275,13 +275,13 @@ class PaycartHelperShippingrule extends PaycartHelper
 			
 					$shippingrule_instance = PaycartShippingRule::getInstance($id_shippingrule);					
 
-//					$delivery_option_list[$id_address][$key]['shippingrule_list'][$id_shippingrule]['logo'] = $shippingrule_instance->getLogo(); // TODO : Logo image
+//					$delivery_option_list[$md5Address][$key]['shippingrule_list'][$id_shippingrule]['logo'] = $shippingrule_instance->getLogo(); // TODO : Logo image
 					
 					$position += $shippingrule_instance->getOrdering();
 				}
-				$delivery_option_list[$id_address][$key]['total_price_with_tax'] = $total_price_with_tax;
-				$delivery_option_list[$id_address][$key]['total_price_without_tax'] = $total_price_without_tax;
-				$delivery_option_list[$id_address][$key]['ordering'] = $position / count($value['shippingrule_list']);
+				$delivery_option_list[$md5Address][$key]['total_price_with_tax'] = $total_price_with_tax;
+				$delivery_option_list[$md5Address][$key]['total_price_without_tax'] = $total_price_without_tax;
+				$delivery_option_list[$md5Address][$key]['ordering'] = $position / count($value['shippingrule_list']);
 			}
 
 		// Sort delivery option list
@@ -303,8 +303,8 @@ class PaycartHelperShippingrule extends PaycartHelper
 	{
 		$config = PaycartFactory::getConfig();
 		
-		if ($config->shippingrule_list_order_by == Paycart::SHIPPINGRULE_LIST_ORDER_BY_PRICE){					
-			if ($config->shippingrule_list_order_in == Paycart::SHIPPINGRULE_LIST_ORDER_IN_ASC){
+		if ($config->get('shippingrule_list_order_by') == Paycart::SHIPPINGRULE_LIST_ORDER_BY_PRICE){					
+			if ($config->get('shippingrule_list_order_in') == Paycart::SHIPPINGRULE_LIST_ORDER_IN_ASC){
 				return ($option1['total_price_with_tax'] <= $option2['total_price_with_tax']) ? -1 : 1 ; // return -1 or 1
 			}
 			
@@ -313,7 +313,7 @@ class PaycartHelperShippingrule extends PaycartHelper
 		}
 		
 		// else
-		if ($config->shippingrule_list_order_in == Paycart::SHIPPINGRULE_LIST_ORDER_IN_ASC){				// PCTODO : Use constant
+		if ($config->get('shippingrule_list_order_in') == Paycart::SHIPPINGRULE_LIST_ORDER_IN_ASC){				// PCTODO : Use constant
 			return ($option1['ordering'] <= $option2['ordering']) ? -1 : 1 ; // return -1 or 1
 		}
 
@@ -381,8 +381,109 @@ class PaycartHelperShippingrule extends PaycartHelper
 		return $final_packaging_list;
 	}
 	
-	public function getRulesGroupedByProducts()
+	public function getRulesGroupedByProducts($cart)
 	{
-		// @PCTODO
+		$groupHelper = PaycartFactory::getHelper('group');
+		$productCartparticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		$groups = array();
+		
+		$products = $cart->getParam('products');
+		list($productMapping, $groupRules) = $this->getApplicableGrouprules($cart,$products);
+		$shippingRules = $this->getShippingrules($groupRules);
+		
+		foreach($productMapping as $productId => $mapping){
+			$intersection = array_intersect($mapping, $shippingRules);
+			
+			$query = new Rb_Query();
+			$result = $query->select('`shippingrule_id`')
+							 ->from('`#__paycart_shippingrule_x_group`')
+							 ->where('`group_id` IN('.implode(',', $mapping).')')
+							 ->where('`shippingrule_id` IN('.implode(',', $shippingRules).')')
+							 ->dbLoadQuery()
+							 ->loadColumn();
+			
+			if(!empty($result)){
+				$groups[$productId] = $result;
+			}
+		}	
+
+		return $groups;
+	}
+	
+	public function getApplicableGrouprules(PaycartCart $cart, $products)
+	{
+		/* @var $groupHelper PaycartHelperGroup */
+		$groupHelper = PaycartFactory::getHelper('group');
+		$groups		 = array();
+		$productGroupMapping = array();
+		
+		//@PCTODO : caching
+	    $groups[Paycart::GROUPRULE_TYPE_BUYER] = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+
+		$groups[Paycart::GROUPRULE_TYPE_CART]  =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
+		
+		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array();
+				
+		foreach($products as $product){
+			$productGroups = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $product->product_id);
+			$groups[Paycart::GROUPRULE_TYPE_PRODUCT] =  array_merge($groups[Paycart::GROUPRULE_TYPE_PRODUCT],$productGroups);
+			$productGroupMapping[$product->product_id] = $productGroups;
+		}
+		
+		return array($productGroupMapping, $groups);	
+	}
+	
+	/**
+	 * 
+	 * Invoke to get shippingrules which will apply on all product/cart (Statically) and accroding to applicable grouperules 
+	 * @param array $groupRules
+	 * 
+	 */
+	public function getShippingrules(Array $groupRules = Array())
+	{
+		$query    = new Rb_Query();
+		$subquery = new Rb_Query();
+		
+		if(!empty($groupRules[paycart::GROUPRULE_TYPE_BUYER]) || 
+		   !empty($groupRules[paycart::GROUPRULE_TYPE_PRODUCT]) || 
+		   !empty($groupRules[paycart::GROUPRULE_TYPE_CART])){
+			   	$subquery->select('DISTINCT(`shippingrule_id`)')
+					 	 ->from('#__paycart_shippingrule_x_group');
+					 	 
+			  	foreach ($groupRules as $ruleType => $rules){
+			  		$allGroupIds = implode(',', $rules);
+
+					// if grouprule of the current type exists
+                    // then add condition to find matching records of individual grouptype
+                    // (i.e. cart,product and buyer)
+					if(!empty($groupRules[$ruleType])){
+						$subquery->where("`shippingrule_id` IN (
+						                   SELECT `shippingrule_id`  FROM `#__paycart_shippingrule_x_group`
+						                   WHERE `group_id` in(".implode(',', $rules)."))");
+					}
+					// if grouprule of the current type doesn't exist
+					// then add condition to discard those taxes which has any applicable rule of this type
+					else{
+						$subquery->where("`shippingrule_id` NOT IN (
+						                   SELECT  `shippingrule_id`  FROM `#__paycart_shippingrule_x_group`
+						                   WHERE `type` = '".$ruleType."')");
+					}
+				}
+			$joinCondition  = '('.$subquery->__toString(). ') AS `rule_group` ON ( `rule`.`shippingrule_id` = `rule_group`.`shippingrule_id`)';
+			$query->innerJoin($joinCondition);
+		}
+		
+		$query->select('DISTINCT `rule`.`shippingrule_id`')
+				->from('`#__paycart_shippingrule` as `rule`')
+				->where('`rule`.`published` =  1', 'AND')							// rule must be publish
+				->order('`rule`.`ordering`');
+		
+		$shippingRules = $query->dbLoadQuery()->loadColumn();
+		
+		if (empty($shippingRules)) {
+			$shippingRules = Array();
+		} 
+		
+		return $shippingRules;
 	}
 }

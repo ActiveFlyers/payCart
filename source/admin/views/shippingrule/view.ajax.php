@@ -20,5 +20,17 @@ defined('_JEXEC') or die( 'Restricted access' );
 require_once dirname(__FILE__).'/view.php';
 class PaycartAdminViewShippingRule extends PaycartAdminBaseViewShippingRule
 {	
-	
+	public function getProcessorConfig()
+	{
+		$rule_id        = $this->input->get('shippingrule_id',0);
+		$data 			= array();
+		$data['processor_classname']	=  $this->input->get('processor_classname', '');
+		
+		$rule = PaycartShippingrule::getInstance($rule_id)->bind($data);
+		$html = $rule->getProcessorConfigHtml();
+		$this->assign('processor_config_html', $html);
+		$this->setTpl('processor_config');
+		$this->_renderOptions = array('domObject'=>'pc-shippingrule-processorconfig','domProperty'=>'innerHTML');
+		return true;
+	}
 }

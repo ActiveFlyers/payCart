@@ -183,6 +183,8 @@ paycart.admin.taxrule = {};
 		</div>
 		<?php echo $form->getInput('taxrule_id'); ?>
 		<input type="hidden" name="task" value="" />
+		<?php echo $form->getInput('taxrule_lang_id');?>
+		<?php echo $form->getInput('lang_code');?>
 	</form>
 </div>
 </div>

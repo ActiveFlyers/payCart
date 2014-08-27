@@ -68,6 +68,15 @@ class PaycartAttributeColor extends PaycartAttribute
 		//needed to reset keys for proper counter management
 		$colors = array_values($colors);		
 
+		ob_start();
+		?>	
+			<script type="text/javascript">
+				var attributeCounter = <?php echo (!empty($colors))?(max(array_keys($colors))):'1';?>;
+			</script>
+		<?php 
+		$html .= ob_get_contents();
+		ob_clean();
+		
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $colors);
 		}
