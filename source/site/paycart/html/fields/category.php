@@ -13,6 +13,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 //jimport('joomla.form.formfield');
 JFormHelper::loadFieldClass('list');
 
+//load Paycart stuff (required when anybody use this element without paycart page like on menu-creation)
+include_once JPATH_SITE.'/components/com_paycart/paycart/includes.php';
+ 
 /**
  * Custom Element for paycart product category.
  * Type = paycart.productcategory
@@ -25,13 +28,14 @@ class PaycartFormFieldCategory extends JFormFieldList
 {	
 	public function getInput()
 	{
-		self::_addScript();
-		
 		$html = parent::getInput();
 		// add new category option should be required or not			
 		$addNew = $this->element['addnew'] ? (string) $this->element['addnew'] : false;
 		
 		if($addNew == 'true') {
+			
+			self::_addScript();
+			
 			$html = "
 					{$html}
 					<div class='input-append'>
@@ -44,30 +48,30 @@ class PaycartFormFieldCategory extends JFormFieldList
 		
 		return $html;
 	}
+	
 	/**
 	 * Return all availble category options
 	 * @see libraries/joomla/form/fields/JFormFieldList::getOptions()
 	 */
 	public function getOptions()
 	{
+		$options = parent::getOptions();
 		$category = PaycartFactory::getHelper('productcategory')->getCategory();
+		 
+		// remove root category
+		if ( isset($this->element['show_root']) && !(int)$this->element['show_root'] ) {
+			unset($category[Paycart::PRODUCTCATEGORY_ROOT_ID]);
+		} 
 
 		foreach ($category as $key => $cat){
 			$category[$key]->title = str_repeat('&mdash;', ($cat->level - 1)<0?0:($cat->level - 1)).' '.$cat->title;
 		}
 		
-		return PaycartHtml::buildOptions($category);		
+		return array_merge($options, PaycartHtml::buildOptions($category));		
 	}
 	
 	private function _addScript()
 	{
-		$result = PaycartFactory::getHelper('productcategory')->getCategory();
-		
-		$category 	= Array();
-		foreach ($result as $categoryId => $value) {
-			$category[$categoryId] = "'$value->title'";
-		}
-		
 		ob_start();
 		?>
 		paycart.jQuery(document).ready(function($)
@@ -100,14 +104,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 							$('#add_new_category').focus();
 							return false;
 						}
-						// get All available options				
-						var options = [<?php echo implode(",", $category); ?>];
-						
-						if(-1 != $.inArray(value, options)) {
-							alert(rb.cms.text._('COM_PAYCART_JS_CATEGORY_NAME_ALREADY_EXIST', 'Category name already available'));
-							$('#add_new_category').focus();
-							return false;
-						}
+
 						paycart.admin.product.category.add(value, callbackOnSuccess, callbackOnError);
 					}
 				);		

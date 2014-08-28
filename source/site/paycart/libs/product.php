@@ -146,6 +146,11 @@ class PaycartProduct extends PaycartLib
 		return $this->title;
 	}
 	
+	public function getAlias() 
+	{	
+		return $this->alias;
+	}
+	
 	public function getWidth() 
 	{	
 		return $this->width;

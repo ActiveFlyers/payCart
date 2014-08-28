@@ -38,9 +38,6 @@ class PaycartProductcategory extends PaycartLib
 	protected $metadata_keywords	= '';
 	protected $metadata_description	= '';
 
-	// Related Table fields (Language specific fields)
-	protected $_language;
-	
 	public function reset() 
 	{		
 		// Table Fields
@@ -77,6 +74,11 @@ class PaycartProductcategory extends PaycartLib
 		return parent::getInstance('productcategory', $id, $data);
 	}
 
+	public function getAlias() 
+	{
+		return $this->alias;
+	}
+	
 	/**
 	 * Override it due to _uploaded_files variable
 	 *

@@ -28,7 +28,7 @@ class PaycartSiteViewProductcategory extends PaycartSiteBaseViewProductcategory
 	 */
 	public function display($tpl = NULL)
 	{			
-		$categoryId	     = $this->input->get('productcategory_id',1); //PCTODO: use constant for root category
+		$categoryId	     = $this->input->get('productcategory_id', Paycart::PRODUCTCATEGORY_ROOT_ID); 
 		$categoryFilters = array();
 		$productFilters	 = array();
 		

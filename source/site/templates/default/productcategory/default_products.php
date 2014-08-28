@@ -19,7 +19,7 @@ if(!defined( '_JEXEC' )){
 		<?php foreach($products as $p) : ?>
 			<?php $instance = PaycartProduct::getInstance($p->product_id,$p)?>     
 			<div class="pc-product-outer ">
-				<div class='pc-product thumbnail' onclick="location.href='<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$p->product_id)?>';">                 
+				<div class='pc-product thumbnail' onclick="location.href='<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$p->product_id)?>';">                 
 					<div class="pc-product-content">   
 						<?php $media = $instance->getCoverMedia();?>                 
 						<img src="<?php echo $media['optimized'];?>">

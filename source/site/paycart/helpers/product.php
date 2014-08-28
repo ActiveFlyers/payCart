@@ -28,26 +28,7 @@ class PaycartHelperProduct extends PaycartHelper
 					Paycart::PRODUCT_TYPE_DIGITAL		=>	'COM_PAYCART_PRODUCT_TYPE_DIGITAL'	
 				  );
 	}	
-	
-	/**
-	 * @PCTODO: remove it if unused
-	 * Translate alias to id.
-	 *
-	 * @param string $alias The alias string
-	 *
-	 * @return numeric value The Product id if found, or false/empty
-	 */
-	public static function XXX_translateAliasToID($alias) 
-	{	
-		$query 	= new Rb_Query();
-		$result = $query->select('product_id')
-						->where("`alias` = '$alias'")
-			  			->from('#__paycart_product')
-			  			->dbLoadQuery()->loadResult();
-			  			
-		return $result;	
-	}
-	
+		
 	/**
 	 * Enter description here ...
 	 * Array (	'keyword'	 => Keyword search data,

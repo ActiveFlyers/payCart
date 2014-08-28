@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+
+	<!-- Display into Menu Select list -->
+	<layout title="COM_PAYCART_PRODUCT_DEFAULT_VIEW_TITLE" option="com_paycart_paycartdashboard_view_default_option">
+		<message><![CDATA[COM_PAYCART_PRODUCT_DEFAULT_VIEW_TITLE_MESSAGE]]></message>
+	</layout>
+	
+	
+	<fields name="request">
+	    
+	    <fieldset name="request">    
+	        
+	        <field 	name="task" 		type="hidden"
+	            	required="required"	
+	            	default="display"
+	            	value="display"
+	        />
+	        
+	    </fieldset>
+	    
+	</fields>
+
+</metadata>

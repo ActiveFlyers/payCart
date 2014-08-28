@@ -15,6 +15,7 @@
 	<files folder="site">
 		<filename>index.html</filename>
 		<filename>paycart.php</filename>
+		<filename>router.php</filename>
 		<folder>controllers</folder>
 		<folder>views</folder>
 		<folder>templates</folder>
