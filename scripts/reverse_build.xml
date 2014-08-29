@@ -32,10 +32,14 @@
 	<!-- ============================================  -->
 	<target name="copy_package">
 		<!-- Copy language files-->
-		<copy file="${source}/language/en-GB/en-GB.com_paycart.ini" tofile="${target}/source/languages/site/en-GB.com_paycart.ini" />
+		<copy 	file="${source}/language/en-GB/en-GB.com_paycart.ini" 
+				tofile="${target}/source/languages/site/en-GB.com_paycart.ini" />
 
-		<copy file="${source}/administrator/language/en-GB/en-GB.com_paycart.ini"
-			tofile="${target}/source/languages/admin/en-GB.com_paycart.ini" />
+		<copy 	file="${source}/administrator/language/en-GB/en-GB.com_paycart.ini"
+				tofile="${target}/source/languages/admin/en-GB.com_paycart.ini" />
+				
+		<copy 	file="${source}/administrator/language/en-GB/en-GB.com_paycart.sys.ini"
+				tofile="${target}/source/languages/admin/en-GB.com_paycart.sys.ini" />
 				
 		<!-- Copy admin source code	-->
 		<copy todir="${target}/source/admin">
