@@ -603,7 +603,7 @@ class PaycartSiteControllerCart extends PaycartController
 	public function buy()
 	{
 		$this->_addProduct();
-		$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=cart'));
+		$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display'));
 		return false;
 	}
 	

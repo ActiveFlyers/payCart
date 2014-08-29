@@ -2,8 +2,8 @@
 <metadata>
 
 	<!-- Display into Menu Select list -->
-	<layout title="COM_PAYCART_PRODUCT_DEFAULT_VIEW_TITLE" option="com_paycart_paycartdashboard_view_default_option">
-		<message><![CDATA[COM_PAYCART_PRODUCT_DEFAULT_VIEW_TITLE_MESSAGE]]></message>
+	<layout title="COM_PAYCART_MENU_PRODUCT_DEFAULT_VIEW_TITLE" option="com_paycart_paycartdashboard_view_default_option">
+		<message><![CDATA[COM_PAYCART_MENU_PRODUCT_DEFAULT_VIEW_TITLE_MESSAGE]]></message>
 	</layout>
 	
 	

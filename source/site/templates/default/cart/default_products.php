@@ -35,17 +35,14 @@ $currencyId = $cart->getCurrency();
 	        		<?php echo '('.$count.' '.JText::_($string).')'; ?>
 	        	</span>
         	</span>
-        	<span class="pull-right text-error"><strong> <?php echo JText::_('COM_PAYCART_TOTAL').' = '.$formatter->amount($cart->getTotal(),true,$currencyId);?></strong></span>
+        	<span class="pull-right text-error"><strong> <?php echo JText::_('COM_PAYCART_ESTIMATED_TOTAL').' = '.$formatter->amount($cart->getTotal(),true,$currencyId);?></strong></span>
         </h3>
  	</div>
  	
  	 <br>
  	
  	<div class="clearfix">
-		<div class="pull-left ">	 			
-	        <button class="btn btn-large" type="button" onClick="window.history.back();return false;"><i class="fa fa-angle-left"></i> <?php echo JText::_('COM_PAYCART_BACK');?></button>
-	    </div>
-	    <div class="pull-right">	 			
+		<div class="pull-right">	 			
 	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
 	    </div>
 	</div>
@@ -62,7 +59,7 @@ $currencyId = $cart->getCurrency();
 			</div>
 			
 			<div class="pull-right pc-grid-8">
-				 <h4 class="text-info"><?php echo PaycartHtml::link('index.php?option=com_paycart&view=product&product_id='.$product->getId(), $product->getTitle()); ?></h4>
+				 <h4 class="text-info"><?php echo PaycartHtml::link('index.php?option=com_paycart&view=product&task=display&product_id='.$product->getId(), $product->getTitle()); ?></h4>
 				 <p class="pc-item-attribute">
 				 	 <?php foreach ($product->getAttributeValues() as $attributeId => $optionId):?>
 	                     <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
@@ -105,16 +102,13 @@ $currencyId = $cart->getCurrency();
 	<?php endforeach;?>
 		
 	<h3 class="text-right">
-		<span><?php echo JText::_('COM_PAYCART_ESTIMATED_TOTAL')." = ";?></span><span class="text-error"><strong><?php echo $formatter->amount($cart->getTotal(),true,$currencyId); ?></strong></span>
+		<span class="text-error"><?php echo JText::_('COM_PAYCART_ESTIMATED_TOTAL')." = ";?><strong><?php echo $formatter->amount($cart->getTotal(),true,$currencyId); ?></strong></span>
 	</h3>
 <!--	<p class="small text-right"><a href="#" ><?php //echo JText::_('Delivery charges may apply');?></a></p>-->
 	 
 	 <!--  footer buttons --> 
 	 <div class="clearfix">
-		<div class="pull-left ">	 			
-	        <button class="btn btn-large" type="button" onClick="window.history.back();return false;"><i class="fa fa-angle-left"></i> <?php echo JText::_('COM_PAYCART_BACK');?></button>
-	    </div>
-	    <div class="pull-right">	 			
+		<div class="pull-right">	 			
 	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
 	    </div>
 	</div>

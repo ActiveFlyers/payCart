@@ -46,8 +46,7 @@ if(!defined( '_JEXEC' )){
 
 	paycart.product.changeButtonText = function(){
 		$('.pc-btn-addtocart').html("<?php echo JText::_('COM_PAYCART_CART_VIEW')." &nbsp;&nbsp; <i class='fa fa-chevron-right'></i>";?>");
-		$('.pc-btn-addtocart').attr('onClick','rb.url.redirect("index.php?option=com_paycart&view=cart"); return false;');
-		
+		$('.pc-btn-addtocart').attr('onClick','rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display'); ?>"); return false;');
 		$('.pc-btn-buynow').replaceWith("<h3 class='text-center text-info'><?php echo JText::_('COM_PAYCART_PRODUCT_ADDED_TO_CART')?></h3>");
 	}
 })(paycart.jQuery);

@@ -2,8 +2,8 @@
 <metadata>
 
 	<!-- Display into Menu Select list -->
-	<layout title="COM_PAYCART_PRODUCTCATEGORY_DEFAULT_VIEW_TITLE" option="com_paycart_paycartdashboard_view_default_option">
-		<message><![CDATA[COM_PAYCART_PRODUCTCATEGORY_DEFAULT_VIEW_TITLE_MESSAGE]]></message>
+	<layout title="COM_PAYCART_MENU_PRODUCTCATEGORY_DEFAULT_VIEW_TITLE" option="com_paycart_paycartdashboard_view_default_option">
+		<message><![CDATA[COM_PAYCART_MENU_PRODUCTCATEGORY_DEFAULT_VIEW_TITLE_MESSAGE]]></message>
 	</layout>
 	
 	<fields name="request">
@@ -15,8 +15,7 @@
 					class="paycart_category_class"
 					show_root="0"
 			>
-					
-						<option value=''> COM_PAYCART_ADMIN_SELECT </option>
+					<option value=''> COM_PAYCART_ADMIN_SELECT </option>
 					
 			</field>
 			
