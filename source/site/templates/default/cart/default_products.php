@@ -46,7 +46,7 @@ $currencyId = $cart->getCurrency();
 	        <button class="btn btn-large" type="button" onClick="window.history.back();return false;"><i class="fa fa-angle-left"></i> <?php echo JText::_('COM_PAYCART_BACK');?></button>
 	    </div>
 	    <div class="pull-right">	 			
-	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
+	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
 	    </div>
 	</div>
  	
@@ -115,7 +115,7 @@ $currencyId = $cart->getCurrency();
 	        <button class="btn btn-large" type="button" onClick="window.history.back();return false;"><i class="fa fa-angle-left"></i> <?php echo JText::_('COM_PAYCART_BACK');?></button>
 	    </div>
 	    <div class="pull-right">	 			
-	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
+	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
 	    </div>
 	</div>
 </div>

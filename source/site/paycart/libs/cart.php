@@ -742,7 +742,7 @@ class PaycartCart extends PaycartLib
 		
 		// fail to get user-id
 		if (!$user_id) {
-			throw new RuntimeException(JText::_('COM_PAYCART_CHECKOUT_FAIL_TO_PROCESS_EMAIL_CHECKOUT'));
+			throw new RuntimeException(JText::_('COM_PAYCART_CART_FAIL_TO_PROCESS_EMAIL_CHECKOUT'));
 		}
 		$buyer->id 		= $user_id;
 		

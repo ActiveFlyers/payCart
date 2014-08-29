@@ -17,6 +17,496 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  */
 class PaycartSiteControllerCart extends PaycartController
 {
+	protected $message		=	'';
+	protected $message_type	=	'';
+
+	/**
+	 * @var PaycartHelperCheckout
+	 */
+	protected $helper;
+	
+	/**
+	 * @var PaycartCart
+	 */
+	protected $cart;
+								
+	/**
+	 * 
+	 * define here checkout 
+	 * 		- Step sequence
+	 * 		- Helper object
+	 * 		- Cart for checkout
+	 *
+	 *
+	 * @since 	1.0
+	 * @author 	Manish
+	 *  
+	 * @param Array $options
+	 * 
+	 */
+	public function __construct($options = array()) 
+	{
+		$this->helper			=	PaycartFactory::getHelper('checkout');
+		$this->cart				=	PaycartFactory::getHelper('cart')->getCurrentCart();
+		$this->step_sequence	=	$this->helper->getSequence();
+		
+		return parent::__construct($options);
+	}
+	
+	private function _isCartValid(Array $form_data = Array() )
+	{
+		// if cart is not exist or cart is empty then intimate to end user 
+		if ( !($this->cart instanceof PaycartCart) ) {
+			$this->setTemplate('error_invalid_cart');
+			return false;
+		}
+		
+		if ( 0 == count($this->cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT)) ) {
+		 	$this->setTemplate('error_empty_cart');
+			return false;
+		}	
+		
+		return true;
+	}
+	
+	public function checkout()
+	{
+		$this->setTemplate('checkout');
+		
+		// If there is error then return and do nothing
+		$isCartValid = $this->_isCartValid();
+		$this->getView()->assign('isCartValid', $isCartValid);
+		if(!$isCartValid){			
+			return true;
+		}
+				
+		// if user login then move next step
+		if (PaycartFactory::getUser()->id)  {
+			
+			// buyer already login then set thier detail into cart param
+			$loggedin_user =  PaycartFactory::getUser();
+		
+			$buyer = $this->cart->getParam('buyer', new stdClass());	
+			$buyer->email 	=	$loggedin_user->get('email');
+			$buyer->id		=	$loggedin_user->get('id');
+			
+			//set it not guest checkout
+			$this->cart->setIsGuestCheckout(false);
+			
+			// set buyer 
+			$this->cart->setParam('buyer', $buyer);
+			$this->cart->setBuyer($buyer->id);		
+			
+			//cart Process and save
+			$this->cart->calculate()->save();
+		}
+		
+		$this->getView()->set('cart', $this->cart);
+		return true;
+	}
+	
+	public function login()
+	{	
+		// If there is error then return and do nothing
+		$isCartValid = $this->_isCartValid();
+		$this->getView()->assign('isCartValid', $isCartValid);
+		if(!$isCartValid){			
+			return true;
+		}
+
+		// If user is logged in, execute next task
+		if (PaycartFactory::getUser()->id)  {
+			$this->execute('address');			
+			return false;
+		}
+		
+		$form_data = $this->input->get('paycart_cart_login',Array(), 'ARRAY');
+
+		if(!empty($form_data)){
+			$errors = array();			 
+			// validate email address
+			if (!JMailHelper::isEmailAddress($form_data['email'])) {
+				$error = new stdClass();
+				$error->message 		= JText::_('COM_PAYCART_INVALID_BUYER_EMAIL_ID');
+				$error->message_type	= Paycart::MESSAGE_TYPE_WARNING;
+				$error->for				= 'paycart_cart_login_email';
+				$errors[] = $error;				
+			}		
+			
+			if(empty($errors)){			
+				if ($form_data['emailcheckout'] ) {
+					// email checkout
+					$this->_loginWithEmail($form_data, $errors);
+				} else {
+					//checkout by login
+					$this->_login($form_data, $errors);
+				}
+			}
+			
+			// if errors
+			if ( !empty($errors )) {
+				$this->getView()->assign('errors', $errors);
+				return true;
+			}
+		
+			//calculation on cart then save it 
+			$this->cart->calculate();
+			
+			//Cart should be save after processing
+			$this->cart->save();
+			
+			$this->execute('address');
+			return false;
+		}
+		
+		$this->getView()->set('cart', $this->cart);		
+		return true;
+	}	
+	
+	/**
+	 * Login user by their username and pwd
+	 * @param array $form_data = Array('email' => _EMAIL_ID_, 'password'=> _PASSWORD_ )
+	 * 
+	 * @since 	1.0
+	 * @author 	Manish
+	 * 
+	 * @return user_id if buyer successfully login otherwise false
+	 */
+	private function _login(Array $form_data, &$errors = array())
+	{
+		// get username
+		$username = PaycartFactory::getHelper('buyer')->getUsername( $form_data['email']);
+		
+		if (!$username) {
+			$error = new stdClass();
+			$error->message 		= JText::_('COM_PAYCART_BUYER_IS_NOT_EXIT');
+			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+			$error->for				= 'paycart_cart_login_email';
+			$errors[] = $error;
+			return false;			
+		}
+		
+		// prepare credential data
+		$credentials				=	Array();
+		$credentials['username']	=	$username;
+		$credentials['password']	=	$form_data['password'];
+		
+		$options				=	Array();
+		$options['remember']	=	@$form_data['remember'];
+		
+		if (! PaycartFactory::getApplication()->login($credentials, $options))
+		{			
+			$error = new stdClass();
+			$error->message 		= JText::_('COM_PAYCART_BUYER_FAIL_TO_LOGIN');
+			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+			$error->for				= 'paycart_cart_login';
+			$errors[] = $error;
+			return false;	
+		} 
+		
+		$loggedin_user =  PaycartFactory::getUser();
+		
+		$buyer = new stdClass();	
+		$buyer->email 	=	$loggedin_user->get('email');
+		$buyer->id		=	$loggedin_user->get('id');
+		
+		//set it not guest checkout
+		$this->cart->setIsGuestCheckout(false);
+		
+		// set buyer 
+		$this->cart->setParam('buyer', $buyer);
+		$this->cart->setBuyer($buyer->id);
+
+		return true;
+	} 
+	
+	/**
+	 * Email Checkout by user email-id
+	 * 		- Create new account if user is not exist
+	 * @param array $form_data = Array('email' => _EMAIL_ID_ )
+	 * 
+	 * @since 	1.0
+	 * @author 	Manish
+	 * 
+	 * @return user_id if buyer successfully registered otherwise false
+	 */
+	private function _loginWithEmail(Array $form_data, &$errors = array())
+	{
+		$buyer =	new stdClass();
+		
+		$buyer->email 	= $form_data['email'];
+		$buyer->id		= 0;
+
+		$this->cart->setParam('buyer', $buyer);
+		
+		// guest checkout enabled on this cart 
+		$this->cart->setIsGuestCheckout(true);
+		$this->cart->setBuyer($buyer->id);
+	
+		return true;
+	}
+	
+	
+	public function address()
+	{
+		// If there is error then return and do nothing
+		$isCartValid = $this->_isCartValid();
+		$this->getView()->assign('isCartValid', $isCartValid);
+		if(!$isCartValid){			
+			return true;
+		}
+
+		// If user is logged in, execute next task
+		if (!PaycartFactory::getUser()->id && !($this->cart->getIsGuestCheckout()))  {
+			$this->execute('login');			
+			return false;
+		}
+		
+		$form_data = $this->input->get('paycart_cart_address',Array(), 'ARRAY');
+
+		if(!empty($form_data)){
+			$errors = array();
+			$this->_address($form_data, $errors);
+			// if errors
+			if ( !empty($errors )) {
+				$this->getView()->assign('errors', $errors);
+				return true;
+			}			
+			
+			//calculation on cart then save it 
+			$this->cart->calculate();
+			
+			//Cart should be save after processing
+			$this->cart->save();
+			
+			$this->execute('confirm');
+		}
+		
+		$this->getView()->set('cart', $this->cart);
+		return true;
+	}
+	
+	/**
+	 * Step Address execute here.
+	 * 		- Store user address
+	 * 	
+	 * @param Array $form_data Post data 
+	 * 
+	 * @since 	1.0
+	 * @author 	Manish
+	 * 
+	 * @return true, if successfully process
+	 */
+	private function _address(Array $form_data, &$errors = array())
+	{
+		// get Billing Address
+		
+		// copy variable
+		$billing_to_shipping	=	isset($form_data['billing_to_shipping']) ? $form_data['billing_to_shipping'] : false;
+		$shipping_to_billing	=	isset($form_data['shipping_to_billing']) ? $form_data['shipping_to_billing'] : false;
+		
+		$billingaddress_id 	= 	0;
+		$shippingaddress_id	=	0;
+		
+		$billing_address_data 	=	'';
+		$shipping_address_data	=	'';
+		
+		//if buyer is loggin then might be user select address into existing address
+		if (PaycartFactory::getUser()->id ) {
+			$buyer_id = PaycartFactory::getUser()->get('id');
+			
+			//if user selected address into existing address then get buyer address data and set into cart param 
+			$billingaddress_id	=	isset($form_data['billingaddress_id']) ? $form_data['billingaddress_id'] : false;
+			$shippingaddress_id	=	isset($form_data['shippingaddress_id']) ? $form_data['shippingaddress_id'] : false;
+			
+			//@PCTODO ::  Cross check this address binded with loggedin user id
+			
+			$data = Array();
+			
+			//get billing address data
+			if ( $billingaddress_id ) {
+				$data = PaycartBuyeraddress::getInstance($billingaddress_id)->toArray();
+				$billing_address_data = (object)($data);
+			}
+			
+			
+			// get shipping address data
+			if ( $shippingaddress_id ) {
+				$data = PaycartBuyeraddress::getInstance($shippingaddress_id)->toArray();
+				$shipping_address_data = (object)($data);
+			}
+			
+			
+		}
+		
+		// if no need to copy from shipping to billing OR billing address data is not available in earliar processing
+		// its means billing data is posted (in req data) 
+		if ( !$shipping_to_billing && empty($billing_address_data) ) {
+			// get billing address details
+			$billing_address_data 					=	(object)$form_data['billing'];
+			$billing_address_data->buyer_id			=	$this->cart->getBuyer();
+			$billing_address_data->buyeraddress_id	=	0;
+		}
+
+		// if no need to copy from billing to shipping OR shipping address data is not available in earliar processing
+		// its means shipping data is posted (in req data)
+		if ( !$billing_to_shipping && empty($shipping_address_data) ) {
+			// get billing address details
+			$shipping_address_data 					=	(object)$form_data['shipping'];
+			$shipping_address_data->buyer_id		=	$this->cart->getBuyer();
+			$shipping_address_data->buyeraddress_id	=	0;
+		}
+		
+		//copy address data one entity to another entity
+		if ($billing_to_shipping) {
+			$shipping_address_data	= 	clone $billing_address_data;
+		} else if ($shipping_to_billing) {
+			$billing_address_data	=	clone $shipping_address_data;
+		}
+		
+		// Make sure if address are diffrent-diffrent submitted then we will create only one address  
+		if ( $billing_address_data == $shipping_address_data ) {
+			$billing_to_shipping	= true;
+		}
+		
+		//set address on cart-param 
+		$this->cart->setParam('billing_address', 		$billing_address_data);
+		$this->cart->setParam('shipping_address', 		$shipping_address_data);
+		$this->cart->setParam('billing_to_shipping', 	(bool)$billing_to_shipping);
+		$this->cart->setParam('shipping_to_billing', 	(bool)$shipping_to_billing);
+		
+		$this->cart->setBillingAddressId($billing_address_data->buyeraddress_id);
+		$this->cart->setShippingAddressId($shipping_address_data->buyeraddress_id);
+
+		return true;
+	}
+	
+	public function confirm()
+	{
+		// If there is error then return and do nothing
+		$isCartValid = $this->_isCartValid();
+		$this->getView()->assign('isCartValid', $isCartValid);
+		if(!$isCartValid){			
+			return true;
+		}
+
+		// If user is logged in, execute next task
+		if (!PaycartFactory::getUser()->id && !($this->cart->getIsGuestCheckout()))  {
+			$this->execute('login');			
+			return false;
+		}
+		
+		$form_data = $this->input->get('paycart_cart_confirm',Array(), 'ARRAY');
+
+		if(!empty($form_data)){
+			$errors = array();
+			
+			try{			
+				$this->cart->confirm();
+			}catch (Exception $ex) {
+				$error = new stdClass();
+				$error->message 		= $ex->getMessage();
+				$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+				$error->for				= 'paycart_cart_confirm';
+				$errors[] = $error;
+				return false;
+			}
+			
+			//calculation on cart then save it 
+			$this->cart->calculate();
+			
+			//Cart should be save after processing
+			$this->cart->save();
+			
+			$this->execute('gatewayselection');
+		}
+		
+		$this->getView()->set('cart', $this->cart);
+		return true;
+	}	
+	
+	public function gatewayselection()
+	{
+		// If there is error then return and do nothing
+		$isCartValid = $this->_isCartValid();
+		$this->getView()->assign('isCartValid', $isCartValid);
+		if(!$isCartValid){			
+			return true;
+		}
+
+		// If user is logged in, execute next task
+		if (!PaycartFactory::getUser()->id && !($this->cart->getIsGuestCheckout()))  {
+			$this->execute('login');
+			return false;
+		}
+		
+		$form_data = $this->input->get('paycart_cart_payment',Array(), 'ARRAY');
+
+		if(!empty($form_data)){
+			
+		}
+		
+		$this->getView()->set('cart', $this->cart);
+		return true;
+	}	
+
+	/**	
+	 * JSON Task. 
+	 * @return : return Payment form html
+	 */
+	public function getPaymentFormHtml() 
+	{
+		$gateway_id	= $this->input->get('paymentgateway_id', 0 );
+		
+		if ( empty($gateway_id) ) {
+			
+			$this->getView()->set('message', 		JText::_('Processor-Required'));
+			$this->getView()->set('message_type', 	Paycart::MESSAGE_TYPE_ERROR);
+			
+			return true;
+		}
+		
+		$this->cart->updateInvoiceProcessor($gateway_id);
+		
+		$this->getView()->set('cart', 		$this->cart);
+		
+		return true;
+	}
+	
+	/**	
+	 * JSON Task. 
+	 * @return 
+	 */
+	public function lock() 
+	{
+		$errors = array();
+		try {
+			// store all params data
+			$this->cart->checkout();
+			
+		} catch (Exception $e) {			
+			$error  			   	= new stdClass();	
+			$error->valid   		= false;
+			$error->message_type   	= Paycart::MESSAGE_TYPE_ERROR;
+			$error->for				= '';			
+			$error->message   		= $e->getMessage();			
+			return true;
+		}
+		
+		$this->getView()->set('errors',		$errors);
+		$this->getView()->set('cart', 		$this->cart);
+		
+		return true;
+	}
+	
+	/**
+	 * JSON task
+	 * //@PCTODO :: should be move into buyer address
+	 */
+	public function getBuyerAddress()
+	{
+		return true;
+	}
 	
 	/**
 	 * Collect payment on cart
@@ -53,10 +543,9 @@ class PaycartSiteControllerCart extends PaycartController
 		exit;
 	}
 	
-	
-	
 	public function notify()
 	{
+		//@PCTODO : Is it correct way to get it?
 		$get 				= $this->input->getArray($_GET);	//Rb_Request::get('GET'); 
 		$post 				= $this->input->getArray($_POST);	//Rb_Request::get('POST');
 		
@@ -97,11 +586,20 @@ class PaycartSiteControllerCart extends PaycartController
 		exit;				
 	}
 	
+	/**
+	 * Displays the list of products added to cart
+	 * It is triggered by html and ajax type urls
+	 */
 	function display($cachable = false, $urlparams = array())
 	{
-		return parent::display();
+		return parent::display($cachable, $urlparams);
 	}
 	
+	/**
+	 * Adds a product to current cart
+	 * It redirects to Cartview direclty after processing the request.
+	 * That is the difference between "buy now" and "add to cart"  
+	 */
 	public function buy()
 	{
 		$this->_addProduct();
@@ -110,7 +608,6 @@ class PaycartSiteControllerCart extends PaycartController
 	}
 	
 	/**
-	 * 
 	 * Ajaxified task to add product
 	 */
 	public function addProduct()
@@ -119,8 +616,7 @@ class PaycartSiteControllerCart extends PaycartController
 	}
 	
 	/**
-	 * 
-	 * Ajaxified task to any product from cart
+	 * JSON task to any product from cart
 	 */
 	public function removeProduct()
 	{
@@ -130,47 +626,82 @@ class PaycartSiteControllerCart extends PaycartController
 		
 		//delete product
 		$productId = $this->input->get('product_id',0,'INT');
-		$cart->removeProduct($productId);
-		
+		$cart->removeProduct($productId);		
 		$cart->calculate()->save();
 		
+		//@PCTODO : Error Handling
+		
+		$view = $this->getView();
+		$view->assign('productId', 	$productId);
+		$view->assign('errors', array());
 		return true;
 	}
 	
 	/**
-	 * 
-	 * Ajaxified task to update quantity
+	 * Updates the product quantity
+	 * It is a JSON Task
 	 */
-	public function updateQuantity()
+    public function updateProductQuantity()
 	{
 		//PCTODO : Clean this code
 		list($result,$prevQuantity,$productId,$allowedQuanity) = $this->_addProduct();
 		
-		if(!$result){
-			$response 			   = Array();
-			$ajax    			   = Rb_Factory::getAjaxResponse();
-			$response['message']   = JText::_("COM_PAYCART_PRODUCT_INVALID_QUANTITY").": ".$allowedQuanity;
-			$response['productId'] = $productId;
-			$response['prevQuantity'] = $prevQuantity;
-			$response['allowedQuantity'] = $allowedQuantity;
-			$callback 			   = 'paycart.cart.product.error';
-
-			// set call back function
-			$ajax->addScriptCall($callback, json_encode($response)); 
-			return false;			
+		$errors 	=  array();
+		if(!$result){	
+			$error 	=  array();					
+			$error['message_type']   	= Paycart::MESSAGE_TYPE_ERROR;
+			$error['for']				= '';			
+			$error['message']   		= JText::_("COM_PAYCART_PRODUCT_INVALID_QUANTITY").": ".$allowedQuanity;
+			$errors[] = $error;
 		}
-		return true;		
-	} 
+		
+		$view = $this->getView();
+		$view->assign('productId', 	$productId);
+		$view->assign('prevQuantity', $prevQuantity);
+		$view->assign('allowedQuantity', $allowedQuanity);
+		$view->assign('errors', $errors);
+		return true;
+	}
+	
 
 	/**
-	 * add product the current cart
+	 * Adds product in the current cart or updates the quantity of existing product
+	 * It is a sub-task and used by addProduct and updateProductQuantity tasks.
 	 */
-    protected function _addProduct()
+    private function _addProduct()
 	{
 		$productId = $this->input->get('product_id',0,'INT');
 		$quantity  = $this->input->get('quantity',1,'INT');
 		
 		// @PCTODO :: error handling
 		return PaycartFactory::getHelper('cart')->addProduct($productId, $quantity);
+	}
+	
+	/**
+	 * Applies promotion code on current cart
+	 * JSON Task
+	 */
+	public function applyPromotion()
+	{
+		// get promotion code
+		$promotion_code = $this->input->get('promotion_code', null, 'ALNUM');
+		$errors 	=  array();
+			
+		try {
+			if (!empty($promotion_code)) {
+				PaycartFactory::getHelper('cart')->applyPromotion($promotion_code);
+			}
+			
+		} catch (Exception $ex) {
+			$error 	=  array();			
+			$error['message_type']   	= Paycart::MESSAGE_TYPE_ERROR;
+			$error['for']				= '';				
+			$error['message']   		= $e->getMessage();
+			$errors[] = $error;
+		}
+	
+		$view = $this->getView();
+		$view->assign('errors', $errors);
+		return true;	
 	}
 }

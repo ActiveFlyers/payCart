@@ -20,11 +20,6 @@ require_once dirname(__FILE__).'/view.php';
 
 class PaycartSiteViewcart extends PaycartSiteBaseViewcart
 {
-	
-	/**
-	 * 
-	 * Enter description here ...
-	 */
 	function complete()
 	{
 		$cart_id = $this->get('cart_id', 0);
@@ -33,8 +28,6 @@ class PaycartSiteViewcart extends PaycartSiteBaseViewcart
 		
 		var_export($cart);
 		return false;
-		
-		return true;
 	}
 	
 	/**
@@ -45,5 +38,11 @@ class PaycartSiteViewcart extends PaycartSiteBaseViewcart
 	public function display($tpl = NULL)
 	{	
 		return parent::_assignTmplVars();
+	}
+	
+	public function checkout()
+	{
+		$this->assign('is_platform_mobile', PaycartFactory::getApplication()->client->mobile);
+		return true;
 	}
 }
