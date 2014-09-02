@@ -338,7 +338,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 	<p><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_LABEL')?></p>
 			 	<div class="input-append" >
 				  <input class="span9" id="paycart-promotion-code-input-id" type="text">
-				  <button class="btn" type="button" onclick="paycart.cart.confirm.onApplyPromotionCode()"><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_APPLY')?></button>
+				  <button class="btn" type="button" onclick="paycart.cart.onApplyPromotionCode()"><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_APPLY')?></button>
 				</div>
 				<span class="text-error" id="pc-checkout-promotioncode-error"></span>
 			 </div>

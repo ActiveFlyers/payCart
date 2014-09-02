@@ -23,15 +23,14 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	/**
 	 * Get HTML from Payment Gateway
 	 */
-	public function getPaymentFormHtml()
+	public function paymentForm()
 	{
 		$this->json = new stdClass();
-		
-		// message type set by controller
-		if ($this->message_type ) {
-			$this->json->message_type	= $this->message_type;
-			$this->json->message	 	= $this->message;
-			
+				
+		$errors = $this->get('errors', array());
+		if(!empty($errors)){
+			$this->json->valid  = false;
+			$this->json->errors = $errors;
 			return true;
 		}
 		
@@ -40,25 +39,28 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		$this->assign('response_object', $response_object); 
 		
 		if ( empty($response_object->post_url )) {
-			$response_object->post_url = 'index.php?option=com_paycart&view=cart&task=pay&cart_id='.$this->cart->getId(); 
+			$response_object->post_url = 'index.php?option=com_paycart&view=cart&task=paymentForm&cart_id='.$this->cart->getId(); 
 		}
 				
-		$html =  $this->loadTemplate('paynow');
+		$html =  $this->loadTemplate('payment_form');
 		
+		$this->json->valid = true;
 		$this->json->html 		= $html;
 		$this->json->post_url 	= $response_object->post_url;
 		
 		return true;
 	}
 	
-	function lock()
+	function order()
 	{
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
+			$this->json->isValid = false;
 			$this->json->errors = $errors;
 			return true;
 		}
 		
+		$this->json->isValid 	= true;
 		$this->json->html 		= JText::_('Good!! Go and collect Payment'); 
 		
 		return true;
@@ -71,12 +73,16 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		
 		$user = JFactory::getUser();
 		if (!$user->get('id') && $buyeraddress->getBuyer() == $user->get('id') ) {
-			$this->json->message		=		JText::_('not permitted');
-			$this->json->message_type	=	 	Paycart::MESSAGE_TYPE_ERROR;
-			
+			$this->json->isValid	= 	true;
+			$error 					= new stdClass();
+			$error->message			= JText::_('not permitted');
+			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+			$error->for				= 'header';
+			$this->json->errors 	= array($error);
 			return true;
 		}
 		
+		$this->json->isValid			= 	true;
 		$this->json->selector_index		=	$this->input->get('selector_index');
 		$this->json->buyeraddress 		= 	$buyeraddress->toArray();
 		

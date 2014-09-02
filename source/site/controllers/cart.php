@@ -129,7 +129,7 @@ class PaycartSiteControllerCart extends PaycartController
 				$error = new stdClass();
 				$error->message 		= JText::_('COM_PAYCART_INVALID_BUYER_EMAIL_ID');
 				$error->message_type	= Paycart::MESSAGE_TYPE_WARNING;
-				$error->for				= 'paycart_cart_login_email';
+				$error->for				= 'email';
 				$errors[] = $error;				
 			}		
 			
@@ -181,7 +181,7 @@ class PaycartSiteControllerCart extends PaycartController
 			$error = new stdClass();
 			$error->message 		= JText::_('COM_PAYCART_BUYER_IS_NOT_EXIT');
 			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
-			$error->for				= 'paycart_cart_login_email';
+			$error->for				= 'email';
 			$errors[] = $error;
 			return false;			
 		}
@@ -199,7 +199,7 @@ class PaycartSiteControllerCart extends PaycartController
 			$error = new stdClass();
 			$error->message 		= JText::_('COM_PAYCART_BUYER_FAIL_TO_LOGIN');
 			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
-			$error->for				= 'paycart_cart_login';
+			$error->for				= 'header';
 			$errors[] = $error;
 			return false;	
 		} 
@@ -407,7 +407,7 @@ class PaycartSiteControllerCart extends PaycartController
 				$error = new stdClass();
 				$error->message 		= $ex->getMessage();
 				$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
-				$error->for				= 'paycart_cart_confirm';
+				$error->for				= 'header';
 				$errors[] = $error;
 				return false;
 			}
@@ -454,22 +454,36 @@ class PaycartSiteControllerCart extends PaycartController
 	 * JSON Task. 
 	 * @return : return Payment form html
 	 */
-	public function getPaymentFormHtml() 
+	public function paymentForm() 
 	{
-		$gateway_id	= $this->input->get('paymentgateway_id', 0 );
-		
-		if ( empty($gateway_id) ) {
-			
-			$this->getView()->set('message', 		JText::_('Processor-Required'));
-			$this->getView()->set('message_type', 	Paycart::MESSAGE_TYPE_ERROR);
-			
-			return true;
+		$payment_data	=	$this->input->post->get('payment_data', array(), 'array');		
+		if(!empty($payment_data)){
+			$cart_id		=	$this->input->get('cart_id', 0);
+			$cart_instance	=	PaycartCart::getInstance($cart_id);
+	
+			$cart_instance->collectPayment($payment_data);
+	
+			$this->setRedirect(Rb_Route::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$cart_id));
+	
+			return false;
 		}
 		
-		$this->cart->updateInvoiceProcessor($gateway_id);
+		// if payment form is not posted  then return payment form html		
+		$gateway_id	= $this->input->get('paymentgateway_id', 0 );
+		$errors = array();		
+		if ( empty($gateway_id) ) {		
+			$error = new stdClass();
+			$error->message 		= JText::_('Processor-Required');
+			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+			$error->for				= 'payment-gateway';
+			$errors[] = $error;	
+		}
+		else{
+			$this->cart->updateInvoiceProcessor($gateway_id);
+			$this->getView()->set('cart', 		$this->cart);
+		}
 		
-		$this->getView()->set('cart', 		$this->cart);
-		
+		$this->getView()->set('errors', $errors);
 		return true;
 	}
 	
@@ -477,20 +491,18 @@ class PaycartSiteControllerCart extends PaycartController
 	 * JSON Task. 
 	 * @return 
 	 */
-	public function lock() 
+	public function order() 
 	{
 		$errors = array();
 		try {
 			// store all params data
-			$this->cart->checkout();
-			
+			$this->cart->order();			
 		} catch (Exception $e) {			
 			$error  			   	= new stdClass();	
-			$error->valid   		= false;
 			$error->message_type   	= Paycart::MESSAGE_TYPE_ERROR;
 			$error->for				= '';			
-			$error->message   		= $e->getMessage();			
-			return true;
+			$error->message   		= $e->getMessage();
+			$errors[] 				= $error;
 		}
 		
 		$this->getView()->set('errors',		$errors);
@@ -507,23 +519,6 @@ class PaycartSiteControllerCart extends PaycartController
 	{
 		return true;
 	}
-	
-	/**
-	 * Collect payment on cart
-	 */
-	function pay() 
-	{
-		$payment_data	=	$this->input->post->get('payment_data', array(), 'array');		
-		$cart_id		=	$this->input->get('cart_id', 0);
-		$cart_instance	=	PaycartCart::getInstance($cart_id);
-
-		$cart_instance->collectPayment($payment_data);
-
-		$this->setRedirect(Rb_Route::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$cart_id));
-
-		return false;
-	}
-
 
 	/**
 	 * 

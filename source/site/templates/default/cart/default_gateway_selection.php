@@ -39,6 +39,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							<option value=<?php echo $gateway_id; ?> > <?php echo $gateway_details->title; ?> </option>
 						<?php endforeach;?>
 					</select>
+					<span class="pc-error" for="pc-checkout-payment-gateway"><?php echo JText::_('Error');?></span>					
 				</div>				
 			</div>
 
@@ -57,7 +58,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <script>
 	(function($){
 		$(document).ready(function(){		
-			paycart.cart.gatewaySelection.getPaymentForm($('#pc-checkout-payment-gateway').val());
+			paycart.cart.getPaymentForm($('#pc-checkout-payment-gateway').val());
 		});
 	})(paycart.jQuery);
 </script>
