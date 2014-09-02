@@ -20,15 +20,12 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartShippingrule extends PaycartLib 
 {	
 	protected $shippingrule_id     	= 0;
-	protected $title	      		= '';
 	protected $published      		= 1;
-	protected $description    		= '';
-	protected $grade	      		= 0;
-	protected $min_days				= 0;
-	protected $max_days				= 0;
-	protected $handling_charges		= 0;
+	protected $delivery_grade	    = 0;
+	protected $delivery_min_days	= 0;
+	protected $delivery_max_days	= 0;
+	protected $handling_charge		= 0;
 	protected $packaging_weight		= 0;
-	protected $tracking_url			= '';
 	protected $processor_classname	= '';
 	protected $processor_config		= '';
 	protected $created_date			= null;
@@ -38,7 +35,9 @@ class PaycartShippingrule extends PaycartLib
 	// language specific
 	protected $shippingrule_lang_id = 0;
 	protected $lang_code 			= '';
-	protected $message				= '';	
+	protected $message				= '';
+	protected $title	      		= '';
+	protected $description    		= '';
 	
 	// others
 	protected $_buyergroups			= array();
@@ -78,12 +77,11 @@ class PaycartShippingrule extends PaycartLib
 		$this->title				= '';
 		$this->published			= 1;
 		$this->description			= '';
-		$this->grade				= 0;
-		$this->min_days				= 0;
-		$this->max_days				= 0;
-		$this->handling_charges		= 0;
+		$this->delivery_grade		= 0;
+		$this->delivery_min_days	= 0;
+		$this->delivery_max_days	= 0;
+		$this->handling_charge		= 0;
 		$this->packaging_weight		= 0;
-		$this->tracking_url			= '';
 		$this->processor_classname	= '';
 		$this->processor_config		= new Rb_Registry();
 		$this->created_date			= new Rb_date();
@@ -101,15 +99,14 @@ class PaycartShippingrule extends PaycartLib
 		return $this;
 	}
 	
-	
 	public function getOrdering()
 	{
 		return $this->ordering;
 	}
 	
-	public function getGrade()
+	public function getDeliveryGrade()
 	{
-		return $this->grade;
+		return $this->delivery_grade;
 	}	
 	
 	/**
@@ -140,7 +137,7 @@ class PaycartShippingrule extends PaycartLib
 	 * @throws InvalidArgumentException if any product in $product_list does not exists in $product_details
 	 * 
 	 */	
-	public function getPackageShippingCost($product_list, $product_details)
+	public function getPackageShippingCost($product_list, $delivery_md5_address, $product_details)
 	{		
 		$helperRequest 			= PaycartFactory::getHelper('request');
 		/* @var $helperRequest PaycartHelperRequest */	
@@ -161,10 +158,9 @@ class PaycartShippingrule extends PaycartLib
 		$origin_address_id = 0;
 		$request->origin_address 	= $helperRequest->getBuyeraddressObject(new PaycartBuyeraddress($origin_address_id));
 		
-		//PCTODO: Try to pass address directly rather than using cart oject
-		$delivery_address = PaycartFactory::getHelper('cart')->getCurrentCart()->getShippingAddress(true);
+		$delivery_address = PaycartFactory::getHelper('shippingrule')->getAddressObject($delivery_md5_address);
 		
-		$request->delivery_address 	= $helperRequest->getBuyeraddressObject($delivery_address);
+		$request->delivery_address 	= $helperRequest->getBuyeraddressObject(new PaycartBuyeraddress($delivery_address));
 		
 		// get processor instance and set some parameters
 		$processor = $this->getProcessor();
@@ -174,9 +170,7 @@ class PaycartShippingrule extends PaycartLib
 		
 		$response  = new PaycartShippingruleResponse();
 		$response  = $processor->getPackageShippingCost($request, $response);
-		
-		//@ PCTODO : Trigger for gettin tax on shipping
-		
+				
 		if($response->amount === false){
 			// @PCTODO : Log error if required
 			return array(false, false);
@@ -198,7 +192,7 @@ class PaycartShippingrule extends PaycartLib
 	{
 		$config = new PaycartShippingruleRequestRuleconfig();
 		$config->packaging_weight = $this->packaging_weight;
-		$config->handling_charge  = $this->handling_charges;
+		$config->handling_charge  = $this->handling_charge;
 		return $config;
 	}
 	
@@ -246,9 +240,7 @@ class PaycartShippingrule extends PaycartLib
 		if(is_object($data)){
 			$data = (array) ($data);
 		}
-		
-		//PCTODO: Change weight, height, width, length etc in a format as per set weight/dimension unit
-		
+				
 		parent::bind($data, $ignore);		
 		
 		if(!isset($data['_buyergroups'])) {
@@ -300,4 +292,19 @@ class PaycartShippingrule extends PaycartLib
 		
 		return $id;
 	}	
+	
+	function getPackagingWeight()
+	{
+		return $this->packaging_weight;
+	}
+	
+	function getDeliveryMinDays()
+	{
+		return $this->delivery_min_days;
+	}
+	
+	function getDeliveryMaxDays()
+	{
+		return $this->delivery_max_days;
+	}
 }

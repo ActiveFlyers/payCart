@@ -97,23 +97,56 @@ paycart.admin.shippingrule = {};
 		
 		<div class="row-fluid">
 			<div class="span3">
-				<h2><?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_CONFIG_HEADER');?></h2>
+				<h2><?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_SHIPPING_METHOD_HEADER');?></h2>
 				<div>
-					<?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_CONFIG_HEADER_MSG');?>
+					<?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_SHIPPING_METHOD_HEADER_MSG');?>
+				</div>
+			</div>
+			<div class="span9">
+				<div class="row-fluid">
+						<div class="control-group">
+							<?php $field = $form->getField('processor_classname') ?>
+							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="controls" data-pc-shippingrule="processor">
+								<?php echo $field->input; ?>
+							</div>	
+						</div>
+						
+						<fieldset class="form-horizontal">
+							<div id="pc-shippingrule-processorconfig">
+								&nbsp;
+							</div>
+						</fieldset>
+				</div>
+			</div>
+		</div>
+		
+		<hr />
+		
+		<div class="row-fluid">
+			<div class="span3">
+				<h2><?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_DELIVERY_HEADER');?></h2>
+				<div>
+					<?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_DELIVERY_HEADER_MSG');?>
 				</div>
 			</div>
 			<div class="span9">
 				<div class="row-fluid">
 					<div class="span6">
-						<?php $field = $form->getField('grade') ?>
+						<?php $field = $form->getField('packaging_weight') ?>
 						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>						
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="control-label"><?php echo $field->label; ?></div>						
+							<div class="controls">
+								<span class="input-prepend">
+									<span class="add-on"><?php echo PaycartFactory::getConfig()->get('catalogue_weight_unit')?></span>
+									<input type="text" class="input-block-level" name="paycart_form[packaging_weight]" value="<?php echo $formatter->weight($rule->getPackagingWeight());?>">			
+								</span>
+							</div>								
 						</div>
 					</div>	
 					
 					<div class="span6">		
-						<?php $field = $form->getField('tracking_url') ?>
+						<?php $field = $form->getField('handling_charge') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>				
 							<div class="controls"><?php echo $field->input; ?></div>								
@@ -123,7 +156,7 @@ paycart.admin.shippingrule = {};
 				</div>
 				<div class="row-fluid">
 					<div class="span6">		
-						<?php $field = $form->getField('min_days') ?>
+						<?php $field = $form->getField('delivery_min_days') ?>
 						<div class="control-group">			
 							<div class="control-label"><?php echo $field->label; ?> </div>			
 							<div class="controls"><?php echo $field->input; ?></div>								
@@ -131,7 +164,7 @@ paycart.admin.shippingrule = {};
 					</div>
 					
 					<div class="span6">
-						<?php $field = $form->getField('max_days') ?>
+						<?php $field = $form->getField('delivery_max_days') ?>
 						<div class="control-group">			
 							<div class="control-label"><?php echo $field->label; ?> </div>			
 							<div class="controls"><?php echo $field->input; ?></div>								
@@ -139,20 +172,17 @@ paycart.admin.shippingrule = {};
 					</div>
 				</div>
 				
-				<div class="row-fluid">					
-					<div class="control-group">
-						<?php $field = $form->getField('processor_classname') ?>
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls" data-pc-shippingrule="processor">
-							<?php echo $field->input; ?>
-						</div>	
+				<div class="row-fluid">
+					<div class="span6">
+						<?php $field = $form->getField('delivery_grade') ?>
+						<div class="control-group">
+							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="controls"><?php echo $field->input; ?></div>						
+						</div>
 					</div>
 					
-					<fieldset class="form-horizontal">
-						<div id="pc-shippingrule-processorconfig">
-							&nbsp;
-						</div>
-					</fieldset>
+					<div class="span6">&nbsp;</div>
+				
 				</div>
 			</div>
 		</div>
