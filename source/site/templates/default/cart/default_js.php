@@ -228,8 +228,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 		paycart.cart.login.error = function(errors){
+						var error_mapper = {'email' : '#paycart_cart_login_email', 'password': '#paycart_cart_login_password', 'header' : '#paycart_cart_login'};
+						
 						for (var index in errors){
-							paycart.formvalidator.handleResponse(false, $('#'+errors[index].for), errors[index].message_type, errors[index].message);
+							paycart.formvalidator.handleResponse(false, $(error_mapper[errors[index].for]), errors[index].message_type, errors[index].message);
 						}
 					};
 
@@ -493,17 +495,17 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 		// update product-quantity into cart
-		paycart.cart.confirm.onApplyPromotionCode = function(){
+		paycart.cart.onApplyPromotionCode = function(){
 						var request = [];
 						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=applyPromotion';
 						request['data']	= {'promotion_code' : $('#paycart-promotion-code-input-id').val()};
-						request['success_callback']	= paycart.cart.confirm.onApplyPromotionCode.response;
+						request['success_callback']	= paycart.cart.onApplyPromotionCode.response;
 						paycart.cart.request(request);
 						
 						return false;
 					};
 					
-		paycart.cart.confirm.onApplyPromotionCode.response = function(response){				
+		paycart.cart.onApplyPromotionCode.response = function(response){				
 						if(response.valid){
 							paycart.cart.confirm.get();
 							return true;
@@ -520,8 +522,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 		paycart.cart.confirm.error = function(errors){
+						var error_mapper = {'header' : '#paycart_cart_confirm'};
+						
 						for (var index in errors){
-							paycart.formvalidator.handleResponse(false, $('#'+errors[index].for), errors[index].message_type, errors[index].message);
+							paycart.formvalidator.handleResponse(false, $(error_mapper[errors[index].for]), errors[index].message_type, errors[index].message);
 						}
 					};
 					
@@ -538,8 +542,16 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							return false;
 						}
 						
-						paycart.cart.gatewaySelection.getPaymentForm(paymentgateway_id);
-					};			
+						paycart.cart.getPaymentForm(paymentgateway_id);
+					};
+								
+		paycart.cart.gatewaySelection.error = function(errors){
+						var error_mapper = {'payment-gateway' : '#pc-checkout-payment-gateway'};
+						
+						for (var index in errors){
+							paycart.formvalidator.handleResponse(false, $(error_mapper[errors[index].for]), errors[index].message_type, errors[index].message);
+						}	
+					};
 
 	   /**
 		*	Invoke to get payment form html 
@@ -547,7 +559,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		*
 		* 	If successfully complete request then call  
 		*/
-		paycart.cart.gatewaySelection.getPaymentForm = function(paymentgateway_id){
+		paycart.cart.getPaymentForm = function(paymentgateway_id){
 						if (!paymentgateway_id) {
 							console.log('Payment Gateway required for fetching payment form html');
 							return false;
@@ -557,35 +569,42 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						
 						request['data'] = { 
 											'paymentgateway_id'	:	paymentgateway_id, 
-											'task' 				: 'getPaymentFormHtml'
+											'task' 				: 'paymentForm'
 										  };
 						  
-						request['success_callback']	= paycart.cart.gatewaySelection.afterFetchingPaymentForm;
+						request['success_callback']	= paycart.cart.getPaymentForm.response;
 						  
 						paycart.cart.request(request);
 						
 					 	return true;
 					};
-
-	   /**
-		*	Invoke to after fetching payment form   
-		*/
-		paycart.cart.gatewaySelection.afterFetchingPaymentForm = function(data){
-						// Payment-form setup into payment div
-				    	$('.payment-form-html').html(data['html']);
-		
-				    	// Payment-form action setup
-				    	$('#payment-form-html').prop('action', data['post_url']); 
+					
+		paycart.cart.getPaymentForm.response = function(response){
+						if(response.valid){
+							// Payment-form setup into payment div
+					    	$('.payment-form-html').html(response['html']);
+			
+					    	// Payment-form action setup
+					    	$('#payment-form-html').prop('action', response['post_url']); 
+							return true;
+						}
+						
+						for(var index in response.errors){
+							if(response.errors.hasOwnProperty(index) == false){
+								continue;
+							}
+							message += "\n" + response.errors[index].message;
+						}
 					};
 
 	   /**
 		*	Invoke to checkout cart (Cart will be locked)  
 		*/
-		paycart.cart.gatewaySelection.onCheckout = function(){
+		paycart.cart.order = function(){
 						var request = [];
 						
-						request['data'] = { 'task' : 'lock'};
-						request['success_callback']	= paycart.cart.gatewaySelection.onPayNow;
+						request['data'] = { 'task' : 'order'};
+						request['success_callback']	= paycart.cart.initiatePayment;
 						  
 						paycart.cart.request(request);
 		
@@ -595,7 +614,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	   /**
 		*	Invoke to initiate Payment 
 		*/
-		paycart.cart.gatewaySelection.onPayNow = function(){
+		paycart.cart.initiatePayment = function(){
 						//disabled pay now button and payment-gateways
 						$('#paycart-invoice-paynow, #pc-checkout-payment-gateway ').prop('disabled','disabled');
 						
@@ -603,11 +622,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				    	$('#payment-form-html').submit();
 					};	
 
-		paycart.cart.gatewaySelection.error = function(errors){
-						for (var index in errors){
-							paycart.formvalidator.handleResponse(false, $('#'+errors[index].for), errors[index].message_type, errors[index].message);
-						}
-					};
+		
 	})(paycart.jQuery);
 
 

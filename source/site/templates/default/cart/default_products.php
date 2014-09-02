@@ -26,7 +26,7 @@ $currencyId = $cart->getCurrency();
 <?php if(!empty($products)):?>
 <div id="pc-cart-products">
  	<!-- top-buttons -->
- 	<div class="row-fluid ">
+ 	<div class="row-fluid">
         <h3>
         	<span class="pull-left"> <?php echo JText::_('COM_PAYCART_CART');?> 
 	        	<span class="muted">

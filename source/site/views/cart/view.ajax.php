@@ -321,7 +321,7 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		$step->class = 'pc-checkout-step-'.Paycart::CHECKOUT_STEP_PAYMENT;
 		$step->title	=  JText::_('COM_PAYCART_CART_STEP_PAYMENT');
 		$step->onclick	= false;
-		$steps['payment']= $step;
+		$steps['gatewayselection']= $step;
 		
 		return $steps;
 	}

@@ -629,7 +629,7 @@ class PaycartCart extends PaycartLib
 	 * 
 	 * @return PaycartCart
 	 */
-	public function checkout()
+	public function order()
 	{
 		if ($this->is_locked) {
 			return $this;
