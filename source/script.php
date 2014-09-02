@@ -40,4 +40,23 @@ class Com_paycartInstallerScript
 	{
 		return true;
 	}
+	
+	/**
+	 * 
+	 * System invoke this method after an install/update/uninstall method
+	 * @param string $type is the type of change {install, update or discover_install}
+	 * @param Object $parent, is the class which is calling this method
+	 
+	 * @return void
+	 * 
+	 * @since 1.0
+	 * @author mManishTrivedi
+	 */
+	public function postFlight( $type, $parent ) 
+	{
+		// Create default Front end menus
+		require_once JPATH_ADMINISTRATOR.'/components/com_paycart/install/script/menu.php';
+		PaycartInstallScriptMenu::createMenus();
+		;
+	}
 }
