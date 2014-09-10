@@ -211,6 +211,16 @@ class PaycartCart extends PaycartLib
 	{
 		$this->session_id	=	$id;
 	}
+        
+     public function getCreatedDate()
+     {
+        return $this->created_date;
+     }
+     
+	public function getPaidDate()
+    {
+		return $this->paid_date;
+	}
 	
 	/**
 	 * 
@@ -622,7 +632,7 @@ class PaycartCart extends PaycartLib
 	
 	/**
 	 * 
-	 * Invoke to checkout existing cart
+	 * Invoke to checkout/Order existing cart
 	 * 	- Store all params value
 	 * @since 1.0
 	 * @author Gaurav Jain, mManishTrivedi
@@ -834,19 +844,13 @@ class PaycartCart extends PaycartLib
 		return $this->getParam('promotions','');
 	}
 	
-	/**
-	 * 
-	 * Process on cart 
-	 * @param $data				:	
-	 * 		# if $processingType  is 'Payment' then $data is post data from Payment Processor
-	 * 		# if $processingType  is 'notify' then $data is request data from Payment Processor 			
-	 * @param $processingType 	: {'payment', 'notify', 'complete' }
-	 * 
-	 * 
-	 * @return bool value
-	 */
-	
-	/**
+        public function getLink()
+        {
+            //@FIXME :: build cart secure key
+            return PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display&key='.$this->cart_id);
+        }
+
+        /**
 	 * Invoke to collect payment on this cart
 	 * Payment collection on cart 
 	 * @param Array $payment_data : $data is post data from Payment Processor

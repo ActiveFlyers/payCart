@@ -136,6 +136,12 @@ class PaycartHelperAdminmenu extends PaycartHelper
 											'url' => 'index.php?option=com_paycart&view=country',
 											'class' => 'fa-flag'
 										),
+                                                                            
+                                     	Array(
+											'title' => JText::_('COM_PAYCART_ADMIN_CUSTOMER_NOTIFICATIONS'),
+											'url' => 'index.php?option=com_paycart&view=notification',
+											'class' => 'fa-volume-up'
+                                                                                 ),
 //										Array(
 //											'title' => JText::_('COM_PAYCART_ADMIN_INTEGRATION_APPS'),
 //											'url' => 'index.php?option=com_paycart&view=integration',

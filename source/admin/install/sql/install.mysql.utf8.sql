@@ -672,12 +672,65 @@ CREATE TABLE IF NOT EXISTS `#__paycart_usage` (
   INDEX `idx_cartparticular_id` (`cartparticular_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='All rule''s usage history is available here' AUTO_INCREMENT=1 ;
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_notification`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_notification` (
+  `notification_id` int(11) NOT NULL AUTO_INCREMENT,
+  `published` tinyint(1) NOT NULL DEFAULT '1',
+  `event_name` varchar(100) NOT NULL,
+  `to` varchar(255) NOT NULL,
+  `cc` varchar(255) NOT NULL,
+  `bcc` varchar(255) NOT NULL,
+  `media` varchar(255) NOT NULL COMMENT 'all attachment media store  here (In json format)',
+  PRIMARY KEY (`notification_id`),
+  INDEX `idx_event_name` (`event_name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_notification_lang`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_notification_lang` (
+  `notification_lang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `notification_id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `lang_code` varchar(7) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `body` text NOT NULL,
+  PRIMARY KEY (`notification_lang_id`),
+  INDEX `idx_notification_id` (`notification_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
+
 -- --------------------------------------------------------
 -- ------------------- DEFAULT VALUES ---------------------
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_config`
+-- Dumping data for table `#__paycart_notification`
+--
+
+INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `event_name`, `to`, `cc`, `bcc`, `media`) VALUES
+(1, 1, 'onpaycartcartpaid', '', '', '', '{}');
+
+
+--
+-- Dumping data for table `#__paycart_notification_lang`
+--
+
+INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `notification_id`, `title`, `description`, `lang_code`, `subject`, `body`) VALUES
+(1, 1, 'on Cart Paid', 'Send to customer when thier cart is paid', 'en-GB', 'Trial-1', 'Hello \r\n\r\nJust trial email \r\nbilling to : [[billing_to]]\r\nshipping to : [[shipping_to]]');
+
+--
+-- Dumping data for table `#__paycart_config`
 --
 INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('catalogue_dimension_unit', 'm'),

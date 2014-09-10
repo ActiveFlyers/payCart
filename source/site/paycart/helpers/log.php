@@ -68,7 +68,7 @@ class PaycartHelperlog
 	 * @since	1.0
 	 * @author	Manish Trivedi
 	 */
-	public function getString($message) 
+	protected function getString($message) 
 	{
 		ob_start();
 		var_export($message);
@@ -100,7 +100,7 @@ class PaycartHelperlog
 		
 		// @PCTODO :: use PCDEBUG instead of JDEBUG
 		if (defined('JDEBUG') && JDEBUG) {
-			JLog::add( $this->getString( $responseData), $priority, $category, $date);
+			JLog::add( $this->getString( $entry), $priority, $category, $date);
 		}
 	}
 	
