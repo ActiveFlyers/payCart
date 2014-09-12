@@ -30,7 +30,7 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 			//@PCTODO :: Rise exception 
 		}
 		
-		$post['title'] = $this->input->get('category_name');
+		$post['title'] = $this->input->get('category_name',null,'RAW');
 		
 		if (!$post['title']) {
 			// @codeCoverageIgnoreStart

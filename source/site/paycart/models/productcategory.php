@@ -66,7 +66,7 @@ class PaycartModelProductcategory extends PaycartModelLang
 		$query 	= new Rb_Query();
 		$result = $query->select('alias')
 						->where("`alias` LIKE '$string%'")
-			  			->from($this->getTable()->get('_tbl'))
+			  			->from($this->getLanguageTable()->get('_tbl'))
 			  			->dbLoadQuery()->loadcolumn();
 
 		// build new column value

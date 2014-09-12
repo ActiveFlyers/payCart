@@ -30,7 +30,7 @@ class PaycartHelperProductCategory extends PaycartHelper
 		$model = PaycartFactory::getModel('productcategory');
 		// Should be sorted according to 'title' so need to write query with "order by"
 		$model->clearQuery();  
-		$query = $model->getQuery()->where('published = 1')->clear('order')->order('lft');
+		$query = $model->getQuery()->where('published = 1')->clear('order')->clear('limit')->order('lft');
 		
 		$result = $model->loadRecords();
 		 
