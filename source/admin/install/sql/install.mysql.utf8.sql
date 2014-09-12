@@ -143,8 +143,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory_lang` (
   `metadata_title` varchar(255) DEFAULT NULL,
   `metadata_keywords` varchar(255) DEFAULT NULL,
   `metadata_description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`productcategory_lang_id`),
-  UNIQUE KEY `idx_alias` (`alias`)
+  PRIMARY KEY (`productcategory_lang_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------

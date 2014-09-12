@@ -28,6 +28,25 @@ class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
 		return parent::display($tpl);
 	}
 	
+	protected function _adminGridToolbar()
+	{
+		Rb_HelperToolbar::editList();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::publish();
+		Rb_HelperToolbar::unpublish();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::deleteList();
+	}
+	
+	protected function _adminEditToolbar()
+	{
+		Rb_HelperToolbar::apply();
+		Rb_HelperToolbar::save();
+		//Rb_HelperToolbar::save2new('savenew'); //not needed, because grouptype is required to be selected manually, while creating new
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::cancel();
+	}
+	
 	public function edit($tpl=null) 
 	{
 		$itemId			=  $this->getModel()->getId();

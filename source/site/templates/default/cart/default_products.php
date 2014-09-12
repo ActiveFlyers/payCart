@@ -68,16 +68,22 @@ $currencyId = $cart->getCurrency();
 						<span><?php echo JText::_("COM_PAYCART_UNIT_PRICE")?> :</span>
 						
 						<span><?php echo $formatter->amount($item->getUnitPrice(),true,$currencyId); ?></span><br />
-				 	<?php //if($item->tax>0):?>
-<!--				 	<span class="muted">+ Tax </span><span><?php //echo $item->tax;?> %</span><br />-->
-				 <?php //endif;?> 
+					<?php if($item->getDiscount() != 0):?>
+				 		<span>- <?php echo JText::_("COM_PAYCART_DISCOUNT")?> </span><span> : <?php echo $formatter->amount(-($item->getDiscount()),true,$currencyId);?></span><br />
+				 	<?php endif;?> 
+				 	<?php if($item->getTax() > 0):?>
+				 		<span>+ <?php echo JText::_("COM_PAYCART_TAX")?></span><span> : <?php echo $formatter->amount($item->getTax(),true,$currencyId);?></span><br />
+					 <?php endif;?>
+				 	
 				 </p>
 				 
 				<div class="clearfix">
 					<div class="pull-left pc-grid-4">
 					 	 <label><big><?php echo Jtext::_("COM_PAYCART_QUANTITY")?></big></label>
 				 		 <span>
-				 		 	<input class="pc-grid-6 pc-cart-quantity-<?php echo $product->getId()?>" type="number" min="1" value="<?php echo $item->getQuantity(); ?>"/>&nbsp;
+				 		 	<!-- when enter key is presssed then also update quantity -->
+				 		 	<input class="pc-grid-6 pc-cart-quantity-<?php echo $product->getId()?>" type="number" min="1" value="<?php echo $item->getQuantity(); ?>" 
+				 		 	       onkeydown="if (event.keyCode == 13) return paycart.cart.product.updateQuantity(<?php echo $product->getId();?>); "/>&nbsp;
 				 		 	<a href="javascript:void(0);" onClick="paycart.cart.product.updateQuantity(<?php echo $product->getId();?>)"><i class="fa fa-refresh"></i></a>
 				 		 </span>
 				 		 <div class="pc-grid-12 text-error pc-cart-quantity-error-<?php echo $product->getId()?>"></div>
@@ -100,11 +106,32 @@ $currencyId = $cart->getCurrency();
 		</div>
 		<hr />
 	<?php endforeach;?>
+	
+	<?php if(!empty($promotionParticular)):?>
+		<h5 class="text-right">
+			<?php echo JText::_("COM_PAYCART_DISCOUNT")." = ";?> <?php echo $formatter->amount($promotionParticular->discount,true,$currencyId); ?>
+		</h5>
+	<?php endif;?>
+	
+	<?php if(!empty($dutiesParticular)):?>
+		<h5 class="text-right">
+			<?php echo JText::_("COM_PAYCART_TAX")." = ";?><?php echo $formatter->amount($dutiesParticular->tax,true,$currencyId); ?>
+		</h5>
+	<?php endif;?>
+	
+	<?php $shipping = 0;?>
+	<?php if(!empty($shippingParticulars)):?>
+		<?php foreach ($shippingParticulars as $particular):?>
+			<?php $shipping += $particular->getTotal();?>
+		<?php endforeach;?>
+		<h5 class="text-right">
+			<?php echo JText::_("COM_PAYCART_CART_DELIVERY_CHARGES")." = ";?><?php echo $formatter->amount($shipping,true,$currencyId); ?>
+		</h5>
+	<?php endif;?>
 		
 	<h3 class="text-right">
 		<span class="text-error"><?php echo JText::_('COM_PAYCART_ESTIMATED_TOTAL')." = ";?><strong><?php echo $formatter->amount($cart->getTotal(),true,$currencyId); ?></strong></span>
 	</h3>
-<!--	<p class="small text-right"><a href="#" ><?php //echo JText::_('Delivery charges may apply');?></a></p>-->
 	 
 	 <!--  footer buttons --> 
 	 <div class="clearfix">

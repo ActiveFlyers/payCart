@@ -37,10 +37,16 @@ class PaycartSiteBaseViewcart extends PaycartView
 		$helper = PaycartFactory::getHelper('cart');
 		$cart 	= $helper->getCurrentCart();
 		
-		$productParticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
-		
+		$productParticulars  = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		$promotionParticular = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+		$dutiesParticular    = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		$shippingParticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+				
 		$this->assign('products',$productParticulars);
 		$this->assign('cart', $cart);
+		$this->assign('promotionParticular',(empty($promotionParticular))?(array_shift($promotionParticular)->toObject()):new stdClass());
+		$this->assign('dutiesParticular',(empty($promotionParticular))?(array_shift($dutiesParticular)->toObject()):new stdClass());
+		$this->assign('shippingParticulars',$shippingParticulars);
 		
 		return true;
 	}	
