@@ -27,10 +27,8 @@ class PaycartNotification extends PaycartLib
 	
 	//language specific data
 	protected $notification_lang_id	   	= 0;
-	protected $lang_code 		   	= '';	
-	
-	
-    protected $title                        = '';
+	protected $lang_code 		   	= '';
+        protected $title                        = '';
 	protected $description                  = '';
 	protected $subject		   	= '';
 	protected $body			   	= '';
@@ -43,7 +41,7 @@ class PaycartNotification extends PaycartLib
          * Lib specific var
          * @var JMail 
          */
-    protected $_mailer;
+        protected $_mailer;
 
         
 	/**
@@ -66,8 +64,6 @@ class PaycartNotification extends PaycartLib
             $this->subject                  = '';	
             $this->body                     = '';
             
-            $this->_mailer = PaycartFactory::getMailer();
-            
             return $this;
 	}
 	
@@ -85,114 +81,69 @@ class PaycartNotification extends PaycartLib
 	{
             return parent::getInstance('notification', $id, $data);
 	}
-	
-	/**
-	 * @return Product name 
-	 */
-	public function getTitle() 
-	{	
-            return $this->title;
-	}
-	
-	/**
-	 * @return media id set as product Cover Media 
-	 */
-	public function geMedia($requireMediaArray = true) 
-	{
-            return $this->media;
-	}
         
-   /**
-    * Add given buyer email to TO
-    * @param type $buyer_email
-    * @return boolean 
-    */
-	public function addTo($buyer_email)
-	{
-            if(empty($buyer_email)) {
-                PaycartFactory::getHelper('log')->addLog('Recipient is not exixt here');
-                return false;
-            }
-
-            $this->_mailer->addRecipient($buyer_email);
-            
-            if(!empty($this->to)) {
-                $this->_mailer->addRecipient($this->to);
-            }
-            
-           return true;   
-	}
-
         
-   /**
-    * Add carbon copy recipients to the email
-    * 
-    * @return boolean 
-    */
-	public function addCC()
-	{
-            if(empty($this->cc)) {
-                return false;
-            }
-
-            $emails = explode(',', $this->cc);
-            
-            foreach($emails as $email){
-                $this->_mailer->addCC($email);
-            }
-            
-            return true;
-	}
-
         /**
-         * Add blind carbon copy recipients to the email
-         * 
-         * @return boolean 
+         * @PCTODO:: move to helper
+		 * Invoke to get PaycartNotification Instances for specific event 
+         * @param type $event_name
+         * @return Array  
          */
-	public function addBCC()
-	{
-            if(empty($this->cc)) {
-                return false;
-            }
-
-            $emails = explode(',', $this->cc);
-            
-            foreach($emails as $email){
-                $this->_mailer->addBCC($email);
-            }
-            
-            return true;
-        }
-        
-
-        /**
-         * Invoke on specific event firing
-         * @param type $entity_object 
-         */
-        protected function _sendNotification($buyer_email, $relative_object)
+        public static function getInstanceByEventname($event_name)
         {
-            // build token with their values
-            //@PCTODO :: move token proper location, We can use on email preview. 
-            $tokens = Array();
+            $records = $this->getModel()->loadRecords(Array('event_name' => "$event_name"));
             
-             /* @var $token_helper PaycartHelperToken  */
+            $instance = Array();
+            foreach ($records as $record_id => $data) 
+            {
+                $instance[$record_id] = self::getInstance($record_id, $data); 
+            }
+            
+            return $instance;
+        }
+
+        /**
+         *
+         * @return title
+         */
+		public function getTitle() 
+		{	
+           return $this->title;
+		}
+	
+        /**
+         * Invoke to send email.
+         * This assume that "to" have properly configured
+         * 
+         * @param Array $tokens
+         * 
+         * @return void
+         */
+        protected function _sendEmail(Array $tokens)
+        {
+            $mailer                  = PaycartFactory::getMailer();
+            
+            /* @var $token_helper PaycartHelperToken  */
             $token_helper = PaycartFactory::getHelper('token');
             
-            $tokens = array_merge($tokens, $token_helper->getCartToken($relative_object->cart));
-            $tokens = array_merge($tokens, $token_helper->getConfigToken($relative_object->config));
-            $tokens = array_merge($tokens, $token_helper->getBuyerToken($relative_object->buyer));
-            $tokens = array_merge($tokens, $token_helper->getProductToken($relative_object->product_particular_list));
-            $tokens = array_merge($tokens, $token_helper->getBillingToken($relative_object->billing_address));
-            $tokens = array_merge($tokens, $token_helper->getShippingToken($relative_object->shipping_address));
-            
-            $this->subject  =    $token_helper->replaceTokens($this->subject, $tokens);
-            $this->body     =    $token_helper->replaceTokens($this->body, $tokens);
-            
-            
             // Add email recipient
-            $this->addTo($buyer_email);
-            $this->addCC();
-            $this->addBCC();
+            $to  =    $token_helper->replaceTokens($this->to, $tokens);
+            $to = explode(',', $to);
+            $mailer->addRecipient($to);
+            
+            //Add carbon copy recipients to the email
+            if ( !empty($this->cc ) ) {
+                $cc   =   $token_helper->replaceTokens($this->cc, $tokens);
+                $cc   =   explode(',', $cc);
+                $this->_mailer->addCC($cc);
+            }
+            
+            // Add carbon copy recipients to the email
+            if ( !empty($this->bcc ) ) {
+                $bcc   =   $token_helper->replaceTokens($this->bcc, $tokens);
+                $bcc         =   explode(',', $bcc);
+                $this->_mailer->addBCC($bcc);
+            }
             
             // Add subject
             $this->_mailer->setSubject($this->subject);
@@ -201,15 +152,13 @@ class PaycartNotification extends PaycartLib
             // Add Body
             $this->_mailer->setBody($this->body);
             
-            /* @var $helper PaycartHelperlog */
-            $helper = PaycartFactory::getHelper('log');
-   
-            if ( $this->_mailer->Send() ) {
-                $helper->add("Email Successfully send. {$this}");  
-            } else {
+            
+            if ( !$this->_mailer->Send() ) {
                 //@PCTODO :: Notify to admin
-                $helper->add("Email sending fail on {$this}");  
+                return false;
             }
+            
+            return true;
         }
         
         
@@ -223,13 +172,9 @@ class PaycartNotification extends PaycartLib
             $token_helper = PaycartFactory::getHelper('token');
             
             // get all relative objects
-            $relative_object = $token_helper->getCartRelativeObjects($cart);
-            
-            $buyer_email = $cart->getBuyer(true)->getEmail();
+            $tokens = $token_helper->buildCartTokens($cart);
             
             // send notification
-            $this->_sendNotification($buyer_email, $relative_object);
+            $this->_sendEmail($tokens);
         }
-        
-        
 }

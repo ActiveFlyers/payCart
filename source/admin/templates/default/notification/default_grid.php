@@ -8,6 +8,9 @@
 */
 
 defined('_JEXEC') or die( 'Restricted access' );
+        // include once
+        echo $this->loadTemplate('js');
+
 ?>
 	
 	<div class="pc-notification row-fluid">
@@ -37,15 +40,15 @@ defined('_JEXEC') or die( 'Restricted access' );
                                                     <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" />
                                                 </th>
                                                 <th >
-                                                      <?php echo PaycartHtml::_('grid.sort', "ID", 'notification_id', $filter_order_Dir, $filter_order);?>
+                                                      <?php echo PaycartHtml::_('grid.sort', 'COM_PAYCART_ADMIN_ID', 'notification_id', $filter_order_Dir, $filter_order);?>
                                                 </th>
 
                                                 <th>
-                                                    <?php echo PaycartHtml::_('grid.sort', "Title", 'title', $filter_order_Dir, $filter_order);?>
+                                                    <?php echo PaycartHtml::_('grid.sort', 'COM_PAYCART_ADMIN_TITLE', 'title', $filter_order_Dir, $filter_order);?>
                                                 </th>
                                                 
                                                 <th>
-                                                    <?php echo JText::_('COM_PAYCART_ADMIN_STATUS'); ?>
+                                                    <?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_STATUS", 'published', $filter_order_Dir, $filter_order);?>
                                                 </th>
                                                 
                                                 <th>
@@ -74,7 +77,7 @@ defined('_JEXEC') or die( 'Restricted access' );
                                                                          </a>
 
                                                                 </td>
-                                                                <td><?php echo $record->published;?></td>
+                                                                <td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
                                                                 <td><?php echo $record->description;?></td>
                                                                 
 							</tr>

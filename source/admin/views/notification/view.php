@@ -15,6 +15,11 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author mManishTrivedi
  */
 class PaycartAdminBaseViewNotification extends PaycartView
-{	
+{
+    protected function _adminGridToolbar()
+    {
+        Rb_HelperToolbar::publish();
+		Rb_HelperToolbar::unpublish();
+    }
 	
 }

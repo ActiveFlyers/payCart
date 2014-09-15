@@ -9,23 +9,50 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 ?>
-
+<style>
+    .pc-notification .left-config {
+        max-height: 400px; 
+        overflow-y: auto;
+    }
+    
+</style>
 
 <div id="rbWindowTitle">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3 id="myModalLabel"><?php echo JText::_('COM_PAYCART_EDIT_NOTIFICATION_TEMPLATE'); ?></h3>
+		<h3 id="myModalLabel"><?php echo JText::_('COM_PAYCART_ADMIN_EDIT_NOTIFICATION_TEMPLATE'); ?></h3>
 	</div>
 </div>
 
 <div id="rbWindowBody">
 	<div class="modal-body">
             
-            <div class="pc-notification row-fluid" class="rb-validate-form" >
-                    <!-- CONTENT START -->		
+            <div class="pc-notification " class="rb-validate-form" >
+                    <!-- CONTENT START -->	
                     <div class="row-fluid">
+                        
+                     <div class="span8 left-config">
                         <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="paycart_notification_form" class="rb-validate-form">
 
+                            
+                            <div class="row-fluid">
+                                <?php $field = $form->getField('to') ?>					
+                                <div class="control-group">
+                                        <div class="control-label"><?php echo $field->label; ?> </div>
+                                        <div class="controls"><?php echo $field->input; ?></div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="row-fluid">
+                                <?php $field = $form->getField('cc') ?>					
+                                <div class="control-group">
+                                        <div class="control-label"><?php echo $field->label; ?> </div>
+                                        <div class="controls"><?php echo $field->input; ?></div>
+                                </div>
+                            </div>
+                            
+                            
                             <div class="row-fluid">
                                 <?php $field = $form->getField('bcc') ?>					
                                 <div class="control-group">
@@ -55,6 +82,37 @@ defined('_JEXEC') or die( 'Restricted access' );
                             <input type='hidden' name='id' value='<?php echo $record_id;?>' />
                             <input type="hidden" name="task" value="" />
                         </form>
+                        </div>
+                        
+                        <div class="span4">
+                            <div class="control-group">
+                                <div class="control-label"><?php echo JText::_('COM_PAYCART_ADMIN_TOKEN_LIST'); ?> </div>
+                                <div class="controls ">
+                                    <select size="20" ondblclick=" paycart.token.insert_at_cursor(this.value);">
+                                     <?php   
+                                          foreach ($available_token_list as $token_type => $tokens) {
+                                        ?>
+                                        <optgroup label="<?php echo $token_type; ?>">
+                                        <?php
+                                            foreach ($tokens as $value) {
+                                              echo "<option value='[[$value]]'> $value </option>";  
+                                            }
+                                          ?>
+                                        </optgroup>
+                                          <?php  
+                                         }
+                                       ?>
+                                    </select>
+                                </div>
+                                <span>
+                                    <small>
+                                      <i> <?php echo JText::_('COM_PAYCART_ADMIN_SELECT_TOKEN_MESSAGE')  ?></i>
+                                    </small>
+                                </span>
+                            </div>
+                            
+                        </div>
+                        
                     </div>    
                 </div>	
                     
@@ -67,13 +125,14 @@ defined('_JEXEC') or die( 'Restricted access' );
 <div id="rbWindowFooter">
 	<div class="modal-footer">
             
-                <button class="btn pull-left " onClick="paycart.admin.notification.preview.go();"> 
-			<?php echo JText::_('COM_PAYCART_ADMIN_PREVIEW'); ?> 
-                </button>
-		<button class="btn pull-left" data-dismiss="modal" aria-hidden="true" >
-                       <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_TEST'); ?> 
+<!--                <button class="btn pull-left " onClick="paycart.admin.notification.preview.go();"> 
+			<?php //echo JText::_('COM_PAYCART_ADMIN_PREVIEW'); ?> 
                 </button>
             
+		<button class="btn pull-left" data-dismiss="modal" aria-hidden="true" >
+                       <?php    // echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_TEST'); ?> 
+                </button>
+            -->
             
 		<button class="btn btn-primary " onClick="paycart.admin.notification.update.go();"> 
 			<?php echo JText::_('COM_PAYCART_ADMIN_SAVE'); ?> 
@@ -83,13 +142,21 @@ defined('_JEXEC') or die( 'Restricted access' );
                 </button>
 	</div>
 </div>
-
 	
 <script>
 	(function($) {
-		
+                // keyup mousedown mousemove mouseup
+                // bind element
+               $('.paycart-token-container').on("input click", function () {
+                   
+                   paycart.token.set_cursor_position($(this));  
+               });
+               
+               // default element bind
+               paycart.token.set_cursor_position($('#paycart_form_to'));
+                
 	})(paycart.jQuery);
 	
 </script>
-<?php  
-	
+
+<?php 

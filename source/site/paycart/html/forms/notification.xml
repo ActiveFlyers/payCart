@@ -23,7 +23,7 @@
 			name="description" 
 			type="textarea"				
 			labelclass="control-label"
-			class="input-block-level"
+			class="input-block-level "
 			label="COM_PAYCART_ADMIN_DESCRIPTION"/>
 			
 		<field
@@ -45,40 +45,38 @@
 			readonly="true"
 			label="COM_PAYCART_ADMIN_TYPE"
 			 />
-                        
-        <field 
-			name="to" 
-			type="email"	
-			class="input-block-level"
+                
+<!--  Make sure field type is not email otherwise validation will be stop to save it               -->
+                <field 
+			name="to"  type="text"	required="true"
+                        class="input-block-level paycart-token-container"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_NOTIFICATION_TO"/>
 		<field 
 			name="cc" 
-			type="email"	
-			class="input-block-level"
+			type="text"	
+			class="input-block-level paycart-token-container"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_NOTIFICATION_CC"/>
 
 		<field 
 			name="bcc" 
-			type="email"	
-			class="input-block-level"
+			type="text"	
+			class="input-block-level paycart-token-container"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_NOTIFICATION_BCC"/>
 
 		<field 
-			name="subject" 
-			type="text"	
-            required="true"
-			class="input-block-level"
+			name="subject"  type="text"	
+                        required="true"
+			class="input-block-level paycart-token-container"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_NOTIFICATION_SUBJECT"/>
             
 		<field 
-			name="body" 
-            required="true"
+			name="body"  required="true"
 			type="textarea"	
-			class="input-block-level"
+                        class="input-block-level paycart-token-container"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_NOTIFICATION_BODY"
             rows="10" />

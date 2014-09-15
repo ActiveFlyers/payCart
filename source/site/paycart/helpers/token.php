@@ -20,7 +20,63 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartHelperToken extends PaycartHelper
 {
+    static $_tokens = Array();
     
+    public function __construct() 
+    {
+        $this->buildTokens();
+    }
+    
+    public function getTokenList()  
+    {
+        return static::$_tokens;
+    }
+    
+    private function buildTokens() 
+    {
+        if (!empty(static::$_tokens)) {
+            return true;
+        }
+        
+        //buyer specific
+        static::$_tokens['buyer'] =
+                Array('buyer_email' , 'buyer_name');
+                    
+        // billing specific
+        static::$_tokens['billing'] =
+                Array(  'billing_to',   'billing_address',  'billing_phone1',
+                        'billing_phone2', 'billing_zip_code','billing_vat_number',
+                        'billing_country', 'billing_state','billing_zip_code'
+                      );
+        // shipping specific
+        static::$_tokens['shipping'] =   
+                Array(  'shipping_to',      'shipping_address',  'shipping_phone1',
+                        'shipping_phone2',  'shipping_zip_code','shipping_vat_number',
+                        'shipping_country', 'shipping_state','shipping_zip_code'
+                      );
+        
+        // cart specific
+        static::$_tokens['cart']  =
+                Array(  'cart_total', 'cart_product_count', 'cart_created_date',
+                        'cart_paid_date',  'cart_link' );
+        
+        //config specific
+        static::$_tokens['config']   =
+                Array('store_address');
+        
+        //Product Tokens
+        static::$_tokens['product']   =
+                Array('products_detail');
+        
+        return true;
+    }
+    
+    
+//    public function setTokens(Array $tokens, $token_type) 
+//    {
+//        static::$_tokens[$token_type] = $tokens;
+//    }
+
     /**
      * Invoke to replace tokens from text 
      * @param type $text
@@ -40,14 +96,12 @@ class PaycartHelperToken extends PaycartHelper
         return $text;
     }
 
-
     /**
-     * Invoke to get all relative object get from cart
-     * @param PaycartCart $cart
+     * Invoke to build token on cart object
+     * @param PaycartCart $cart 
      * 
-     * @return stdClass
      */
-    public function getCartRelativeObjects(PaycartCart $cart  ) 
+    public function buildCartTokens( PaycartCart $cart )
     {
         $relative_objects = new stdClass();
         
@@ -60,19 +114,30 @@ class PaycartHelperToken extends PaycartHelper
         
         $relative_objects->product_particular_list =  $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
         
-        return $relative_objects;
+        $tokens = Array();
+            
+        $tokens = array_merge($tokens, $this->getCartToken($relative_object->cart));
+        $tokens = array_merge($tokens, $this->getConfigToken($relative_object->config));
+        $tokens = array_merge($tokens, $this->getBuyerToken($relative_object->buyer));
+        $tokens = array_merge($tokens, $this->getProductToken($relative_object->product_particular_list));
+        $tokens = array_merge($tokens, $this->getBillingToken($relative_object->billing_address));
+        $tokens = array_merge($tokens, $this->getShippingToken($relative_object->shipping_address));
+        
+        
+        //@PCTODO :: Trigger to add new tokens
+        
+        return $tokens;
     }
-    
-    
+
     /**
      * Invoke to get billing token with their values
      * @param PaycartBuyeraddress $billing_address 
      * 
      * @return Array
      */
-    public function getBillingToken(PaycartBuyeraddress $billing_address ) 
+    private  function getBillingToken(PaycartBuyeraddress $billing_address ) 
     {
-       $tokens =  Array();
+        $tokens =  Array();
         
         // cart specific
         $tokens['billing_to']              =   $billing_address->getTo();
@@ -81,6 +146,9 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['billing_phone2']          =   $billing_address->getPhone2();
         $tokens['billing_zip_code']        =   $billing_address->getZipcode();
         $tokens['billing_vat_number']      =   $billing_address->getVatnumber();
+        $tokens['billing_country']         =   $billing_address->getCountryId();
+        $tokens['billing_state']           =   $billing_address->getStateId();
+        $tokens['billing_zip_code']        =   $billing_address->getZipcode();
         
         return $tokens;
     }
@@ -92,7 +160,7 @@ class PaycartHelperToken extends PaycartHelper
      *
      * @return Array
      */
-    public function getshippingToken(PaycartBuyeraddress $shipping_address ) 
+    private function getShippingToken(PaycartBuyeraddress $shipping_address ) 
     {
        $tokens =  Array();
         
@@ -103,6 +171,9 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['shipping_phone2']          =   $shipping_address->getPhone2();
         $tokens['shipping_zip_code']        =   $shipping_address->getZipcode();
         $tokens['shipping_vat_number']      =   $shipping_address->getVatnumber();
+        $tokens['shipping_country']         =   $shipping_address->getCountryId();
+        $tokens['shipping_state']           =   $shipping_address->getStateId();
+        $tokens['shipping_zip_code']        =   $shipping_address->getZipcode();
         
         return $tokens;
     }
@@ -113,7 +184,7 @@ class PaycartHelperToken extends PaycartHelper
      *
      * @return Array
      */
-    public function getCartToken(PaycartCart $cart ) 
+    private function getCartToken(PaycartCart $cart ) 
     {
        $tokens =  Array();
         
@@ -134,7 +205,7 @@ class PaycartHelperToken extends PaycartHelper
      * 
      * @return Array 
      */
-    public function getBuyerToken(PaycartBuyer $buyer)
+    private  function getBuyerToken(PaycartBuyer $buyer)
     {
        $tokens =  Array();
        
@@ -149,7 +220,7 @@ class PaycartHelperToken extends PaycartHelper
      * @param stdClass $config
      * @return Array 
      */
-    public function getConfigToken($config)
+    private  function getConfigToken($config)
     {
        $tokens =  Array();
        
@@ -165,7 +236,7 @@ class PaycartHelperToken extends PaycartHelper
      * 
      * @return array 
      */
-    public function getProductToken(Array $product_particulars)    
+    private  function getProductToken(Array $product_particulars)    
     {
         $tokens =  Array();
         
