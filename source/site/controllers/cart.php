@@ -53,6 +53,12 @@ class PaycartSiteControllerCart extends PaycartController
 		return parent::__construct($options);
 	}
 	
+    /**
+     *
+     * Invoke to check existing cart is valid or not
+     * @param array $form_data
+     * @return boolean 
+     */
 	private function _isCartValid(Array $form_data = Array() )
 	{
 		// if cart is not exist or cart is empty then intimate to end user 
@@ -61,6 +67,7 @@ class PaycartSiteControllerCart extends PaycartController
 			return false;
 		}
 		
+        // If cart is empty
 		if ( 0 == count($this->cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT)) ) {
 		 	$this->setTemplate('error_empty_cart');
 			return false;
@@ -92,6 +99,9 @@ class PaycartSiteControllerCart extends PaycartController
 			
 			//set it not guest checkout
 			$this->cart->setIsGuestCheckout(false);
+                        
+             //set buyer id on cart
+             $this->cart->setBuyer($buyer->id);
 			
 			// set buyer 
 			$this->cart->setParam('buyer', $buyer);
@@ -212,6 +222,8 @@ class PaycartSiteControllerCart extends PaycartController
 		
 		//set it not guest checkout
 		$this->cart->setIsGuestCheckout(false);
+        //set buyer id on cart
+        $this->cart->setBuyer($buyer->id);
 		
 		// set buyer 
 		$this->cart->setParam('buyer', $buyer);

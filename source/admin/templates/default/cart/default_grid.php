@@ -56,7 +56,15 @@ defined('_JEXEC') OR die();
 					<td><?php echo PaycartHtml::link($uri.'&task=edit&cart_id='.$record->cart_id, $record->cart_id);?></td>
 					<td>
 						<?php $buyer = PaycartBuyer::getInstance($record->buyer_id);?>
-						<?php echo $buyer->getUsername().' ('.$record->buyer_id.') ';?>
+						<?php 
+                                    $buyer_username = $buyer->getUsername();
+
+                                     if (!$record->buyer_id) {
+     						               $buyer_username = JText::_('COM_PAYCART_GUEST_USERNAME');
+                                      }
+
+	                                 echo $buyer_username.' ('.$record->buyer_id.') ';
+    					  ?>
 					</td>
 					<td><?php echo $record->status;?></td>
 					<td><?php echo $record->locked_date;?></td>
