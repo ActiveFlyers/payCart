@@ -15,9 +15,9 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 class PaycartAdminControllerCart extends PaycartController 
 {
 	/**
-	 * Json task : Create new shipment from the current cart
+	 * Json task : save new/existing shipment from the current cart
 	 */
-	public function createShipment()
+	public function saveShipment()
 	{
 		return true;
 	}

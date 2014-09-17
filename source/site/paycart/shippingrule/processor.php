@@ -38,7 +38,7 @@ abstract class PaycartShippingruleProcessor
 	 */
 	public $processor_config = null;
 	
-	protected function _requestConfightml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
+	public function getConfigHtml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
 	{
 		$config 	= $this->getConfig();
 		$location	= $this->getLocation();
@@ -70,6 +70,12 @@ abstract class PaycartShippingruleProcessor
 	public function getLocation()
 	{
 		return $this->location;
+	}
+	
+	public function convertWeight($value, $inputUnit, $resultantUnit)
+	{
+		$formatter = PaycartFactory::getHelper('format');
+		return $formatter->convertWeight($value, $inputUnit, $resultantUnit);
 	}
 	
 	abstract public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response);

@@ -22,8 +22,8 @@ class PaycartAdminControllerConfig extends PaycartController
 	{
 		$post = $this->input->post->get('paycart_form', array(), 'array');
 		
-		// PCTODO : always save array data in json format
 		if(!empty($post['localization_origin_address'])){
+			$post['localization_origin_address']['address'] = trim($post['localization_origin_address']['address']);
 			$originAddress = json_encode($post['localization_origin_address']);
 			$post['localization_origin_address'] = $originAddress;
 		}

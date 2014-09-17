@@ -37,7 +37,7 @@ class PaycartCartparticularShipping extends PaycartCartparticular
 		$this->title 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_SHIPPING_TITLE');  // @PCTODO : Calulate dynamically
 		$this->message 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_SHIPPING_MESSAGE'); // @PCTODO : Calulate dynamically
 		
-		$this->params 		    = $binddata['params'];
+		$this->params->bind($binddata['params']);
 		
 		return $this;
 	}
@@ -61,7 +61,7 @@ class PaycartCartparticularShipping extends PaycartCartparticular
 		$groups[Paycart::GROUPRULE_TYPE_CART] =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
 		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array();
-		$products = $this->params['product_list'];
+		$products = $this->params->get('product_list');
 		foreach($products as $productId => $detail){
 			$groups[Paycart::GROUPRULE_TYPE_PRODUCT] =  array_merge($groups[Paycart::GROUPRULE_TYPE_PRODUCT],$groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $productId));	
 		}

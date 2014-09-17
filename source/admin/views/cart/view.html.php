@@ -52,7 +52,7 @@ class PaycartAdminViewCart extends PaycartAdminBaseViewCart
 		
 		$shippingMethods = array();
 		foreach ($shipping_particular as $particular){
-			$shippingMethods[] = array('title' => PaycartShippingrule::getInstance($particular->particular_id)->getTitle(), 'value'=>$particular->particular_id);
+			$shippingMethods[$particular->particular_id] = PaycartShippingrule::getInstance($particular->particular_id)->getTitle();
 		}
 
 		//load shipments
@@ -68,7 +68,7 @@ class PaycartAdminViewCart extends PaycartAdminBaseViewCart
 		$this->assign('form', $cart->getModelform()->getForm($cart));
 		$this->assign('cart',$cart);
 		$this->assign('shippingMethods',$shippingMethods);
-		
+		$this->assign('status',Paycart::getShipmentStatus());
 		
 		return parent::edit($tpl);
 	}

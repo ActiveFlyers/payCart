@@ -24,16 +24,11 @@ class PaycartModelShipment extends PaycartModel
 	{
 		$products = array();
 		
-		if(!empty($data['_products'])){
-			$products = $data['_products'];
-			unset($data['_products']);	
-		}
-		
 		//save data of the current table
 		$id = parent::save($data);
 		
 		//save data in mapping table
-		if($id && !empty($products)){
+		if($id && !empty($data['_products'])){
 			$query = new Rb_Query();
 
 			//delete the existing records for this shipment 
@@ -56,7 +51,7 @@ class PaycartModelShipment extends PaycartModel
 				  );
 			
 		
-			foreach ($products as $product) {
+			foreach ($data['_products'] as $product) {
 				$query->values("
 								{$id}, {$this->_db->quote($product['product_id'])},
 								{$this->_db->quote($product['quantity'])}

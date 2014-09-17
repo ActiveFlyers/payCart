@@ -23,6 +23,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		$scope.shippingMethods = shippingMethods;
 		$scope.status	       = status;
 		$scope.products		   = products;
+		$scope.tempArray	   = tempArray;
 		
 		/*
 	     * save new/existing shipment
@@ -33,8 +34,8 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 						
 			$http({
 		        method  : 'POST',
-		        url     : 'index.php?option=com_paycart&view=cart&task=createshipment&format=json',
-		        data    : paycart.jQuery.param({'shipmentDetails':postData,'cart_id' : cartId}),  // pass in data as strings
+		        url     : 'index.php?option=com_paycart&view=cart&task=saveShipment&format=json',
+		        data    : paycart.jQuery.param({'shipmentDetails':postData}),  // pass in data as strings
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {										         
@@ -147,6 +148,15 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 				    "allow_single_deselect": true
 				});
 			});
+		};
+
+		$scope.init = function(index) {
+			if($scope.shipments[index+1]){
+				$scope.tempArray = [index,index+1];
+				return $scope.tempArray;	
+			}
+			$scope.tempArray = [index];
+			return $scope.tempArray;
 		};
 	});
 

@@ -144,9 +144,4 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		
 		return false;
 	}
-	
-	public function getConfigHtml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
-	{
-		return $this->_requestConfightml($request,$response);
-	}
 }

@@ -22,15 +22,13 @@ class PaycartAdminViewCart extends PaycartAdminBaseViewCart
 	/**
 	 * Create new shipment from the current cart
 	 */
-	public function createShipment()
+	public function saveShipment()
 	{
 		$response = new stdClass();
 		$response->valid   = true;
 		$response->message = JText::_("COM_PAYCART_ADMIN_SHIPMENT_SUCCESSFULLY_SAVED");
 		
 		$data   = $this->input->get('shipmentDetails',array(),'ARRAY');
-		$cartId = $this->input->get('cart_id','','INT');
-		$data['cart_id'] = $cartId;
 		
 		//save shipment
 		$result = PaycartShipment::getInstance(0,$data)->save();

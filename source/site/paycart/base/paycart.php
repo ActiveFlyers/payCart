@@ -104,4 +104,39 @@ class Paycart
 	const DIMENSION_UNIT_CENTIMETER	= 'cm';
 	const DIMENSION_UNIT_METER		= 'm';
 	const DIMENSION_UNIT_INCH		= 'in';
+	
+	/**
+	 * 
+	 * Return All available shipment status
+	 * 
+	 * @return Array()
+	 */
+	public static function getShipmentStatus()
+	{
+		return 
+			Array( 
+					Paycart::STATUS_SHIPMENT_PENDING => JText::_('COM_PAYCART_SHIPMENT_STATUS_PENDING'),
+					Paycart::STATUS_SHIPMENT_DISPATCHED => JText::_('COM_PAYCART_SHIPMENT_STATUS_DISPATCHED'),
+				 	Paycart::STATUS_SHIPMENT_DELIVERED => JText::_('COM_PAYCART_SHIPMENT_STATUS_DELIVERED'),
+				 	Paycart::STATUS_SHIPMENT_FAILED => JText::_('COM_PAYCART_SHIPMENT_STATUS_FAILED'),
+			     );
+	}
+	
+	/**
+	 * 
+	 * Return All available cart status
+	 * 
+	 * @return Array()
+	 */
+	public static function getCartStatus()
+	{
+		return 
+			Array(
+					Paycart::STATUS_CART_DRAFTED   => JText::_('COM_PAYCART_CART_STATUS_DRAFTED'),
+					Paycart::STATUS_CART_LOCKED	   => JText::_('COM_PAYCART_CART_STATUS_LOCKED'),
+					Paycart::STATUS_CART_PAID      => JText::_('COM_PAYCART_CART_STATUS_PAID'),
+					Paycart::STATUS_CART_CANCELLED => JText::_('COM_PAYCART_CART_STATUS_CANCELLED'),
+					Paycart::STATUS_CART_COMPLETED => JText::_('COM_PAYCART_CART_STATUS_COMPLETED')
+				 );
+	}
 }

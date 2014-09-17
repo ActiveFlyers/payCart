@@ -193,66 +193,13 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		
 		$shipping_particular	= Array();
 		$shipping_total			= 0;
-		
-		$shipping_options	    = array();
 		$default_shipping		= $this->cart->getParam('shipping');
-		/**
-		 * 3 for loop because
-		 * $this->cart->getShippingOptionList() return data in format
-		 * array( 
-		 * 			md5AddressKey => array(
-		 * 									'2,1,' => array(
-		 * 														'shipping_list' => array( $shippingrule_id => $parameters)
-		 * 												   )
-		 * 								   )
-		 * 		)
-		 */
 		
-		foreach ($this->cart->getShippingOptionList() as $option => $data){
-			foreach ($data as $key => $detail){
-				$temp_title    = '';
-				$is_best_price = false;
-				$title		   = '';
-				
-				//calculate estimated delivery date
-				foreach ($detail['shippingrule_list'] as $shippingrule_id => $parameters){
-					$instance	   = PaycartShippingrule::getInstance($shippingrule_id);
-					$title    = $instance->getTitle();
-					$date          = new Rb_Date();
-					$date->add(new DateInterval('P'.$instance->getDeliveryMaxDays().'D'));
-					$detail['shippingrule_list'][$shippingrule_id]['delivery_date'] = $date;
-				}
-				
-				//if shipping option is unique + cheap + fastest
-				if($detail['unique_shippingrule']){	
-					$temp_title = $title;
-									
-					if($detail['is_best_price'] && !$detail['is_best_grade']){
-						$temp_title = $title.' & '.JText::_('COM_PAYCART_SHIPPING_OPTION_BEST_IN_PRICE');
-					}
-					
-					if($detail['is_best_grade'] && !$detail['is_best_price']){
-						$temp_title = $title.' & '.JText::_('COM_PAYCART_SHIPPING_OPTION_BEST_IN_DELIVERY_GRADE');
-					}
-				}
-				
-				elseif($detail['is_best_price']){
-					$temp_title = JText::_('COM_PAYCART_SHIPPING_OPTION_BEST_IN_PRICE');
-				}
-				elseif($detail['is_best_grade']){
-					$temp_title = JText::_('COM_PAYCART_SHIPPING_OPTION_BEST_IN_DELIVERY_GRADE');
-				}
-				
-				$shipping_options[$key] = array('title' => $temp_title,'value'=> $key,'details' => $detail['shippingrule_list']);
-			}
-			
-		}
 		
 		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_SHIPPING) as  $key => $particular) {
 			/* @var $particular Paycartcartparticular */
 			$shipping_particular[] = $particular->toObject();
 			$shipping_total		  += $particular->getTotal(true);
-			//$shipping_usage[$particular->getParticularId()] = $particular->getUsage();
 		}
 		
 		$promotion_particular	=	Array();
@@ -292,11 +239,56 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		$this->assign('promotion_usage', 	$promotion_usage);
 		$this->assign('duties_usage', 	$duties_usage);
 		
-		$this->assign('shipping_options', $shipping_options);
+		$this->assign('shipping_options', $this->_getShippingOptions());
 		$this->assign('default_shipping', $default_shipping);
 		
 		$this->setTpl('confirm');		
 		return true;
+	}
+	
+	protected function _getShippingOptions()
+	{
+		$shipping_options = array();
+		
+		foreach ($this->cart->getShippingOptionList() as $option => $data){
+			foreach ($data as $key => $detail){
+				$temp_title    = '';
+				$is_best_price = false;
+				$title		   = '';
+				
+				//calculate estimated delivery date
+				foreach ($detail['shippingrule_list'] as $shippingrule_id => $parameters){
+					$instance	   = PaycartShippingrule::getInstance($shippingrule_id);
+					$title    	   = $instance->getTitle();
+					$date          = new Rb_Date();
+					$date->add(new DateInterval('P'.$instance->getDeliveryMaxDays().'D'));
+					$detail['shippingrule_list'][$shippingrule_id]['delivery_date'] = $date;
+				}
+				
+				//if shipping option is unique + cheap + fastest
+				if($detail['unique_shippingrule']){	
+					$temp_title = $title;
+									
+					if($detail['is_best_price'] && !$detail['is_best_grade']){
+						$temp_title = $title.' & '.JText::_('COM_PAYCART_SHIPPING_OPTION_BEST_IN_PRICE');
+					}
+					
+					if($detail['is_best_grade'] && !$detail['is_best_price']){
+						$temp_title = $title.' & '.JText::_('COM_PAYCART_SHIPPING_OPTION_BEST_IN_DELIVERY_GRADE');
+					}
+				}
+				
+				elseif($detail['is_best_price']){
+					$temp_title = JText::_('COM_PAYCART_SHIPPING_OPTION_BEST_IN_PRICE');
+				}
+				elseif($detail['is_best_grade']){
+					$temp_title = JText::_('COM_PAYCART_SHIPPING_OPTION_BEST_IN_DELIVERY_GRADE');
+				}
+				
+				$shipping_options[$key] = array('title' => $temp_title,'value'=> $key,'details' => $detail['shippingrule_list']);
+			}
+		}
+		return $shipping_options;
 	}
 	
 	/**	
