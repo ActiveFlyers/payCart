@@ -162,4 +162,24 @@ class PaycartHelperCart extends PaycartHelper
 		$cart->addPromotionCode($promotion_code);
 		return $cart->calculate()->save();
 	}
+	
+	/**
+	 * return stdclass object of cartparticular of given cart id and type 
+	 * @param $cartId : cart id to which the cart particular belongs
+	 * @param $type : type of cart particular to be fetched
+	 */
+	public function getCartParticularsData($cartId, $type)
+	{
+		static $particularData = array();
+		
+		if(isset($particularData[$cartId][$type])){
+			return $particularData[$cartId][$type];
+		}
+		
+		//load data from model
+		$particularData[$cartId][$type] = PaycartFactory::getModel('cartparticular')
+												->loadRecords(array('cart_id' => $cartId, 'type'=>$type), array(),false, 'particular_id');
+		
+		return $particularData[$cartId][$type];
+	}
 }

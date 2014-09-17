@@ -411,6 +411,7 @@ class PaycartCart extends PaycartLib
 		
 		foreach($products as $product_id => $bind_data)
 		{
+			$bind_data->cart_id = $this->getId();
 			/* @var $cartparticular PaycartCartparticularProduct */
 			$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_PRODUCT][$product_id] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_PRODUCT, $bind_data); 
 		}
@@ -431,6 +432,7 @@ class PaycartCart extends PaycartLib
 		$bindData->promotions 	 = 	$promotions;
 		$bindData->unit_price	 =	$this->getTotal();
 		$bindData->particular_id =	$this->getId();
+		$bindData->cart_id       =  $bindData->particular_id;
 		
 		$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_PROMOTION][] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_PROMOTION, $bindData);
 		
@@ -448,6 +450,7 @@ class PaycartCart extends PaycartLib
 		$bindData = new stdClass();
 		$bindData->unit_price	 =	0;
 		$bindData->particular_id =	$this->getId();
+		$bindData->cart_id       =  $bindData->particular_id;
 		foreach ($this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT) as $product_particular) {
 			$bindData->unit_price += $product_particular->getTax();
 		}
@@ -578,14 +581,17 @@ class PaycartCart extends PaycartLib
 	
 	public function loadShippingCartparticulars()
 	{
-		$shippingOptions 			= $this->getShippingOptionList();	
+		$shippingOptions 			= $this->getShippingOptionList();
+		// No matching Shipping Rules for all or one of the product
+		if(empty($shippingOptions)){
+			return $this;
+		}	
+		
 		$selectedShippingMethods 	= $this->params->get('shipping',null);
 		$address					= $this->getShippingAddress(true);
 		$md5Address					= $address->getMD5();
 		$md5Address					= !isset($md5Address)?0:$md5Address;
 
-		//@PCFIXME ::  $addressId
-		//@PCFIXME :: handle when some selected any shipping method, defaultshipping must be removed at that time		
 		if(empty($selectedShippingMethods) || !isset($shippingOptions[$md5Address][$selectedShippingMethods])) {
 			// IMP
 			// shipping method is not selected or invalid
@@ -610,8 +616,21 @@ class PaycartCart extends PaycartLib
 		
 		if(isset($shippingOptions[$md5Address][$selectedShippingMethods])){
 			foreach($shippingOptions[$md5Address][$selectedShippingMethods]['shippingrule_list'] as $shippingrule_id => $shippingOption){
-				$binddata = $shippingOption;
+				$productParticulars = $this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+				
+				foreach ($shippingOption['product_list'] as $product_id){
+					$binddata['params']['product_list'][$product_id] = array('product_id' => $product_id, 'quantity' => $productParticulars[$product_id]->getQuantity());
+				}
+				
+				//calculate delivery date
+				$instance = PaycartShippingrule::getInstance($shippingrule_id);
+				$date     = new Rb_Date();
+				$binddata['params']['delivery_date'] = PaycartFactory::getHelper('format')
+															->date($date->add(new DateInterval('P'.$instance->getDeliveryMaxDays().'D')));
+				
+				$binddata['price']	         = $shippingOption['price_without_tax'];
 				$binddata['shippingrule_id'] = $shippingrule_id;
+				$binddata['cart_id']		 = $this->getId();
 				$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_SHIPPING][$shippingrule_id] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_SHIPPING, $binddata);
 			}
 		}
@@ -645,6 +664,7 @@ class PaycartCart extends PaycartLib
 		$product_grouped_by_address[$md5Address] = $productCartparticulars;
 		$shippingrules_grouped_by_product = $shippingruleHelper->getRulesGroupedByProducts($this);
 		
+		//if no shipping rule available for any of the cart product then just return and stop calculation
 		if(empty($shippingrules_grouped_by_product)){
 			return array();
 		}
@@ -996,8 +1016,9 @@ class PaycartCart extends PaycartLib
 		// @PDCTODO :: Fire event obPaycartCartPaid
 
 		// 3#. update products' quatity
-		PaycartFactory::getHelper('product')->updateProductStock($this->loadProductCartparticulars());
-		
+		$cartHelper =  PaycartFactory::getHelper('cart');
+		PaycartFactory::getHelper('product')->updateProductStock($cartHelper->getCartparticularsData($this->getId(), Paycart::CART_PARTICULAR_TYPE_PRODUCT));
+
 		return true;
 	}
 	

@@ -39,6 +39,7 @@ class PaycartAdminViewShippingRule extends PaycartAdminBaseViewShippingRule
 		$form 	= $item->getModelform()->getForm($item);
 		
 		$this->assign('form', $form );
+		$this->assign('rule',$item);
 		
 		return parent::edit($tpl);
 	}

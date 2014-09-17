@@ -36,18 +36,19 @@
 				label="COM_PAYCART_ADMIN_CONFIG_WEIGHT_UNIT" 
 				default="kg"
 		        >
-		        <option value='gm'>Gm</option>
-		        <option value='kg'>Kg</option>
-		        <option value='pound'>Pound</option>
+		        <option value='gm'>Gram</option>
+		        <option value='kg'>Kilogram</option>
+		        <option value='lb'>Pound</option>
 		 </field>
 		 
 		 <field name="catalogue_dimension_unit" 
 				type="list"
 				label="COM_PAYCART_ADMIN_CONFIG_DIMENSION_UNIT" 
-				default="m"
+				default="cm"
 		        >
-		        <option value='cm'>Cm</option>
-		        <option value='m'>M</option>
+		        <option value='in'>Inch</option>
+		        <option value='cm'>Centimeter</option>
+		        <option value='m'>Meter</option>
 		 </field>
 		
 		<field name="invoice_serial_prefix"
@@ -59,20 +60,20 @@
 		<field name="localization_date_format"
 			   type="list"  
 			   label="COM_PAYCART_ADMIN_CONFIG_DATE_FORMAT"
-			   default="%Y-%m-%d">
-			   <option value="%Y-%m-%d"></option>
+			   default="Y-m-d">
+			   <option value="Y-m-d"></option>
 				   
-			   <option value="%m/%d/%Y"></option>
-			   <option value="%m-%d-%Y"></option>
+			   <option value="m/d/Y"></option>
+			   <option value="m-d-Y"></option>
 			   
-			   <option value="%d/%m/%Y"></option>
-			   <option value="%d-%m-%Y"></option>
+			   <option value="d/m/Y"></option>
+			   <option value="d-m-Y"></option>
 				
-			   <option value="%d %B %y"></option>
-			   <option value="%d %B %Y"></option>
+			   <option value="d B y"></option>
+			   <option value="d B Y"></option>
 				
-			   <option value="%B %d, %y"></option>
-			   <option value="%B %d, %Y"></option>
+			   <option value="B d, y"></option>
+			   <option value="B d, Y"></option>
 		</field>
 		
 		<field name="localization_currency"

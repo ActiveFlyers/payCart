@@ -144,4 +144,19 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		$this->assign('json', $response);
 		return true;		
 	}
+	
+	function changeShippingMethod()
+	{
+		$response = new stdClass();
+		$response->valid = true;
+		
+		$errors = $this->get('errors', array());
+		if(!empty($errors)){
+			$response->valid  = false;
+			$response->errors = $errors;
+		}
+		
+		$this->assign('json', $response);
+		return true;	
+	}
 }

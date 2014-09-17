@@ -141,6 +141,16 @@ abstract class PaycartCartparticular extends JObject
 		return $this->length;
 	}
 	
+	function getCartparticularId()
+	{
+		return $this->cartparticular_id;
+	}
+	
+	function getCartId()
+	{
+		return $this->cart_id;
+	}
+	
 	/**
 	 * 
 	 * Invoke to get cartpartiocular usage
@@ -575,6 +585,7 @@ abstract class PaycartCartparticular extends JObject
 		$data['total']			= $this->getTotal(true);
 		$data['title']			= $this->title;
 		$data['message']		= $this->message;
+		$data['params']			= isset($this->params)?json_encode($this->params):null;
 		
 		$this->buyer_id			= $cart->getBuyer();
 		$model = PaycartFactory::getModel('cartparticular');

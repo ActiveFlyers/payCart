@@ -127,23 +127,36 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 		<div class="accordion-group">
 		 			<div class="accordion-heading">
 		 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-shipping-option">
-	 						Shipping Option
+	 						<?php echo JText::_("PAYCART_CART_SHIPPING_OPTIONS")?>
 	 					</a>
 	 				</div>
 	 		
 			 		<div id="pc-confirm-shipping-option" class="accordion-body in collapse"">
 			 			<div class="accordion-inner">
-<!--			 				<div class='pc-checkout-shipping-list'>-->
-<!--				 				<select>-->
-<!--				 					<option value='express'>Express (1 Business Day)</option>-->
-<!--				 				</select>-->
-<!--				 			</div>-->
-<!--				 			<div class='pc-checkout-shipping-notes'>-->
-<!--				 				<b>Price-$9.00</b><br/>-->
-<!--				 				Estimated Delivery Date : 25Jun2014 <br />-->
-<!--				 				<span class='text-error'>Your oreder may arrivein multiple package</span>				 				-->
-<!--				 			</div> -->
-								Coming Soon
+			 				<?php if(!empty($shipping_options)):?>	
+				 				<div class='pc-checkout-shipping-list'>
+					 				<?php echo PaycartHtml::_('select.genericlist', $shipping_options, 'shipping', 'onChange="paycart.cart.confirm.onChangeShipping(this.value)"','value','title',$default_shipping);
+					 				?>
+					 			</div>
+					 			<div class='pc-checkout-shipping-notes'>
+						 				<b><?php echo JText::_('COM_PAYCART_PRICE')?> - <?php echo $formatter->amount($shipping_total);?></b><br/>
+					 				   	   <?php $estimatedDate = null;?>
+										   <?php foreach ($shipping_options[$default_shipping]['details'] as $shippingrule_id => $details):?>
+										   			<?php $date = $formatter->date($details['delivery_date']);?>
+										   			<?php if(empty($estimatedDate)):?>
+									   					<?php $estimatedDate = $date;?>
+									   					<?php continue?>
+									   				<?php endif;?>
+								   					<?php $estimatedDate = ($estimatedDate < $date)?$date:$estimatedDate; ?>
+										   <?php endforeach;?>								   
+										   <?php echo JText::_("COM_PAYCART_SHIPPING_ESTIMATED_DELIVERY_DATE").' : '.$estimatedDate;?> <br />
+										   <?php if(count($shipping_options[$default_shipping]['details']) > 1):?>
+													<span class='text-error'><?php echo JText::_("COM_PAYCART_SHIPPING_ORDER_MAY_BE_IN_MULTIPLE_PACKAGES");?></span>
+										   <?php endif;?>			 				
+					 			</div> 
+				 			<?php else : ?>
+								<span class='text-error' id="pc-cart-shipping-error"><?php echo JText::_("COM_PAYCART_SHIPPING_NO_METHOD_AVAILABLE") ?></span>
+				 			<?php endif;?>
 			 			</div>
 			 		</div>
 	 			</div>
@@ -324,7 +337,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 						
 			 						<tr>
 			 							<td><?php echo JText::_('TOTAL'); ?></td>
-			 							<td><?php echo $formatter->amount(($product_total+$promotion_total+$duties_total), true, $currency_id); ?> </td>
+			 							<td><?php echo $formatter->amount(($product_total+$promotion_total+$duties_total+$shipping_total), true, $currency_id); ?> </td>
 			 						</tr>
 			 					</tbody>
 			 				</table>	

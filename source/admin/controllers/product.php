@@ -37,7 +37,44 @@ class PaycartAdminControllerProduct extends PaycartController
 			}
 		}
 		
+		/*
+		 * Format measurement data into standard format before saving
+		 * 
+		 * It should be on controller level so that bind data will always be in standard format
+		 * both for new and existing records  
+		 */
+		$data = $this->_formatMeasurementData($data);
+		
 		return parent::_save($data, $itemId, $type);
+	}
+	
+	/**
+	 * Format measurement data into our standard format
+	 */
+	protected function _formatMeasurementData($data)
+	{
+		$formatter           = PaycartFactory::getHelper('format');
+		$weightUnitConfig    = PaycartFactory::getConfig()->get('catalogue_weight_unit');
+		$dimensionUnitConfig = PaycartFactory::getConfig()->get('catalogue_dimension_unit');
+		
+				
+		if(isset($data['weight'])){
+			$data['weight'] = $formatter->convertWeight($data['weight'],$weightUnitConfig);
+		}
+		
+		if(isset($data['length'])){
+			$data['length'] = $formatter->convertDimension($data['length'],$dimensionUnitConfig);	
+		}
+		
+		if(isset($data['width'])){
+			$data['width']  = $formatter->convertDimension($data['width'],$dimensionUnitConfig);	
+		}
+		
+		if(isset($data['height'])){
+			$data['height'] = $formatter->convertDimension($data['height'],$dimensionUnitConfig);	
+		}
+		
+		return $data;
 	}
 	
 	/**

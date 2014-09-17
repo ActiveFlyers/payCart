@@ -88,7 +88,7 @@ $currencyId = $cart->getCurrency();
 				<?php $total    += $particular->total;?>
 				<tr>
 					<td><?php echo $particular->title; ?></td>
-					<td><?php echo $formatter->amount($particular->unit_cost, true, $currencyId); ?></td>
+					<td><?php echo $formatter->amount($particular->unit_price, true, $currencyId); ?></td>
 					<td><?php echo $particular->quantity; ?></td>
 					<td><?php echo $formatter->amount($particular->price, true, $currencyId); ?></td>
 					<td>
@@ -133,12 +133,12 @@ $currencyId = $cart->getCurrency();
 	           			Cart Discount and taxes 
 			===========================================-->
 			
-			<tr>
-				<td colspan="7"><h4><?php echo JText::_("COM_PAYCART_CART_DISCOUNT_AND_TAX")?></h4></td>
-			</tr>
-			
 			<?php $finalTotal = $total; ?>	
 			<?php if(!empty($promotion_particular)):?>
+				<tr>
+					<td colspan="7"><h4><?php echo JText::_("COM_PAYCART_CART_DISCOUNT_AND_TAX")?></h4></td>
+				</tr>
+			
 				<?php $promotion_particular = array_shift($promotion_particular);?>
 				<tr>
 					<td colspan="6">
@@ -178,12 +178,39 @@ $currencyId = $cart->getCurrency();
 			<!--=========================================
 	               		Shipping Details
 			===========================================-->
-				
+			<?php if(!empty($shipping_particular)):?>
 				<tr>
 					<td colspan="7"><h4><?php echo JText::_('COM_PAYCART_SHIPPING_DETAILS')?></h4></td>
 				</tr>
-			<?php if(!empty($shipping_particular)):?>
-			<?php //PCTODO : Process shipping particulars and include final total also (if needed)?>
+			
+				<tr>
+					<td><strong><?php echo JText::_('COM_PAYCART_ADMIN_CART_SHIPPING_METHOD');?></strong></td>
+					<td><strong><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_DETAILS').'<br>';?></strong><?php echo '('.JText::_('COM_PAYCART_ADMIN_SHIPMENT_PRODUCT_QUANTITY').')'?></td>
+					<td><strong><?php echo JText::_('COM_PAYCART_SHIPPING_COST');?></strong></td>
+					<td><strong><?php echo JText::_('COM_PAYCART_TAX');?></strong></td>
+					<td><strong><?php echo JText::_('COM_PAYCART_DISCOUNT');?></strong></td>
+					<td><strong><?php echo JText::_('COM_PAYCART_SHIPPING_ESTIMATED_DELIVERY_DATE');?></strong></td>
+					<td><strong><?php echo JText::_('COM_PAYCART_TOTAL');?></strong></td>
+				</tr>
+				<?php foreach ($shipping_particular as $id => $particular):?>
+					<tr>
+						<?php $params = json_decode($particular->params);?>
+						<td><?php echo PaycartShippingrule::getInstance($id)->getTitle();?></td>
+						<td>
+							<?php $productList = '';?>
+							<?php foreach ($params->product_list as $productId => $details):?>
+							<?php echo $productList .= $product_particular[$productId]->title.' : '.$details->quantity; ?>
+							<?php endforeach;?>
+						</td>
+						<td><?php echo $particular->unit_price;?></td>
+						<td><?php echo $particular->tax;?></td>
+						<td><?php echo $particular->discount;?></td>
+						<td><?php echo $params->delivery_date;?> </td>
+						<td><?php echo $particular->total;?></td>
+						
+						<?php $finalTotal += $particular->total;?>
+					</tr>
+				<?php endforeach;?>
 			<?php endif;?>
 			   <tr><td colspan="7">&nbsp;</td></tr>
 			

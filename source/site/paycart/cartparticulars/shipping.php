@@ -20,25 +20,24 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartCartparticularShipping extends PaycartCartparticular
 {	
 	protected $_rule_apply_on = Paycart::RULE_APPLY_ON_SHIPPING;	
-	protected $_details = array(); 
 	
 	public function bind($binddata = array()) 
-	{
-		$this->unit_price 		= $binddata['price_without_tax'];
+	{		
+		$this->unit_price		= $binddata['price'];
 		$this->quantity			= 1;		
 		$this->type 			= Paycart::CART_PARTICULAR_TYPE_SHIPPING;
 		$this->particular_id	= $binddata['shippingrule_id'];		
 		$this->tax				= 0;
 		$this->discount			= 0;
-		$this->price 			= $binddata['price_without_tax'];
+		$this->price 			= $binddata['price'];
 		$this->total 			= $this->getTotal();
-
+		$this->cart_id			= $binddata['cart_id'];
 		$this->updateTotal();
 		
 		$this->title 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_SHIPPING_TITLE');  // @PCTODO : Calulate dynamically
 		$this->message 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_SHIPPING_MESSAGE'); // @PCTODO : Calulate dynamically
 		
-		$this->_details 		= $binddata;
+		$this->params 		    = $binddata['params'];
 		
 		return $this;
 	}
@@ -62,8 +61,8 @@ class PaycartCartparticularShipping extends PaycartCartparticular
 		$groups[Paycart::GROUPRULE_TYPE_CART] =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
 		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array();
-		$products = $this->_details['product_list'];
-		foreach($products as $productId){
+		$products = $this->params['product_list'];
+		foreach($products as $productId => $detail){
 			$groups[Paycart::GROUPRULE_TYPE_PRODUCT] =  array_merge($groups[Paycart::GROUPRULE_TYPE_PRODUCT],$groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $productId));	
 		}
 		

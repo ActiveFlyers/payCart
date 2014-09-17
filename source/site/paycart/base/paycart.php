@@ -42,6 +42,11 @@ class Paycart
 	const STATUS_CART_CANCELLED	=	'cancelled';
 	const STATUS_CART_COMPLETED	=	'completed';
 	
+	//shipment status
+	const STATUS_SHIPMENT_PENDING		= 'pending';
+	const STATUS_SHIPMENT_DISPATCHED	= 'dispatched';
+	const STATUS_SHIPMENT_DELIVERED		= 'delivered';
+	const STATUS_SHIPMENT_FAILED		= 'failed';
 	
 	// JOOMLA System Message Type
 	const MESSAGE_TYPE_MESSAGE	= 'message'; 
@@ -53,14 +58,6 @@ class Paycart
 	const PROCESSOR_TYPE_DISCOUNTRULE = 'discountrule';
 	const PROCESSOR_TYPE_TAXRULE   	  = 'taxrule';
 	const PROCESSOR_TYPE_SHIPPINGRULE = 'shippingrule';
-	
-	//Paycart Status
-	const STATUS_PUBLISHED 		= 'published';		// Content publish for end-user
-	const STATUS_TRASHED 		= 'trashed';		// Trashed content 
-	const STATUS_UNPUBLISHED 	= 'unpublished';	// Unpublish content. Visible only backend
-	const STATUS_INVISIBLE		= 'invisible';		// Not listed in front-end, access by url
-	//@PCTODO :: admin or owner
-	const STATUS_ADMIN	 		= 'admin';			// visible only for admin-user (at front-end)
 		
 
 	// shipping rule
@@ -98,4 +95,13 @@ class Paycart
 	const CHECKOUT_STEP_ADDRESS		=	'address';
 	const CHECKOUT_STEP_CONFIRM		=	'confirm';
 	const CHECKOUT_STEP_PAYMENT		=	'payment';
+	
+	const WEIGHT_UNIT_KILOGRAM		= 'kg';
+	const WEIGHT_UNIT_GRAM			= 'gm';
+	const WEIGHT_UNIT_PONUD			= 'lb';
+	const WEIGHT_UNIT_OUNCE			= 'oz';
+	
+	const DIMENSION_UNIT_CENTIMETER	= 'cm';
+	const DIMENSION_UNIT_METER		= 'm';
+	const DIMENSION_UNIT_INCH		= 'in';
 }

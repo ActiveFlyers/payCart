@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cartparticular` (
   `title` varchar(255) DEFAULT NULL,
   `quantity` int(11) DEFAULT '0',
   `type` varchar(100) NOT NULL COMMENT 'particular-type',  
-  `unit_cost` decimal(15,5) DEFAULT '0.00000',
+  `unit_price` decimal(15,5) DEFAULT '0.00000',
   `tax` decimal(15,5) DEFAULT '0.00000',
   `discount` decimal(15,5) DEFAULT '0.00000',
   `price` decimal(15,5) DEFAULT '0.00000',
@@ -774,12 +774,11 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule_x_group` (
 CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule` (
   `shippingrule_id` int(11) NOT NULL AUTO_INCREMENT,
   `published` tinyint(1) NOT NULL,
-  `grade` tinyint(1) NOT NULL COMMENT '0-9 (according to speed of shipping delivery) 9 is fastest and 0 is slowest',
-  `min_days` tinyint(2) NOT NULL,
-  `max_days` tinyint(2) NOT NULL,
+  `delivery_grade` tinyint(1) NOT NULL COMMENT '0-9 (according to speed of shipping delivery) 9 is fastest and 0 is slowest',
+  `delivery_min_days` tinyint(2) NOT NULL,
+  `delivery_max_days` tinyint(2) NOT NULL,
   `packaging_weight` decimal(12,4) DEFAULT '0.0000',
   `handling_charge` double(15,5) NOT NULL,
-  `tracking_url` text NOT NULL COMMENT 'Common url related to shipping method that will be used to tracks shipments',
   `processor_classname` varchar(100) NOT NULL COMMENT 'Classname of processor in small-case',
   `processor_config` text NOT NULL COMMENT 'processor configuration',
   `created_date` datetime NOT NULL,
@@ -819,6 +818,41 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule_x_group` (
   KEY `idx_group_id` (`group_id`),
   KEY `idx_type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mapping of shippingrule and groups' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_shipment`
+--
+
+CREATE TABLE IF NOT EXISTS `#__paycart_shipment` (
+  `shipment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `shippingrule_id` int(11) NOT NULL,
+  `cart_id` int(11) NOT NULL,
+  `weight` decimal(12,4) DEFAULT '0.0000',
+  `actual_shipping_cost` double(15,5) NOT NULL,
+  `tracking_number` varchar(100),
+  `status` enum('pending','dispatched','delivered','failed') not null,
+  `created_date` datetime NOT NULL,
+  `delivery_date` datetime NOT NULL,
+  `dispatched_date` datetime NOT NULL,
+  PRIMARY KEY (`shipment_id`),
+  KEY `idx_shippingrule_id` (`shippingrule_id`),
+  KEY `idx_cart_id` (`cart_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Shipment to be delivered' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_shipment_x_product`
+--
+CREATE TABLE IF NOT EXISTS `#__paycart_shipment_x_product` (
+  `shipment_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) Default '1',
+  KEY `idx_shipment_id` (`shipment_id`),
+  KEY `idx_cart_id` (`product_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='mapping product and shipments' AUTO_INCREMENT=1 ;
 
 
 -- --------------------------------------------------------

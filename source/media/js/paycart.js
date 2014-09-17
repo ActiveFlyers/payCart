@@ -90,6 +90,8 @@ if (typeof(paycart.element)=='undefined'){
 			var state_selector = response['state_selector'];
 			$(state_selector).html(response['state_option_html']);
 			
+			//reinitialte chosen (using in backend configuration) 
+			$(state_selector).trigger("liszt:updated");			
 		},
 
 		onCountryChange	:	function(country_selector, state_selector, default_selected_state)

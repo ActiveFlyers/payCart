@@ -711,4 +711,32 @@ class PaycartSiteControllerCart extends PaycartController
 		$view->assign('errors', $errors);
 		return true;	
 	}
+	
+	/**
+	 * Do calculation again, when shipping method is changed by user
+	 */
+	function changeShippingMethod()
+	{
+		// get shipping option
+		$shippingMethod = $this->input->get('shipping','','STRING');
+		
+		//get current cart
+		$helper = PaycartFactory::getHelper('cart');
+		$cart 	= $helper->getCurrentCart();
+		
+		try {
+			$cart->setParam('shipping', $shippingMethod)->calculate()->save();
+		}
+		catch(Exception $e){
+			$error 	=  array();			
+			$error['message_type']   	= Paycart::MESSAGE_TYPE_ERROR;
+			$error['for']				= '';				
+			$error['message']   		= $e->getMessage();
+			$errors[] = $error;
+		}
+	
+		$view = $this->getView();
+		$view->assign('errors', $errors);
+		return true;	
+	}
 }

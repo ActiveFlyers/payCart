@@ -63,65 +63,17 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @author Gaurav Jain
  */
 class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
-{								
-	private function _getCalculationMode()
-	{
-		return array(
-				'ONEPACKAGE' => Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_CACLULATION_MODE_ONEPACKAGE'),
-				'PERITEM' 	 => Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_CACLULATION_MODE_PERITEM')
-		);
-	}
-
-	private function _PackagingType()
-	{
-		return array(
-				'VARIABLE'						=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_VARIABLE'),
-				'FLAT RATE ENVELOPE' 			=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_FLAT_RATE_ENVELOPE'),
- 				'PADDED FLAT RATE ENVELOPE'		=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_PADDED_FLAT_RATE_ENVELOPE'),
- 				'LEGAL FLAT RATE ENVELOPE'		=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_LEGAL_FLAT_RATE_ENVELOPE'),
-				'SM FLAT RATE ENVELOPE'			=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_SM_FLAT_RATE_ENVELOPE'),
-				'WINDOW FLAT RATE ENVELOPE'		=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_WINDOW_FLAT_RATE_ENVELOPE'),
-				'GIFT CARD FLAT RATE ENVELOPE'	=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_GIFT_CARD_FLAT_RATE_ENVELOPE'),
-				'FLAT RATE BOX'					=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_FLAT_RATE_BOX'),
-				'SM FLAT RATE BOX'				=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_SM_FLAT_RATE_BOX'),
-				'MD FLAT RATE BOX'				=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_MD_FLAT_RATE_BOX'),
-				'LG FLAT RATE BOX'				=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_LG_FLAT_RATE_BOX'),
-				'REGIONALRATEBOXA'				=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_REGIONALRATEBOXA'),
-				'REGIONALRATEBOXB'				=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_REGIONALRATEBOXB'),
-				'REGIONALRATEBOXC'				=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_REGIONALRATEBOXC'),
-				'RECTANGULAR'					=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_RECTANGULAR'),
-				'NONRECTANGULAR'				=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_TYPE_NONRECTANGULAR')
-		);
-	}
-	
-	private function _getPackagingSize()
-	{
-		return array(
-				'REGULAR' 	=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_SIZE_REGULAR'), 
-				'LARGE' 	=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_PACKAGING_SIZE_LARGE')
-		);
-	}
-	
-	private function _getServiceCode()
-	{
-		return array(
-			'FIRST CLASS'				=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_FIRST_CLASS'), 
- 			'FIRST CLASS COMMERCIAL'	=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_FIRST_CLASS_COMMERCIAL'),
-			'PRIORITY'					=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_PRIORITY'),
-			'PRIORITY COMMERCIAL'		=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_PRIORITY_COMMERCIAL'),
-			'EXPRESS'					=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_EXPRESS'),
-			'EXPRESS COMMERCIAL'		=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_EXPRESS_COMMERCIAL'),
-			'PARCEL'					=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_PARCEL'),
-			'MEDIA'						=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_MEDIA'),
-			'LIBRARY'					=> Rb_Text::_('COM_PAYCART_PROCESSOR_USPS_SERVICE_CODE_LIBRARY')
-		);
-	}
+{	
+	public $location			= __DIR__;	
 	
 	public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
 	{
+		//PCTODO: move it to request 
+		$originAddress = json_decode(PaycartFactory::getConfig()->get('localization_origin_address'));
+		
 		$req_params = array(			
 			'recipient_postalcode' => $request->delivery_address->zipcode,			
-			'shipper_postalcode' => $request->origin_address->zipcode
+			'shipper_postalcode' => $originAddress->zipcode,
 		);
 		
 		if(empty($this->processor_config->calculation_mode) || $this->processor_config->calculation_mode == 'ONEPACKAGE'){
@@ -286,11 +238,10 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 		$xmlPackageList = '';
 		
 		foreach ($req_params['package_list'] as $k => $p)
-		{
-			// @PCTODO : conversion should be global or in processor base class 
-			// KG, LB, OU conversions			
-			$p['weight_pounds'] = $p['weight'] * 2.20462262;			
-			$p['weight_ounces'] = $p['weight_pounds'] * 16;
+		{	
+			$formatter = PaycartFactory::getHelper('format');	
+			$p['weight_pounds'] = $formatter->convertWeight($p['weight'],PaycartFactory::getConfig()->get('catalogue_weight_unit'),Paycart::WEIGHT_UNIT_PONUD);			
+			$p['weight_ounces'] = $formatter->convertWeight($p['weight_pounds'], Paycart::WEIGHT_UNIT_PONUD, Paycart::WEIGHT_UNIT_OUNCE);
 			$p['weight_pounds'] = 0;
 
 			// First class management
@@ -337,5 +288,10 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 
 		// Return
 		return $xmlTab;
+	}
+	
+	public function getConfigHtml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
+	{
+		return $this->_requestConfightml($request,$response);
 	}
 }

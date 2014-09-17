@@ -294,33 +294,41 @@ echo $this->loadTemplate('edit.ng');
 						<fieldset class="form">
 							<div class="row-fluid">								
 								<div class="span6">
-									<?php $field = $form->getField('weight') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
-									</div>
-								</div>
-								<div class="span6">
 									<?php $field = $form->getField('weight_unit') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
+										<div class="controls">
+											<input class="input-block-level" type="text" name="paycart_form[weight_unit]" readonly="" value="<?php echo PaycartFactory::getConfig()->get('catalogue_weight_unit');?>">
+										</div>								
+									</div>
+								</div>
+								<div class="span6">
+									<?php $field = $form->getField('weight') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls">
+											<input class="input-block-level" type="text" name="paycart_form[weight]" value="<?php echo $formatter->weight($product->getWeight())?>">										
+										</div>								
 									</div>
 								</div>
 							</div>
 							<div class="row-fluid">
 								<div class="span6">
+									<?php $field = $form->getField('dimension_unit') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls">
+											<input class="input-block-level" type="text" name="paycart_form[weight_unit]" readonly="" value="<?php echo PaycartFactory::getConfig()->get('catalogue_dimension_unit');?>">										
+										</div>								
+									</div>
+								</div>
+								<div class="span6">
 									<?php $field = $form->getField('height') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
-									</div>									
-								</div>
-								<div class="span6">
-									<?php $field = $form->getField('width') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
+										<div class="controls">
+											<input class="input-block-level" type="text" name="paycart_form[height]" value="<?php echo $formatter->dimension($product->getHeight())?>">										
+										</div>								
 									</div>
 								</div>
 							</div>
@@ -329,14 +337,18 @@ echo $this->loadTemplate('edit.ng');
 									<?php $field = $form->getField('length') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
+										<div class="controls">
+											<input class="input-block-level" type="text" name="paycart_form[length]" value="<?php echo $formatter->dimension($product->getLength())?>">										
+										</div>							
 									</div>
 								</div>
 								<div class="span6">
-									<?php $field = $form->getField('dimension_unit') ?>
+									<?php $field = $form->getField('width') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
+										<div class="controls">
+											<input class="input-block-level" type="text" name="paycart_form[width]" value="<?php echo $formatter->dimension($product->getWidth())?>">										
+										</div>								
 									</div>
 								</div>
 							</div>

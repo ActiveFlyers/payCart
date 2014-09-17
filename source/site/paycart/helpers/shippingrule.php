@@ -393,11 +393,12 @@ class PaycartHelperShippingrule extends PaycartHelper
 		list($productMapping, $groupRules) = $this->getApplicableGrouprules($cart,$products);
 		$shippingRules = $this->getShippingrules($groupRules);
 		
-		foreach($productMapping as $productId => $mapping){
-			$intersection = array_intersect($mapping, $shippingRules);
-			
+		foreach($productMapping as $productId => $mapping){			
 			$query = new Rb_Query();
-			$result = $query->select('`shippingrule_id`')
+			
+			//query that matches product's groupid and applicable shippingrule id will be 
+			//the resultant shippingrules through which the current product can be shipping
+			$result = $query->select('distinct(`shippingrule_id`)')
 							 ->from('`#__paycart_shippingrule_x_group`')
 							 ->where('`group_id` IN('.implode(',', $mapping).')')
 							 ->where('`shippingrule_id` IN('.implode(',', $shippingRules).')')
@@ -406,6 +407,10 @@ class PaycartHelperShippingrule extends PaycartHelper
 			
 			if(!empty($result)){
 				$groups[$productId] = $result;
+			}
+			//if no shipping rule available for any of the cart product then return and stop calculation
+			else{
+				return array();
 			}
 		}	
 
@@ -425,9 +430,11 @@ class PaycartHelperShippingrule extends PaycartHelper
 		$groups[Paycart::GROUPRULE_TYPE_CART]  =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
 		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array();
+		
+		$commonGroups = array_merge($groups[Paycart::GROUPRULE_TYPE_BUYER],$groups[Paycart::GROUPRULE_TYPE_CART]);
 				
 		foreach($products as $product){
-			$productGroups = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $product->product_id);
+			$productGroups = array_merge($commonGroups,$groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $product->product_id));
 			if(empty($productGroups)){
 				continue;
 			}

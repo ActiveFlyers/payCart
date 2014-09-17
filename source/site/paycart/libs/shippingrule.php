@@ -154,13 +154,12 @@ class PaycartShippingrule extends PaycartLib
 		}
 
 		//IMP : Multiple warehouses are not supported yet
-		//@PCTODO :  load origin address id from global configuration
-		$origin_address_id = 0;
-		$request->origin_address 	= $helperRequest->getBuyeraddressObject(new PaycartBuyeraddress($origin_address_id));
+		$origin_address 			= json_decode(PaycartFactory::getConfig()
+																->get('localization_origin_address'));
+		$request->origin_address 	= $helperRequest->getBuyeraddressObject(PaycartBuyeraddress::getInstance(0,$origin_address));
 		
 		$delivery_address = PaycartFactory::getHelper('shippingrule')->getAddressObject($delivery_md5_address);
-		
-		$request->delivery_address 	= $helperRequest->getBuyeraddressObject(new PaycartBuyeraddress($delivery_address));
+		$request->delivery_address 	= $helperRequest->getBuyeraddressObject(PaycartBuyeraddress::getInstance(0,$delivery_address));
 		
 		// get processor instance and set some parameters
 		$processor = $this->getProcessor();
@@ -183,8 +182,8 @@ class PaycartShippingrule extends PaycartLib
 	public function getGlobalconfigRequestObject()
 	{
 		$config = new PaycartShippingruleRequestGlobalconfig();
-		$config->dimenssion_unit  = 'INCH'; //@TODO : get from global config
-		$config->weight_unit	  = 'KG';   //@TODO : get from global config
+		$config->dimension_unit  = PaycartFactory::getConfig()->get('catalogue_dimension_unit');
+		$config->weight_unit	 = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 		return $config;
 	}
 	

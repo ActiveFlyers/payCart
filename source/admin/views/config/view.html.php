@@ -25,6 +25,7 @@ class PaycartAdminViewConfig extends PaycartAdminBaseViewConfig
 		$form		= $modelform->getForm();
 		
 		$data 		= PaycartFactory::getConfig();
+		$origin_address = json_decode($data->get('localization_origin_address'));
 		$form->bind($data);
 		
 		$logo = $data->get('company_logo');
@@ -32,6 +33,7 @@ class PaycartAdminViewConfig extends PaycartAdminBaseViewConfig
 			$logo = PaycartMedia::getInstance($logo)->toArray();
 		}
 		
+		$this->assign('origin_address',$origin_address);
 		$this->assign('logo', $logo);
 		$this->assign('form',$form);
 		return $this->setTpl('edit');
