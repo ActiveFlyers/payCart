@@ -60,8 +60,7 @@
 			class="input-block-level"
 			labelclass="control-label"
 			group_type="buyer"	
-			multiple="true"	
-			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_BUYER" />
+			multiple="true" />
 			
 		<field
 			name="_productgroups"
@@ -69,8 +68,7 @@
 			class="input-block-level"
 			labelclass="control-label"
 			group_type="product"
-			multiple="true"		
-			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_PRODUCT" />
+			multiple="true"	/>
 			
 		<field
 			name="_cartgroups"
@@ -78,8 +76,7 @@
 			class="input-block-level"
 			labelclass="control-label"
 			multiple="true"
-			group_type="cart"		
-			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_CART" />
+			group_type="cart"/>
 		
 		<field
 			name="is_percentage"
@@ -156,7 +153,7 @@
 	
 	
 	<fieldset name='language'>
-		<field 	name="taxrule_lang_id" 
+		<field 	name="discountrule_lang_id" 
 				type="hidden"
 				default="0"/>
 				

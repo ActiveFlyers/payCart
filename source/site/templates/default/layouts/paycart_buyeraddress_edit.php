@@ -39,7 +39,7 @@ $id_suffix++;
 		<div class="">		
 			<input	name="<?php echo $prefix; ?>[buyeraddress_id]" 
 					id="buyeraddress_id_<?php echo $id_suffix; ?>"
-					value="<?php echo $displayData->buyeraddress_id; ?>"
+					value="<?php echo @$displayData->buyeraddress_id; ?>"
 					type="hidden"
 				/>
 		</div>								
@@ -51,7 +51,7 @@ $id_suffix++;
 		<div class="">		
 			<input	name="<?php echo $prefix; ?>[buyer_id]" 
 					id="buyer_id_<?php echo $id_suffix; ?>" 
-					value="<?php echo $displayData->buyer_id; ?>"
+					value="<?php echo @$displayData->buyer_id; ?>"
 					type="hidden" 
 				/>
 				
@@ -67,7 +67,7 @@ $id_suffix++;
 	    <input 
 	    		name="<?php echo $prefix; ?>[to]" 
 				id="to_<?php echo $id_suffix; ?>" 
-				value="<?php echo $displayData->to; ?>"
+				value="<?php echo @$displayData->to; ?>"
 				type="text" required="true"
 		/>
 	  </div>
@@ -82,7 +82,7 @@ $id_suffix++;
 	    <textarea 	name="<?php echo $prefix; ?>[address]" 
 					id="address_<?php echo $id_suffix; ?>"
 					required="true">
-	    	<?php echo $displayData->address; ?>
+	    	<?php echo @$displayData->address; ?>
 	    </textarea>
 	  </div>
 	</div>
@@ -95,7 +95,7 @@ $id_suffix++;
 	  </label>
 	  <div class="controls">
 	  		<?php
-	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', $displayData->country_id, "country_id_$id_suffix"); 
+	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', @$displayData->country_id, "country_id_$id_suffix"); 
 	  		?>
 	   
 	  </div>
@@ -111,7 +111,7 @@ $id_suffix++;
 	  </label>
 	  <div class="controls">
 		  	<?php 
-		  		echo PaycartHtmlState::getList($prefix.'[state_id]',$displayData->state_id,  "state_id_$id_suffix", array(),  $displayData->country_id);
+		  		echo PaycartHtmlState::getList($prefix.'[state_id]',@$displayData->state_id,  "state_id_$id_suffix", array(),  @$displayData->country_id);
 		  	?>
 		   	    
 		    <script>
@@ -122,7 +122,7 @@ $id_suffix++;
 					});
 					<?php
 						// if state already available then no need to get states  
-						if (!$displayData->state_id) :
+						if (!@$displayData->state_id) :
 					?>
 						paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
 					<?php endif; ?>
@@ -140,7 +140,7 @@ $id_suffix++;
 	  <div class="controls">
 	    <input 	name="<?php echo $prefix; ?>[city]" 
 				id="city_<?php echo $id_suffix; ?>" 
-				value="<?php echo $displayData->city; ?>"
+				value="<?php echo @$displayData->city; ?>"
 	    	    type="text">
 	  </div>
 	</div>
@@ -153,7 +153,7 @@ $id_suffix++;
 	  <div class="controls">
 		    <input 	name="<?php echo $prefix; ?>[zipcode]" 
 					id="zipcode_<?php echo $id_suffix; ?>" 
-					value="<?php echo $displayData->zipcode; ?>"
+					value="<?php echo @$displayData->zipcode; ?>"
 					type="text">
 	  
 	  </div>
@@ -167,7 +167,7 @@ $id_suffix++;
 	  <div class="controls">
 		    <input 	name="<?php echo $prefix; ?>[vat_number]" 
 					id="vat_number_<?php echo $id_suffix; ?>" 
-					value="<?php echo $displayData->vat_number; ?>" 
+					value="<?php echo @$displayData->vat_number; ?>" 
 		    		type="text">
 	    
 	  </div>
@@ -181,7 +181,7 @@ $id_suffix++;
 	  <div class="controls">
 		    <input	name="<?php echo $prefix; ?>[phone1]" 
 					id="phone1_<?php echo $id_suffix; ?>" 
-					value="<?php echo $displayData->phone1; ?>" 
+					value="<?php echo @$displayData->phone1; ?>" 
 		    		type="text" required="true">
 	  </div>
 	</div>
@@ -195,7 +195,7 @@ $id_suffix++;
 	  <div class="controls">
 		    <input	name="<?php echo $prefix; ?>[phone2]" 
 					id="phone2_<?php echo $id_suffix; ?>" 
-					value="<?php echo $displayData->phone2; ?>" 
+					value="<?php echo @$displayData->phone2; ?>" 
 		    		type="text">
 	    
 	  </div>

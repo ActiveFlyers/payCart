@@ -135,8 +135,8 @@ paycart.admin.attribute = {
 		},
 			
 		addOption : function(type){
-			var totalRows = $('*[id^="option_row_"]').length
-			var url = 'index.php?option=com_paycart&view=productattribute&task=addOption&attributeType='+type+'&totalRows='+totalRows;
+			var url = 'index.php?option=com_paycart&view=productattribute&task=addOption&attributeType='+type+'&totalRows='+attributeCounter;
+			attributeCounter++;
 			paycart.ajax.go(url);
 		},
 		

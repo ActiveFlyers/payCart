@@ -17,9 +17,21 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartAdminControllerShippingrule extends PaycartController 
 {	
-	// @PCTODO : Temporary fix
-	public function getModel($name = '', $prefix = '', $config = array())
+	public function getProcessorConfig()
 	{
-		return false;
+		return true;
+	}
+	
+	/**
+	 * override it due to format packaging weight
+	 */
+	public function _save(array $data, $itemId=null, $type=null)
+	{
+		//format packaging weight before saving
+		if(isset($data['packaging_weight'])){
+			$data['packaging_weight'] = PaycartFactory::getHelper('format')->convertWeight($data['packaging_weight'],PaycartFactory::getConfig()->get('catalogue_weight_unit'));
+		} 
+		
+		return parent::_save($data, $itemId, $type);
 	}
 }

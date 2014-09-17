@@ -206,8 +206,6 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function _save($previousObject)
 	{
-		//PCTODO: First convert weight, height. width, length into common storage : can be done in toDatabase function for each value
-		
 		$id = parent::_save($previousObject);
 		
 		// if save fail
@@ -325,6 +323,8 @@ class PaycartProduct extends PaycartLib
 	/**
 	 * Override it due to set language and _uploaded_files variable
 	 * 
+	 * IMP : In the given data, weight, length, height and width must be formatted in our standard database format
+	 * 
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 */
 	function bind($data, $ignore = Array()) 
@@ -332,8 +332,6 @@ class PaycartProduct extends PaycartLib
 		if(is_object($data)){
 			$data = (array) ($data);
 		}
-		
-		//PCTODO: Change weight, height, width, length etc in a format as per set weight/dimension unit
 		
 		parent::bind($data, $ignore);
 		

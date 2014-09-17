@@ -136,3 +136,23 @@ defined('_JEXEC') or die( 'Restricted access' );
 		
 	</div>			
 </div>
+
+<hr/>
+
+<div class="row-fluid">
+	<div class="span3">
+		<h2><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_WARE_HOUSE_HEADER');?></h2>
+		<div>
+		<?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_WARE_HOUSE_HEADER_MSG');?>
+		</div>
+	</div>
+	<div class="span9">
+		<?php 
+			  //$display_data = new stdClass();
+			  $display_data = $origin_address; 
+			  $display_data->prefix = 'paycart_form[localization_origin_address]';
+		?>
+		<?php $layout = new JLayoutFile('paycart_buyeraddress_edit', PAYCART_PATH_ADMIN_LAYOUTS);?>
+		<?php echo $layout->render($display_data);?>
+	</div>			
+</div>

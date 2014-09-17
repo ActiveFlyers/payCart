@@ -528,6 +528,33 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							paycart.formvalidator.handleResponse(false, $(error_mapper[errors[index].for]), errors[index].message_type, errors[index].message);
 						}
 					};
+
+		paycart.cart.confirm.onChangeShipping = function(shippingMethod)	{						
+						var request = [];
+						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=changeShippingMethod';
+						request['data']	= {'shipping' : shippingMethod};
+						request['success_callback']	= paycart.cart.confirm.onChangeShipping.response;
+						paycart.cart.request(request);
+						
+						return false;
+					};
+
+		paycart.cart.confirm.onChangeShipping.response = function(response){				
+						if(response.valid){
+							paycart.cart.confirm.get();
+							return true;
+						}		
+						
+						var productId 	 = response.productId;
+						var message = '';
+						for(var index in response.errors){
+							if(response.errors.hasOwnProperty(index) == false){
+								continue;
+							}
+							message += "\n" + response.errors[index].message;
+						}
+						$('#pc-cart-shipping-error'+productId).text(message);						
+					};
 					
 	   /**
 		*-----------------------------------------------------------

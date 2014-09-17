@@ -70,12 +70,12 @@ class PaycartBuyeraddress extends PaycartLib
 	{		
 		parent::bind($data, $ignore);
 		
-		$this->md5 = $this->getMD5();
+		$this->md5 = $this->createMD5();
 		
 		return $this;
 	}
 	
-	public function getMD5()
+	public function createMD5()
 	{
 		$string = 	$this->buyer_id.$this->to.$this->address.$this->city.
 					$this->state_id.$this->country_id.$this->zipcode.
@@ -185,5 +185,12 @@ class PaycartBuyeraddress extends PaycartLib
 		$this->buyer_id = $buyer_id;
 	}
 	
-
+	/**
+	 * @return buyeraddress MD5 field
+	 */
+	public function getMD5()
+	{
+		return $this->md5;
+	}
+	
 }

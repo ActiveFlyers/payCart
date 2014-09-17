@@ -39,27 +39,37 @@ class PaycartAdminViewCart extends PaycartAdminBaseViewCart
 		$cart_id	=  $this->getModel()->getState('id');
 		$cart		=  PaycartCart::getInstance($cart_id);
 		
-		$model 		= PaycartFactory::getModel('cartparticular');
+		$cartHelper	= PaycartFactory::getHelper('cart');
 		
-		// collect all particular details
-		$product_particular   = $model->loadRecords(array('type'=>paycart::CART_PARTICULAR_TYPE_PRODUCT, 'cart_id' => $cart_id));
-		$shipping_particular  = $model->loadRecords(array('type'=>paycart::CART_PARTICULAR_TYPE_SHIPPING, 'cart_id' => $cart_id));
-		$promotion_particular = $model->loadRecords(array('type'=>paycart::CART_PARTICULAR_TYPE_PROMOTION, 'cart_id' => $cart_id));
-		$duties_particular	  = $model->loadRecords(array('type'=>paycart::CART_PARTICULAR_TYPE_DUTIES, 'cart_id' => $cart_id));
-		
+		// collect all particular details		
+		$product_particular	  = $cartHelper->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		$promotion_particular = $cartHelper->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+		$duties_particular	  = $cartHelper->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		$shipping_particular  = $cartHelper->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+				
 		//collect usage of tax, discount and shipping
 		$usage = PaycartFactory::getModel('usage')->loadRecords(array('cart_id' => $cart_id), array(), false, 'cartparticular_id');
 		
-			
+		$shippingMethods = array();
+		foreach ($shipping_particular as $particular){
+			$shippingMethods[$particular->particular_id] = PaycartShippingrule::getInstance($particular->particular_id)->getTitle();
+		}
+
+		//load shipments
+		$shipmentModel = PaycartFactory::getModel('shipment');
+		$shipments     = $shipmentModel->loadRecords(array('cart_id' => $cart_id)); 
+		
 		$this->assign('product_particular',		$product_particular);
 		$this->assign('shipping_particular',	$shipping_particular);
 		$this->assign('promotion_particular',	$promotion_particular);
 		$this->assign('duties_particular',		$duties_particular);
+		$this->assign('shipments', $shipments);
 		$this->assign('usage',$usage);
 		$this->assign('form', $cart->getModelform()->getForm($cart));
 		$this->assign('cart',$cart);
+		$this->assign('shippingMethods',$shippingMethods);
+		$this->assign('status',Paycart::getShipmentStatus());
 		
 		return parent::edit($tpl);
 	}
-	
 }

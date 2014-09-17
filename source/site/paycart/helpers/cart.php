@@ -17,62 +17,60 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartHelperCart extends PaycartHelper
 {	
-	/**
-	 * 
-	 * Return All available Paycart status
-	 * 
-	 * @return Array()
-	 */
-	public function getStatus()
-	{
-		return 
-			Array(
-					Paycart::STATUS_CART_DRAFTED   => JText::_('COM_PAYCART_CART_STATUS_DRAFTED'),
-					Paycart::STATUS_CART_LOCKED	   => JText::_('COM_PAYCART_CART_STATUS_LOCKED'),
-					Paycart::STATUS_CART_PAID      => JText::_('COM_PAYCART_CART_STATUS_PAID'),
-					Paycart::STATUS_CART_CANCELLED => JText::_('COM_PAYCART_CART_STATUS_CANCELLED'),
-					Paycart::STATUS_CART_COMPLETED => JText::_('COM_PAYCART_CART_STATUS_COMPLETED')
-				)	;
-	}
+	static protected $cached_cart = null;
 	
 	/**
 	* Invoke to get current cart whcih is mapped with current session id
 	*
+	* @param $requireNew : If true then create new cart only if any cart doesn't exist
+	* 					   If false then check for existing cart and return existing cart (if any) otherwise false
 	* @since 1.0
 	* @author Manish
-	*
+	* 
 	* @return Paycartcart if cart exits otherwise false
 	*/
-	public function getCurrentCart()
+	public function getCurrentCart($requireNew = false)
 	{
+		if(self::$cached_cart){
+			return self::$cached_cart;
+		}
+		
 		// get current session id
 		$session_id =	PaycartFactory::getSession()->getId();
 		
 		// get cart data
 		$cart_data =	PaycartFactory::getModel('cart')
 							->loadRecords(Array('session_id' => $session_id, 'status' => Paycart::STATUS_CART_DRAFTED));
+
+		// if cart doesn't exist and new cart is not requested then don't create new cart 
+		// and return false
+		if(empty($cart_data) && !$requireNew){
+			return false;
+		}					
 		
 		if (empty($cart_data)) {
-			$cart = $this->createNew();
+			$cart = $this->_createNew();
 		}
 		else {
 			$data = array_shift($cart_data);
 			$cart = PaycartCart::getInstance($data->cart_id, $data);
 		}
 		
+		self::$cached_cart = $cart;
+		
 		// Calculation should be done before any action
 		if ( $cart instanceof PaycartCart ) {
-			return $cart->calculate();
+			$cart->calculate();
 		}
 		
-		return $cart;
+		return self::$cached_cart;
 	}
 	
 	/**
 	 * Create a new cart 
 	 * @return PaycartCart
 	 */
-	public function createNew()
+	private function _createNew()
 	{
 		// get current session id
 		$session_id =	PaycartFactory::getSession()->getId();
@@ -92,7 +90,7 @@ class PaycartHelperCart extends PaycartHelper
 	 */
 	public function addProduct($productId, $quantity)
 	{
-		$cart 	= $this->getCurrentCart();
+		$cart 	= $this->getCurrentCart(true);
 		$prevQuantity = isset($cart->getParam('products')->$productId)?$cart->getParam('products')->$productId->quantity:1;
 		
 		//validate quantity before adding product
@@ -117,6 +115,12 @@ class PaycartHelperCart extends PaycartHelper
 	public function isProductExist($productId)
 	{
 		$cart = $this->getCurrentCart();
+		
+		//if no cart exist then no need to check for products
+		if(!$cart){
+			return false;
+		}
+		
 		$existingProducts = $cart->getParam('products');
 		
 		// product is not already added, set it with quantity 1
@@ -139,5 +143,25 @@ class PaycartHelperCart extends PaycartHelper
 		$cart = $this->getCurrentCart();
 		$cart->addPromotionCode($promotion_code);
 		return $cart->calculate()->save();
+	}
+	
+	/**
+	 * return stdclass object of cartparticular of given cart id and type 
+	 * @param $cartId : cart id to which the cart particular belongs
+	 * @param $type : type of cart particular to be fetched
+	 */
+	public function getCartParticularsData($cartId, $type)
+	{
+		static $particularData = array();
+		
+		if(isset($particularData[$cartId][$type])){
+			return $particularData[$cartId][$type];
+		}
+		
+		//load data from model
+		$particularData[$cartId][$type] = PaycartFactory::getModel('cartparticular')
+												->loadRecords(array('cart_id' => $cartId, 'type'=>$type), array(),false, 'particular_id');
+		
+		return $particularData[$cartId][$type];
 	}
 }

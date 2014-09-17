@@ -6,12 +6,27 @@
 * @package 		PAYCART
 * @subpackage	Back-end
 * @contact		support+paycart@readybytes.in
-* @author		Puneet Singhal
+* @author		Puneet Singhal, rimjhim
 */
 
 // no direct access
 defined( '_JEXEC' ) or	die( 'Restricted access' );
 
-class PaycartAdminControllerCart extends PaycartController {
-		
+class PaycartAdminControllerCart extends PaycartController 
+{
+	/**
+	 * Json task : save new/existing shipment from the current cart
+	 */
+	public function saveShipment()
+	{
+		return true;
+	}
+
+	/**
+	 * Json task : remove shipment from the current cart
+	 */
+	public function removeShipment()
+	{
+		return true;
+	}	
 }

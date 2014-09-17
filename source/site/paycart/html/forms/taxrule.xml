@@ -36,21 +36,18 @@
 			name="amount"
 			type="paycart.amount"
 			labelclass="control-label"
-			class="input-block-level"			
-			label="COM_PAYCART_ADMIN_AMOUNT"/>
+			class="input-block-level"/>
 		
 		<field
 			name="apply_on"
 			type="paycart.applyon"
-			labelclass="control-label"
-			label="COM_PAYCART_ADMIN_APPLY_ON"/>
+			labelclass="control-label"/>
 					
 		<field
 			name="processor_classname"
 			type="paycart.processor"
 			labelclass="control-label"
-			processor_type="taxrule"		
-			label="COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME">
+			processor_type="taxrule">
 			<option value="">COM_PAYCART_ADMIN_SELECT</option>
 		</field>
 			
@@ -89,6 +86,16 @@
 			label="COM_PAYCART_ADMIN_MESSAGE"/>
 			
 		<fields name="processor_config">
-		</fields>		
+		</fields>
+		
+		<field 
+			name="taxrule_lang_id"
+			type="hidden"
+			default="0"/>	
+	
+		<field 
+			name="lang_code"
+			type="hidden"
+			default="en-GB"/>	
 	</fieldset>
 </form>

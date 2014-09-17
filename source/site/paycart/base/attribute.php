@@ -115,6 +115,16 @@ class PaycartAttribute
 		//needed to reset keys for proper counter management
 		$options = array_values($options);		
 
+		//add global javascript to maintain counter 
+		ob_start();
+		?>	
+			<script type="text/javascript">
+				var attributeCounter = <?php echo (!empty($options))?(max(array_keys($options))):'1';?>;
+			</script>
+		<?php 
+		$html .= ob_get_contents();
+		ob_clean();
+		
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $options);
 		}

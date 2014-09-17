@@ -78,4 +78,97 @@ class PaycartHelperFormat extends JObject
 		return '';
 	}
 	
+	/**
+	 * 
+	 * format weigth as per the configuration 
+	 * @param $value : value (in kg) to be formatted according to the configuration setting 
+	 */
+	function weight($value, $defaultUnit = paycart::WEIGHT_UNIT_KILOGRAM)
+	{
+		$weightUnitConfig = PaycartFactory::getConfig()->get('catalogue_weight_unit');
+		
+		return $this->convertWeight($value, $defaultUnit, $weightUnitConfig);
+	}
+	
+	/**
+	 * 
+	 * convert value into the resultant unit
+	 * @param $value : value to be converted
+	 * @param $inputUnit : weight unit in which the value is (kg, gm, lb, oz etc)
+	 * @param $resultantUnit : weight unit in which the value to be converted
+	 */
+	function convertWeight($value, $inputUnit , $resultantUnit = paycart::WEIGHT_UNIT_KILOGRAM)
+	{
+		$key = $inputUnit.'->'.$resultantUnit;
+		
+		switch($key)
+		{
+			case Paycart::WEIGHT_UNIT_KILOGRAM.'->'.Paycart::WEIGHT_UNIT_GRAM  : return (1000*$value);
+			
+			case Paycart::WEIGHT_UNIT_KILOGRAM.'->'.Paycart::WEIGHT_UNIT_PONUD : return (2.20462*$value);
+			
+			case Paycart::WEIGHT_UNIT_KILOGRAM.'->'.Paycart::WEIGHT_UNIT_OUNCE : return (35.274*$value);
+			
+			case Paycart::WEIGHT_UNIT_GRAM.'->'.Paycart::WEIGHT_UNIT_KILOGRAM  : return ($value/1000);
+			
+			case Paycart::WEIGHT_UNIT_PONUD.'->'.Paycart::WEIGHT_UNIT_KILOGRAM : return (0.453592*$value);
+					
+			default	 :  return $value;
+		}
+	}
+	
+	/**
+	 * 
+	 * format weight unit
+	 * @param $value : value  to be formatted according to the configuration setting 
+	 */
+	function dimension($value, $defaultUnit = paycart::DIMENSION_UNIT_METER)
+	{
+		$dimensionUnitConfig = PaycartFactory::getConfig()->get('catalogue_dimension_unit');
+		
+		return $this->convertDimension($value, $defaultUnit, $dimensionUnitConfig);
+	}
+	
+	/**
+	 * 
+	 * convert value into the resultant unit
+	 * @param $value : value to be converted
+	 * @param $inputUnit : dimension unit in which the value is (m, cm, in etc)
+	 * @param $resultantUnit : dimension unit in which the value to be converted
+	 */
+	function convertDimension($value, $inputUnit, $resultantUnit = paycart::DIMENSION_UNIT_METER)
+	{
+		$key = $inputUnit.'->'.$resultantUnit;
+		
+		switch($key)
+		{
+			case Paycart::DIMENSION_UNIT_METER.'->'.Paycart::DIMENSION_UNIT_CENTIMETER  : return (100*$value);
+			
+			case Paycart::DIMENSION_UNIT_METER.'->'.Paycart::DIMENSION_UNIT_INCH 		: return (39.3701*$value);
+			
+			case Paycart::DIMENSION_UNIT_CENTIMETER.'->'.Paycart::DIMENSION_UNIT_METER  : return ($value/100);
+
+			case Paycart::DIMENSION_UNIT_INCH.'->'.Paycart::DIMENSION_UNIT_METER 		: return (0.0254*$value);
+						
+			default	 :  return $value;
+		}
+	}
+	
+	/**
+	 * PCTODO : Consider user's timezone
+	 * Format date into given format(if any) or format date according to configuration 
+	 * @param Rb_Date $date
+	 * @param unknown_type $format : date format to change the date
+	 */
+	public function date(Rb_Date $date ,$format=null)
+	{
+		$date_format	= PaycartFactory::getConfig()->get('localization_date_format');
+		$format 		= ($format === null) ? $date_format : $format;
+
+		if(empty($format)){
+			return (string)$date;
+		}
+		
+		return $date->toFormat($format);
+	}
 }

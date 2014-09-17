@@ -32,6 +32,7 @@ abstract class PaycartCartparticular extends JObject
 	protected $total;
 	protected $title;
 	protected $message;
+	protected $params;
 	
 	protected $_usage		=	Array();
 	
@@ -47,6 +48,10 @@ abstract class PaycartCartparticular extends JObject
 	protected $length 	= 0;
 	protected $weight 	= 0;
 	
+	public function __construct($properties = null)
+	{
+		 $this->params = new Rb_Registry();
+	}
 	
 	/**
 	 * 
@@ -139,6 +144,16 @@ abstract class PaycartCartparticular extends JObject
 	public function getLength()
 	{
 		return $this->length;
+	}
+	
+	function getCartparticularId()
+	{
+		return $this->cartparticular_id;
+	}
+	
+	function getCartId()
+	{
+		return $this->cart_id;
 	}
 	
 	/**
@@ -575,6 +590,7 @@ abstract class PaycartCartparticular extends JObject
 		$data['total']			= $this->getTotal(true);
 		$data['title']			= $this->title;
 		$data['message']		= $this->message;
+		$data['params']			= $this->params->toString();
 		
 		$this->buyer_id			= $cart->getBuyer();
 		$model = PaycartFactory::getModel('cartparticular');
