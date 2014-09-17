@@ -22,7 +22,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 </script>
 
 <?php 
-echo $this->loadTemplate('edit.ng');
+echo $this->loadTemplate('edit_ng');
 ?>
 
 <div data-ng-app="pcngCartApp">
