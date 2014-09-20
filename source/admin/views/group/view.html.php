@@ -22,8 +22,8 @@ class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
 {	
 	public function display($tpl=null) 
 	{
-		$availiableGroupRules = $this->_helper->getList();	
-		$this->assign('availiableGroupRules', $availiableGroupRules);
+		$availableGroupRules = $this->_helper->getList();	
+		$this->assign('availableGroupRules', $availableGroupRules);
 		
 		return parent::display($tpl);
 	}

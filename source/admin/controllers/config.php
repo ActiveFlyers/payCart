@@ -49,4 +49,21 @@ class PaycartAdminControllerConfig extends PaycartController
 		
 		return true;
 	}
+	
+	function deleteCompanyLogo()
+	{
+		$imageId   = $this->input->get('company_logo',0);
+		$instance  = PaycartMedia::getInstance($imageId);
+		$ret       = $instance->delete($imageId);
+		
+		$view = $this->getView();
+		if($ret && $this->getModel()->save(array('company_logo' => ''))){
+			$view->assign('success', true);
+		}
+		else{
+			$view->assign('success', false);
+		}
+	
+		return true;
+	}
 }

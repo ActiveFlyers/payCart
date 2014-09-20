@@ -72,20 +72,50 @@ defined('_JEXEC') or die( 'Restricted access' );
 				<!-- TABLE BODY START -->
 					<?php $count= $limitstart;
 					$cbCount = 0;
+					$nonEditable = false;
+					$errorMsg = '';
+					
 					foreach ($records as $record):?>
+						<?php $type   = $record->type;?>
+						<?php $params = json_decode($record->params);?>
+						<?php if(isset($availableGroupRules[$type])):?>
+							<?php $classNames = array_keys($availableGroupRules[$type]);?>
+							<?php foreach ($params as $data){
+									if(!in_array($data->ruleClass, $classNames)){
+										$errorMsg = $data->ruleClass.' : '.JText::_("COM_PAYCART_ADMIN_EITHER_PLUGIN_IS_DISABLED_OR_NOT_INSTALLED");
+										$nonEditable = true;
+										break;
+									}
+								  }
+							?>
+						<?php else:?>
+							<?php $errorMsg = $type.' : '.JText::_("COM_PAYCART_ADMIN_ALL_PLUGINS_OF_TYPE_IS_EITHER_DISABLED_OR_NOT_INSTALLED");?>
+							<?php $nonEditable = true;?>
+						<?php endif;?>
+						
 						<tr class="<?php echo "row".$count%2; ?>">	
-							<th>
-						    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->group_id ); ?>
-						    </th>				
-							<td><?php echo $record->group_id;?></td>
-							<td>
-								<?php echo PaycartHtml::link('index.php?option=com_paycart&view=group&task=edit&group_id='.$record->group_id, $record->title);?>
-								<p><small><?php echo $record->description;?></small></p>
-							</td>
-							<td><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_'.$record->type);?></td>
-							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-							<td><?php echo $record->created_date?></td>
-							<td><?php echo $record->modified_date?></td>
+						<?php if(!$nonEditable):?>
+								<th>
+							    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->group_id ); ?>
+							    </th>				
+								<td><?php echo $record->group_id;?></td>
+								<td>
+									<?php echo PaycartHtml::link('index.php?option=com_paycart&view=group&task=edit&group_id='.$record->group_id, $record->title);?>
+									<p><small><?php echo $record->description;?></small></p>
+								</td>
+								<td><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_'.$record->type);?></td>
+								<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+								<td><?php echo $record->created_date?></td>
+								<td><?php echo $record->modified_date?></td>
+							
+						<?php else:?>
+								<th>
+							    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->group_id ); ?>
+							    </th>				
+								<td><?php echo $record->group_id;?></td>
+								<td><?php echo $record->title;?></td>
+								<td colspan="4"><?php echo $errorMsg;?></td>
+						<?php endif;?>
 						</tr>
 					<?php $count++;?>
 					<?php endforeach;?>

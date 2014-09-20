@@ -160,10 +160,10 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `variation_of` int(11) NOT NULL DEFAULT '0' COMMENT 'This product is variation of another product. ',
   `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
   `price` double(15,4) NOT NULL,
-  `quantity` int(10) NOT NULL DEFAULT '0' COMMENT 'Quantity of Product',
+  `quantity` int(10) NOT NULL COMMENT 'Quantity of Product',
   `featured` tinyint(1) NOT NULL DEFAULT '0',
   `cover_media` varchar(250) DEFAULT NULL,
-  `stockout_limit`int NOT NULL DEFAULT '0' COMMENT 'out-of-stock limit of Product',
+  `stockout_limit`int NOT NULL COMMENT 'out-of-stock limit of Product',
   `weight` decimal(12,4) DEFAULT '0.0000',
   `weight_unit` varchar(50) DEFAULT NULL,
   `height` decimal(12,4) DEFAULT '0.0000',
@@ -512,8 +512,6 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_x_group` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_media` (
   `media_id` int(11) NOT NULL AUTO_INCREMENT,
-  `filename` varchar(255) NOT NULL,
-  `mime_type` varchar(255) NOT NULL,
   `is_free` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`media_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -528,6 +526,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_media_lang` (
   `media_id` int(11) NOT NULL,
   `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL COMMENT 'media name',
+  `filename` varchar(255) NOT NULL,
+  `mime_type` varchar(255) NOT NULL,
   `description` text,
   `metadata_title` varchar(255) DEFAULT NULL,
   `metadata_keywords` varchar(255) DEFAULT NULL,

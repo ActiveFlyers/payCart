@@ -107,13 +107,13 @@ $currencyId = $cart->getCurrency();
 		<hr />
 	<?php endforeach;?>
 	
-	<?php if(!empty($promotionParticular)):?>
+	<?php if(isset($promotionParticular->discount) && !empty($promotionParticular->discount)):?>
 		<h5 class="text-right">
 			<?php echo JText::_("COM_PAYCART_DISCOUNT")." = ";?> <?php echo $formatter->amount($promotionParticular->discount,true,$currencyId); ?>
 		</h5>
 	<?php endif;?>
 	
-	<?php if(!empty($dutiesParticular)):?>
+	<?php if(isset($dutiesParticular->tax) && !empty($dutiesParticular->tax)):?>
 		<h5 class="text-right">
 			<?php echo JText::_("COM_PAYCART_TAX")." = ";?><?php echo $formatter->amount($dutiesParticular->tax,true,$currencyId); ?>
 		</h5>
@@ -124,9 +124,11 @@ $currencyId = $cart->getCurrency();
 		<?php foreach ($shippingParticulars as $particular):?>
 			<?php $shipping += $particular->getTotal();?>
 		<?php endforeach;?>
-		<h5 class="text-right">
-			<?php echo JText::_("COM_PAYCART_CART_DELIVERY_CHARGES")." = ";?><?php echo $formatter->amount($shipping,true,$currencyId); ?>
-		</h5>
+		<?php if(!empty($shipping)):?>
+			<h5 class="text-right">
+				<?php echo JText::_("COM_PAYCART_CART_DELIVERY_CHARGES")." = ";?><?php echo $formatter->amount($shipping,true,$currencyId); ?>
+			</h5>
+		<?php endif;?>
 	<?php endif;?>
 		
 	<h3 class="text-right">
@@ -143,7 +145,7 @@ $currencyId = $cart->getCurrency();
 <?php else:?>
 <div id="pc-cart-products">
  	<div class="row-fluid row-fluid text-center">
- 		<h4 class="muted"><?php echo JText::_('COM_PAYCART_CART_EMPTY')?></h4>
+ 		<h3 class="muted"><?php echo JText::_('COM_PAYCART_CART_EMPTY')?></h3>
  		<div class="row-fluid">
  			<button type="button" class="btn btn-large btn-primary" onclick="rb.url.redirect('<?php echo 'index.php?option=com_paycart';?>'); return false;"> <i class="fa fa-chevron-left"></i> &nbsp; <?php echo JText::_("COM_PAYCART_CONTINUE_SHOPPING");?></button>
  		</div>

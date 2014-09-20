@@ -18,7 +18,17 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author Rimjhim
  */
 
+Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
+
+<script type="text/javascript">
+	paycart.ng.config = angular.module('pcngConfigApp', []);
+</script>
+
+<?php 
+echo $this->loadTemplate('edit_ng');
+?>
+
 <div class="row-fluid">
 	<div class="span3">
 		<h2><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_COUNTRY_HEADER');?></h2>
@@ -82,7 +92,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 <hr/>
 
-<div class="row-fluid">
+<div class="row-fluid" data-ng-app="pcngConfigApp">
 	<div class="span3">
 		<h2><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_COMPANY_HEADER');?></h2>
 		<div>
@@ -113,19 +123,24 @@ defined('_JEXEC') or die( 'Restricted access' );
 					<?php $field = $form->getField('company_logo') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
-						<?php if(!empty($logo)):?>				
-						<ul class="thumbnails">
-			    			<li class="thumbnail">		    									
-	    						<a href="#" onClick="return false;">
-	    						<img src="<?php echo $logo['original']; ?>" alt="">
-	    						</a>
-	    						<div>		    										
-	    							<span class="pull-right"><a href="#" onClick="return false;" class="muted">
-	    								<i class="fa fa-trash-o"></i></a>
-	    							</span>
-	    						</div>
-	    					</li>		    									    								
-	    				</ul>
+						<?php if(!empty($logo)):?>
+							<script>
+								var pc_company_logo = <?php echo json_encode($logo);?>;
+							</script>	
+							<div data-ng-controller="pcngConfigLogoCtrl">		
+								<ul data-ng-show="company_logo" class="thumbnails">
+					    			<li class="thumbnail">		    									
+			    						<a href="#" onClick="return false;">
+			    						<img data-ng-src="{{ company_logo.thumbnail }}" alt="">
+			    						</a>
+		 	    						<div>		    										
+			    							<span class="pull-right"><a href="#" onClick="return false;" class="muted" data-ng-click="remove(company_logo.media_id)">
+			    								<i class="fa fa-trash-o"></i></a>
+			    							</span>
+			    						</div>
+			    					</li>		    									    								
+			    				</ul>
+			    			</div>
 						<?php endif;?>	    			
 						<div class="row-fluid">								
 							<input type="file" name="paycart_form[company_logo]">

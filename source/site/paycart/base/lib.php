@@ -44,8 +44,27 @@ class PaycartLib extends Rb_Lib
 	{
 		// @PCTODO : verify, reset is required or not
 		return $this->load($this->getId());
+	}
+	
+	/**
+	 * Overriding it so that model data can be populated on lib object 
+	 * 
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
+	 */
+	protected function _save($previousObject)
+	{
+		// save to data to table
+		$id = parent::_save($previousObject);
+
+		//if save was not complete, then id will be null, do not trigger after save
+		if(!$id){
+			return false;
+		}
 		
-//		$data = $this->getModel()->loadRecords(array('id'=>$this->getId()));
-//		return $this->bind($data[$this->getId()]);
+		// correct the id, for new records required
+		$this->setId($id);
+		$this->reload();
+		
+		return $id;
 	}
 }

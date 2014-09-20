@@ -43,7 +43,8 @@ class PaycartFormFieldGroup extends JFormFieldList
 		$model->clearQuery();  
 		$query = $model->getQuery()->clear('order')->order('title');
 		if(!empty($type)){
-			$query->where('`type` = "'.$type.'"');
+			$query->where('`type` = "'.$type.'"')
+				  ->where('`published` = 1');
 		}
 		
 		return $model->loadRecords();

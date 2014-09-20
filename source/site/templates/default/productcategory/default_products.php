@@ -23,7 +23,7 @@ if(!defined( '_JEXEC' )){
 					<div class="pc-product-content">   
 						<?php $media = $instance->getCoverMedia();?>                 
 						<img src="<?php echo $media['optimized'];?>">
-						<div class="pc-product-title pc-hide-overflow"><?php echo $instance->getTitle();?></div>                      
+						<div class="pc-product-title pc-break-word"><p><?php echo $instance->getTitle();?></p></div>                      
 						<h4><span class="amount"><?php echo $formatter->amount($instance->getPrice(), true)?></span></h4>
 					</div>
 				</div>

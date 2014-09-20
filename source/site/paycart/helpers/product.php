@@ -190,4 +190,45 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		return true;
 	}
+
+	/**
+	 * delete the given image from product
+	 */
+	function deleteImage(PaycartProduct $product, $imageId)
+	{
+		$result = $product->deleteImages(array($imageId));
+		
+		if($result){
+			$imageIds   = $product->getImages(false);
+			$coverMedia = $product->getCoverMedia(false);
+			$mediaId    = 0;
+			
+			//if the deleted image is not cover media then do nothing
+			if(!empty($imageIds) && $coverMedia != $imageId){
+				return $result;
+			}
+			
+			if(!empty($imageIds) && $coverMedia == $imageId){
+				$mediaId = array_shift($imageIds);	
+			}
+			
+			$product->setCoverMedia($mediaId)->save();
+		}
+		return $result;
+	}
+
+	/**
+	 * update all variants and set variation_of property with one of the variants' id
+	 * it is required when base product is being deleted
+	 */
+	function updateVariationOf(Array $variants = array())
+	{
+		if(empty($variants)){
+			return true;
+		}
+		
+		$baseProduct = key($variants);
+		
+		return PaycartFactory::getModel('product')->updateVariationOf(array_keys($variants),$baseProduct);
+	}
 }

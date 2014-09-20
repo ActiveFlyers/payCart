@@ -221,13 +221,13 @@ class PaycartProduct extends PaycartLib
 		// because every base plan should be a variation of itself
 		if(!$this->variation_of){
 			//to reflect the automatic changes in object, it is required (like ordering)
-			$this->reload();
+//			$this->reload();
 			
 			$this->variation_of = $id;
 			parent::_save($previousObject);
 			
 			//to reflect variation_of property, it is required
-			$this->reload();
+//			$this->reload();
 		}
 		
 		// Process If images exist
@@ -268,19 +268,6 @@ class PaycartProduct extends PaycartLib
 		$this->reload();
 		
 		return $id;
-	}
-	
-	/**
-	 * 
-	 * Reload current object
-	 * 
-	 * @return PaycartProduct instance
-	 * @PCTODO:: move to upper level
-	 */
-	public function reload()
-	{
-		$data = $this->getModel()->loadRecords(array('id'=>$this->getId()));
-		return $this->bind($data[$this->getId()]);
 	}
 	
 	/**
@@ -398,6 +385,11 @@ class PaycartProduct extends PaycartLib
 		if(!$this->deleteImages()){
 			return false;
 		}
+
+		//update base product of all the variants i.e variation_of property
+		if(!PaycartFactory::getHelper('product')->updateVariationOf($this->getVariants())){
+			return false;
+		}
 		
 		return true;
 	}
@@ -484,11 +476,6 @@ class PaycartProduct extends PaycartLib
 			$media = PaycartMedia::getInstance($mediaId);
 			// @PCTODO : error handling
 			$media->delete();
-			
-			//if the deleting image was set as covermedia then also reset covermedia
-			if($mediaId == $this->cover_media){
-				$this->cover_media = 0;
-			}
 		}
 		
 		$imageIds = array_diff($allMediaIds, $imageIds);
@@ -562,5 +549,16 @@ class PaycartProduct extends PaycartLib
 		}
 		
 		return $this->productcategory_id;
+	}
+
+	/**
+	 * set the given mediaId as cover image of product
+	 *
+	 * @param int $mediaId
+	 */
+	public function setCoverMedia($mediaId)
+	{
+		$this->cover_media = $mediaId;
+		return $this;
 	}
 }

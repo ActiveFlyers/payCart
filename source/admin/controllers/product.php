@@ -169,13 +169,14 @@ class PaycartAdminControllerProduct extends PaycartController
 		$productId = $this->input->get('product_id',0);
 		$instance  = PaycartProduct::getInstance($productId);
 		$imageId   = $this->input->get('image_id',0);
-		 
-		$ret = $instance->deleteImages(array($imageId));
+		
+		$productHelper = PaycartFactory::getHelper('product');
+		$ret 	       = $productHelper->deleteImage($instance,$imageId);
 		
 		$view = $this->getView();
 		if($ret){
-			$instance->save();
 			$view->assign('success', true);
+			$view->assign('coverMedia',$instance->getCoverMedia(false));
 		}
 		else{
 			$view->assign('success', false);

@@ -68,6 +68,28 @@ class PaycartModelProduct extends PaycartModelLang
 		
 		return $query->dbLoadQuery()->loadObjectList($this->getLanguageTable()->getKeyName());		
 	}
+	
+	/**
+	 * Update variation_of property of the given variants with the given $variationOf
+	 * 
+	 * @param array $variants : productIds in which variation_of is required to be updated 
+	 * @param int $variationOf : product id that will be made as variation_of of all the variants
+	 */
+	public function updateVariationOf(Array $variants, $variationOf )
+	{
+		if(empty($variants)){
+			return true;
+		}
+		
+		$query = new Rb_Query();
+		
+		return $query->update($this->getTable()->get('_tbl'))
+					 ->set('`variation_of` = '.$variationOf)
+					 ->where('`product_id` IN ('.implode(',', $variants).')' )
+					 ->dbLoadQuery()
+					 ->query();
+		
+	}
 }
 
 class PaycartModelformProduct extends PaycartModelform {}

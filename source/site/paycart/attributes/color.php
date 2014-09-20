@@ -116,7 +116,7 @@ class PaycartAttributeColor extends PaycartAttribute
 					 </div>
 				 </div>
 				 
-				 <input type='hidden' name='options[<?php echo $counter?>][color_id]' id='color_id_<?php echo $counter?>'  
+				 <input type='hidden' name='options[<?php echo $counter?>][color_id]' id='productattribute_option_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['color_id'])?$options[$counter]['color_id']:0) ?>' />
 						  
 				 <input type='hidden' name='options[<?php echo $counter?>][color_lang_id]' id='color_lang_id_<?php echo $counter?>'  
@@ -182,6 +182,7 @@ class PaycartAttributeColor extends PaycartAttribute
 			$data['hash_code'] = $option->hash_code;			
 			$data['lang_code'] = $attribute->getLanguageCode();
 			$data['productattribute_id'] = $attribute->getId();
+			$data['color_lang_id'] = $option->color_lang_id;
 			$data['title']	   = $option->title;	
 			
 			$colorId 		   = $colorModel->save($data, $option->color_id);

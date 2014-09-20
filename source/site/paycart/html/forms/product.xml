@@ -12,7 +12,7 @@
 			<field 	name="price" 
 					type="paycart.amount"
 					label="COM_PAYCART_ADMIN_PRICE"
-					default="0.00"/>
+					/>
 			
 			<field 	name="quantity" 
 					type="text"

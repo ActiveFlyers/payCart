@@ -35,7 +35,9 @@ class PaycartSiteBaseViewcart extends PaycartView
 	protected function _assignTmplVars()
 	{
 		$helper = PaycartFactory::getHelper('cart');
-		$cart 	= $helper->getCurrentCart();
+
+		//create new cart if not exist, it is required if someone directly jump to cart page
+		$cart 	= $helper->getCurrentCart(true);
 		
 		$productParticulars  = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
 		$promotionParticular = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION);
@@ -44,8 +46,8 @@ class PaycartSiteBaseViewcart extends PaycartView
 				
 		$this->assign('products',$productParticulars);
 		$this->assign('cart', $cart);
-		$this->assign('promotionParticular',(empty($promotionParticular))?(array_shift($promotionParticular)->toObject()):new stdClass());
-		$this->assign('dutiesParticular',(empty($promotionParticular))?(array_shift($dutiesParticular)->toObject()):new stdClass());
+		$this->assign('promotionParticular',(!empty($promotionParticular))?(array_shift($promotionParticular)->toObject()):new stdClass());
+		$this->assign('dutiesParticular',(!empty($dutiesParticular))?(array_shift($dutiesParticular)->toObject()):new stdClass());
 		$this->assign('shippingParticulars',$shippingParticulars);
 		
 		return true;
