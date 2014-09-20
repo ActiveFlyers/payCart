@@ -40,7 +40,10 @@ class PaycartHelperCart extends PaycartHelper
 		
 		// get cart data
 		$cart_data =	PaycartFactory::getModel('cart')
-							->loadRecords(Array('session_id' => $session_id, 'status' => Paycart::STATUS_CART_DRAFTED));
+							->loadRecords(Array('session_id' => $session_id, 
+                                                                            'status' => Paycart::STATUS_CART_DRAFTED,
+                                                                            'is_locked'=>0 )
+                                                                     );
 
 		// if cart doesn't exist and new cart is not requested then don't create new cart 
 		// and return false

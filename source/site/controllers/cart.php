@@ -269,7 +269,7 @@ class PaycartSiteControllerCart extends PaycartController
 		}
 
 		// If user is logged in, execute next task
-		if (!PaycartFactory::getUser()->id && !($this->cart->getIsGuestCheckout()))  {
+		if (!PaycartFactory::getUser()->id && !($this->cart->isGuestcheckout()))  {
 			$this->execute('login');			
 			return false;
 		}
@@ -403,7 +403,7 @@ class PaycartSiteControllerCart extends PaycartController
 		}
 
 		// If user is logged in, execute next task
-		if (!PaycartFactory::getUser()->id && !($this->cart->getIsGuestCheckout()))  {
+		if (!PaycartFactory::getUser()->id && !($this->cart->isGuestcheckout()))  {
 			$this->execute('login');			
 			return false;
 		}
@@ -447,7 +447,7 @@ class PaycartSiteControllerCart extends PaycartController
 		}
 
 		// If user is logged in, execute next task
-		if (!PaycartFactory::getUser()->id && !($this->cart->getIsGuestCheckout()))  {
+		if (!PaycartFactory::getUser()->id && !($this->cart->isGuestcheckout()))  {
 			$this->execute('login');
 			return false;
 		}

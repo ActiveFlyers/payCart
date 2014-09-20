@@ -36,11 +36,9 @@ class Paycart
 	const PRODUCT_FILTER_FIELD_PREFIX	= 'attr_';
 
 	// Cart Entity Status
-	const STATUS_CART_DRAFTED	=	'drafted';		// none
-	const STATUS_CART_LOCKED	=	'locked';
+	const STATUS_CART_DRAFTED	=	'drafted';		// none, Just created cart
 	const STATUS_CART_PAID 		=	'paid';
 	const STATUS_CART_CANCELLED	=	'cancelled';
-	const STATUS_CART_COMPLETED	=	'completed';
 	
 	//shipment status
 	const STATUS_SHIPMENT_PENDING		= 'pending';
@@ -132,11 +130,9 @@ class Paycart
 	{
 		return 
 			Array(
-					Paycart::STATUS_CART_DRAFTED   => JText::_('COM_PAYCART_CART_STATUS_DRAFTED'),
-					Paycart::STATUS_CART_LOCKED	   => JText::_('COM_PAYCART_CART_STATUS_LOCKED'),
-					Paycart::STATUS_CART_PAID      => JText::_('COM_PAYCART_CART_STATUS_PAID'),
-					Paycart::STATUS_CART_CANCELLED => JText::_('COM_PAYCART_CART_STATUS_CANCELLED'),
-					Paycart::STATUS_CART_COMPLETED => JText::_('COM_PAYCART_CART_STATUS_COMPLETED')
-				 );
+                Paycart::STATUS_CART_DRAFTED   => JText::_('COM_PAYCART_CART_STATUS_DRAFTED'),
+				Paycart::STATUS_CART_PAID      => JText::_('COM_PAYCART_CART_STATUS_PAID'),
+				Paycart::STATUS_CART_CANCELLED => JText::_('COM_PAYCART_CART_STATUS_CANCELLED'),
+			 );
 	}
 }

@@ -25,6 +25,9 @@ PaycartHtml::_('behavior.formvalidation');
 	<?php
 			$helper = PaycartFactory::getHelper('adminmenu');			
 			echo $helper->render('index.php?option=com_paycart&view=cart'); 
+                        
+                        echo $this->loadTemplate('edit_js');
+
 	?>
 </div>
 <!-- ADMIN MENU -->
@@ -195,21 +198,34 @@ PaycartHtml::_('behavior.formvalidation');
 					</div>
 					
 					<div class="row-fluid">								
-						<div class="span6">
-							<?php $field = $form->getField('completed_date') ?>
+						
+                                                <div class="span6">
+							<?php $field = $form->getField('approved_date') ?>
 							<div class="control-group">
 								<div class="control-label"><?php echo $field->label; ?> </div>
 								<div class="controls"><?php echo $field->input; ?></div>								
 							</div>
 						</div>
+                                            
 						<div class="span6">
+							<div class="control-group">
+								<?php $field = $form->getField('delivered_date')?>
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+					</div>
+                                    
+                    <div class="row-fluid">								
+						
+                        <div class="span6">
 							<div class="control-group">
 								<?php $field = $form->getField('cancelled_date')?>
 								<div class="control-label"><?php echo $field->label; ?> </div>
 								<div class="controls"><?php echo $field->input; ?></div>								
 							</div>
 						</div>
-					</div>
+					</div>                               
 				</fieldset>
 			</div>
 		</div>
@@ -236,6 +252,47 @@ PaycartHtml::_('behavior.formvalidation');
 	<?php echo $this->loadTemplate('shipments'); ?>
 
 	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+        
+<!-- Confirm Model        -->
+        <div	
+            class="modal hide fade pc-confimbox"
+            id="pc-confimbox-modal" 
+            tabindex="-1" 
+            role="dialog"
+            aria-labelledby="Login-ModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-header pc-confimbox-title">
+                <h3 id="myModalLabel" class= "rb-icon-login">
+                    <?php
+                        echo JText::_('COM_PAYCART_TITLE_CONFIRM');
+                    ?>
+                </h3>
+            </div>
+
+            <div class="modal-body pc-confimbox-body">
+                
+            </div>
+            
+            <div class="modal-footer pc-confimbox-footer">
+             
+                <button type="button" class="btn pc-confimbox-ok">
+                    <?php
+                        echo JText::_('COM_PAYCART_BUTTON_OK');
+                    ?>
+                </button>
+                
+                <button type="button" class="btn pc-confimbox-close" data-dismiss="modal" aria-hidden="true">
+                    <?php
+                        echo JText::_('COM_PAYCART_BUTTON_CANCEL');
+                    ?>
+                </button>
+                
+                
+            </div>
+            
+            
+        </div>
 </div>
 </div>
 </div>

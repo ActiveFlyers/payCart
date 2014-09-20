@@ -91,7 +91,7 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		$buyer_addresses	=	Array();
 		
 		//no need to get address on guest-checkout
-		if(!$this->cart->getIsGuestCheckout()) {
+		if(!$this->cart->isGuestcheckout()) {
 			// if user is login then get buyer address
 			$buyer_addresses		= PaycartFactory::getModel('buyeraddress')->loadRecords(Array('buyer_id' => $this->cart->getBuyer()));
 		}
@@ -343,7 +343,7 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		$step->icon		= 'fa-user';
 		$step->class	= 'pc-checkout-step-'.Paycart::CHECKOUT_STEP_LOGIN;
 		$step->title	=  JText::_('COM_PAYCART_CART_STEP_LOGIN');
-		$step->onclick	= ($this->cart->getIsGuestCheckout()) ? 'paycart.cart.login.get();' : false;		
+		$step->onclick	= ($this->cart->isGuestcheckout()) ? 'paycart.cart.login.get();' : false;		
 		$steps['login'] = $step;
 		
 		//Step :: Address

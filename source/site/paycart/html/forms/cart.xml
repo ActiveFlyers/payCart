@@ -23,6 +23,7 @@
 			
 			<field name="status" type="paycart.cartstatus"
 				label="COM_PAYCART_ADMIN_STATUS"
+                                readonly="true"
 			/>
 			
 			<field name="currency" type="text"
@@ -79,6 +80,13 @@
 				format="%Y-%m-%d %H:%M:%S"
 				readonly="true"
 			/>
+                        
+                        <field name="approved_date" type="calendar"
+				default="0000-00-00 00:00:00"
+				label="COM_PAYCART_ADMIN_CART_APPROVED_DATE"		
+				format="%Y-%m-%d %H:%M:%S"
+				readonly="true"	
+			/>
 			
 			<field name="paid_date" type="calendar"
 				default="0000-00-00 00:00:00"
@@ -87,9 +95,9 @@
 				readonly="true"	
 			/>
 			
-			<field name="completed_date" type="calendar"
+			<field name="delivered_date" type="calendar"
 				default="0000-00-00 00:00:00"
-				label="COM_PAYCART_ADMIN_CART_COMPLETED_DATE"		
+				label="COM_PAYCART_ADMIN_CART_DELIVERED_DATE"		
 				format="%Y-%m-%d %H:%M:%S"
 				readonly="true"		
 			/>

@@ -30,19 +30,13 @@ class PaycartCart extends PaycartLib
 	protected $shipping_address_id;	
 	protected $invoice_id;
 
-	/**
-	 * 
-	 * stop cart-recalculation
-	 * @var Boolean
-	 */
-	protected $is_locked;						 		
-	
 	protected $locked_date;					// Checkout/refund  Request date (Request for Payment)
-	protected $paid_date;					// Payment Completion date
-	protected $completed_date;					// Cart deliver-date (Fill by manually) 
+    protected $approved_date;               // Approved date
+    protected $paid_date;					// Payment Completion date
+	protected $delivered_date;				// Cart deliver-date (Fill by manually) 
 	
-	protected $reversal_for;					// when reverse/return cart build. 
-												// Set here cart_id which is reversed 
+	protected $reversal_for;				// when reverse/return cart build. 
+								// Set here cart_id which is reversed 
 	
 	protected $cancelled_date;				// Before delivery, if cancel existing cart  
 	
@@ -53,9 +47,12 @@ class PaycartCart extends PaycartLib
 	
 	protected $params;
 	protected $is_guestcheckout;
-	
-	
-	// Related Table Fields: Array of cart-particulars
+        
+    protected $is_locked;           // Stop Cart calculation
+    protected $is_approved;         // Cart is valid for paid 
+    protected $is_delivered;        // All shipment 
+        
+    // Related Table Fields: Array of cart-particulars
 	protected $_cartparticulars;
 	
 	// Cart-total
@@ -66,6 +63,12 @@ class PaycartCart extends PaycartLib
 	 * @var PaycartHelperCart
 	 */
 	protected $_helper;
+        
+    /**
+     * Disable triggers from Parent. {onBeforeSave/onAfterSave events}
+     * We will manually trigger 
+     */
+    protected $_trigger   =   false;
 	
 	public function __construct($config = Array())
 	{
@@ -97,34 +100,37 @@ class PaycartCart extends PaycartLib
 	public function reset() 
 	{	
 		// Table fields	
-		$this->cart_id	 			= 0; 
-		$this->buyer_id 		 	= 0;
-		$this->invoice_id			= 0;
+		$this->cart_id	 		= 0; 
+		$this->buyer_id 		= 0;
+		$this->invoice_id		= 0;
 		
-		$this->status				= Paycart::STATUS_CART_DRAFTED;
-		$this->currency				= PaycartFactory::getConfig()->get('localization_currency');
-		$this->ip_address			= PaycartFactory::getHelper('buyer')->getClientIP();
+		$this->status			= Paycart::STATUS_CART_DRAFTED;
+		$this->currency			= PaycartFactory::getConfig()->get('localization_currency');
+		$this->ip_address		= PaycartFactory::getHelper('buyer')->getClientIP();
 		$this->billing_address_id	= 0;
 		$this->shipping_address_id	= 0;	
-		$this->is_locked			= 0;			
+		$this->is_locked		= 0;
+        $this->is_approved		= 0;
+        $this->is_delivered		= 0;
+
+		$this->locked_date		= Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->paid_date		= Rb_Date::getInstance('0000-00-00 00:00:00');
+        $this->approved_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
+		$this->delivered_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
 		
-		$this->locked_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
-		$this->paid_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
-		$this->completed_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
-		
-		$this->reversal_for			= 0; 
+		$this->reversal_for		= 0; 
 		$this->cancelled_date		= Rb_Date::getInstance('0000-00-00 00:00:00');  
 		
-		$this->created_date			= Rb_Date::getInstance();
+		$this->created_date		= Rb_Date::getInstance();
 		$this->modified_date		= Rb_Date::getInstance();
 		
-		$this->session_id			= 	'';
-		$this->is_guestcheckout		=	false;
+		$this->session_id		= '';
+		$this->is_guestcheckout		= false;
 		
+        $this->params	=	new Rb_Registry();
+                
 		// Related Table Fields: cart particulars libs instance
 		$this->clearCartParticulars();
-		
-		$this->params	=	new Rb_Registry();
 		
 		return $this;
 	}
@@ -181,10 +187,29 @@ class PaycartCart extends PaycartLib
 	{
 		return $this->reversal_for;
 	}
-	
-	public function getIsGuestCheckout() 
+	public function getStatus()
+    {
+           return $this->status;
+    }
+    
+	public function isGuestcheckout() 
 	{
 		return (bool)$this->is_guestcheckout;
+	}
+        
+    public function isApproved() 
+	{
+		return (bool)$this->is_approved;
+	}
+        
+    public function isLocked() 
+	{
+		return (bool)$this->is_locked;
+	}
+        
+    public function isDelivered() 
+	{
+		return (bool)$this->is_delivered;
 	}
 	
 	public function setIsGuestCheckout($isGuestCheckout =false)
@@ -277,11 +302,6 @@ class PaycartCart extends PaycartLib
 		$this->invoice_id	=	$invoice_id; 
 	}
 	
-	public function setStatus($status)
-	{
-		$this->status	=	$status; 
-	}
-	
 	/**
 	 * 
 	 * Get Cart particular
@@ -361,26 +381,94 @@ class PaycartCart extends PaycartLib
 				
 		return $this;
 	}
- 	/**
-     *
-     * delete product to cart
-     * @param $productId  
-     * @return PaycartCart instance
-     */
-     public function removeProduct($productId)
-     {
-     	$existing_products = $this->params->get('products', new stdClass());
-     	
-     	// product is not already added, set it with quantity 0
-     	if(isset($existing_products->{$productId})) {
-     		unset($existing_products->{$productId});
-     	}
-               
-        // set the updates products
-        $this->params->set('products', $existing_products);
+
+        /**
+         * Invoke to approve cart
+         * 
+         * @return \PaycartCart 
+         */
+        public function markLocked()
+        {
+             // check if already locked or not other wise date will be changed
+            if (!$this->is_locked) {
+                $this->is_locked    =   1;
+                $this->locked_date	=   Rb_Date::getInstance();
+            }
+            
+            return $this;
+        }
+
+        /**
+         * Invoke to approve cart
+         * 
+         * @return \PaycartCart 
+         */
+        public function markApproved()
+        {
+            // check if already approved or not other wise date will be changed
+            if (!$this->is_approved) {
+                $this->is_approved      =   1;
+                $this->approved_date    =   Rb_Date::getInstance();
+            }
+            
+            return $this;
+        }
         
-        return $this;
-      }
+        /**
+         * Invoke to approve cart
+         * 
+         * @return \PaycartCart 
+         */
+        public function markPaid()
+        {
+            // change cart status, payment date, make it approval
+            $this->markApproved();
+            
+            // check if already paid or not other wise date will be changed
+            if (Paycart::STATUS_CART_PAID != $this->status) {
+                $this->status       =   Paycart::STATUS_CART_PAID;
+                $this->paid_date    =   Rb_Date::getInstance();
+            }
+   
+            return $this;
+        }
+        
+        /**
+         * Invoke to approve cart
+         * 
+         * @return \PaycartCart 
+         */
+        public function markDelivered()
+        {
+            //@PCTODO :: make sure is it (Paid + Approved ) or not 
+            $this->is_delivered     = 1;
+            $this->delivered_date   = Rb_Date::getInstance();
+   
+            return $this;
+        }
+        
+
+       /**
+        *
+        * delete product to cart
+        * @param $productId  
+        * @return PaycartCart instance
+        * 
+        */
+        public function removeProduct($productId)
+        {
+            $existing_products = $this->params->get('products', new stdClass());
+
+            // product is not already added, set it with quantity 0
+            if(isset($existing_products->{$productId})) {
+                    unset($existing_products->{$productId});
+            }
+
+            // set the updates products
+            $this->params->set('products', $existing_products);
+
+            return $this;
+        }
        
 	public function addPromotionCode($code)
 	{
@@ -692,10 +780,10 @@ class PaycartCart extends PaycartLib
 		$this->calculate();
 		
 		//lock cart after calculation
-		$this->is_locked	=	true;
+                $this->markLocked();
 		
 		//register user, if guest checkout  
-		if ($this->getIsGuestCheckout()) {
+		if ($this->isGuestcheckout()) {
 			$this->guestRegistration();
 		}
 		
@@ -746,7 +834,6 @@ class PaycartCart extends PaycartLib
 				$existing_address = array_shift($existing_address);
 				$shipping_address_instance->setId($existing_address->buyeraddress_id);
 			}
-
 		}
 		
 		//Set address
@@ -761,11 +848,7 @@ class PaycartCart extends PaycartLib
 			}
 		}
 		
-		// Step-4# change status Lock cart
-		$this->status		=	Paycart::STATUS_CART_LOCKED;
-		$this->locked_date	= 	Rb_Date::getInstance();
-		
-		// Step-5# Save cart
+		// Step-4# Save cart
 		return $this->save();
 	}
 	
@@ -948,8 +1031,78 @@ class PaycartCart extends PaycartLib
 		
 		return $this;
 	}
+        
+        /**
+         *
+         * @param PaycartCart $previousObject
+         * @return boolean 
+         */
+        protected function _save($previousObject) 
+        {
+            // save to data to table
+            $id =  parent::_save($previousObject);
+            
+            //if save was not complete, then id will be null, do not trigger after save
+            if(!$id){
+                    return false;
+            }
 
-	/**
+            // correct the id, for new records required
+            $this->setId($id);
+
+            //save $this to static cache, so that if someone tries to create instance in between the save process
+            //then proper object would be returned 
+            if(!$previousObject){
+               self::setInstance($this);			
+            }
+            
+            //Intiate triggers
+            $event_params  = Array();
+            $event_params['previous_object']  =   $previousObject;
+            $event_params['current_object']   =   $this;
+            
+            
+            /*  @var $event_helper PaycartHelperEvent   */
+            $event_helper = PaycartFactory::getHelper('event');
+            
+            //trigger-1 :: onPaycartCartDraft
+            if ( empty($previousObject) ||  
+                 ( Paycart::STATUS_CART_DRAFTED != $previousObject->status && Paycart::STATUS_CART_DRAFTED == $this->status ) 
+                ){
+                $event_helper->onCartAfterDrafted($event_params);
+            }
+            
+            //trigger-2 :: onPaycartCartLocked
+            if ( !empty($previousObject) &&
+                 (!$previousObject->is_locked && $this->is_locked ) ) {
+                $event_helper->onCartAfterLocked($event_params);
+            }
+            
+            //trigger-3 :: onPaycartCartApproved
+            if ( !empty($previousObject) &&
+                 (!$previousObject->is_approved && $this->is_approved ) 
+                ) {
+                $event_helper->onCartAfterApproved($event_params);
+            }
+            
+            //trigger-4 :: onPaycartPaid
+            if ( !empty($previousObject) &&
+                  ( Paycart::STATUS_CART_PAID != $previousObject->status && Paycart::STATUS_CART_PAID == $this->status )
+               ) {
+                $event_helper->onCartAfterPaid($event_params);
+            }
+            
+            //trigger-5 :: onPaycartCart Delivered
+            if ( !empty($previousObject) &&
+                 ( !$previousObject->is_delivered && $this->is_delivered ) 
+               ) {
+                $event_helper->onCartAfterDelivered($event_params);
+            }
+            
+            return $id;
+        }
+
+        /**
 	 * #######################################################################
 	 * 		1#. ProcessCart
 	 * 		2#. OninvoicePaid
@@ -1005,21 +1158,8 @@ class PaycartCart extends PaycartLib
 	 */
 	protected function onInvoicePaid(Array $data_beforeSave, Array $data_afterSave)
 	{
-		// 1#. change stuff which are depends on invoice
-		// change cart status, payment date
-		$this->setStatus(Paycart::STATUS_CART_PAID);
-		$this->set('paid_date', Rb_Date::getInstance());
-		
-		// 2#. save cart
-		$this->save();
-		
-		// @PDCTODO :: Fire event obPaycartCartPaid
-
-		// 3#. update products' quatity
-		$cartHelper =  PaycartFactory::getHelper('cart');
-		PaycartFactory::getHelper('product')->updateProductStock($cartHelper->getCartparticularsData($this->getId(), Paycart::CART_PARTICULAR_TYPE_PRODUCT));
-
-		return true;
+            $this->markPaid()->save();
+            return true;
 	}
 	
 	/**

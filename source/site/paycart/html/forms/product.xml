@@ -54,7 +54,6 @@
 					label="COM_PAYCART_ADMIN_CATEGORY" 
 					addnew="true"
 					class="paycart_category_class">
-					<option>COM_PAYCART_SELECT</option>
 			</field>			
 						
 			<field name="created_date" type="calendar"
