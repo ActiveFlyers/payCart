@@ -110,7 +110,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 							
 						<?php else:?>
 								<th>
-							    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->group_id ); ?>
+							    	&nbsp;
 							    </th>				
 								<td><?php echo $record->group_id;?></td>
 								<td><?php echo $record->title;?></td>

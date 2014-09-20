@@ -71,7 +71,8 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		            } else {
 		            	// if successful, bind success message to message
 		                $scope.message = data.message;
-		                delete $scope.images[index];											                										                
+		                delete $scope.images[index];	
+		                $scope.cover_media = data.coverMedia;										                										                
 		            }
 			});			
 		};

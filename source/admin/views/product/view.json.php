@@ -23,7 +23,7 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 	public function deleteImage()
 	{		
 		if($this->get('success', false)){			
-			$response = array('success' => true);
+			$response = array('success' => true, 'coverMedia' => $this->get('coverMedia', 0));
 			$response['message'] = JText::_('COM_PAYCART_ADMIN_PRODUCT_IMAGE_DELETE_SUCCESS');
 		}
 		else{

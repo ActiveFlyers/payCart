@@ -419,9 +419,13 @@ class PaycartProduct extends PaycartLib
 	 * Get all the images of product
 	 * @return array containing detail all images
 	 */
-	public function getImages()
+	public function getImages($requireArrayData = true)
 	{
 		$imageIds = $this->config->get('images', array());
+		if(!$requireArrayData){
+			return $imageIds;
+		}
+		
 		$images   = array();
 		if(!empty($imageIds)){
 			foreach ($imageIds as $imageId){
@@ -478,9 +482,10 @@ class PaycartProduct extends PaycartLib
 			$media->delete();
 		}
 		
+		//update existing images of product
 		$imageIds = array_diff($allMediaIds, $imageIds);
 		$imageIds = array_values($imageIds);
-		return $this->setImages($imageIds);
+		return $this->setImages($imageIds)->save();
 	}
 	
 	/**
