@@ -36,10 +36,21 @@ class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategor
 	
 	public function edit($tpl = null)
 	{
-		$catId	  =  $this->getModel()->getId();
-		$category =  PaycartProductcategory::getInstance($catId);
-		$form 	  = $category->getModelform()->getForm($category);
+		$model 	  = $this->getModel();
+		$catId	  = $model->getId();
+		$category = PaycartProductcategory::getInstance($catId);
 		
+
+		// Get the prvioisly posted data if any
+		// if it is not empty it means there were some errors
+		$post_data = $model->getState('post_data', array());
+		if(!empty($post_data)){
+			$category->bind($post_data);
+		}	
+		$this->assign('error_fields', $model->getState('error_fields', array()));
+		
+		$form 	  = $category->getModelform()->getForm($category);
+				
 		//set images
 		$this->assign('cover_media', $category->getCoverMedia());
 		

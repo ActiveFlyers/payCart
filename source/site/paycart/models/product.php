@@ -102,4 +102,60 @@ class PaycartTableProductLang extends PaycartTable
 	{
 		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
 	}
+
+	/**
+	 * 
+	 * Method call to Get unique alias string
+	 * 
+	 * @param string $alias alias 	which ned to be properly generated 
+	 * @param int	 $id			optional : id of category
+	 * @param string $style
+	 * 
+	 * @return string The unique alias string.
+	 */
+	public static function getNewAlias($alias, $id = 0, $style = 'dash')
+	{		
+		$alias  = PaycartHelper::sluggify($alias);//Sluggify the input string
+	
+		//@PCTODO:: move to helper
+		// if Value already have '-'(dash) with numeric-data then remove numeric-data 
+		$string = $alias;
+		if (preg_match('#-(\d+)$#', $string, $matches)) {
+			$string = preg_replace('#-(\d+)$#', sprintf('-', ''), $string);
+		}
+		
+		$result = self::getRecordsOfAlias($alias, $id);		
+
+		// build new column value
+		while (in_array($alias, $result)) {
+			$alias = JString::increment($alias, $style);
+		}
+		
+		return $alias;		
+	}
+	
+	public static function getRecordsOfAlias($alias, $id = 0)
+	{
+		$query 	= new Rb_Query();
+		$query->select('`alias`')
+			  ->where("`alias` LIKE '".$alias."%'");
+					  
+		if(!empty($id)){
+			$query->where("`product_id` <> ".intval($id));
+		}
+					  
+		return $query->from('`#__paycart_product_lang`')
+					 ->dbLoadQuery()->loadcolumn();
+	}
+	
+	public function check()
+	{
+		$this->alias = trim($this->alias);
+
+		if (empty($this->alias)){
+			$this->alias = self::getNewAlias($this->title, $this->product_id);
+		}
+		
+		return true;
+	}	
 }

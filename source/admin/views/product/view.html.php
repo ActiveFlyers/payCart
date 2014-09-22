@@ -40,8 +40,17 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 	 */
 	public function edit($tpl=null) {
 		
-		$productId	=  $this->getModel()->getId();
+		$model = $this->getModel();
+		$productId	=  $model->getId();
 		$product	=  PaycartProduct::getInstance($productId);
+		
+		// Get the prvioisly posted data if any
+		// if it is not empty it means there wer some error
+		$post_data = $model->getState('post_data', array());
+		if(!empty($post_data)){
+			$product->bind($post_data);
+		}	
+		$this->assign('error_fields', $model->getState('error_fields', array()));
 		
 		$form 		= $product->getModelform()->getForm($product);
 	    

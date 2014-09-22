@@ -103,20 +103,7 @@ class PaycartProductcategory extends PaycartLib
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
 	 */
 	public function save()
-	{
-		// Title is must for any item 
-		if(!$this->title) {
-			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_TITLE_REQUIRED', $this->getName()));
-		}
-		
-		// if alias empty then set title on alias
-		if (!$this->alias) {
-			$this->alias = $this->title;
-		}
-
-		$this->alias = $this->getModel()->getValidAlias($this->alias, $this->parent_id, $this->productcategory_lang_id);		
-	
-		
+	{		
 		// Process If images exist
 		if(isset($this->_uploaded_files['cover_media'])  && isset($this->_uploaded_files['cover_media']['tmp_name']) && !empty($this->_uploaded_files['cover_media']['tmp_name'])){
 			if($this->cover_media){

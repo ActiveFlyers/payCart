@@ -55,6 +55,7 @@
 		
 		<field 	name="alias" 
 				type="text"
+				validate="productcategoryalias"
 				class="input-block-level"
 				label="COM_PAYCART_ADMIN_ALIAS"/>
 		

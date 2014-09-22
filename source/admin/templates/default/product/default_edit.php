@@ -11,8 +11,6 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-// validation for required fields
-PaycartHtml::_('behavior.formvalidation');
 Rb_HelperTemplate::loadMedia(array('angular'));
 
 echo $this->loadTemplate('edit.js');
@@ -34,7 +32,7 @@ echo $this->loadTemplate('edit.ng');
 <!-- ADMIN MENU -->
 
 <div class="span10">
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data" >
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data" >
 	<div class="row-fluid">
 		<div class="<?php echo count($variants)? 'span10' : 'span12'; ?>">
 			<?php echo PaycartHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>
@@ -54,12 +52,14 @@ echo $this->loadTemplate('edit.ng');
 								<?php $field = $form->getField('title') ?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
-									<div class="controls"><?php echo $field->input; ?></div>								
+									<div class="controls"><?php echo $field->input; ?></div>
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>								
 								</div>
-								<?php $field = $form->getField('teaser') ?>
+								<?php $field = $form->getField('alias') ?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
-									<div class="controls"><?php echo $field->input; ?></div>								
+									<div class="controls"><?php echo $field->input; ?></div>
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_ALIAS');?></div>								
 								</div>
 								<?php $field = $form->getField('description') ?>
 								<div class="control-group">

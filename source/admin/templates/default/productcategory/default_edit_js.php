@@ -11,7 +11,7 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
-<script type="text/javascript">
+<script type="text/javascript">	
 
 	(function($){
 		$(document).ready(function(){

@@ -62,15 +62,12 @@ paycart.admin.grid = {
 			}
 			
 			if(isValidAction){
-				if (!$('#adminForm').find("input,textarea,select").jqBootstrapValidation("hasErrors")) {
-					Joomla.submitform(action, document.getElementById('adminForm'));
+				if (!paycart.formvalidator.isValid(document.id('adminForm'))) {
+					return false;
 				}
-				else{
-					$('#adminForm').submit();
-				}
-			}else{
-				Joomla.submitform(action, document.getElementById('adminForm'));
-			}
+			}			
+			
+			Joomla.submitform(action, document.getElementById('adminForm'));			
 		},
 		
 		filters : {

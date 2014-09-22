@@ -175,4 +175,14 @@ class PaycartFactory extends Rb_Factory
 	{
 		return PaycartFactory::getLanguage()->getTag();
 	}
+	
+	public static $validator = null;
+	public function getValidator()
+	{	
+		if(!self::$validator){
+			self::$validator = new PaycartValidator();
+		}
+		
+		return self::$validator;
+	}
 }

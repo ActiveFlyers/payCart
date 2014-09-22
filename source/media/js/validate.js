@@ -132,42 +132,36 @@ var PCFormValidator = function() {
  	 	});
  	 	if (!valid) {
  	 	 	message = Joomla.JText._('JLIB_FORM_FIELD_INVALID');
- 	 	 	errors = jQuery("input.invalid, textarea.invalid, select.invalid, fieldset.invalid, button.invalid");
- 	 	 	error = {};
- 	 	 	error.error = [];
- 	 	 	for ( i = 0; i < errors.length; i++) {
- 	 	 		handleResponse(false, $(errors[i]));
- 	 	 	 	label = jQuery('label[for=' + errors[i].id + ']').text();
- 	 	 	 	if (label !== 'undefined') {
- 	 	 	 	 	error.error[i] = message + label.replace("*", "");
- 	 	 	 	}
- 	 	 	}
  	 	 	
- 	 	 	var el = $(errors[0]);
- 	 	    var elOffset = el.offset().top;
- 	 	    var elHeight = el.height();
- 	 	    var windowHeight = $(window).height();
- 	 	    var offset;
-
- 	 	    if (elHeight < windowHeight) {
- 	 	    	offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
- 	 	    }
- 	 	    else {
- 	 	    	offset = elOffset;
- 	 	    }
- 	 	  
- 	 	 	$('html, body').animate({
- 	 	        scrollTop: offset
- 	 	    }, 1000);
+ 	 	 	scrollToError(form);
  	 	 	
 // 	 	 	Joomla.renderMessages(error);
- 	 	}
- 	 	
- 	 	
+ 	 	}	 	
  	 	
  	 	return valid;
  	},
+ 	
+ 	scrollToError = function(form){
+ 		errors = jQuery(form).find("input.invalid, textarea.invalid, select.invalid, fieldset.invalid, button.invalid");
+ 	 	 	
+ 	 	var el = $(errors[0]);
+		var elOffset = el.offset().top;
+ 	    var elHeight = el.height();
+ 	    var windowHeight = $(window).height();
+ 	    var offset;
 
+ 	    if (elHeight < windowHeight) {
+ 	    	offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+ 	    }
+ 	    else {
+ 	    	offset = elOffset;
+ 	    }
+ 	  
+ 	 	$('html, body').animate({
+ 	        scrollTop: offset
+ 	    }, 1000);
+ 	},
+ 	
  	attachToForm = function(form) {
  	 	var inputFields = [];
  	 	// Iterate through the form object and attach the validate method to all input fields.
@@ -241,7 +235,8 @@ var PCFormValidator = function() {
  	 	setHandler : setHandler,
  	 	attachToForm : attachToForm,
  	 	custom: custom,
- 	 	handleResponse : handleResponse
+ 	 	handleResponse : handleResponse,
+ 	 	scrollToError : scrollToError
  	};
 };
 
