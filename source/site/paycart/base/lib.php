@@ -20,6 +20,12 @@ if(!defined( '_JEXEC' )){
 class PaycartLib extends Rb_Lib
 {
 	public	$_component	= PAYCART_COMPONENT_NAME;
+        
+       /**
+        * Disable triggers from Parent. {onBeforeSave/onAfterSave events}
+        * We will manually trigger 
+        */
+        protected $_trigger   =   false;
 
 	static public function getInstance($name, $id=0, $bindData=null, $dummy = null)
 	{

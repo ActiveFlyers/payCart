@@ -265,7 +265,7 @@ PaycartHtml::_('behavior.formvalidation');
             <div class="modal-header pc-confimbox-title">
                 <h3 id="myModalLabel" class= "rb-icon-login">
                     <?php
-                        echo JText::_('COM_PAYCART_TITLE_CONFIRM');
+                        echo JText::_('COM_PAYCART_CONFIRM');
                     ?>
                 </h3>
             </div>
@@ -278,7 +278,7 @@ PaycartHtml::_('behavior.formvalidation');
              
                 <button type="button" class="btn pc-confimbox-ok">
                     <?php
-                        echo JText::_('COM_PAYCART_BUTTON_OK');
+                        echo JText::_('COM_PAYCART_OK');
                     ?>
                 </button>
                 

@@ -63,12 +63,6 @@ class PaycartCart extends PaycartLib
 	 * @var PaycartHelperCart
 	 */
 	protected $_helper;
-        
-    /**
-     * Disable triggers from Parent. {onBeforeSave/onAfterSave events}
-     * We will manually trigger 
-     */
-    protected $_trigger   =   false;
 	
 	public function __construct($config = Array())
 	{
@@ -405,6 +399,8 @@ class PaycartCart extends PaycartLib
          */
         public function markApproved()
         {
+			$this->markLocked();
+
             // check if already approved or not other wise date will be changed
             if (!$this->is_approved) {
                 $this->is_approved      =   1;
@@ -440,7 +436,8 @@ class PaycartCart extends PaycartLib
          */
         public function markDelivered()
         {
-            //@PCTODO :: make sure is it (Paid + Approved ) or not 
+            $this->markPaid();
+ 
             $this->is_delivered     = 1;
             $this->delivered_date   = Rb_Date::getInstance();
    
@@ -1056,12 +1053,20 @@ class PaycartCart extends PaycartLib
                self::setInstance($this);			
             }
             
-            //Intiate triggers
-            $event_params  = Array();
-            $event_params['previous_object']  =   $previousObject;
-            $event_params['current_object']   =   $this;
+            $this->_triggerAfterSave($previousObject);
             
-            
+            return $id;
+        }
+        
+        
+        /**
+         * Invoke to trigger all cart after save events
+         * @param $previousObject PaycartCart type or might be null 
+         * @return int id
+         *  
+         */
+        private function _triggerAfterSave($previousObject) 
+        {
             /*  @var $event_helper PaycartHelperEvent   */
             $event_helper = PaycartFactory::getHelper('event');
             
@@ -1069,37 +1074,36 @@ class PaycartCart extends PaycartLib
             if ( empty($previousObject) ||  
                  ( Paycart::STATUS_CART_DRAFTED != $previousObject->status && Paycart::STATUS_CART_DRAFTED == $this->status ) 
                 ){
-                $event_helper->onCartAfterDrafted($event_params);
+                $event_helper->onPaycartCartAfterDrafted($this);
             }
             
             //trigger-2 :: onPaycartCartLocked
             if ( !empty($previousObject) &&
                  (!$previousObject->is_locked && $this->is_locked ) ) {
-                $event_helper->onCartAfterLocked($event_params);
+                $event_helper->onPaycartCartAfterLocked($this);
             }
             
             //trigger-3 :: onPaycartCartApproved
             if ( !empty($previousObject) &&
                  (!$previousObject->is_approved && $this->is_approved ) 
                 ) {
-                $event_helper->onCartAfterApproved($event_params);
+                $event_helper->onPaycartCartAfterApproved($this);
             }
             
             //trigger-4 :: onPaycartPaid
             if ( !empty($previousObject) &&
                   ( Paycart::STATUS_CART_PAID != $previousObject->status && Paycart::STATUS_CART_PAID == $this->status )
                ) {
-                $event_helper->onCartAfterPaid($event_params);
+                $event_helper->onPaycartCartAfterPaid($this);
             }
             
             //trigger-5 :: onPaycartCart Delivered
             if ( !empty($previousObject) &&
                  ( !$previousObject->is_delivered && $this->is_delivered ) 
                ) {
-                $event_helper->onCartAfterDelivered($event_params);
+                $event_helper->onPaycartCartAfterDelivered($this);
             }
-            
-            return $id;
+
         }
 
         /**

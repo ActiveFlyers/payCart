@@ -73,12 +73,12 @@ defined('_JEXEC') or die( 'Restricted access' );
                                                                            // echo PaycartHtml::link('index.php?option=com_paycart&view=notification&task=edit&id='.$record->notification_id, $record->title);
                                                                        ?>
                                                                          <a href="#" class="edit-notification" onClick="paycart.admin.notification.window(<?php echo $record->notification_id; ?>);" >
-                                                                             <?php  echo $record->title;     ?>
+                                                                             <?php  echo JText::_('COM_PAYCART_ADMIN_EVENT_'.$record->event_name);     ?>
                                                                          </a>
 
                                                                 </td>
                                                                 <td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-                                                                <td><?php echo $record->description;?></td>
+                                                                <td><?php echo JText::_('COM_PAYCART_ADMIN_EVENT_'.$record->event_name.'_DESCRIPTION');?></td>
                                                                 
 							</tr>
 						<?php $count++;?>

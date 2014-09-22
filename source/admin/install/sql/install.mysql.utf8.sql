@@ -206,26 +206,29 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product_lang` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
-  `cart_id` 		int(11) NOT NULL AUTO_INCREMENT,
-  `buyer_id` 		int(11) DEFAULT '0',
-  `session_id` 		varchar(200) DEFAULT '',
-  `invoice_id` 		int(11) DEFAULT '0' COMMENT 'mapped invoice id with rb_ecommerce_invoice table',
-  `status` 			enum('drafted','locked','paid','cancelled','completed') NOT NULL,
-  `currency` 		char(3) NOT NULL COMMENT 'isocode 3',
-  `reversal_for` 	int(11) DEFAULT '0' COMMENT 'reversal of cart (parent) : When cart is reversal then new entry is created into cart and set here cart_id which is reversed  (might be cart partial refunded)',
-  `ip_address` 		varchar(255) DEFAULT '0' COMMENT 'cart created from',
-  `billing_address_id` 	int(11) DEFAULT '0',
+  `cart_id` int(11) NOT NULL AUTO_INCREMENT,
+  `buyer_id` int(11) DEFAULT '0',
+  `session_id` varchar(200) DEFAULT '',
+  `invoice_id` int(11) DEFAULT '0' COMMENT 'mapped invoice id with rb_ecommerce_invoice table',
+  `status` enum('drafted','paid','cancelled') NOT NULL,
+  `is_locked` int(4) NOT NULL DEFAULT '0' COMMENT 'after cart lock, Buyer can''t change into cart',
+  `is_approved` int(4) NOT NULL DEFAULT '0' COMMENT 'Approved either by admin or on payment.',
+  `is_delivered` int(4) NOT NULL DEFAULT '0' COMMENT 'cart delivered or not',
+  `is_guestcheckout` int(4) NOT NULL,
+  `currency` char(3) NOT NULL COMMENT 'isocode 3',
+  `reversal_for` int(11) DEFAULT '0' COMMENT 'reversal of cart (parent) : When cart is reversal then new entry is created into cart and set here cart_id which is reversed  (might be cart partial refunded)',
+  `ip_address` varchar(255) DEFAULT '0' COMMENT 'cart created from',
+  `billing_address_id` int(11) DEFAULT '0',
   `shipping_address_id` int(11) DEFAULT '0' COMMENT 'Cart will shipp only one address',
-  `secure_key`		varchar(255) NOT NULL COMMENT 'used for url security',
-  `is_locked` 		int(11)  NOT NULL COMMENT 'Stop re-calculation',
-  `created_date` 	datetime DEFAULT '0000-00-00 00:00:00',
-  `modified_date` 	datetime DEFAULT '0000-00-00 00:00:00',
-  `locked_date` 	datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Date of either cart is checked out or reversal is created',
-  `paid_date` 		datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Payment Completion date.',
-  `cancelled_date` 	datetime DEFAULT '0000-00-00 00:00:00',
-  `completed_date` 	datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'when final status done (paid+shipped)',
-  `params` 		text		 			COMMENT 'Products and their quantiy store here initial',
-  `is_guestcheckout` int(11) NOT NULL,
+  `secure_key` varchar(255) NOT NULL COMMENT 'used for url security',
+  `created_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `modified_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `locked_date` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Date of either cart is checked out or reversal is created',
+  `approved_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `paid_date` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Payment Completion date.',
+  `cancelled_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `delivered_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `params` text COMMENT 'Products and their quantiy store here initial',
   PRIMARY KEY (`cart_id`),
   KEY `idx_invoice_id` (`invoice_id`),
   KEY `idx_buyer_id` (`buyer_id`),
@@ -700,8 +703,6 @@ CREATE TABLE IF NOT EXISTS `#__paycart_notification` (
 CREATE TABLE IF NOT EXISTS `#__paycart_notification_lang` (
   `notification_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `notification_id` int(11) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `description` varchar(255) NOT NULL,
   `lang_code` varchar(7) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `body` text NOT NULL,
@@ -864,15 +865,25 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shipment_x_product` (
 --
 
 INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `event_name`, `to`, `cc`, `bcc`, `media`) VALUES
-(1, 1, 'onpaycartcartpaid', '', '', '', '{}');
-
+(1, 1, 'onpaycartcartafterlocked', '', '', '', ''),
+(2, 1, 'onpaycartcartafterapproved', '', '', '', ''),
+(3, 1, 'onpaycartcartafterpaid', '', '', '', ''),
+(4, 1, 'onpaycartcartafterdelivered', '', '', '', ''),
+(5, 1, 'onpaycartshipmentafterdispatched', '', '', '', ''),
+(6, 1, 'onpaycartshipmentafterdelivered', '', '', '', '');
 
 --
 -- Dumping data for table `#__paycart_notification_lang`
 --
 
-INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `notification_id`, `title`, `description`, `lang_code`, `subject`, `body`) VALUES
-(1, 1, 'on Cart Paid', 'Send to customer when thier cart is paid', 'en-GB', 'Trial-1', 'Hello \r\n\r\nJust trial email \r\nbilling to : [[billing_to]]\r\nshipping to : [[shipping_to]]');
+INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `notification_id`, `lang_code`, `subject`, `body`) VALUES
+(1, 1, 'en-GB', '', ''),
+(2, 2, 'en-GB', '', ''),
+(3, 3, 'en-GB', '', ''),
+(4, 4, 'en-GB', '', ''),
+(5, 5, 'en-GB', '', ''),
+(6, 6, 'en-GB', '', '');
+
 
 --
 -- Dumping data for table `#__paycart_config`

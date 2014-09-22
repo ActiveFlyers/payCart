@@ -28,8 +28,6 @@ class PaycartNotification extends PaycartLib
 	//language specific data
 	protected $notification_lang_id	   	= 0;
 	protected $lang_code 		   	= '';
-        protected $title                        = '';
-	protected $description                  = '';
 	protected $subject		   	= '';
 	protected $body			   	= '';
         
@@ -58,8 +56,6 @@ class PaycartNotification extends PaycartLib
             $this->cc                       = '';
             $this->bcc                      = '';	
             $this->media                    = new Rb_Registry(); 
-            $this->title                    = '';
-            $this->description              = '';
             $this->lang_code                = PaycartFactory::getCurrentLanguageCode();	
             $this->subject                  = '';	
             $this->body                     = '';
@@ -91,7 +87,7 @@ class PaycartNotification extends PaycartLib
          */
         public static function getInstanceByEventname($event_name)
         {
-            $records = $this->getModel()->loadRecords(Array('event_name' => "$event_name"));
+            $records = PaycartFactory::getModel('notification')->loadRecords(Array('event_name' => "$event_name"));
             
             $instance = Array();
             foreach ($records as $record_id => $data) 
@@ -101,15 +97,6 @@ class PaycartNotification extends PaycartLib
             
             return $instance;
         }
-
-        /**
-         *
-         * @return title
-         */
-		public function getTitle() 
-		{	
-           return $this->title;
-		}
 	
         /**
          * Invoke to send email.
@@ -121,7 +108,7 @@ class PaycartNotification extends PaycartLib
          */
         protected function _sendEmail(Array $tokens)
         {
-            $mailer                  = PaycartFactory::getMailer();
+            $mailer     = PaycartFactory::getMailer();
             
             /* @var $token_helper PaycartHelperToken  */
             $token_helper = PaycartFactory::getHelper('token');
@@ -135,25 +122,25 @@ class PaycartNotification extends PaycartLib
             if ( !empty($this->cc ) ) {
                 $cc   =   $token_helper->replaceTokens($this->cc, $tokens);
                 $cc   =   explode(',', $cc);
-                $this->_mailer->addCC($cc);
+                $mailer->addCC($cc);
             }
             
             // Add carbon copy recipients to the email
             if ( !empty($this->bcc ) ) {
                 $bcc   =   $token_helper->replaceTokens($this->bcc, $tokens);
                 $bcc         =   explode(',', $bcc);
-                $this->_mailer->addBCC($bcc);
+                $mailer->addBCC($bcc);
             }
             
             // Add subject
-            $this->_mailer->setSubject($this->subject);
+            $mailer->setSubject($this->subject);
             
             //@PCTODO :: invoke here layout for email template
             // Add Body
-            $this->_mailer->setBody($this->body);
+            $mailer->setBody($this->body);
             
             
-            if ( !$this->_mailer->Send() ) {
+            if ( !$mailer->Send() ) {
                 //@PCTODO :: Notify to admin
                 return false;
             }
@@ -161,20 +148,18 @@ class PaycartNotification extends PaycartLib
             return true;
         }
         
-        
         /**
-         * Invoke to send notification when event fire on cart
+         * Invoke to send notification
          * @param PaycartCart $cart 
          */
-        public function sendNotificationOnCart(PaycartCart $cart) 
+        public function sendNotification($lib_object) 
         {
             /* @var $token_helper PaycartHelperToken  */
             $token_helper = PaycartFactory::getHelper('token');
             
-            // get all relative objects
-            $tokens = $token_helper->buildCartTokens($cart);
+            $tokens = $token_helper->getTokens($lib_object);
             
             // send notification
-            $this->_sendEmail($tokens);
+            return $this->_sendEmail($tokens);
         }
 }

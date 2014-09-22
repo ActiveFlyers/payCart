@@ -39,7 +39,7 @@ class PaycartAdminControllerCart extends PaycartController
             if (!$cart_id) {
                 $this->setredirect(
                         'index.php?option=com_paycart&view=cart',
-                        'Please select proper cart for approval',
+                        JText::_('COM_PAYCART_ADMIN_APPROVED_WARNING'), 
                         'warning'
                         );
                 return false;
@@ -67,7 +67,7 @@ class PaycartAdminControllerCart extends PaycartController
             if (!$cart_id) {
                 $this->setredirect(
                         'index.php?option=com_paycart&view=cart',
-                        'Please select proper cart for Paid',
+                        JText::_('COM_PAYCART_ADMIN_PAID_WARNING'), 
                         'warning'
                         );
                 return false;

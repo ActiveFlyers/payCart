@@ -19,59 +19,76 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartHelperEvent extends PaycartHelper
 {
-    static $plugin_type = 'paycart';
+    static $default_plugin_type = 'paycart';
 
 
     /**
 	 * #######################################################################
 	 *
      *  Listed all available triggers on cart
-     *      1#. OnCart Drafted 
-     *      2#. OnCart Locked
-     *      3#. OnCart Approved
-     *      4#. OnCart Paid
-     *      5#. OnCart Delivered
+     *      1#. onPaycartCart Drafted 
+     *      2#. onPaycartCart Locked
+     *      3#. onPaycartCart Approved
+     *      4#. onPaycartCart Paid
+     *      5#. onPaycartCart Delivered
 	 * #######################################################################
 	 */
         
         /**
          *
-         * Oncart Drafted
-         * @param Array  $event_params  { previos_object, current_object }
+         * onPaycartCart Drafted
+         * @param PaycartCart $cart
          * 
          * @return void
          */
-        public function onCartAfterDrafted(Array $event_params)
+        public function onPaycartCartAfterDrafted(PaycartCart $cart)
         {
-            Rb_HelperPlugin::trigger('onPaycartCartAfterDrafted', $event_params, self::$plugin_type);
+            $params     =   Array($cart);
+            $event_name =   'onPaycartCartAfterDrafted';
+            
+            // trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
         }
 
         /**
          *
-         * Oncart Locked
-         * @param Array  $event_params  { previos_object, current_object }
+         * onPaycartCart Locked
+         * @param PaycartCart $cart
          * 
          * @return void
          */
-        public function onCartAfterLocked(Array $event_params)
+        public function onPaycartCartAfterLocked(PaycartCart $cart)
         {
-            Rb_HelperPlugin::trigger('onPaycartCartAfterLocked', $event_params, self::$plugin_type);
+            $params     =   Array($cart);
+            $event_name =   'onPaycartCartAfterLocked';
+            
+            // trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+            
+            // send notification after trigger
+            $this->sendnotification($event_name, $cart);
         }
         
         /**
          *
-         * Oncart Approved
-         * @param Array  $event_params  { previos_object, current_object }
+         * onPaycartCart Approved
+         * @param PaycartCart $cart
          * 
          * @return void
          */
-        public function onCartAfterApproved(Array $event_params)
+        public function onPaycartCartAfterApproved(PaycartCart $cart)
         {
-            Rb_HelperPlugin::trigger('onPaycartCartAfterApproved', $event_params, self::$plugin_type);
-            
+            $params      =   Array($cart);
+            $event_name =   'onPaycartCartAfterApproved';
+
+            // trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+
+            // send notification after trigger
+            $this->sendnotification($event_name, $cart);
+                        
             /* @var $current_cart PaycartCart */
-            $current_cart   = $event_params['current_object'];
-            $cart_id        = $current_cart->getId();
+            $cart_id        = $cart->getId();
             
             // 1#. update product's quatity
             $cartHelper =  PaycartFactory::getHelper('cart');
@@ -81,26 +98,58 @@ class PaycartHelperEvent extends PaycartHelper
         
         /**
          *
-         * Oncart Paid
-         * @param Array  $event_params  { previos_object, current_object }
+         * onPaycartCart Paid
+         * @param PaycartCart $cart
          * 
          * @return void
          */
-        public function onCartAfterPaid(Array $event_params)
+        public function onPaycartCartAfterPaid(PaycartCart $cart)
         {
-            Rb_HelperPlugin::trigger('onPaycartCartAfterPaid', $event_params, self::$plugin_type);    
+            $params     =   Array($cart);
+            $event_name =   'onPaycartCartAfterPaid';
+
+            //trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+            
+            // send notification after trigger
+            $this->sendnotification($event_name, $cart);
         }
         
         /**
          *
-         * Oncart Delivered
-         * @param Array  $event_params  { previos_object, current_object }
+         * onPaycartCart Delivered
+         * @param PaycartCart $cart
          * 
          * @return void
          */
-        public function onCartAfterDelivered(Array $event_params)
+        public function onPaycartCartAfterDelivered(PaycartCart $cart)
         {
-            Rb_HelperPlugin::trigger('onPaycartCartAfterDelivered', $event_params, self::$plugin_type);
+            $params     =   Array($cart);
+            $event_name =   'onPaycartCartAfterDelivered';
+
+            //trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+            
+            // send notification after trigger
+            $this->sendnotification($event_name, $cart);
         }
         
+        
+        /**
+         * Invoke to send notification 
+         * @param type $event_name, Available notification find on this event-name 
+         * @param type $lib_object
+         * @return boolean 
+         */
+        public function sendnotification($event_name, $lib_object)
+        {
+            $notification_objectes = PaycartNotification::getInstanceByEventname(strtolower($event_name));
+            
+            foreach ($notification_objectes  as $notification ) {
+                $notification->sendNotification($lib_object);
+            }
+            
+            return true;
+            
+        }
 }

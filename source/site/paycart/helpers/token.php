@@ -101,7 +101,7 @@ class PaycartHelperToken extends PaycartHelper
      * @param PaycartCart $cart 
      * 
      */
-    public function buildCartTokens( PaycartCart $cart )
+    public function getCartTokens( PaycartCart $cart )
     {
         $relative_objects = new stdClass();
         
@@ -116,17 +116,59 @@ class PaycartHelperToken extends PaycartHelper
         
         $tokens = Array();
             
-        $tokens = array_merge($tokens, $this->getCartToken($relative_object->cart));
-        $tokens = array_merge($tokens, $this->getConfigToken($relative_object->config));
-        $tokens = array_merge($tokens, $this->getBuyerToken($relative_object->buyer));
-        $tokens = array_merge($tokens, $this->getProductToken($relative_object->product_particular_list));
-        $tokens = array_merge($tokens, $this->getBillingToken($relative_object->billing_address));
-        $tokens = array_merge($tokens, $this->getShippingToken($relative_object->shipping_address));
+        $tokens = array_merge($tokens, $this->getCartToken($relative_objects->cart));
+        $tokens = array_merge($tokens, $this->getConfigToken($relative_objects->config));
+        $tokens = array_merge($tokens, $this->getBuyerToken($relative_objects->buyer));
+        $tokens = array_merge($tokens, $this->getProductToken($relative_objects->product_particular_list));
+        $tokens = array_merge($tokens, $this->getBillingToken($relative_objects->billing_address));
+        $tokens = array_merge($tokens, $this->getShippingToken($relative_objects->shipping_address));
         
         
         //@PCTODO :: Trigger to add new tokens
         
         return $tokens;
+    }
+    
+    
+   /**
+     * Invoke to build token on cart object
+     * @param PaycartCart $cart 
+     * 
+     */
+    public function getShipmentTokens(PaycartShipment $shippment )
+    {
+        $relative_objects = new stdClass();
+        
+        // fetch all relative objects
+        $relative_objects->config               = PaycartFactory::getConfig();
+       
+        $tokens = Array();
+        $tokens = array_merge($tokens, $this->getConfigToken($relative_object->config));
+        
+        
+        //@PCTODO :: Trigger to add new tokens
+        
+        return $tokens;
+    }
+    
+    /**
+     * Invoke to get tokens
+     * @param type $lib_object either PaycartCart onject or PaycartShippment object
+     * @return type Array of tokens
+     * @throws RuntimeException 
+     */
+    public function getTokens($lib_object)
+    {
+        // get all relative objects
+        if ($lib_object instanceof PaycartCart) {
+            return $this->getCartTokens($lib_object);
+         } 
+
+		if ($lib_object instanceof PaycartShipment) {
+            return $this->getShipmentTokens($lib_object);
+         }
+
+        throw new RuntimeException('Unknown object for token fetching ');
     }
 
     /**
