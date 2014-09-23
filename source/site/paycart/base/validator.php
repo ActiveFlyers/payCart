@@ -43,7 +43,7 @@ class PaycartValidator extends Rb_Validator
 			return false;
 		}
 		
-		$alias 		= JApplicationHelper::stringURLSafey($value);
+		$alias 		= JApplicationHelper::stringURLSafe($value);
 		$id 		= isset($data['productcategory_id']) ? $data['productcategory_id'] : 0;
 			
 		$parent_id 	= $data['parent_id'];
