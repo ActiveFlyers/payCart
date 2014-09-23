@@ -133,6 +133,7 @@
 			<field 	name="alias" 
 					type="text"
 					validate="productalias"
+					filter="JApplicationHelper::stringURLSafe"
 					class="input-block-level"
 					label="COM_PAYCART_ADMIN_ALIAS"/>
 			

@@ -177,7 +177,7 @@ class PaycartFactory extends Rb_Factory
 	}
 	
 	public static $validator = null;
-	public function getValidator()
+	public static function getValidator()
 	{	
 		if(!self::$validator){
 			self::$validator = new PaycartValidator();

@@ -115,7 +115,7 @@ class PaycartTableProductLang extends PaycartTable
 	 */
 	public static function getNewAlias($alias, $id = 0, $style = 'dash')
 	{		
-		$alias  = PaycartHelper::sluggify($alias);//Sluggify the input string
+		$alias  = JApplicationHelper::stringURLSafe($alias);//Sluggify the input string
 	
 		//@PCTODO:: move to helper
 		// if Value already have '-'(dash) with numeric-data then remove numeric-data 

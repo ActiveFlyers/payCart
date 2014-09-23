@@ -13,8 +13,8 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 Rb_HelperTemplate::loadMedia(array('angular'));
 
-echo $this->loadTemplate('edit.js');
-echo $this->loadTemplate('edit.ng');
+echo $this->loadTemplate('edit_js');
+echo $this->loadTemplate('edit_ng');
 ?>
 
 <div class="pc-product-wrapper clearfix">
@@ -67,22 +67,10 @@ echo $this->loadTemplate('edit.ng');
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 							</div>
-							<div class="row-fluid">
-								<div class="span6">
-									<?php $field = $form->getField('alias') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
-									</div>
-								</div>
-								<div class="span6">
-									<?php $field = $form->getField('type') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
-									</div>
-								</div>
-							</div>
+							
+							<?php $field = $form->getField('type') ?>
+							<input type="hidden" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo Paycart::PRODUCT_TYPE_PHYSICAL;?>">
+							
 							<div class="row-fluid">
 								<div class="span6">
 									<?php $field = $form->getField('published') ?>

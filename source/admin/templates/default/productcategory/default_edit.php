@@ -14,13 +14,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 JHtml::_('behavior.formvalidation');
 Rb_HelperTemplate::loadMedia(array('angular'));
-?>
-
-<script type="text/javascript">
-	paycart.ng.productCategory = angular.module('pcngProductCategoryApp', []);
-</script>
-
-<?php 
 echo $this->loadTemplate('edit_js');
 echo $this->loadTemplate('edit_ng');
 ?>

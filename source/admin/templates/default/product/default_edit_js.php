@@ -12,7 +12,6 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
 <script type="text/javascript">
-
 	(function($){
 		$(document).ready(function(){
 			<?php if(!empty($error_fields)):?>
