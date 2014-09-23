@@ -60,12 +60,8 @@ class PaycartModelProductAttributeValue extends PaycartModel
 		if(empty($data)) {
 			return true;
 		}
-		// 2#. Valiadate Data
-		if(!$this->validate($data)) {
-			return false;
-		}
 		
-		// 3#. Insert new data
+		// 2#. Insert new data
 		$query = $this->_db->getQuery(true);
 		
 		// build inert query
