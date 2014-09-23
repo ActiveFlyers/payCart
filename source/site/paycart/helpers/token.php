@@ -46,13 +46,13 @@ class PaycartHelperToken extends PaycartHelper
         static::$_tokens['billing'] =
                 Array(  'billing_to',   'billing_address',  'billing_phone1',
                         'billing_phone2', 'billing_zip_code','billing_vat_number',
-                        'billing_country', 'billing_state','billing_zip_code'
+                        'billing_country', 'billing_state','billing_city'
                       );
         // shipping specific
         static::$_tokens['shipping'] =   
                 Array(  'shipping_to',      'shipping_address',  'shipping_phone1',
                         'shipping_phone2',  'shipping_zip_code','shipping_vat_number',
-                        'shipping_country', 'shipping_state','shipping_zip_code'
+                        'shipping_country', 'shipping_state','shipping_city'
                       );
         
         // cart specific
@@ -62,7 +62,7 @@ class PaycartHelperToken extends PaycartHelper
         
         //config specific
         static::$_tokens['config']   =
-                Array('store_address');
+                Array('store_address', 'store_name');
         
         //Product Tokens
         static::$_tokens['product']   =
@@ -111,8 +111,10 @@ class PaycartHelperToken extends PaycartHelper
         $relative_objects->shipping_address     = $cart->getShippingAddress(true);
         $relative_objects->config               = PaycartFactory::getConfig();
         $relative_objects->cart                 = $cart;
-        
-        $relative_objects->product_particular_list =  $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+        /* @var $cart_helper PaycartHelperCart */
+        $cart_helper = PaycartFactory::getHelper('cart');
+                
+        $relative_objects->product_particular_list =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_PRODUCT);
         
         $tokens = Array();
             
@@ -190,7 +192,7 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['billing_vat_number']      =   $billing_address->getVatnumber();
         $tokens['billing_country']         =   $billing_address->getCountryId();
         $tokens['billing_state']           =   $billing_address->getStateId();
-        $tokens['billing_zip_code']        =   $billing_address->getZipcode();
+        $tokens['billing_city']            =   $billing_address->getCity();
         
         return $tokens;
     }
@@ -215,7 +217,7 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['shipping_vat_number']      =   $shipping_address->getVatnumber();
         $tokens['shipping_country']         =   $shipping_address->getCountryId();
         $tokens['shipping_state']           =   $shipping_address->getStateId();
-        $tokens['shipping_zip_code']        =   $shipping_address->getZipcode();
+        $tokens['shipping_city']            =   $shipping_address->getCity();
         
         return $tokens;
     }
@@ -281,15 +283,11 @@ class PaycartHelperToken extends PaycartHelper
     private  function getProductToken(Array $product_particulars)    
     {
         $tokens =  Array();
-        
-        $products   =   Array();
-        foreach ($product_particulars as $product_id ) {
-            $products[$product_id] = PaycartProduct::getInstance($product_id);
-        }
-        
-        // @FIXME :: create a layout to render all product details
-        
-        $tokens['product_details'] = ' ITS PENDING :-)'; 
+       
+        $dispalyData = new stdClass;
+        $dispalyData->product_particulars = $product_particulars;
+        // Create a layout to render all product details
+        $tokens['products_detail'] = JLayoutHelper::render('paycart_token_product_deatils', $dispalyData, PAYCART_LAYOUTS_PATH);
         
         return $tokens;
     }

@@ -32,7 +32,7 @@ class PaycartNotification extends PaycartLib
 	protected $body			   	= '';
         
         //Var for future aspect
-//        protected $isHtml		   	= '';
+//       protected $isHtml		   	= '';
 //        protected $reply_to                	= '';
         
         /**
@@ -80,22 +80,21 @@ class PaycartNotification extends PaycartLib
         
         
         /**
-         * @PCTODO:: move to helper
-		 * Invoke to get PaycartNotification Instances for specific event 
+         * Invoke to get PaycartNotification Instances for specific event 
          * @param type $event_name
-         * @return Array  
+         * @return PaycartNotification lib instance  
          */
         public static function getInstanceByEventname($event_name)
         {
-            $records = PaycartFactory::getModel('notification')->loadRecords(Array('event_name' => "$event_name"));
+            $records = PaycartFactory::getModel('notification')->loadRecords(Array('event_name' => strtolower($event_name)));
             
-            $instance = Array();
-            foreach ($records as $record_id => $data) 
-            {
-                $instance[$record_id] = self::getInstance($record_id, $data); 
+            if (empty($records)) {
+                return false;
             }
+                    
+            $records = array_shift($records);
             
-            return $instance;
+            return self::getInstance($records->notification_id, $records);
         }
 	
         /**
@@ -133,13 +132,13 @@ class PaycartNotification extends PaycartLib
             }
             
             // Add subject
-            $mailer->setSubject($this->subject);
+            $mailer->setSubject($token_helper->replaceTokens($this->subject, $tokens));
             
             //@PCTODO :: invoke here layout for email template
             // Add Body
-            $mailer->setBody($this->body);
+            $mailer->setBody($token_helper->replaceTokens($this->body, $tokens));
             
-            
+            $mailer->isHtml(true);
             if ( !$mailer->Send() ) {
                 //@PCTODO :: Notify to admin
                 return false;
