@@ -89,7 +89,7 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		return true;
 	}
 	
-	function _basicFormSetup() {
+	protected function _basicFormSetup($task){
 		return true;
 	}
 	

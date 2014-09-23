@@ -158,7 +158,19 @@ class PaycartCart extends PaycartLib
 
 	public function getTotal()
 	{
-		$this->updateTotal();
+		/**
+		 * if cart is not locked yet then total will be fetched from 
+         * cartparticulars objects available on cart
+		 */
+		if(!$this->is_locked){
+			$this->updateTotal();
+		}
+		else{
+			/**
+			 * After cart locked, cartparticulars will be fetched from model
+			 */
+			$this->_total = PaycartFactory::getHelper('cart')->getTotal($this);
+		}
 		return $this->_total;
 	}
 	

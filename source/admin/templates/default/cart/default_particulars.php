@@ -197,9 +197,8 @@ $currencyId = $cart->getCurrency();
 						<?php $params = json_decode($particular->params);?>
 						<td><?php echo PaycartShippingrule::getInstance($id)->getTitle();?></td>
 						<td>
-							<?php $productList = '';?>
 							<?php foreach ($params->product_list as $productId => $details):?>
-							<?php echo $productList .= $product_particular[$productId]->title.' : '.$details->quantity; ?>
+							<?php echo $product_particular[$productId]->title.' : '.$details->quantity.'<br>'; ?>
 							<?php endforeach;?>
 						</td>
 						<td><?php echo $particular->unit_price;?></td>

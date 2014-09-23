@@ -134,4 +134,55 @@ class PaycartHelperEvent extends PaycartHelper
             PaycartNotification::getInstanceByEventname($event_name)->sendNotification($cart);
         }
 
+		/**
+         *
+         * onPaycartShipment Dispatched
+         * @param 
+         *
+         * @return void
+         */
+        public function onPaycartShipmentAfterDispatched(PaycartShipment $shipment)
+        {
+            $params = Array($shipment);
+            $event_name = 'onPaycartShipmentAfterDispatched';
+            
+            Rb_HelperPlugin::trigger('onPaycartShipmentAfterDispatched', $params, self::$default_plugin_type);
+            
+            //send notification 
+            PaycartNotification::getInstanceByEventname($event_name)->sendNotification($shipment);
+        }
+        
+		/**
+         *
+         * onPaycartShipment Delivered
+         * @param 
+         *
+         * @return void
+         */
+        public function onPaycartShipmentAfterDelivered(PaycartShipment $shipment)
+        {
+            $params = Array($shipment);
+            $event_name = 'onPaycartShipmentAfterDelivered';
+            
+            Rb_HelperPlugin::trigger('onPaycartShipmentAfterDelivered', $params, self::$default_plugin_type);
+            
+            $cart 			 = $shipment->getCart();
+            $shipments 		 = PaycartFactory::getHelper('cart')->getShipments($cart->getId());
+            $isCartDelivered = true;
+            
+            foreach ($shipments as $data) {
+            	if($data->status != Paycart::STATUS_SHIPMENT_DELIVERED){
+            		$isCartDelivered = false;
+            		break;
+            	}
+            }
+            
+            // As all shipments are delivered so mark cart as delivered
+            if($isCartDelivered){
+            	$cart->markDelivered()->save();
+            }
+            
+            //send notification 
+            PaycartNotification::getInstanceByEventname($event_name)->sendNotification($shipment);
+         }
 }

@@ -41,6 +41,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 	const PRICE 				= "PRICE";
 	
 	public $location			= __DIR__;
+	public $trackingUrl 		= '';
 	
 	public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
 	{

@@ -17,18 +17,10 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 {
 	public function display($tpl = NULL)
 	{	
-		$this->_renderOptions = array('domObject'=>'pc-cart-products','domProperty'=>'innerHTML');
+		parent::_assignTmplVars();
 		
-		$helper = PaycartFactory::getHelper('cart');
-		$cart 	= $helper->getCurrentCart();
-		
-		$productParticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
-		
-		$this->assign('products',$productParticulars);
-		$this->assign('cart', $cart);
-	
 		$this->setTpl('products');
-		
+		$this->_renderOptions = array('domObject'=>'pc-cart-products','domProperty'=>'innerHTML');
 		return true;
 	}
 	

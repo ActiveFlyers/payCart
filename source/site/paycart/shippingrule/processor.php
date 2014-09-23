@@ -72,6 +72,15 @@ abstract class PaycartShippingruleProcessor
 		return $this->location;
 	}
 	
+	/**
+	 * Get tracking url of shipping processor
+	 * This property must be set in each shipping processor
+	 */
+	public function getTrackingUrl()
+	{
+		return $this->trackingUrl;
+	}
+	
 	public function convertWeight($value, $inputUnit, $resultantUnit)
 	{
 		$formatter = PaycartFactory::getHelper('format');

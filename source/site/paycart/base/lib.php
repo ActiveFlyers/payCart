@@ -67,10 +67,20 @@ class PaycartLib extends Rb_Lib
 			return false;
 		}
 		
-		// correct the id, for new records required
+		// correct the id, required for new records
 		$this->setId($id);
-		$this->reload();
+
+		$this->_bindAfterSave();
 		
 		return $id;
+	}
+	
+	/**
+	 * Bind/populate model data on lib object if required
+	 * @return PaycartLib
+	 */
+	protected function _bindAfterSave()
+	{
+		return $this;
 	}
 }

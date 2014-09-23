@@ -196,7 +196,7 @@ class PaycartHelperProduct extends PaycartHelper
 	 */
 	function deleteImage(PaycartProduct $product, $imageId)
 	{
-		$result = $product->deleteImages(array($imageId));
+		$result = $product->deleteImages(array($imageId))->save();
 		
 		if($result){
 			$imageIds   = $product->getImages(false);

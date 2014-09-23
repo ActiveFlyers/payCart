@@ -151,20 +151,59 @@ class PaycartHelperCart extends PaycartHelper
 	/**
 	 * return stdclass object of cartparticular of given cart id and type 
 	 * @param $cartId : cart id to which the cart particular belongs
-	 * @param $type : type of cart particular to be fetched
+	 * @param $type : type of cart particular to be fetched. if null then all types will be returned
 	 */
-	public function getCartParticularsData($cartId, $type)
+	public function getCartParticularsData($cartId, $type = null)
 	{
 		static $particularData = array();
 		
-		if(isset($particularData[$cartId][$type])){
+		if(!$cartId){
+			throw new RuntimeException('Invalid cart id');
+		}
+		
+		if(!isset($particularData[$cartId])){
+			//load data from model
+			$records = PaycartFactory::getModel('cartparticular')
+													->loadRecords(array('cart_id' => $cartId), array(),false, 'particular_id');
+			
+			foreach ($records as $particularId => $data){
+				$particularData[$cartId][$data->type][$particularId] =  $data;
+			}	
+		}
+		
+		if(!$type && isset($particularData[$cartId])){
+			return $particularData[$cartId];
+		}
+		
+		if($type && isset($particularData[$cartId][$type])){
 			return $particularData[$cartId][$type];
 		}
 		
-		//load data from model
-		$particularData[$cartId][$type] = PaycartFactory::getModel('cartparticular')
-												->loadRecords(array('cart_id' => $cartId, 'type'=>$type), array(),false, 'particular_id');
+		return array();
+	}
+	
+	/**
+     * get all the shipments of the given cart
+     */
+	public function getShipments($cartId)
+	{
+		return PaycartFactory::getModel('shipment')->loadRecords(array('cart_id'=>$cartId));
+	}
+	
+	/**
+	 * get cart total when cart has been locked and all particulars have been saved
+     * PCTODO: remove it when clean function to get cart particulars from cart
+	 */
+	public function getTotal($cart)
+	{
+		$total = 0 ;
 		
-		return $particularData[$cartId][$type];
+		foreach ($this->getCartParticularsData($cart->getId()) as $type => $cartparticulars) {
+			foreach ($cartparticulars as $cartparticular) {
+				$total = ($total) + ($cartparticular->total);
+			}			
+		}
+		
+		return $total;
 	}
 }

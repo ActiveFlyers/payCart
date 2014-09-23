@@ -64,7 +64,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 {	
-	public $location			= __DIR__;	
+	public $location			= __DIR__;
+	public $trackingUrl 		= 'http://wwwapps.ups.com/WebTracking/track';	
 	
 	public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
 	{

@@ -25,6 +25,7 @@ class PaycartHelperToken extends PaycartHelper
     public function __construct() 
     {
         $this->buildTokens();
+        $this->formatter = PaycartFactory::getHelper('format');
     }
     
     public function getTokenList()  
@@ -67,6 +68,9 @@ class PaycartHelperToken extends PaycartHelper
         //Product Tokens
         static::$_tokens['product']   =
                 Array('products_detail');
+                
+        static::$_tokens['shipment']  = 
+        		Array('tracking_number','tracking_url','products');
         
         return true;
     }
@@ -101,7 +105,7 @@ class PaycartHelperToken extends PaycartHelper
      * @param PaycartCart $cart 
      * 
      */
-    public function getCartTokens( PaycartCart $cart )
+    public function buildCartTokens( PaycartCart $cart )
     {
         $relative_objects = new stdClass();
         
@@ -137,16 +141,11 @@ class PaycartHelperToken extends PaycartHelper
      * @param PaycartCart $cart 
      * 
      */
-    public function getShipmentTokens(PaycartShipment $shippment )
-    {
-        $relative_objects = new stdClass();
-        
-        // fetch all relative objects
-        $relative_objects->config               = PaycartFactory::getConfig();
-       
+    public function buildShipmentTokens(PaycartShipment $shipment )
+    {       
         $tokens = Array();
-        $tokens = array_merge($tokens, $this->getConfigToken($relative_object->config));
-        
+        $tokens = array_merge($tokens, $this->getShipmentToken($shipment));
+        $tokens = array_merge($tokens, $this->buildCartTokens($shipment->getCart()));
         
         //@PCTODO :: Trigger to add new tokens
         
@@ -163,11 +162,11 @@ class PaycartHelperToken extends PaycartHelper
     {
         // get all relative objects
         if ($lib_object instanceof PaycartCart) {
-            return $this->getCartTokens($lib_object);
+            return $this->buildCartTokens($lib_object);
          } 
 
 		if ($lib_object instanceof PaycartShipment) {
-            return $this->getShipmentTokens($lib_object);
+            return $this->buildShipmentTokens($lib_object);
          }
 
         throw new RuntimeException('Unknown object for token fetching ');
@@ -233,7 +232,7 @@ class PaycartHelperToken extends PaycartHelper
        $tokens =  Array();
         
         // cart specific
-        $tokens['cart_total']              =   $cart->getTotal();
+        $tokens['cart_total']              =   $this->formatter->amount($cart->getTotal());
         $tokens['cart_product_count']      =   count($cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT));
         $tokens['cart_created_date']       =   $cart->getCreatedDate();
         // @PCTOD :: date formating here
@@ -288,6 +287,29 @@ class PaycartHelperToken extends PaycartHelper
         $dispalyData->product_particulars = $product_particulars;
         // Create a layout to render all product details
         $tokens['products_detail'] = JLayoutHelper::render('paycart_token_product_deatils', $dispalyData, PAYCART_LAYOUTS_PATH);
+        
+        return $tokens;
+    }
+    
+	/**
+     * Invoke to get shipment tokens
+     * @param PaycartShipment $shipment
+     * 
+     * @return array 
+     */
+    private function getShipmentToken(PaycartShipment $shipment)
+    {
+    	$tokens = array();
+    	
+    	$tokens['tracking_number'] = $shipment->getTrackingNumber();
+    	$tokens['tracking_url']	   = $shipment->getTrackingUrl();
+    	
+    	$products     = $shipment->getProducts();
+    	$display_data = new stdClass();
+    	$display_data->products = $products;
+    	
+    	$layout = new JLayoutFile('paycart_token_shipment_products', PAYCART_LAYOUTS_PATH);
+        $tokens['products'] = $layout->render($display_data);
         
         return $tokens;
     }

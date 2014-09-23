@@ -180,4 +180,21 @@ class PaycartMedia extends PaycartLib
 		
 		return true;
 	}
+	
+	/**
+	 * Bind/populate model data on lib object if required
+	 * @return PaycartMedia
+	 */
+	protected function _bindAfterSave()
+	{
+		$data = PaycartFactory::getModel('media')->loadRecords(array('media_id' => $this->getId()));
+	
+		//populate only required data
+		if(!empty($data)){
+			$data = array_shift($data);
+			$this->media_lang_id = $data->media_lang_id;
+		}
+	
+		return $this;
+	}
 }

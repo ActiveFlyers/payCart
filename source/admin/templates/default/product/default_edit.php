@@ -306,7 +306,7 @@ echo $this->loadTemplate('edit_ng');
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
 										<div class="controls">
-											<input class="input-block-level" type="text" name="paycart_form[weight_unit]" readonly="" value="<?php echo PaycartFactory::getConfig()->get('catalogue_dimension_unit');?>">										
+											<input class="input-block-level" type="text" name="paycart_form[dimension_unit]" readonly="" value="<?php echo PaycartFactory::getConfig()->get('catalogue_dimension_unit');?>">										
 										</div>								
 									</div>
 								</div>

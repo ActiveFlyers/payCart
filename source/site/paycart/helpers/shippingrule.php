@@ -393,26 +393,28 @@ class PaycartHelperShippingrule extends PaycartHelper
 		list($productMapping, $groupRules) = $this->getApplicableGrouprules($cart,$products);
 		$shippingRules = $this->getShippingrules($groupRules);
 		
-		foreach($productMapping as $productId => $mapping){			
-			$query = new Rb_Query();
-			
-			//query that matches product's groupid and applicable shippingrule id will be 
-			//the resultant shippingrules through which the current product can be shipping
-			$result = $query->select('distinct(`shippingrule_id`)')
-							 ->from('`#__paycart_shippingrule_x_group`')
-							 ->where('`group_id` IN('.implode(',', $mapping).')')
-							 ->where('`shippingrule_id` IN('.implode(',', $shippingRules).')')
-							 ->dbLoadQuery()
-							 ->loadColumn();
-			
-			if(!empty($result)){
-				$groups[$productId] = $result;
-			}
-			//if no shipping rule available for any of the cart product then return and stop calculation
-			else{
-				return array();
-			}
-		}	
+		if(!empty($shippingRules)){
+			foreach($productMapping as $productId => $mapping){			
+				$query = new Rb_Query();
+				
+				//query that matches product's groupid and applicable shippingrule id will be 
+				//the resultant shippingrules through which the current product can be shipping
+				$result = $query->select('distinct(`shippingrule_id`)')
+								 ->from('`#__paycart_shippingrule_x_group`')
+								 ->where('`group_id` IN('.implode(',', $mapping).')')
+								 ->where('`shippingrule_id` IN('.implode(',', $shippingRules).')')
+								 ->dbLoadQuery()
+								 ->loadColumn();
+				
+				if(!empty($result)){
+					$groups[$productId] = $result;
+				}
+				//if no shipping rule available for any of the cart product then return and stop calculation
+				else{
+					return array();
+				}
+			}	
+		}
 
 		return $groups;
 	}
@@ -454,51 +456,37 @@ class PaycartHelperShippingrule extends PaycartHelper
 	 */
 	public function getShippingrules(Array $groupRules = Array())
 	{
-		$query    = new Rb_Query();
-		$subquery = new Rb_Query();
+		$productCondition = '';
+		$buyerCondition   = '';
+		$cartCondition	  = '';
 		
-		$subCondition = $subquery->select('DISTINCT(`shippingrule_id`)')
-								 ->from('#__paycart_shippingrule') 
-								 ->where('`shippingrule_id` not in (select `shippingrule_id` FROM `#__paycart_shippingrule_x_group` group by `shippingrule_id`)')
-								 ->__toString();
-		$suffix = ') AS `rule_group` ON ( `rule`.`shippingrule_id` = `rule_group`.`shippingrule_id`)';
-		
-		if(!empty($groupRules[paycart::GROUPRULE_TYPE_BUYER]) || 
-		   !empty($groupRules[paycart::GROUPRULE_TYPE_PRODUCT]) || 
-		   !empty($groupRules[paycart::GROUPRULE_TYPE_CART])){
-		   		$subquery = new Rb_Query();
-			   	$subquery->select('DISTINCT(`shippingrule_id`)')
-					 	 ->from('#__paycart_shippingrule_x_group');
-					 	 
-			  	foreach ($groupRules as $ruleType => $rules){
-			  		$allGroupIds = implode(',', $rules);
-
-					// if grouprule of the current type exists
-                    // then add condition to find matching records of individual grouptype
-                    // (i.e. cart,product and buyer)
-					if(!empty($groupRules[$ruleType])){
-						$subquery->where("`shippingrule_id` IN (
-						                   SELECT `shippingrule_id`  FROM `#__paycart_shippingrule_x_group`
-						                   WHERE `group_id` in(".implode(',', $rules)."))");
-					}
-					// if grouprule of the current type doesn't exist
-					// then add condition to discard those taxes which has any applicable rule of this type
-					else{
-						$subquery->where("`shippingrule_id` NOT IN (
-						                   SELECT  `shippingrule_id`  FROM `#__paycart_shippingrule_x_group`
-						                   WHERE `type` = '".$ruleType."')");
-					}
-				}
-			$subCondition  = $subCondition.' union ('.$subquery->__toString(). ')';
+		if( !empty($groupRules[paycart::GROUPRULE_TYPE_PRODUCT])){
+			$productCondition = 'tbl.group_id IN ('.implode(',', $groupRules[paycart::GROUPRULE_TYPE_PRODUCT]).') OR';
 		}
 		
-		$query->select('DISTINCT `rule`.`shippingrule_id`')
-			  ->innerJoin('( '.$subCondition.$suffix)
-			  ->from('`#__paycart_shippingrule` as `rule`')
-			  ->where('`rule`.`published` =  1', 'AND')							// rule must be publish
-			  ->order('`rule`.`ordering`');
+		if( !empty($groupRules[paycart::GROUPRULE_TYPE_BUYER])){
+			$buyerCondition = 'tbl.group_id IN ('.implode(',', $groupRules[paycart::GROUPRULE_TYPE_BUYER]).') OR';
+		}
 		
-		$shippingRules = $query->dbLoadQuery()->loadColumn();
+		if( !empty($groupRules[paycart::GROUPRULE_TYPE_CART])){
+			$cartCondition = 'tbl.group_id IN ('.implode(',', $groupRules[paycart::GROUPRULE_TYPE_CART]).') OR';
+		}
+		
+		$query = ' SELECT * FROM 
+		         (
+			         ( select * from `#__paycart_shippingrule` as rule NATURAL left join (select * from `#__paycart_shippingrule_x_group` 
+					  as grp where grp.type = "product" ) as tbl where '.$productCondition.' tbl.group_id IS NULL ) 
+				 UNION ALL 
+			 		 ( select * from `#__paycart_shippingrule` as rule NATURAL left join (select * from `#__paycart_shippingrule_x_group` 
+			 		  as grp where grp.type = "buyer" ) as tbl where '.$buyerCondition.' tbl.group_id IS NULL  ) 
+				 UNION ALL 
+			 	     ( select * from `#__paycart_shippingrule` as rule NATURAL left join (select * from `#__paycart_shippingrule_x_group` 
+			  		  as grp where grp.type = "cart" ) as tbl where '.$cartCondition.' tbl.group_id IS NULL  ) 
+		  		 ) 
+		 		 as result group by result.shippingrule_id having count(result.shippingrule_id) = 3 and result.published = 1 
+		 		 order by `ordering`';
+		
+		$shippingRules = PaycartFactory::getDbo()->setQuery($query)->loadColumn();
 		
 		if (empty($shippingRules)) {
 			$shippingRules = Array();

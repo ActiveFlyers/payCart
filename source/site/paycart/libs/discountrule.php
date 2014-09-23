@@ -296,9 +296,7 @@ class PaycartDiscountrule extends PaycartLib
 		if(is_object($data)){
 			$data = (array) ($data);
 		}
-		
-		//PCTODO: Change weight, height, width, length etc in a format as per set weight/dimension unit
-		
+				
 		parent::bind($data, $ignore);		
 		
 		if(!isset($data['_buyergroups'])) {

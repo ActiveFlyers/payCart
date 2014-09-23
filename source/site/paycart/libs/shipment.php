@@ -21,9 +21,10 @@ class PaycartShipment extends PaycartLib
 	protected $status			    = '';
 	protected $actual_shipping_cost = 0;
 	protected $tracking_number		= '';
+	protected $tracking_url			= '';
 	protected $created_date		    = '';
 	protected $delivered_date	    = '';
-	protected $returned_date        = '';
+	protected $dispatched_date        = '';
 	
 	protected $_products			= array();
 	
@@ -41,16 +42,17 @@ class PaycartShipment extends PaycartLib
 		$this->status			    = '';
 		$this->actual_shipping_cost = 0;
 		$this->tracking_number	    = '';
+		$this->tracking_url			= '';
 		$this->created_date		    = Rb_Date::getInstance();
 		$this->delivered_date	    = Rb_Date::getInstance();
-		$this->returned_date        = Rb_Date::getInstance();
+		$this->dispatched_date      = Rb_Date::getInstance();
 		
 		$this->_products			= array();
 		
 		return $this;
 	}
 	
-	public function bind($data, $ignore)
+	public function bind($data, $ignore=array())
 	{
 		if(is_object($data)){
 			$data = (array) ($data);
@@ -80,7 +82,29 @@ class PaycartShipment extends PaycartLib
 	
 	public function getProducts()
 	{
-		return $this->_products;
+		$products = PaycartFactory::getModel('shipment')->loadRecords(array('shipment_id' => $this->getId()));
+		$record   = !empty($products)?array_shift($products)->products:array();
+		
+		return $record;
+	}
+	
+	public function getTrackingNumber()
+	{
+		return $this->tracking_number;
+	}
+	
+	public function getTrackingUrl()
+	{
+		return $this->tracking_url;
+	}
+	
+	public function getCart($requireInstance = true)
+	{
+		if(!$requireInstance){
+			return $this->cart_id;
+		}
+		
+		return PaycartCart::getInstance($this->cart_id);
 	}
 	
 	/**
@@ -92,5 +116,81 @@ class PaycartShipment extends PaycartLib
 		$data['_products'] = $this->_products;
 		
 		return $data;
+	}
+	
+	/**
+     *
+     * @param PaycartShipment $previousObject
+     * @return boolean or id
+     */
+	protected function _save($previousObject)
+	{
+		$triggerName = false;
+		$prevStatus  = (!empty($previousObject))? $previousObject->status : '';
+		$newStatus	 = $this->status;
+		
+		if( $prevStatus != $newStatus && $newStatus == Paycart::STATUS_SHIPMENT_DISPATCHED){
+	  		$triggerName = Paycart::STATUS_SHIPMENT_DISPATCHED;
+	  		$this->markDispatched();
+		}
+		
+		if( $prevStatus != $newStatus && $newStatus == Paycart::STATUS_SHIPMENT_DELIVERED){
+	  		$triggerName = Paycart::STATUS_SHIPMENT_DELIVERED;
+  		  	$this->markDelivered();  	
+		}
+		
+		$prevShipping = (!empty($previousObject))? $previousObject->shippingrule_id : '';
+		
+		//add tracking url only if it is not set
+		//PCTODO :: #258 do not allow to change shipping method once shipment is saved
+		if($prevShipping != $this->shippingrule_id || empty($this->tracking_url)){
+			$this->tracking_url = PaycartShippingrule::getInstance($this->shippingrule_id)->getProcessor()->getTrackingUrl();
+		}
+		
+		// save to data to table
+        $id =  parent::_save($previousObject);
+            
+        //if save was not complete, then id will be null, do not trigger after save
+        if(!$id){
+            return false;
+        }
+
+        // correct the id, for new records required
+        $this->setId($id);
+
+        //save $this to static cache, so that if someone tries to create instance in between the save process
+        //then proper object would be returned 
+        if(!$previousObject){
+           self::setInstance($this);			
+        }
+	 
+		if($triggerName){            
+	       /*  @var $event_helper PaycartHelperEvent   */
+	       $event_helper = PaycartFactory::getHelper('event');
+	        
+	       $triggerFunction  = 'onPaycartShipmentAfter'.ucfirst($triggerName); 
+	         
+	       $event_helper->$triggerFunction($this);
+		}
+		  
+		return $id;
+	}
+	
+	/**
+	 * Mark shipment delivered if it is not 
+	 */
+	public function markDelivered()
+	{
+		$this->status            =   Paycart::STATUS_SHIPMENT_DELIVERED;
+        $this->delivered_date    =   Rb_Date::getInstance();
+	}
+	
+	/**
+	 * Mark shipment dispatched if it is not 
+	 */
+	public function markDispatched()
+	{
+		$this->status            =   Paycart::STATUS_SHIPMENT_DISPATCHED;
+        $this->dispatched_date   =   Rb_Date::getInstance();
 	}
 }

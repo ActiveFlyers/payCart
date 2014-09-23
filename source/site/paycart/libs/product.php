@@ -271,6 +271,26 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
+	 * Bind/populate model data on lib object if required
+	 * @return PaycartProduct
+	 */
+	protected function _bindAfterSave()
+	{
+		$data = PaycartFactory::getModel('product')->loadRecords(array('product_id' => $this->getId()));
+		
+		//populate only required data
+		if(!empty($data)){
+			$data = array_shift($data);
+			
+			$this->product_lang_id = $data->product_lang_id;
+			$this->variation_of    = $data->variation_of;
+			$this->ordering		   = $data->ordering;
+		}
+
+		return $this;
+	}
+	
+	/**
 	 * 
 	 * Invoke this method after Product Save, to save Product (custom)attribute values 
 	 * @param ProductLib $previousObject
@@ -485,7 +505,7 @@ class PaycartProduct extends PaycartLib
 		//update existing images of product
 		$imageIds = array_diff($allMediaIds, $imageIds);
 		$imageIds = array_values($imageIds);
-		return $this->setImages($imageIds)->save();
+		return $this->setImages($imageIds);
 	}
 	
 	/**
