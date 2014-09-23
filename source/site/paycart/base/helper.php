@@ -19,32 +19,6 @@ if(!defined( '_JEXEC' )){
  */
 class PaycartHelper extends Rb_Helper
 {
-
-	/**
-	 * Sluggifies the input string.
-	 *
-	 * @param string $string 		input string
-	 * @param bool   $force_safe 	Do we have to enforce ASCII instead of UTF8 (default: false). 
-	 * 
-	 * @return string sluggified string
-	 * PCTODO:: $forceSafe should be handle by configuration setting
-	 * $forceSafe => {yes, no, global}
-	 */
-	public function sluggify($string, $forceSafe = false)
-	{
-		$string = JString::strtolower($string);
-        $string = JString::str_ireplace(array('$',','), '', $string);
-
-		if ($forceSafe) {
-			$string = JFilterOutput::stringURLSafe($string);
-		} else {
-			// Handle by Joomla global configuration varible 'unicodeslugs'
-			$string = JApplication::stringURLSafe($string);
-		}
-
-		return JString::trim($string);
-	}
-	
 	/**
 	 * 
 	 * Provides a secure hash based on a seed

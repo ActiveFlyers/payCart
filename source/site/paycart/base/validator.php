@@ -22,7 +22,7 @@ class PaycartValidator extends Rb_Validator
 			return false;
 		}
 		
-		$alias 	= PaycartHelper::sluggify($value);
+		$alias 	= JApplicationHelper::stringURLSafe($value);
 		$id 	= isset($data['product_id']) ? $data['product_id'] : 0; 
 		$result = PaycartTableProductLang::getRecordsOfAlias($alias, $id);
 		
@@ -43,7 +43,7 @@ class PaycartValidator extends Rb_Validator
 			return false;
 		}
 		
-		$alias 		= PaycartHelper::sluggify($value);
+		$alias 		= JApplicationHelper::stringURLSafey($value);
 		$id 		= isset($data['productcategory_id']) ? $data['productcategory_id'] : 0;
 			
 		$parent_id 	= $data['parent_id'];

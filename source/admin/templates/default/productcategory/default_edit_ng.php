@@ -15,7 +15,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
 
 <script type="text/javascript">	
-	paycart.ng.product = angular.module('pcngProductApp', []);
+	paycart.ng.productCategory = angular.module('pcngProductCategoryApp', []);
 	paycart.ng.productCategory.controller('pcngProductCategoryImagesCtrl', function($scope, $http){
 		$scope.message 		= '';
 		$scope.errMessage 	= '';

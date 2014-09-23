@@ -14,6 +14,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
 
 <script type="text/javascript">	
+	paycart.ng.product = angular.module('pcngProductApp', []);
 	paycart.ng.product.controller('pcngProductImagesCtrl', function($scope, $http){
 		$scope.images 		= pc_product_images;
 		$scope.activeIndex 	= '';
