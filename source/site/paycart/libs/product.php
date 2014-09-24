@@ -21,11 +21,11 @@ class PaycartProduct extends PaycartLib
 	protected $productcategory_id		= 0;
 	protected $published		= 1;
 	protected $type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
-	protected $price		 	= 0.00;
-	protected $quantity		 	= 0;
+	protected $price		 	= null;
+	protected $quantity		 	= null;
 	protected $sku			 	= '';	
 	protected $variation_of		= 0;  		// This product is variation of another product. 	
-	protected $cover_media		= 0;
+	protected $cover_media		= null;
 	protected $created_date  	= '';	
 	protected $modified_date 	= ''; 
 	protected $ordering		 	= 0;
@@ -69,11 +69,11 @@ class PaycartProduct extends PaycartLib
 		$this->productcategory_id		= 0;
 		$this->published		= 1;
 		$this->type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
-		$this->price		 	= 0.00;
-		$this->quantity		 	= 0;
+		$this->price		 	= null;
+		$this->quantity		 	= null;
 		$this->sku			 	= '';	
 		$this->variation_of		= 0;  		// This product is variation of another product. 	
-		$this->cover_media		= 0;
+		$this->cover_media		= null;
 		$this->ordering		 	= 0;
 		$this->featured			= 0;
 	
@@ -83,7 +83,7 @@ class PaycartProduct extends PaycartLib
 		$this->width		 	= 0.00;
 		$this->weight_unit	 	= '';
 		$this->dimension_unit	= '';
-		$this->stockout_limit	= 0;
+		$this->stockout_limit	= null;
 		$this->config			= new Rb_Registry();
 		$this->created_date  	= Rb_Date::getInstance();	
 		$this->modified_date 	= Rb_Date::getInstance(); 

@@ -16,6 +16,11 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 echo $this->loadTemplate('edit_js');
 echo $this->loadTemplate('edit_ng');
 ?>
+<style>
+.paycart .label-left label{
+	float:left;
+}
+</style>
 
 <div class="pc-product-wrapper clearfix">
 <div class="pc-product row-fluid" data-ng-app="pcngProductApp">
@@ -68,25 +73,13 @@ echo $this->loadTemplate('edit_ng');
 								</div>
 							</div>
 							
+							<!--  Some hidden Fields -->
 							<?php $field = $form->getField('type') ?>
 							<input type="hidden" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo Paycart::PRODUCT_TYPE_PHYSICAL;?>">
-							
-							<div class="row-fluid">
-								<div class="span6">
-									<?php $field = $form->getField('published') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
-									</div>
-								</div>
-								<div class="span6">
-									<?php $field = $form->getField('featured') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
-									</div>
-								</div>
-							</div>
+
+							<?php $field = $form->getField('featured') ?>
+							<input type="hidden" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="0">
+														
 							<div class="row-fluid">
 								<div class="span6">
 									<?php $field = $form->getField('productcategory_id') ?>
@@ -96,9 +89,13 @@ echo $this->loadTemplate('edit_ng');
 									</div>
 								</div>
 								<div class="span6">
-									
-								</div>
-							</div>
+									<?php $field = $form->getField('published') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls"><?php echo $field->input; ?></div>								
+									</div>
+								</div>							
+							</div>							
 						</fieldset>
 					</div>					
 				</div>
@@ -117,17 +114,20 @@ echo $this->loadTemplate('edit_ng');
 						<fieldset class="form">
 							<div class="row-fluid">
 								<div class="span6">
+									<?php $currency = $global_config->get('currency', '$'); ?>
 									<?php $field = $form->getField('price') ?>
 									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
+										<div class="control-label label-left"><?php echo $field->label; ?>&nbsp; ( <?php echo $currency;?> )</div>										
+										<div class="controls"><?php echo $field->input; ?></div>
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>								
 									</div>
 								</div>
 								<div class="span6">
 									<?php $field = $form->getField('sku') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
+										<div class="controls"><?php echo $field->input; ?></div>
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>								
 									</div>
 								</div>
 							</div>
@@ -136,14 +136,16 @@ echo $this->loadTemplate('edit_ng');
 									<?php $field = $form->getField('quantity') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
+										<div class="controls"><?php echo $field->input; ?></div>	
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 									</div>
 								</div>
 								<div class="span6">
 									<?php $field = $form->getField('stockout_limit') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>								
+										<div class="controls"><?php echo $field->input; ?></div>	
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 									</div>
 								</div>
 							</div>
@@ -279,67 +281,56 @@ echo $this->loadTemplate('edit_ng');
 						</div>
 					</div>
 					<div class="span9">
-						<fieldset class="form">
+						<fieldset class="form label-left">
+							<div class="row-fluid">							
+								<?php $catalogue_weight_unit = $global_config->get('catalogue_weight_unit');?>
+								<?php $field = $form->getField('weight_unit') ?>
+								<input type="hidden" name="<?php echo $field->name;?>" value="<?php echo $catalogue_weight_unit;?>">					
+																
+								<?php $field = $form->getField('weight') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?>&nbsp; ( <?php echo $catalogue_weight_unit;?> )</div>
+									<div class="controls">
+										<input class="input-block-level validate-numeric" type="text" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo $formatter->weight($product->getWeight())?>">																															
+									</div>								
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+								</div>						
+							</div>
+							
+							<?php $catalogue_dimension_unit = $global_config->get('catalogue_dimension_unit');?>
 							<div class="row-fluid">								
-								<div class="span6">
-									<?php $field = $form->getField('weight_unit') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls">
-											<input class="input-block-level" type="text" name="paycart_form[weight_unit]" readonly="" value="<?php echo PaycartFactory::getConfig()->get('catalogue_weight_unit');?>">
-										</div>								
-									</div>
-								</div>
-								<div class="span6">
-									<?php $field = $form->getField('weight') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls">
-											<input class="input-block-level" type="text" name="paycart_form[weight]" value="<?php echo $formatter->weight($product->getWeight())?>">										
-										</div>								
-									</div>
+								<?php $field = $form->getField('dimension_unit') ?>									
+								<input type="hidden" name="<?php echo $field->name;?>" value="<?php echo $catalogue_dimension_unit;?>">					
+							
+								<?php $field = $form->getField('height') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> &nbsp; ( <?php echo $catalogue_dimension_unit;?> )</div>
+									<div class="controls">
+										<input class="input-block-level validate-numeric" type="text" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo $formatter->dimension($product->getHeight())?>">										
+									</div>		
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>						
+								</div>							
+							</div>
+							<div class="row-fluid">
+								<?php $field = $form->getField('length') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> &nbsp; ( <?php echo $catalogue_dimension_unit;?> )</div>
+									<div class="controls">
+										<input class="input-block-level validate-numeric" type="text" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo $formatter->dimension($product->getLength())?>">										
+									</div>			
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>				
 								</div>
 							</div>
 							<div class="row-fluid">
-								<div class="span6">
-									<?php $field = $form->getField('dimension_unit') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls">
-											<input class="input-block-level" type="text" name="paycart_form[dimension_unit]" readonly="" value="<?php echo PaycartFactory::getConfig()->get('catalogue_dimension_unit');?>">										
-										</div>								
+								<?php $field = $form->getField('width') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> &nbsp; ( <?php echo $catalogue_dimension_unit;?> )</div>
+									<div class="controls">
+										<input class="input-block-level validate validate-numeric" type="text" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo $formatter->dimension($product->getWidth())?>">										
 									</div>
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>								
 								</div>
-								<div class="span6">
-									<?php $field = $form->getField('height') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls">
-											<input class="input-block-level" type="text" name="paycart_form[height]" value="<?php echo $formatter->dimension($product->getHeight())?>">										
-										</div>								
-									</div>
-								</div>
-							</div>
-							<div class="row-fluid">								
-								<div class="span6">
-									<?php $field = $form->getField('length') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls">
-											<input class="input-block-level" type="text" name="paycart_form[length]" value="<?php echo $formatter->dimension($product->getLength())?>">										
-										</div>							
-									</div>
-								</div>
-								<div class="span6">
-									<?php $field = $form->getField('width') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls">
-											<input class="input-block-level" type="text" name="paycart_form[width]" value="<?php echo $formatter->dimension($product->getWidth())?>">										
-										</div>								
-									</div>
-								</div>
-							</div>
+							</div>						
 						</fieldset>
 					</div>					
 				</div>

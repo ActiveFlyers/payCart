@@ -82,7 +82,7 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		
 		// @PCTODO:: Set availble variants
 		$this->assign('variants',  Array());
-		
+		$this->assign('global_config', PaycartFactory::getConfig());
 		return parent::edit($tpl);
 	}
 	

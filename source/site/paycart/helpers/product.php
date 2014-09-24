@@ -89,6 +89,8 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		foreach ($records as $record){
 			unset($record->product_id);
+			// IMP : Unset alias, so that it can be generated automatically
+			$record->alias = '';
 			$record->product_lang_id = 0;
 			$data = (array)$record;
 			$newProduct->bind($data)->save();

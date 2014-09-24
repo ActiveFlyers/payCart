@@ -218,6 +218,10 @@ var PCFormValidator = function() {
  	 	 	regex = /^(\d|-)?(\d|,)*\.?\d*$/;
  	 	 	return regex.test(value);
  	 	});
+ 	 	setHandler('integer', function(value) {
+ 	 	 	regex = /^(\d|-)?(\d|,)*\d*$/;
+ 	 	 	return regex.test(value);
+ 	 	});
  	 	setHandler('email', function(value) {
  	 	 	regex = /^[a-zA-Z0-9.!#$%&‚Äô*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
  	 	 	return regex.test(value);

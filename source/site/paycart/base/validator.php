@@ -26,7 +26,7 @@ class PaycartValidator extends Rb_Validator
 		$id 	= isset($data['product_id']) ? $data['product_id'] : 0; 
 		$result = PaycartTableProductLang::getRecordsOfAlias($alias, $id);
 		
-		return count($result) <= 0;
+		return !in_array($value, $result);
 	}
 	
 	public function validateProductCategoryAlias($value, $params = array(), $data = array())
@@ -49,6 +49,6 @@ class PaycartValidator extends Rb_Validator
 		$parent_id 	= $data['parent_id'];
 		$result 	= PaycartTableProductcategorylang::getRecordsOfAlias($alias, $parent_id, $id);
 		
-		return count($result) <= 0;
+		return !in_array($value, $result);
 	}
 }
