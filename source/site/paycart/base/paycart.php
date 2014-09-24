@@ -32,6 +32,7 @@ class Paycart
 	
 	const MEDIA_THUMB_FOLDER_NAME			= 'thumbs';
 	const MEDIA_OPTIMIZED_FOLDER_NAME		= 'optimized';
+	const MEDIA_SQUARED_FOLDER_NAME			= 'squared';
 
 	const PRODUCT_FILTER_FIELD_PREFIX	= 'attr_';
 

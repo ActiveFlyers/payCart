@@ -91,6 +91,11 @@ class PaycartMedia extends PaycartLib
 			JFile::delete($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename);
 		}
 		
+		if(JFile::exists($this->_basepath.Paycart::MEDIA_SQUARED_FOLDER_NAME.'/'.$this->filename)){
+			JFile::delete($this->_basepath.Paycart::MEDIA_SQUARED_FOLDER_NAME.'/'.$this->filename);
+		}
+
+		
 		if(JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename)){
 			JFile::delete($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename);
 		}
@@ -129,10 +134,12 @@ class PaycartMedia extends PaycartLib
 		$data['original'] 	= $this->_baseurl.$this->filename;
 		$data['optimized'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename : $data['original'];
 		$data['thumbnail'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename : $data['original'];
+		$data['squared'] 	= JFile::exists($this->_basepath.Paycart::MEDIA_SQUARED_FOLDER_NAME.'/'.$this->filename) ? $this->_baseurl.Paycart::MEDIA_SQUARED_FOLDER_NAME.'/'.$this->filename : $data['original'];
 		
 		$data['path_original'] 	= $this->_basepath.$this->filename;
 		$data['path_optimized']	= JFile::exists($this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename) ? $this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename : $data['original'];
 		$data['path_thumbnail']	= JFile::exists($this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename) ? $this->_basepath.Paycart::MEDIA_THUMB_FOLDER_NAME.'/'.$this->filename : $data['original'];
+		$data['path_squared']	= JFile::exists($this->_basepath.Paycart::MEDIA_SQUARED_FOLDER_NAME.'/'.$this->filename) ? $this->_basepath.Paycart::MEDIA_SQUARED_FOLDER_NAME.'/'.$this->filename : $data['original'];
 	
 		return $data;
 	}
@@ -173,6 +180,39 @@ class PaycartMedia extends PaycartLib
 	 	
 		// Generate image name name
 		$fileName 	= $this->_basepath.Paycart::MEDIA_OPTIMIZED_FOLDER_NAME.'/'.$this->filename;
+
+		if (!$image->toFile($fileName, $properties->type)) {
+			return false;	
+		}
+		
+		return true;
+	}
+
+	public function createSquared($width)
+	{
+		if($width <= 0){
+			throw new Exception('Invalid width ['.$width.']');
+		}
+		
+		// get image handle
+		$image = new JImage($this->_basepath.$this->filename);
+		$height = $width;
+
+		// #1. if wider, then correct the width first	
+		if($image->getWidth() > $width){
+			// calculate target height
+			$variation = $width * 100 / $image->getWidth(); 
+			$height = $image->getHeight() * $variation / 100;
+
+			// generate new resized image
+			$image  = $image->resize($width, $height, false, JImage::SCALE_INSIDE);
+		}
+	
+		// #2. Now crop square from top-left
+		$image = $image->crop($width, $width,0,0);
+
+		// Generate image name name
+		$fileName 	= $this->_basepath.Paycart::MEDIA_SQUARED_FOLDER_NAME.'/'.$this->filename;
 
 		if (!$image->toFile($fileName, $properties->type)) {
 			return false;	

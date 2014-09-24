@@ -24,6 +24,11 @@ class Com_paycartInstallerScript
 			JFolder::create(JPATH_SITE.'/images/cart/optimized');
 			JFile::write(JPATH_SITE.'/images/cart/optimized/index.html', $data);
 		}
+		
+		if(!JFolder::exists(JPATH_SITE.'/images/cart/squared')){
+			JFolder::create(JPATH_SITE.'/images/cart/squared');
+			JFile::write(JPATH_SITE.'/images/cart/squared/index.html', $data);
+		}
 	}
 
 	public function install($parent)

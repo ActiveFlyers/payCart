@@ -67,6 +67,18 @@ defined('_JEXEC') or die( 'Restricted access' );
 			
 			<div class="row-fluid">
 				<div class="span6">
+					<?php $field = $form->getField('catalogue_image_squared_size') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>
+					</div>
+				</div>
+				
+				
+			</div>
+
+			<div class="row-fluid">
+				<div class="span6">
 					<?php $field = $form->getField('catalogue_image_upload_size') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
