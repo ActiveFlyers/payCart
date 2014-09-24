@@ -25,7 +25,7 @@ if (count($product_particulars) <= 0 ) {
 $grand_total = 0;
 ?>
 
-<table>
+<table  border="1">
         <tr>
            <th> 
                <?php
@@ -45,14 +45,13 @@ $grand_total = 0;
         </tr>
     <?php
         
-        foreach ($product_particulars as $key => $particular) :
+        foreach ($product_particulars as $particular) :
         
-            $product = PaycartProduct::getInstance($particular->particular_id);
     ?>
             <tr>
                 <td> 
                     <?php
-                        echo $product->getTitle();
+                        echo $particular->title;
                     ?>
                 </td>
                 <td> 

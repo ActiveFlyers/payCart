@@ -18,7 +18,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 class PaycartHelperFormat extends JObject
 {
-	/**
+    
+        static protected $_country_data  = Array();
+        static protected $_state_data   = Array();
+
+        /**
 	 * Format the price/amount as per paycart configuration
 	 * @param $amount : To be formatted
 	 * @param $addCurreny : Set it to true if you want to add currency with amount like $ 10.00
@@ -171,4 +175,46 @@ class PaycartHelperFormat extends JObject
 		
 		return $date->toFormat($format);
 	}
+        
+        /**
+         * Invoke to get Country-Name
+         * @param type $country_id 
+         * @return country name
+         */
+        public function country($country_id)
+        {
+            if ( !isset(static::$_country_data[$country_id]) ) {
+                static::$_country_data = PaycartFactory::getModel('country')
+                                                  ->loadRecords();
+            }
+            
+            
+            if ( !isset(static::$_country_data[$country_id]) ) {
+                return JText::_('COM_PAYCART_ERROR_UNKNOWN_COUNTRY');
+            }     
+            
+            return static::$_country_data[$country_id]->title;             
+        }
+        
+        
+        /**
+         * Invoke to get State-Name
+         * @param type $country_id 
+         * @return state name
+         */
+        public function state($state_id)
+        {
+            if ( !isset(static::$_state_data[$state_id]) ) {
+                static::$_state_data = PaycartFactory::getModel('state')
+                                                  ->loadRecords();
+            }
+            
+            
+            if ( !isset(static::$_state_data[$state_id]) ) {
+                return JText::_('COM_PAYCART_ERROR_UNKNOWN_state');
+            }     
+            
+            return static::$_state_data[$state_id]->title;             
+        }
+        
 }

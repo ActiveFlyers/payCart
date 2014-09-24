@@ -22,15 +22,53 @@ class PaycartHelperToken extends PaycartHelper
 {
     static $_tokens = Array();
     
+    /**
+     *
+     * @var PaycartHelperFormat
+     */
+    protected $_formatter;
+
+
     public function __construct() 
     {
         $this->buildTokens();
-        $this->formatter = PaycartFactory::getHelper('format');
+        $this->_formatter = PaycartFactory::getHelper('format');
     }
     
-    public function getTokenList()  
+    /**
+     * Invoke to get List of tokens
+     * @param string $event_name
+     * @return Array
+     */
+    public function getTokenList($event_name = null)  
     {
-        return static::$_tokens;
+        $event_specific_tokens  = static::$_tokens;
+        
+        switch(strtolower($event_name)) 
+        {
+            case 'onpaycartcartafterlocked':
+                    unset($event_specific_tokens['shipment']);
+                break;
+            
+            case 'onpaycartcartafterapproved':
+                    unset($event_specific_tokens['shipment']);
+                break;
+            
+            case 'onpaycartcartafterpaid':
+                    unset($event_specific_tokens['shipment']);
+                break;
+            
+            case 'onpaycartcartafterdelivered':
+                break;
+            
+            case 'onpaycartshipmentafterdispatched':
+                break;
+            
+            case 'onpaycartshipmentafterdelivered':
+                break;
+        }
+        
+        return $event_specific_tokens;
     }
     
     private function buildTokens() 
@@ -59,7 +97,9 @@ class PaycartHelperToken extends PaycartHelper
         // cart specific
         static::$_tokens['cart']  =
                 Array(  'cart_total', 'cart_product_count', 'cart_created_date',
-                        'cart_paid_date',  'cart_link' );
+                        'cart_paid_date',  
+//                        'cart_link', 
+                    );
         
         //config specific
         static::$_tokens['config']   =
@@ -144,6 +184,8 @@ class PaycartHelperToken extends PaycartHelper
     public function buildShipmentTokens(PaycartShipment $shipment )
     {       
         $tokens = Array();
+        
+        // @PCTODO :: move to buildCartTokens 
         $tokens = array_merge($tokens, $this->getShipmentToken($shipment));
         $tokens = array_merge($tokens, $this->buildCartTokens($shipment->getCart()));
         
@@ -189,8 +231,8 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['billing_phone2']          =   $billing_address->getPhone2();
         $tokens['billing_zip_code']        =   $billing_address->getZipcode();
         $tokens['billing_vat_number']      =   $billing_address->getVatnumber();
-        $tokens['billing_country']         =   $billing_address->getCountryId();
-        $tokens['billing_state']           =   $billing_address->getStateId();
+        $tokens['billing_country']         =   $this->_formatter->country($billing_address->getCountryId());
+        $tokens['billing_state']           =   $this->_formatter->state($billing_address->getStateId());
         $tokens['billing_city']            =   $billing_address->getCity();
         
         return $tokens;
@@ -214,8 +256,8 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['shipping_phone2']          =   $shipping_address->getPhone2();
         $tokens['shipping_zip_code']        =   $shipping_address->getZipcode();
         $tokens['shipping_vat_number']      =   $shipping_address->getVatnumber();
-        $tokens['shipping_country']         =   $shipping_address->getCountryId();
-        $tokens['shipping_state']           =   $shipping_address->getStateId();
+        $tokens['shipping_country']         =   $this->_formatter->country($shipping_address->getCountryId());
+        $tokens['shipping_state']           =   $this->_formatter->state($shipping_address->getStateId());
         $tokens['shipping_city']            =   $shipping_address->getCity();
         
         return $tokens;
@@ -232,12 +274,12 @@ class PaycartHelperToken extends PaycartHelper
        $tokens =  Array();
         
         // cart specific
-        $tokens['cart_total']              =   $this->formatter->amount($cart->getTotal());
+        $tokens['cart_total']              =   $this->_formatter->amount($cart->getTotal());
         $tokens['cart_product_count']      =   count($cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT));
-        $tokens['cart_created_date']       =   $cart->getCreatedDate();
+        $tokens['cart_created_date']       =   $this->_formatter->date($cart->getCreatedDate());
         // @PCTOD :: date formating here
-        $tokens['cart_paid_date']          =   $cart->getPaidDate();
-        $tokens['cart_link']               =   $cart->getLink();
+        $tokens['cart_paid_date']          =   $this->_formatter->date($cart->getPaidDate());
+        //$tokens['cart_link']               =   $cart->getLink();
         
         return $tokens;
     }
@@ -268,7 +310,15 @@ class PaycartHelperToken extends PaycartHelper
        $tokens =  Array();
        
        //@PCTODO :: origin address, Company logo
+       $config = PaycartFactory::getConfig();
        
+       $tokens['store_name'] = $config->get('company_name', $config->get('sitename'));
+       
+       //$tokens['store_logo'] = $config->get('company_logo');
+       
+       $displayData = json_decode($config->get('localization_origin_address'));
+       $tokens['store_address'] =  JLayoutHelper::render('paycart_buyeraddress_display', $displayData, PAYCART_LAYOUTS_PATH);
+           
        return $tokens;
     }
     

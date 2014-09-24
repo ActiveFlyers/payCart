@@ -38,18 +38,5 @@ if(!isset($displayData->state_name) && isset($displayData->state_id)){
   <abbr title="Phone"><i class="fa fa-phone"></i></abbr> <?php echo @$displayData->phone1;  ?><br>
 </address>
 
-	
-	<script>
-
-		(function($){
-	
-			$(document).ready(function($){
-				
-			});				
-		 	
-		})(paycart.jQuery);
-	</script>
-	
-
 
 

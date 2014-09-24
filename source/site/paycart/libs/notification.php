@@ -97,6 +97,16 @@ class PaycartNotification extends PaycartLib
             return self::getInstance($records->notification_id, $records);
         }
 	
+        
+        /**
+         * Invoke to get current object event name
+         * @return type 
+         */
+        public function getEventName()
+        {
+            return $this->event_name;
+        }
+
         /**
          * Invoke to send email.
          * This assume that "to" have properly configured

@@ -27,7 +27,7 @@ class PaycartAdminViewNotification extends PaycartAdminBaseViewNotification
             $form =  $notification->getModelform()->getForm();
 
             $this->assign('form', $form );
-            $this->assign('available_token_list', PaycartFactory::getHelper('token')->getTokenList() );
+            $this->assign('available_token_list', PaycartFactory::getHelper('token')->getTokenList($notification->getEventName()) );
 
             return parent::edit($tpl);
     }

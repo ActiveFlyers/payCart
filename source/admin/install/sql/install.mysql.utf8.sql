@@ -867,7 +867,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shipment_x_product` (
 
 INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `event_name`, `to`, `cc`, `bcc`, `media`) VALUES
 (1, 0, 'onpaycartcartafterlocked', '[[buyer_email]]', '', '', '{}'),
-(2, 0, 'onpaycartcartafterapproved', '[[buyer_email]]', '', '', '{}'),
+(2, 1, 'onpaycartcartafterapproved', '[[buyer_email]]', '', '', '{}'),
 (3, 1, 'onpaycartcartafterpaid', '[[buyer_email]]', '', '', '{}'),
 (4, 1, 'onpaycartcartafterdelivered', '[[billing_to]]', '', '', '{}'),
 (5, 1, 'onpaycartshipmentafterdispatched', '[[buyer_email]]', '', '', '{}'),
