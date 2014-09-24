@@ -188,28 +188,51 @@ class PaycartMedia extends PaycartLib
 		return true;
 	}
 
-	public function createSquared($width)
+	public function createSquared($size)
 	{
-		if($width <= 0){
-			throw new Exception('Invalid width ['.$width.']');
+		if($size <= 0){
+			throw new Exception('Invalid size ['.$size.']');
 		}
 		
 		// get image handle
 		$image = new JImage($this->_basepath.$this->filename);
-		$height = $width;
+		$properties = JImage::getImageFileProperties($this->_basepath.$this->filename);
 
 		// #1. if wider, then correct the width first	
-		if($image->getWidth() > $width){
+		if($image->getWidth() > $size){
+			// expected width
+			$width = $size;
+
 			// calculate target height
-			$variation = $width * 100 / $image->getWidth(); 
+			$variation = $size * 100 / $image->getWidth(); 
 			$height = $image->getHeight() * $variation / 100;
 
 			// generate new resized image
-			$image  = $image->resize($width, $height, false, JImage::SCALE_INSIDE);
+			$image  = $image->resize($width, $height, false, JImage::SCALE_OUTSIDE);
+
+		}elseif($image->getHeight() > $size){
+			
+			// expected height
+			$height = $size;
+
+			// calculate target weight
+			$variation = $size * 100 / $image->getHeight(); 
+			$width = $image->getWidth() * $variation / 100;
+
+			// generate new resized image
+			$image  = $image->resize($width, $height, false, JImage::SCALE_OUTSIDE);
 		}
-	
+
+		// image is small in height & width
+		$width  = $image->getWidth();
+		$height = $image->getHeight();
+
+		$size = ($width <= $height ) ? $width : $height;
+
+		// no resize required
 		// #2. Now crop square from top-left
-		$image = $image->crop($width, $width,0,0);
+		$image = $image->crop($size, $size,0,0);
+
 
 		// Generate image name name
 		$fileName 	= $this->_basepath.Paycart::MEDIA_SQUARED_FOLDER_NAME.'/'.$this->filename;
