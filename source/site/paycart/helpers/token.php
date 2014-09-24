@@ -59,6 +59,7 @@ class PaycartHelperToken extends PaycartHelper
                 break;
             
             case 'onpaycartcartafterdelivered':
+		    		unset($event_specific_tokens['shipment']);
                 break;
             
             case 'onpaycartshipmentafterdispatched':
