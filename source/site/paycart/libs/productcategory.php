@@ -182,4 +182,19 @@ class PaycartProductcategory extends PaycartLib
 		}
 		return false;
 	}
+	
+	public function getMetadataTitle()
+	{
+		return $this->metadata_title;
+	}
+	
+	public function getMetadataDescription()
+	{
+		return $this->metadata_description;
+	}
+	
+	public function getMetadataKeywords()
+	{
+		return $this->metadata_keywords;
+	}
 }

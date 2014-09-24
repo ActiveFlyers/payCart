@@ -244,15 +244,14 @@ PaycartHtml::_('behavior.formvalidation');
 
 	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 	
-	<?php  // PCTODO: show shipment tab only if cart status is not drafted?>
+	<?php if($cart->isApproved()):?>
+		<!--	 Shipment Details Tab		-->
+		<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'shipment', JText::_('COM_PAYCART_ADMIN_SHIPMENTS', true)); ?>
+			
+		<?php echo $this->loadTemplate('shipments'); ?>
 	
-	<!--	 Shipment Details Tab		-->
-	<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'shipment', Rb_Text::_('COM_PAYCART_ADMIN_SHIPMENTS', true)); ?>
-		
-	<?php echo $this->loadTemplate('shipments'); ?>
-
-	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
-        
+		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+    <?php endif;?>   
 <!-- Confirm Model        -->
         <div	
             class="modal hide fade pc-confimbox"

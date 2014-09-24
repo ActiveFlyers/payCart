@@ -21,6 +21,8 @@ require_once dirname(__FILE__).'/view.php';
 
 class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 {	
+	protected $auto_generate_metadata = false;
+	
 	/**
 	 * Display product
 	 * (non-PHPdoc)
@@ -82,6 +84,13 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 		
 		$isExist = PaycartFactory::getHelper('cart')->isProductExist($productId);
 		$isAvailableInStock = ($product->getQuantity() > 0)?true:false; 
+		
+		//set meta details
+		$metaTitle       = $product->getMetadataTitle();
+		$metaDescription = $product->getMetadataDescription();
+		$metaKeywords    = $product->getMetadataKeywords();
+		
+		Rb_HelperJoomla::addDocumentMetadata($metaTitle,$metaKeywords,$metaDescription);
 		
 		$this->assign('isAvailableInStock',$isAvailableInStock);
 		$this->assign('isExistInCart', $isExist);

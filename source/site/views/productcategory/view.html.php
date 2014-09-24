@@ -21,6 +21,8 @@ require_once dirname(__FILE__).'/view.php';
 
 class PaycartSiteViewProductcategory extends PaycartSiteBaseViewProductcategory
 {	
+	protected $auto_generate_metadata = false;
+	
 	/**
 	 * Display categoies and product related to the current category
 	 * (non-PHPdoc)
@@ -35,6 +37,13 @@ class PaycartSiteViewProductcategory extends PaycartSiteBaseViewProductcategory
 		$categoryFilters = array('published' => 1, 'parent_id'=>$categoryId);
 		$productFilters  = array('published' => 1, 'productcategory_id' => $categoryId);
 		
+		//meta details
+		$category 		 = PaycartProductcategory::getInstance($categoryId);
+		$metaTitle       = $category->getMetadataTitle();
+		$metaDescription = $category->getMetadataDescription();
+		$metaKeywords    = $category->getMetadataKeywords();
+		
+		Rb_HelperJoomla::addDocumentMetadata($metaTitle,$metaKeywords,$metaDescription);
 		$this->assign('products', PaycartFactory::getModel('product')->loadRecords($productFilters));	
 		$this->assign('categories',$this->getModel()->loadRecords($categoryFilters));
 		return true;
