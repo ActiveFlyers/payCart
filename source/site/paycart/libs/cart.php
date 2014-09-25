@@ -269,7 +269,7 @@ class PaycartCart extends PaycartLib
 		$shipping_address_instance = PaycartBuyeraddress::getInstance($this->shipping_address_id);
 		
 		//if address availble in cart param then bind it
-		$shipping_address	=	$this->getParam('shipping_address', Array());
+		$shipping_address	=	$this->getParam('billing_address', Array());
 		if (!empty($shipping_address)) {
 			// get buyer detail form cart param 
 			$shipping_address_instance->bind($shipping_address);
