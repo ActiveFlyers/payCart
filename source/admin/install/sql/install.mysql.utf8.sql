@@ -190,7 +190,6 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product_lang` (
   `title` varchar(100) NOT NULL COMMENT 'Product name',
   `alias` varchar(100) NOT NULL COMMENT 'useful for sef urls',
   `description` text,
-  `teaser` varchar(255) DEFAULT NULL COMMENT 'Product short description',
   `metadata_title` varchar(255) COMMENT 'Here you can store meta title.',
   `metadata_keywords` varchar(255) COMMENT 'Here you can store meta tag.',
   `metadata_description` varchar(255) COMMENT 'Here you can store meta description.',

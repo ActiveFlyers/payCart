@@ -25,7 +25,7 @@
 					type="text"
 					class="input-block-level"
 					label="COM_PAYCART_ADMIN_SKU"
-					required="true"/>
+					filter="JApplicationHelper::stringURLSafe"/>
 					
 			<field 	name="stockout_limit" 
 					type="text"
@@ -142,12 +142,7 @@
 					validate="productalias"
 					filter="JApplicationHelper::stringURLSafe"
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_ALIAS"/>
-			
-			<field 	name="teaser" 
-					type="textarea"
-					class="input-block-level"
-					label="COM_PAYCART_ADMIN_TEASER"/>				
+					label="COM_PAYCART_ADMIN_ALIAS"/>			
 			
 			<field 	name="description" 
 					type="editor"						

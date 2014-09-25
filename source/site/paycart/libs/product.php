@@ -50,7 +50,6 @@ class PaycartProduct extends PaycartLib
 	protected $lang_code 		   = '';	
 	protected $title 			   = '';	
 	protected $alias  			   = '';
-	protected $teaser 			   = '';
 	protected $description 		   = '';	
 	protected $metadata_title  	   = '';
 	protected $metadata_keywords   = '';
@@ -95,7 +94,6 @@ class PaycartProduct extends PaycartLib
 		$this->lang_code 		   = PaycartFactory::getCurrentLanguageCode();	
 		$this->title	 		   = '';	
 		$this->alias  			   = '';
-		$this->teaser 			   = '';
 		$this->description 		   = '';	
 		$this->metadata_title  	   = '';
 		$this->metadata_keywords   = '';
