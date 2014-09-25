@@ -198,8 +198,15 @@ class PaycartMedia extends PaycartLib
 		$image = new JImage($this->_basepath.$this->filename);
 		$properties = JImage::getImageFileProperties($this->_basepath.$this->filename);
 
+		// image is small in height & width
+		$width  = $image->getWidth();
+		$height = $image->getHeight();
+		$offsetX =  0; 
+		$offsetY = 0 ;
+
+
 		// #1. if wider, then correct the width first	
-		if($image->getWidth() > $size){
+		if($height >= $size && $height >= $width){
 			// expected width
 			$width = $size;
 
@@ -209,8 +216,12 @@ class PaycartMedia extends PaycartLib
 
 			// generate new resized image
 			$image  = $image->resize($width, $height, false, JImage::SCALE_OUTSIDE);
+			
+			$size = $width;
+			$offsetY = 0; // ALWAYS USE image from top ($height > $size) ? ($height-$size)/2 : 0;
 
-		}elseif($image->getHeight() > $size){
+
+		}elseif($width >= $size && $width >= $height){
 			
 			// expected height
 			$height = $size;
@@ -221,17 +232,14 @@ class PaycartMedia extends PaycartLib
 
 			// generate new resized image
 			$image  = $image->resize($width, $height, false, JImage::SCALE_OUTSIDE);
+			$size = $height;
+			$offsetX =  ($width  > $size) ? ($width-$size)/2 : 0;
 		}
 
-		// image is small in height & width
-		$width  = $image->getWidth();
-		$height = $image->getHeight();
-
-		$size = ($width <= $height ) ? $width : $height;
 
 		// no resize required
 		// #2. Now crop square from top-left
-		$image = $image->crop($size, $size,0,0);
+		$image = $image->crop($size, $size,$offsetX,$offsetY);
 
 
 		// Generate image name name
