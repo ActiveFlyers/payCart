@@ -236,13 +236,15 @@ PaycartHtml::_('behavior.formvalidation');
 </form>
 
 	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+	
+	<?php if($cart->getStatus() != Paycart::STATUS_CART_DRAFTED):?>			
+		<!--	 Invoice Details Tab		-->
+		<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'advance', Rb_Text::_('COM_PAYCART_ADMIN_ADVANCE', true)); ?>
 			
-	<!--	 Invoice Details Tab		-->
-	<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'advance', Rb_Text::_('COM_PAYCART_ADMIN_ADVANCE', true)); ?>
-		
-	<?php echo $this->loadTemplate('particulars'); ?>
-
-	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+		<?php echo $this->loadTemplate('particulars'); ?>
+	
+		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+	<?php endif;?>
 	
 	<?php if($cart->isApproved()):?>
 		<!--	 Shipment Details Tab		-->

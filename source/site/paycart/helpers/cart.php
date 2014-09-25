@@ -99,7 +99,8 @@ class PaycartHelperCart extends PaycartHelper
 		//validate quantity before adding product
 		//if the given quantity is greater than the avaiable quantity of product 
 		// PCFIXME #123: then through a message to user showing the maximum quantity he can order for this item 
-		$allowedQuantity = PaycartProduct::getInstance($productId)->getQuantity(); 
+		$product = PaycartProduct::getInstance($productId);
+		$allowedQuantity = ($product->getQuantity()-$product->getStockoutLimit()); 
 		if($quantity > $allowedQuantity){
 			return array(false,$prevQuantity,$productId,$allowedQuantity);
 		}

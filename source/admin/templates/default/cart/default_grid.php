@@ -60,7 +60,7 @@ defined('_JEXEC') OR die();
                                     $buyer_username = $buyer->getUsername();
 
                                      if (!$record->buyer_id) {
-     						               $buyer_username = JText::_('COM_PAYCART_GUEST_USERNAME');
+     						               $buyer_username = JText::_('COM_PAYCART_GUEST');
                                       }
 
 	                                 echo $buyer_username.' ('.$record->buyer_id.') ';

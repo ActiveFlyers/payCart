@@ -211,6 +211,10 @@ class PaycartProduct extends PaycartLib
 		return $this->metadata_keywords;
 	}
 	
+	public function getStockoutLimit()
+	{
+		return $this->stockout_limit;
+	}
 	
 	/**
 	 * We required media/image processing after Product save

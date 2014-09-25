@@ -385,6 +385,8 @@ class PaycartHelperShippingrule extends PaycartHelper
 	
 	public function getRulesGroupedByProducts($cart)
 	{
+		//PCTODO : Do caching of result 
+		
 		$groupHelper = PaycartFactory::getHelper('group');
 		$productCartparticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
 		$groups = array();
@@ -394,23 +396,34 @@ class PaycartHelperShippingrule extends PaycartHelper
 		$shippingRules = $this->getShippingrules($groupRules);
 		
 		if(!empty($shippingRules)){
-			foreach($productMapping as $productId => $mapping){			
+			//get shipping rule that are applicable to all products
+			$defaultShippingRules = PaycartFactory::getDbo()->setQuery("SELECT            a.shippingrule_id
+																		FROM              #__paycart_shippingrule a
+																		NATURAL LEFT JOIN #__paycart_shippingrule_x_group b
+																		WHERE             b.group_id IS NULL and a.published = 1")->loadColumn();
+		
+			foreach($productMapping as $productId => $mapping){	
+				//first add default shippingrules
+				$groups[$productId] = $defaultShippingRules;		
 				$query = new Rb_Query();
 				
-				//query that matches product's groupid and applicable shippingrule id will be 
-				//the resultant shippingrules through which the current product can be shipping
-				$result = $query->select('distinct(`shippingrule_id`)')
-								 ->from('`#__paycart_shippingrule_x_group`')
-								 ->where('`group_id` IN('.implode(',', $mapping).')')
-								 ->where('`shippingrule_id` IN('.implode(',', $shippingRules).')')
-								 ->dbLoadQuery()
-								 ->loadColumn();
-				
-				if(!empty($result)){
-					$groups[$productId] = $result;
+				if(!empty($mapping)){
+					//query that matches product's groupid and applicable shippingrule id will be 
+					//the resultant shippingrules through which the current product can be shipping
+					$result = $query->select('distinct(`shippingrule_id`)')
+									 ->from('`#__paycart_shippingrule_x_group`')
+									 ->where('`group_id` IN('.implode(',', $mapping).')')
+									 ->where('`shippingrule_id` IN('.implode(',', $shippingRules).')')
+									 ->dbLoadQuery()
+									 ->loadColumn();
+					
+					if(!empty($result)){
+						$groups[$productId] = array_merge($groups[$productId],$result);
+					}
 				}
+				
 				//if no shipping rule available for any of the cart product then return and stop calculation
-				else{
+				if(empty($groups[$productId])){
 					return array();
 				}
 			}	
@@ -438,6 +451,7 @@ class PaycartHelperShippingrule extends PaycartHelper
 		foreach($products as $product){
 			$productGroups = array_merge($commonGroups,$groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $product->product_id));
 			if(empty($productGroups)){
+				$productGroupMapping[$product->product_id] = array();
 				continue;
 			}
 			

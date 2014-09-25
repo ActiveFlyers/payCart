@@ -42,6 +42,28 @@ class PaycartTableNested extends JTableNested
 		return $this->store();
 	}
 	
+	public function store($updateNulls = false)
+	{
+		// Ordering fix
+		$k = $this->_tbl_key;
+		$columns = array_keys($this->getProperties());
+
+		$now = new Rb_Date();
+		
+		// It must be required when migration is running from any subscription system to payplans system 
+		// and we need to insert manually created and modified date. 
+		// if a new record, handle created date
+		if(!($this->$k) && in_array('created_date', $columns)){
+			$this->created_date = $now->toSql();
+		}
+	
+		//handle modified date
+		if(in_array('modified_date', $columns)){
+			$this->modified_date = $now->toSql();
+		}
+		return parent::store($updateNulls);
+	}
+	
 	public function boolean($columnName, $value, $switch)
 	{
 		//check if column exist

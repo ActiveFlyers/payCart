@@ -53,7 +53,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 					<tr>
 					
 						<th width="1%">
-							<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" />
+							<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 						</th>
 						<th>
 							<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'group_id', $filter_order_Dir, $filter_order);?>

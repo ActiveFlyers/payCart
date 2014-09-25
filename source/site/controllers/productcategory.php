@@ -24,7 +24,16 @@ class PaycartSiteControllerProductCategory extends PaycartController
 	// display category
 	function display($cachable = false, $urlparams = array())
 	{
-		return parent::display();
+		$catId = $this->getModel()->getId();
+		
+		$record = PaycartFactory::getModel('productcategory')->loadRecords(array('productcategory_id' => $catId , 'published' => 1));
+		
+		if(empty($catId) || (isset($record[$catId]) && !empty($record[$catId]))){
+			return parent::display();
+		}
+		
+		// if category doesn't exist or unpublished then show error
+		JError::raiseError(404, "Category was not found.");
 	}
 	
 }

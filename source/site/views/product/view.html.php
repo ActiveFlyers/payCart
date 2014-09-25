@@ -57,7 +57,7 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 
 			//PCTODO : What if product doesn't match 		
 			if($productId){
-				PaycartFactory::getApplication()->redirect(PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$productId));	
+				PaycartFactory::getApplication()->redirect(PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$productId));	
 			}
 		}
 		
@@ -83,7 +83,7 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 		}
 		
 		$isExist = PaycartFactory::getHelper('cart')->isProductExist($productId);
-		$isAvailableInStock = ($product->getQuantity() > 0)?true:false; 
+		$isAvailableInStock = ($product->getQuantity() > $product->getStockoutLimit())?true:false; 
 		
 		//set meta details
 		$metaTitle       = $product->getMetadataTitle();
