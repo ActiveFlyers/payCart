@@ -17,7 +17,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
  	foreach ($promotion_usage as $usages ) :
  		foreach ($usages as $usage) :
  			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_DISCOUNTRULE)
- 				$promotion_message .= $usage->message;
+ 				$promotion_message[] = $usage->message;
  		endforeach;
   	endforeach;
   	
@@ -26,7 +26,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
  	foreach ($duties_usage as $usage ) :
  		foreach ($usages as $usage) :
  			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_TAXRULE)
- 				$duties_message .= $usage->message;
+ 				$duties_message[] = $usage->message;
  		endforeach;
   	endforeach;
   	
@@ -305,7 +305,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 												  <a 	href="javascript:void(0)"  
 												  		class="pc-popover" 
 												  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-												  		data-content="<?php echo $duties_message;?>" data-trigger="hover">
+												  		data-content="<?php echo implode('<hr>', $duties_message);?>" data-trigger="hover">
 												  		
 												 	 	<i class="fa fa-info-circle"></i>
 												  </a>
@@ -324,7 +324,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 												  <a 	href="javascript:void(0)"  
 												  		class="pc-popover" 
 												  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-												  		data-content="<?php echo $promotion_message;?>" data-trigger="hover">
+												  		data-content="<?php echo implode('<hr>', $promotion_message);?>" data-trigger="hover">
 												  		
 												 	 	<i class="fa fa-info-circle"></i>
 												  </a>

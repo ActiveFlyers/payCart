@@ -507,7 +507,7 @@ abstract class PaycartCartparticular extends JObject
 		 		        result.`start_date` <=  NOW() and
 		 		        (result.`end_date` >= NOW() OR result.`end_date` =  "0000-00-00 00:00:00")';
 		
-		$couponCondition = " and result.`coupon` = ''";
+		$couponCondition = " result.`coupon` = ''";
 		
 		$applied_promotions = $this->_applied_promotions;
 		
@@ -519,7 +519,7 @@ abstract class PaycartCartparticular extends JObject
 			$couponCondition = ' ( '.$couponCondition.' OR result.`coupon` IN ("'.implode('", "', $applied_promotions).'")) ';
 		}
 		
-		$query = $query.$couponCondition.' order by `ordering` ';
+		$query = $query.' AND '.$couponCondition.' order by `ordering` ';
 		
 		$discountrules = PaycartFactory::getDbo()->setQuery($query)->loadColumn();
 				

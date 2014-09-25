@@ -18,7 +18,7 @@ if(!defined( '_JEXEC' )){
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/owl.carousel.min.js');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/owl.carousel.css');
 
-include_once 'default.js.php'; //PCTODO: won't work with template overriding
+echo $this->loadTemplate('js');
 
 /**
  * Template Parameters
@@ -81,21 +81,34 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
     			</div>
 		 		
 		 		<!-- buy now -->
-		 		<?php if($isAvailableInStock):?>
-			 		<div class="row-fluid clearfix">
-						<div class="span6">	 			
-					       <a class="btn btn-block btn-large btn-primary pc-btn-buynow" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>"><?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?></a>
-					    </div>
-						<div class="span6">	 
-							<?php ?>			
-					        <button class="btn btn-block btn-large pc-btn-addtocart" onClick="paycart.product.addtocart(<?php echo $product->getId();?>);"><?php echo JText::_("COM_PAYCART_PRODUCT_ADD_TO_CART");?></button>
-					    </div>
-					</div>
-				<?php else :?>
-					<div class="row-fluid">
-						<h2 class="text-error"><?php echo JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK");?></h2>
-					</div>
-				<?php endif;?>
+                <?php if($isAvailableInStock):?>                     
+				<div class="row-fluid clearfix">
+                	<div class="span6">                 
+                    	<?php if(!$isExistInCart):?>
+                        	<a class="btn btn-block btn-large btn-primary pc-btn-buynow" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>">
+                            	<?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?>
+                            </a>
+                        <?php else:?>
+                        	<h3 class='text-center text-info'><?php echo JText::_('COM_PAYCART_PRODUCT_ADDED_TO_CART')?></h3>
+                        <?php endif;?>
+                    </div>
+                    <div class="span6">    
+                    	<?php if(!$isExistInCart):?>            
+                        	<button class="btn btn-block btn-large pc-btn-addtocart" onClick="paycart.product.addtocart(<?php echo $product->getId();?>);">
+                        		<?php echo JText::_("COM_PAYCART_PRODUCT_ADD_TO_CART");?>
+                            </button>
+                        <?php else:?>
+                        	<button class="btn btn-block btn-large pc-btn-addtocart" onClick='rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display'); ?>"); return false;'>
+                        		<?php echo JText::_('COM_PAYCART_CART_VIEW')?>&nbsp;&nbsp; <i class='fa fa-chevron-right'></i>
+                        	</button>
+                        <?php endif;?>
+                    </div>
+              	</div>
+              	<?php else :?>
+                	<div class="row-fluid">
+                    	<h2 class="text-error"><?php echo JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK");?></h2>
+                    </div>
+                <?php endif;?>
 		 </div>
 	 </div>
 	 
@@ -111,8 +124,8 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 	 	<div class="accordion" id="accordion-id">
 	 		<div class="accordion-group">
 		 		<div class="accordion-heading">
-		 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id" data-target=".accordion-body-id">
-		 				<h2><?php echo JText::_("COM_PAYCART_DETAILS");?></h2>
+		 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id" data-target=".accordion-body-id">		 				
+		 				<h2><span class="pull-right"><i class="fa fa-angle-double-up"></i></span><?php echo JText::_("COM_PAYCART_DETAILS");?></h2>
 		 			</a>		
 		 		</div>
 		 		<!-- use class "in" for keeping it open -->
@@ -129,7 +142,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 	 		<div class="accordion-group">
 		 		<div class="accordion-heading">
 		 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id2" data-target=".accordion-body-id2">
-		 				<h2><?php echo JText::_("COM_PAYCART_PRODUCT_SPECIFICATION");?></h2>
+		 				<h2><span class="pull-right"><i class="fa fa-angle-double-down"></i></span><?php echo JText::_("COM_PAYCART_PRODUCT_SPECIFICATION");?></h2>
 		 			</a>		
 		 		</div>
 		 		

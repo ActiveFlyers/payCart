@@ -16,15 +16,28 @@ if(!defined( '_JEXEC' )){
 
 <script type="text/javascript">
 (function($){
-
+	//Specific to Safari bowser, it diplays cached data when back button is clicked
+	// so reloading on back button click
+	$(window).bind("pageshow", function(event) {
+	    if (event.originalEvent.persisted) {
+	        window.location.reload() 
+	    }
+	});
+	
 	$(document).ready(function(){
-		if(<?php echo ($isExistInCart)?1:0;?>){
-			paycart.product.changeButtonText();
-		}
 
 		$("#pc-screenshots-carousel").owlCarousel({ 
 			lazyLoad : true, singleItem:true, 
 			autoHeight : true, pagination:true 
+		});
+
+		$('div.accordion-body').on('shown', function () {
+		    $(this).parent("div").find(".fa-angle-double-down").removeClass("fa-angle-double-down").addClass("fa-angle-double-up");
+
+		});
+
+		$('div.accordion-body').on('hidden', function () {
+		    $(this).parent("div").find(".fa-angle-double-up").removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
 		});
 	});
 	
