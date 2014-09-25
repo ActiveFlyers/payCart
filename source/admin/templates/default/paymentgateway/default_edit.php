@@ -8,6 +8,7 @@
 */
 
 defined('_JEXEC') or die( 'Restricted access' );
+echo $this->loadTemplate('edit_js');
 ?>
 
 <div class="pc-paymentgateway-wrapper clearfix">
@@ -95,6 +96,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 						<div class="span9">
 						
 							<div class="row-fluid">
+								<div class="span6">
 								<div><?php echo Jtext::_('COM_PAYCART_ADMIN_PAYMENTGATEWAY_BY');?>
 								</div>
 								
@@ -107,7 +109,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 								
 								<div id="pc-paymentgateway-processorconfig">
 								</div>
-								
+								</div>
 							</div>
 						</div>
 						
@@ -119,24 +121,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 			</form>
 		</div>
 	</div>		
+</div>	
 </div>
-	
-</div>
-<script>
-	(function($) {
-
-		$(document).ready(function(){
-
-			paycart.admin.paymentgateway.getProcessorConfigHtml();
-			
-			$('[data-pc-paymentgateway="processor"] select').change(function() {					
-				paycart.admin.paymentgateway.getProcessorConfigHtml();
-			});
-			
-		});
-		
-	})(paycart.jQuery);
-	
-</script>
 <?php  
 	

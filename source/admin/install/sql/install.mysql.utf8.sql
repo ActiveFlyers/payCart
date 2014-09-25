@@ -896,6 +896,7 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('catalogue_image_optimized_width', '300'),
 ('catalogue_image_thumb_height', 'auto'),
 ('catalogue_image_thumb_width', '64'),
+('catalogue_image_squared_size', '200'),
 ('catalogue_image_upload_size', '2'),
 ('catalogue_weight_unit', 'kg'),
 ('company_address', ''),

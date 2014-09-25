@@ -22,12 +22,10 @@ class PaycartSiteViewcart extends PaycartSiteBaseViewcart
 {
 	function complete()
 	{
-		$cart_id = $this->get('cart_id', 0);
-		
-		$cart	=	PaycartCart::getInstance($cart_id);
-		
-		var_export($cart);
-		return false;
+		$cart_id 	= $this->get('cart_id', 0);		
+		$cart		= PaycartCart::getInstance($cart_id);
+		$this->setTpl('complete');
+		return true;
 	}
 	
 	/**

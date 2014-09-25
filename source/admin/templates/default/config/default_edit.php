@@ -31,7 +31,7 @@ echo $helper->render('index.php?option=com_paycart&view=config');
 
 <div class="span10">
 <div class="row-fluid"> 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data">
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
 	
 	<ul id="paycartAdminConfigTabs" class="nav nav-tabs">
 		<li class="active">

@@ -52,12 +52,12 @@ class PaycartInstallScriptMenu
 								 								// Checkout menu
 								 								'cart_checkout' =>
 												 					Array (	'title' => 'Checkout', 'alias'=>'checkout',	'access' =>	1, 'level' =>  3,
-												 							'link'  => 'index.php?option=com_paycart&view=cartt&task=checkout'
+												 							'link'  => 'index.php?option=com_paycart&view=cart&task=checkout'
 												 					  ),
 												 				// Thanks page
 													 			'cart_thanks' =>
 													 				Array (	'title' => 'Thanks Page', 'alias'=>'thanks', 'access' => 1, 'level' =>  3,
-													 						'link' => 'index.php?option=com_paycart&view=cart&task=thanks'
+													 						'link' => 'index.php?option=com_paycart&view=cart&task=complete'
 													 					  ),
 													 			// Buy Now task
 													 			'cart_buy' =>

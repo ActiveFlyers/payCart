@@ -5,10 +5,9 @@
 		
 		<options var="task">
  			<option value="display"   	name="COM_PAYCART_MENU_CART_DEFAULT_VIEW_TITLE" msg="COM_PAYCART_MENU_CART_DEFAULT_VIEW_TITLE_MESSAGE"/>
-			<option value="checkout"	name="COM_PAYCART_MENU_CART_CHECKOUT_TITLE" msg="COM_PAYCART_MENU_CART_CHECKOUT_TITLE_MESSAGE" />
-			<option value="buy" 		name="COM_PAYCART_MENU_CART_BUY_TITLE" msg="COM_PAYCART_MENU_CART_BUY_TITLE_MESSAGE" />
-			
-			
+			<option value="checkout"	name="COM_PAYCART_MENU_CART_CHECKOUT_TITLE" 	msg="COM_PAYCART_MENU_CART_CHECKOUT_TITLE_MESSAGE" />
+			<option value="buy" 		name="COM_PAYCART_MENU_CART_BUY_TITLE" 			msg="COM_PAYCART_MENU_CART_BUY_TITLE_MESSAGE" />
+			<option value="complete" 	name="COM_PAYCART_MENU_CART_COMPLETE_TITLE" 	msg="COM_PAYCART_MENU_CART_COMPLETE_MESSAGE" />			
  		</options>
 	</view>
 		

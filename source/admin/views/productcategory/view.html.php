@@ -65,6 +65,10 @@ class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategor
 		//unset root category from records, so that root won't be listed on grid
 		unset($records[Paycart::PRODUCTCATEGORY_ROOT_ID]);
 		
-		return parent::_displayGrid($records);
+		if(count($records) > 0){
+			return parent::_displayGrid($records);
+		}
+		
+		return $this->_displayBlank();
 	}
 }

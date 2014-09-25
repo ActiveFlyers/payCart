@@ -391,27 +391,6 @@ paycart.admin.state =
 	}
 },    
      
-/**
- * Payment Gateway specific Javascript
- */
-paycart.admin.paymentgateway = {};
-		
-paycart.admin.paymentgateway.getProcessorConfigHtml = function()
-{
-        var data	=	{
-                                                'processor_type' 	:	$('#paycart_form_processor_type').val(),
-                                                'processor_id'		:	$('#paycart_form_paymentgateway_id').val()
-                                        };
-        var url		=	'index.php?option=com_paycart&view=paymentgateway&task=getConfigHtml';
-
-        paycart.ajax.go(url, data);
-};
-
-paycart.admin.paymentgateway.setProcessorConfigHtml = function(response_data)
-{
-        $('#pc-paymentgateway-processorconfig').html(response_data['html']);
-
-};
 
 paycart.form = 
 	{
