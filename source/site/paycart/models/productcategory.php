@@ -29,7 +29,7 @@ class PaycartModelProductcategory extends PaycartModelLang
 	function _buildWhereClause(Rb_Query $query, Array $queryFilters)
 	{
 		parent::_buildWhereClause($query,$queryFilters);
-		return $query->order('lft');
+		return $query->clear('order')->order('lft');
 	}
 }
 

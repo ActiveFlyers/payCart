@@ -19,14 +19,14 @@ if(!defined( '_JEXEC' )){
 		
 <div class="pc-checkout-login row-fluid">
 	
-	<h3><?php echo JText::_('Login');?></h3>
+	<h3><?php echo JText::_('COM_PAYCART_LOGIN');?></h3>
 
 	<fieldset class="radio input-lg pc-whitespace">
 		<input type="radio" id="paycart_cart_login_emailcheckout_1" name="paycart_cart_login[emailcheckout]"  value="1" checked="checked">
-		<label for="paycart_cart_login_emailcheckout_1" class="radio"><?php echo JText::_('Continue as guest');?></label>
+		<label for="paycart_cart_login_emailcheckout_1" class="radio"><?php echo JText::_('COM_PAYCART_CART_CONTINUE_AS_GUEST');?></label>
 			
 		<input type="radio" id="paycart_cart_login_emailcheckout_0"  name="paycart_cart_login[emailcheckout]" value="0">
-		<label for="paycart_cart_login_emailcheckout_0" class="radio"><?php echo JText::_('Existing Customer');?></label>			
+		<label for="paycart_cart_login_emailcheckout_0" class="radio"><?php echo JText::_('COM_PAYCART_CART_EXISTING_CUSTOMER');?></label>			
 	</fieldset>
 			
 	<fieldset>
@@ -34,29 +34,29 @@ if(!defined( '_JEXEC' )){
 		
 		<div class="control-group">	
 			<div class="control-label">
-	 			<label id="paycart_cart_login_email-lbl" for="paycart_cart_login_email" class="required" aria-invalid="false"><?php echo JText::_('Email');?></label>
+	 			<label id="paycart_cart_login_email-lbl" for="paycart_cart_login_email" class="required" aria-invalid="false"><?php echo JText::_('COM_PAYCART_EMAIL');?></label>
 	 		</div>
 	 		<div class="controls">
-				<input type="email" name="paycart_cart_login[email]" id="paycart_cart_login_email" class="input-block-level validate-email" required="" value = "<?php echo @$buyer->email; ?>" error-message="<?php echo JText::_('Please enter valid email address.');?>"/>
-				<span class="pc-error" for="paycart_cart_login_email"><?php echo JText::_('Please enter valid email address.');?></span>
+				<input type="email" name="paycart_cart_login[email]" id="paycart_cart_login_email" class="input-block-level validate-email" required="" value = "<?php echo @$buyer->email; ?>"/>
+				<span class="pc-error" for="paycart_cart_login_email"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_INVALID_EMAIL_ADDRESS');?></span>
 			</div>
 		 </div>
 		 <div class="control-group" data-pc-emailcheckout="hide">
 		 	<div class="control-label">
-	 			<label id="paycart_cart_login_password-lbl" for="paycart_cart_login_password" class="required" aria-invalid="false"><?php echo JText::_('Password');?></label>
+	 			<label id="paycart_cart_login_password-lbl" for="paycart_cart_login_password" class="required" aria-invalid="false"><?php echo JText::_('COM_PAYCART_PASSWORD');?></label>
 	 		</div>				
 			<div class="controls">
 				<input type="password" name="paycart_cart_login[password]" id="paycart_cart_login_password" required class="input-block-level">
-				<span class="pc-error" for="paycart_cart_login_password"><?php echo JText::_('Please enter a password.');?></span>
+				<span class="pc-error" for="paycart_cart_login_password"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_PASSWORD_REQUIRED');?></span>
 			</div>
 		</div>
  	</fieldset>
  	
 	<button type="button" onClick="paycart.cart.login.do();" class="pc-whitespace btn btn-block btn-large btn-primary">
-			<?php echo JText::_('Continue');?> <i class="fa fa-angle-double-right"></i> 
+			<?php echo JText::_('COM_PAYCART_CONTINUE');?> <i class="fa fa-angle-double-right"></i> 
 	</button>
 	 	
-	<p class="small muted text-center" data-pc-emailcheckout="show"><?php echo JText::_('You can opt for register an account after completing this purchase.');?></p>
+	<p class="small muted text-center" data-pc-emailcheckout="show"><?php echo JText::_('COM_PAYCART_CART_GUEST_CHECKOUT_OPT_FOR_REGISTERING_ACCOUNT_AFTER_PURCHASE');?></p>
 	
 	
 	<input	type="hidden"	name='step_name' value='login' />

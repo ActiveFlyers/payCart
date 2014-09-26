@@ -17,7 +17,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <div class='pc-checkout-wrapper clearfix '>	
 	<div class="pc-checkout-payment" id="accordion-parent" >
 		<div class="row-fluid ">
-			<h3><strong><?php echo JText::_('Payment');	?></strong></h3>
+			<h3><strong><?php echo JText::_('COM_PAYCART_PAYMENT');	?></strong></h3>
 		</div>
 		
 		<div class="row-fluid">
@@ -26,20 +26,20 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				<!-- Payment detail				-->
 				<div class="row-fluid">
 					<blockquote>
-						<p class="muted"><?php echo JText::_('Payable Amount')?></p>
+						<p class="muted"><?php echo JText::_('COM_PAYCART_PAYABLE_AMOUNT')?></p>
 						<p class="text-error"><?php echo $formatter->amount($cart_total, true, $currency_id); ?></p>
 					</blockquote>
 				</div>
 				
 				<!-- Payment Gateway Selection				-->
 				<div class="row-fluid">
-					<label> <?php echo JText::_('Payment Method'); ?></label>
+					<label> <?php echo JText::_('COM_PAYCART_CART_PAYMENT_METHOD'); ?></label>
 					<select name="payment_menthod" id="pc-checkout-payment-gateway" class ="input-block-level" onchange="paycart.cart.gatewaySelection.onChangePaymentgateway()">
 						<?php foreach ($payment_gateway as $gateway_id => $gateway_details) : ?>
 							<option value=<?php echo $gateway_id; ?> > <?php echo $gateway_details->title; ?> </option>
 						<?php endforeach;?>
 					</select>
-					<span class="pc-error" for="pc-checkout-payment-gateway"><?php echo JText::_('Error');?></span>					
+					<span class="pc-error" for="pc-checkout-payment-gateway"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>					
 				</div>				
 			</div>
 

@@ -24,7 +24,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		</div>
 		
 		<button type="button" id="paycart-invoice-paynow" class="btn btn-large btn-block btn-primary paycart-invoice-paynow" onClick="return paycart.cart.order();" >
-			<?php echo Rb_Text::_('Pay Now');?>
+			<?php echo JText::_('COM_PAYCART_CART_PAY_NOW');?>
 		</button>
 		
 	</div>

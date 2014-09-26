@@ -120,54 +120,60 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 	 <div class="row-fluid">
 	 
 	  <div class="span12">
-	 	<!-- accordion1 Detail description of product -->
-	 	<div class="accordion" id="accordion-id">
-	 		<div class="accordion-group">
-		 		<div class="accordion-heading">
-		 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id" data-target=".accordion-body-id">		 				
-		 				<h2><span class="pull-right"><i class="fa fa-angle-double-up"></i></span><?php echo JText::_("COM_PAYCART_DETAILS");?></h2>
-		 			</a>		
-		 		</div>
-		 		<!-- use class "in" for keeping it open -->
-		 		 <div class="accordion-body collapse in accordion-body-id">
-		 		 	<div class="accordion-inner">
-		 		 		<?php echo $product->getDescription();?>
-		 		 	</div>
+	  	<?php $description = $product->getDescription();?>
+	  	<?php if(!empty($description)):?>
+		 	<!-- accordion1 Detail description of product -->
+		 	<div class="accordion" id="accordion-id">
+		 		<div class="accordion-group">
+			 		<div class="accordion-heading">
+			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id" data-target=".accordion-body-id">		 				
+			 				<h2><span class="pull-right"><i class="fa fa-angle-double-up"></i></span><?php echo JText::_("COM_PAYCART_DETAILS");?></h2>
+			 			</a>		
+			 		</div>
+			 		<!-- use class "in" for keeping it open -->
+			 		 <div class="accordion-body collapse in accordion-body-id">
+			 		 	<div class="accordion-inner">
+			 		 		<?php echo $description;?>
+			 		 	</div>
+			 		 </div>
 		 		 </div>
-	 		 </div>
-	 	</div>
+		 	</div>
+		<?php endif;?>
 	 	
-	 	<!-- Specification -->
-	 	<div class="accordion" id="accordion-id2">
-	 		<div class="accordion-group">
-		 		<div class="accordion-heading">
-		 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id2" data-target=".accordion-body-id2">
-		 				<h2><span class="pull-right"><i class="fa fa-angle-double-down"></i></span><?php echo JText::_("COM_PAYCART_PRODUCT_SPECIFICATION");?></h2>
-		 			</a>		
-		 		</div>
-		 		
-		 		 <div class="accordion-body collapse accordion-body-id2">
-		 		 	<div class="accordion-inner">
-                        <table class="pc-product-specification table table-responsive">
-                          		<tr>
-                          			<th colspan="2" bgcolor="#F5F5F5"><?php echo JText::_("COM_PAYCART_GENERAL_DETAILS");?></th>
-                          		</tr>
-                              <?php foreach ($product->getAttributeValues() as $attributeId => $optionId):?>
-                                  <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
-                                  <tr>
-                                      <td width="25%">
-                                          <?php echo $instance->getTitle();?>
-                                      </td>
-                                      <td width="75%">
-                                          <?php $options = $instance->getOptions(); echo $options[$optionId]->title;?>
-                                      </td>
-                                  </tr>         
-                              <?php endforeach;?>
-                        </table>
-		 		 	</div>
+	 	<?php $attributes = $product->getAttributeValues();?>
+	 	<?php if(!empty($attributes)):?>
+		 	<!-- Specification -->
+		 	<div class="accordion" id="accordion-id2">
+		 		<div class="accordion-group">
+			 		<div class="accordion-heading">
+			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id2" data-target=".accordion-body-id2">
+			 				<h2><span class="pull-right"><i class="fa fa-angle-double-down"></i></span><?php echo JText::_("COM_PAYCART_PRODUCT_SPECIFICATION");?></h2>
+			 			</a>		
+			 		</div>
+			 		
+			 		 <div class="accordion-body collapse accordion-body-id2">
+			 		 	<div class="accordion-inner">
+	                        <table class="pc-product-specification table table-responsive">
+	                          		<tr>
+	                          			<th colspan="2" bgcolor="#F5F5F5"><?php echo JText::_("COM_PAYCART_GENERAL_DETAILS");?></th>
+	                          		</tr>
+	                              <?php foreach ($attributes as $attributeId => $optionId):?>
+	                                  <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+	                                  <tr>
+	                                      <td width="25%">
+	                                          <?php echo $instance->getTitle();?>
+	                                      </td>
+	                                      <td width="75%">
+	                                          <?php $options = $instance->getOptions(); echo $options[$optionId]->title;?>
+	                                      </td>
+	                                  </tr>         
+	                              <?php endforeach;?>
+	                        </table>
+			 		 	</div>
+			 		 </div>
 		 		 </div>
-	 		 </div>
-	 	</div>
+	 		</div>
+	 	<?php endif;?>
 	 	
 	 	<!-- <div class="accordion" id="accordion-id3">
 	 		<div class="accordion-group">

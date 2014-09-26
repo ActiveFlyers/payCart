@@ -127,7 +127,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 		<div class="accordion-group">
 		 			<div class="accordion-heading">
 		 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-shipping-option">
-	 						<?php echo JText::_("PAYCART_CART_SHIPPING_OPTIONS")?>
+	 						<?php echo JText::_("COM_PAYCART_CART_SHIPPING_OPTIONS")?>
 	 					</a>
 	 				</div>
 	 		
@@ -167,7 +167,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 		<div class="accordion-group">
 		 			<div class="accordion-heading">
 		 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-products-summary">
-	 						<?php echo JText::_('Product Summary'); ?>
+	 						<?php echo JText::_('COM_PAYCART_CART_PRODUCT_SUMMARY'); ?>
 	 					</a>
 	 				</div>
 	 		
@@ -194,15 +194,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 						</div>
 				 						
 				 						<div>
-				 							<?php echo JText::_('Unit-Price').':'.$formatter->amount($particular->unit_price, true, $currency_id);  ?>
+				 							<?php echo JText::_('COM_PAYCART_UNIT_PRICE').':'.$formatter->amount($particular->unit_price, true, $currency_id);  ?>
 				 						</div>
 				 						
 				 						<?php if ($particular->tax) : 
-				 								echo '<div>'.JText::_('Tax').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
+				 								echo '<div>'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
 				 							 endif;  
 				 						?>
 				 						<?php if ($particular->discount) : 
-				 								echo '<div>'.JText::_('Discount').':'.$formatter->amount($particular->discount, true, $currency_id).'</div>';
+				 								echo '<div>'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount($particular->discount, true, $currency_id).'</div>';
 				 							 endif;  
 				 						?>
 				 				</div>
@@ -211,7 +211,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 				<div class="span4">
 				 					
 				 					<div>
-					 					<?php echo JText::_('Quantity'); ?> : 
+					 					<?php echo JText::_('COM_PAYCART_QUANTITY'); ?> : 
 					 					<input 
 					 							type="number"   
 					 							class="input-mini" 
@@ -229,7 +229,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					 				<span class="text-error" id="pc-checkout-quantity-error-<?php echo $particular->particular_id;?>"></span>
 					 				 
 					 				<div>
-					 					<h4><?php echo JText::_('Price'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></h4>
+					 					<h4><?php echo JText::_('COM_PAYCART_PRICE'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></h4>
 					 				</div>
 													 				
 				 				</div>
@@ -251,7 +251,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 				endforeach;
 			 			?>
 			 				<div class="row-fluid">
-				 				<span class="pull-right"><?php echo JText::_("Product's Total") ?> : <?php echo $formatter->amount($product_total, true, $currency_id); ?> </span>
+				 				<span class="pull-right"><?php echo JText::_("COM_PAYCART_CART_PRODUCT_TOTAL") ?> : <?php echo $formatter->amount($product_total, true, $currency_id); ?> </span>
 				 			</div>
 				 			
 			 			</div>
@@ -271,7 +271,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	 			<div class="accordion-group">
 			 		<div class="accordion-heading">
 			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-order-summary">
-			 				<?php echo JText::_('Order Summary'); ?>
+			 				<?php echo JText::_('COM_PAYCART_CART_ORDER_SUMMARY'); ?>
 			 			</a>
 			 		</div>
 			 		
@@ -280,19 +280,19 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 				<table class="table">
 			 					<thead>
 			 						<tr>
-			 							<td><?php echo JText::_('Quantity'); ?></td>
+			 							<td><?php echo JText::_('COM_PAYCART_QUANTITY'); ?></td>
 			 							<td><?php echo $product_quantity;?></td>
 			 						</tr>
 			 					</thead>
 			 					
 			 					<tbody>
 			 						<tr>
-			 							<td><?php echo JText::_('Cart Total'); ?></td>
+			 							<td><?php echo JText::_('COM_PAYCART_CART_TOTAL'); ?></td>
 			 							<td><?php echo $formatter->amount($product_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
 			 						<tr>
-			 							<td><?php echo JText::_('Shipping'); ?></td>
+			 							<td><?php echo JText::_('COM_PAYCART_SHIPPING'); ?></td>
 			 							<td><?php echo $formatter->amount($shipping_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
@@ -311,7 +311,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 												  </a>
 												  
 											<?php endif;?>
-			 							<?php echo JText::_('Tax'); ?></td>
+			 							<?php echo JText::_('COM_PAYCART_TAX'); ?></td>
 			 							<td><?php echo $formatter->amount($duties_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
@@ -330,13 +330,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 												  </a>
 												  
 											<?php endif;?>
-			 								<?php echo JText::_('Discount'); ?>
+			 								<?php echo JText::_('COM_PAYCART_DISCOUNT'); ?>
 			 							</td>
 			 							<td><?php echo $formatter->amount($promotion_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
 			 						<tr>
-			 							<td><?php echo JText::_('TOTAL'); ?></td>
+			 							<td><?php echo JText::_('COM_PAYCART_TOTAL'); ?></td>
 			 							<td><?php echo $formatter->amount(($product_total+$promotion_total+$duties_total+$shipping_total), true, $currency_id); ?> </td>
 			 						</tr>
 			 					</tbody>
@@ -359,7 +359,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 <!-- Process ne		 -->
 			 <div class="row-fluid">
 			 	<input type="hidden" name="paycart_cart_confirm">
-			 	<button type="button" class="btn btn-primary btn-block btn-large" onClick="return paycart.cart.confirm.do(); " ><?php echo JText::_('Proceed to Payment'); ?></button>
+			 	<button type="button" class="btn btn-primary btn-block btn-large" onClick="return paycart.cart.confirm.do(); " ><?php echo JText::_('COM_PAYCART_CART_PROCEED_TO_PAYMENT'); ?></button>
 			 </div>
 			 
 			 <input	type="hidden"	name='step_name' value='confirm' />

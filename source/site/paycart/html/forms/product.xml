@@ -146,7 +146,8 @@
 			
 			<field 	name="description" 
 					type="editor"						
-					label="COM_PAYCART_ADMIN_DESCRIPTION"/>
+					label="COM_PAYCART_ADMIN_DESCRIPTION"
+					filter="JComponentHelper::filterText"/>
 		
 			<field	name="metadata_title" 
 					type="text"

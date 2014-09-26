@@ -87,8 +87,8 @@ class PaycartDiscountrule extends PaycartLib
 		$this->title 		 	=	null;
 		$this->description		=	0;
 		$this->published		=	1;
-		$this->start_date		=	Rb_Date::getInstance('0000-00-00 00:00:00');
-		$this->end_date			=	Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->start_date		=	Rb_Date::getInstance();
+		$this->end_date			=	Rb_Date::getInstance();
 		$this->created_date		= 	Rb_Date::getInstance();
 		$this->modified_date	=	Rb_Date::getInstance();
 		

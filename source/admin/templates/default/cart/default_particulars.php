@@ -217,7 +217,7 @@ $currencyId = $cart->getCurrency();
 				   		Final total
 			==========================================-->
 				<tr>
-					<td colspan="6"><h3><?php echo JText::_('COM_PAYCART_AMOUNT_PAYABLE')?></h3></td>
+					<td colspan="6"><h3><?php echo JText::_('COM_PAYCART_PAYABLE_AMOUNT')?></h3></td>
 					<td><strong><?php echo $formatter->amount($finalTotal, true, $currencyId);?></strong></td>
 				</tr>
 			
