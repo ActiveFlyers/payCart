@@ -107,8 +107,6 @@ class PaycartAttribute
 	{
 		$type = $attribute->getType();
 		
-		$html = '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
-		
 		$options = $this->getOptions($attribute);
 		$count	 = (count($options) >= 1)?count($options):1;
 
@@ -129,6 +127,8 @@ class PaycartAttribute
 			$html .= $this->buildCounterHtml($i, $type, $options);
 		}
 		
+		$html = '<div id="paycart-attribute-options">'.$html.'</div>';
+		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("COM_PAYCART_ADMIN_ADD").'</button>';
 		return $html;
 	}
 	
@@ -145,14 +145,12 @@ class PaycartAttribute
 		?>	
 			<div id="option_row_<?php echo $counter?>">
 				 <div class="control-group">
-					 <div class='control-label'><label id='title_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTES_OPTION_LABEL") ?></label></div>
-					
 					 <div class='controls'>
 					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' 
-					      	value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>'/>
-					      	<button class="btn" id="paycart-attribute-option-remove" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>');">
-								<?php echo JText::_('Delete');?>
-				 			</button>
+					      	value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_OPTION") ?>"/>
+					      	<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">
+								<i class="fa fa-trash"></i>
+							</button>
 					</div>
 				</div>
 				 

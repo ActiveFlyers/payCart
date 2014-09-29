@@ -52,10 +52,7 @@ class PaycartAttributeColor extends PaycartAttribute
 	 */
 	function getConfigHtml($attribute, $selectedValue ='', Array $options = array())
 	{
-		$html   = '';
 		$type   = $attribute->getType();
-		
-		$html = '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
 		
 		$id = $attribute->getId(); 
 		$colors = array(); 
@@ -74,13 +71,14 @@ class PaycartAttributeColor extends PaycartAttribute
 				var attributeCounter = <?php echo (!empty($colors))?(max(array_keys($colors))):'1';?>;
 			</script>
 		<?php 
-		$html .= ob_get_contents();
+		$html = ob_get_contents();
 		ob_clean();
 		
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $colors);
 		}
-		
+		$html = '<div id="paycart-attribute-options">'.$html.'</div>';
+		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("COM_PAYCART_ADMIN_ADD").'</button>';
 		return $html;
 	}
 	
@@ -96,33 +94,26 @@ class PaycartAttributeColor extends PaycartAttribute
 		ob_start();
 			?>	
 			<div id="option_row_<?php echo $counter?>">
+				<fieldset class="form">
 				 <div class="control-group">
-					 <div class='control-label'><label id='hashcode_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_HASHCODE_LABEL") ?></label></div>
-					
 					 <div class='controls'>
 					 		<input type='text' name='options[<?php echo $counter?>][hash_code]' id='hash_code_<?php echo $counter?>'  class='wheel-color' placeholder='#rrggbb' data-control="wheel"
 					      	value='<?php echo (isset($options[$counter]['hash_code'])?$options[$counter]['hash_code']:'')?>'/>
-					      	<button class="btn" id="paycart-attribute-option-remove" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>');">
-								<?php echo JText::_('Delete');?>
-				 			</button>
+					      	<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_TITLE"); ?>"/>
+							<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">
+								<i class="fa fa-trash"></i>
+							</button>
 					 </div>
-				 </div>
-				 
-				 <div class="control-group">
-					 <div class='control-label'><label id='title_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_TITLE_LABEL") ?></label></div>
-					
-					 <div class='controls'>
-					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>'/>
-					 </div>
-				 </div>
-				 
+				 </div>				 
 				 <input type='hidden' name='options[<?php echo $counter?>][color_id]' id='productattribute_option_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['color_id'])?$options[$counter]['color_id']:0) ?>' />
 						  
 				 <input type='hidden' name='options[<?php echo $counter?>][color_lang_id]' id='color_lang_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['color_lang_id'])?$options[$counter]['color_lang_id']:0) ?>' />
-				 
+				</fieldset>
+				<hr />				 
 			</div>
+			
 			<?php 
 			
 			$html = ob_get_contents();

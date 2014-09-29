@@ -10,9 +10,9 @@
 defined('_JEXEC') or die();
 
 ?>
-<div class="control-group">
-	<div class="control-label"><label><?php echo $productAttribute->getTitle();?></label></div>
-	<div class="controls">
+<div class="row-fluid">
+	<div class="span4"><label><?php echo $productAttribute->getTitle();?></label></div>
+	<div class="span6">
 		<?php echo $productAttribute->getEditHtml($productAttributeValue);?>
 	</div>	
 </div>

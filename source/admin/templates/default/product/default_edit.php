@@ -15,6 +15,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 
 echo $this->loadTemplate('edit_js');
 echo $this->loadTemplate('edit_ng');
+echo $this->loadTemplate('edit_css');
 ?>
 <style>
 .paycart .label-left label{
@@ -342,30 +343,6 @@ echo $this->loadTemplate('edit_ng');
 						echo $this->loadtemplate('attribute');
 				?>
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
-
-<!--========	Product System Attributes	========-->			
-			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'system', Rb_Text::_('COM_PAYCART_PRODUCT_SYSTEM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
-			
-				<div class="span6">
-					<?php $field = $form->getField('product_id') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('created_date') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					<?php $field = $form->getField('modified_date') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>		
-				</div>
-				
-			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 				
 <!--========	Product Custom Attributes	========-->			
 			<!--<?php // echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'log', Rb_Text::_('COM_PAYCART_PRODUCT_SYSTEM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
@@ -391,6 +368,7 @@ echo $this->loadTemplate('edit_ng');
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
 	<input type='hidden' name='id' id="product_id" value='<?php echo $record_id;?>' />	
+	<?php echo $form->getInput('product_id') ?>	
 </form>
 </div>
 </div>

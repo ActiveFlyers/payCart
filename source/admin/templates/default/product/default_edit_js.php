@@ -12,9 +12,9 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
 <script type="text/javascript">
-	(function($){
-		$(document).ready(function(){
-			<?php if(!empty($error_fields)):?>
+	<?php if(!empty($error_fields)):?>
+		(function($){
+			$(document).ready(function(){
 				var error_fields = <?php echo json_encode($error_fields);?>;
 				for(var field_id in error_fields){
 					if(error_fields.hasOwnProperty(field_id) == false){
@@ -23,10 +23,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					paycart.formvalidator.handleResponse(false, $('#'+error_fields[field_id]));
 				}  
 
-				paycart.formvalidator.scrollToError('#adminForm');
-			<?php endif;?>	
-		});
-	})(paycart.jQuery);	
+				paycart.formvalidator.scrollToError('#adminForm');	
+			});
+		})(paycart.jQuery);	
+	<?php endif;?>
 </script>
 
 <?php 

@@ -121,7 +121,7 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 		$js	  = $instance->getScript(); 
 		
 		$ajaxResponse = PaycartFactory::getAjaxResponse();
-		$ajaxResponse->addScriptCall('paycart.jQuery("#paycart-attribute-config").append',$html);
+		$ajaxResponse->addScriptCall('paycart.jQuery("#paycart-attribute-options").append',$html);
 		
 		if(!empty($js)){		
 			$ajaxResponse->addScriptCall($js);

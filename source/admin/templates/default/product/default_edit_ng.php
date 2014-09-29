@@ -11,9 +11,28 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 Rb_HelperTemplate::loadMedia(array('angular'));
+// Depends on jQuery UI
+JHtml::_('jquery.ui', array('core'));
+Rb_Html::script('com_paycart/jquery.ui.draggable.js');
+Rb_Html::script('com_paycart/jquery.ui.droppable.js');		
+		
 ?>
-
 <script type="text/javascript">	
+	(function($){
+		$(document).ready(function(){
+			$('.pc-attribute').draggable({helper: "clone", revert: 'invalid'});
+			$('.pc-product-attribute-list').droppable({
+				accept : '.pc-attribute-draggable',
+				hoverClass: "pc-droppable-highlight",
+				drop:function(e,source){
+					var scope = angular.element(document.getElementById('pcngProductAttributeCtrl')).scope();				
+					scope.addToProduct(source.draggable.attr('data-attribute-id'));
+					scope.$apply();
+		    	}
+			});
+		});
+	})(rb.jQuery);
+
 	paycart.ng.product = angular.module('pcngProductApp', []);
 	paycart.ng.product.controller('pcngProductImagesCtrl', function($scope, $http){
 		$scope.images 		= pc_product_images;
@@ -40,7 +59,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {										         
-					data = rb.ajax.junkFilter(data);
+					data = paycart.ajax.junkFilter(data);
 		            if (!data.success) {					            	
 		            	// if not successful, bind errors to error variables
 		                $scope.errMessage = data.message;											                											                
@@ -65,7 +84,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {										         
-					data = rb.ajax.junkFilter(data);
+					data = paycart.ajax.junkFilter(data);
 		            if (!data.success) {					            	
 		            	// if not successful, bind errors to error variables
 		                $scope.errMessage = data.message;
@@ -80,7 +99,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 	});
 
 
-	paycart.ng.product.controller('pcngProductAttributeCtrl', function($scope, $http){
+	paycart.ng.product.controller('pcngProductAttributeCtrl', function($scope, $timeout, $http){
 		$scope.available = pc_attributes_available;
 		$scope.added = pc_attributes_added;		
 		$scope.edit_html = '';
@@ -129,7 +148,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {
-		    	data = rb.ajax.junkFilter(data);
+		    	data = paycart.ajax.junkFilter(data);
 		    	$scope.edit_html = data;
 		    });
 		};			
@@ -146,8 +165,8 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		 };
 		  
 		$scope.save = function(){
-			var elem = rb.jQuery('[data="pc-json-attribute-edit"]');
-			var data = rb.jQuery(elem).serializeArray();
+			var elem = paycart.jQuery('[data="pc-json-attribute-edit"]');
+			var data = paycart.jQuery(elem).serializeArray();
 			$http({
 		        method  : 'POST',
 		        url     : 'index.php?option=com_paycart&task=save&view=productattribute&format=json',
@@ -155,14 +174,14 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {										         
-		    		data = rb.ajax.junkFilter(data);
+		    		data = paycart.ajax.junkFilter(data);
 		    	
 		            if (!data.success) {					            	
 		            	// if not successful, bind errors to error variables
-		                $scope.errMessage = data.message;
+		                $scope.errMessage = data.message;		                
 		            } else {
 		            	// if successful, bind success message to message
-		                $scope.message = data.message;
+		                $scope.message = '';
 
 		            	var index = $scope.addedAtIndex($scope.available, data.productattribute_id);
 		                if( index != null){
@@ -170,11 +189,22 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		                }
 		                else{			
 		                	$scope.available.push(data.productattribute);
+
+		                	// $time out will call the fucntion automatically when $digest is done
+		                	// replace ment of $scope.$apply();
+		                	$timeout(function() {
+		                	// load draggable
+				            	paycart.jQuery('.pc-attribute').draggable({helper: "clone", revert: 'invalid'});
+		                	}); 
+				                		                	
 		                }
 
-		                $scope.edit(data.productattribute_id);
+			            $scope.edit(data.productattribute_id);
 		                
 		                random = Math.random();
+
+		                // close model after saving
+		                paycart.jQuery('#pc-product-attribute-create-modal').modal('hide');
 		            }
 			});	
 		};
@@ -187,7 +217,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {										         
-		    		data = rb.ajax.junkFilter(data);
+		    		data = paycart.ajax.junkFilter(data);
 		            if (!data.success) {					            	
 		            	// if not successful, bind errors to error variables
 		                $scope.errMessage = data.message;
