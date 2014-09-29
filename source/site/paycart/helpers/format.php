@@ -87,7 +87,7 @@ class PaycartHelperFormat extends JObject
 	 * format weigth as per the configuration 
 	 * @param $value : value (in kg) to be formatted according to the configuration setting 
 	 */
-	function weight($value, $defaultUnit = paycart::WEIGHT_UNIT_KILOGRAM)
+	function weight($value, $defaultUnit = paycart::WEIGHT_UNIT_GRAM)
 	{
 		$weightUnitConfig = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 		
@@ -101,7 +101,7 @@ class PaycartHelperFormat extends JObject
 	 * @param $inputUnit : weight unit in which the value is (kg, gm, lb, oz etc)
 	 * @param $resultantUnit : weight unit in which the value to be converted
 	 */
-	function convertWeight($value, $inputUnit , $resultantUnit = paycart::WEIGHT_UNIT_KILOGRAM)
+	function convertWeight($value, $inputUnit , $resultantUnit = paycart::WEIGHT_UNIT_GRAM)
 	{
 		$key = $inputUnit.'->'.$resultantUnit;
 		
@@ -126,7 +126,7 @@ class PaycartHelperFormat extends JObject
 	 * format weight unit
 	 * @param $value : value  to be formatted according to the configuration setting 
 	 */
-	function dimension($value, $defaultUnit = paycart::DIMENSION_UNIT_METER)
+	function dimension($value, $defaultUnit = paycart::DIMENSION_UNIT_CENTIMETER)
 	{
 		$dimensionUnitConfig = PaycartFactory::getConfig()->get('catalogue_dimension_unit');
 		
@@ -140,7 +140,7 @@ class PaycartHelperFormat extends JObject
 	 * @param $inputUnit : dimension unit in which the value is (m, cm, in etc)
 	 * @param $resultantUnit : dimension unit in which the value to be converted
 	 */
-	function convertDimension($value, $inputUnit, $resultantUnit = paycart::DIMENSION_UNIT_METER)
+	function convertDimension($value, $inputUnit, $resultantUnit = paycart::DIMENSION_UNIT_CENTIMETER)
 	{
 		$key = $inputUnit.'->'.$resultantUnit;
 		

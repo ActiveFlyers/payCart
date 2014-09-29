@@ -890,14 +890,14 @@ INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `noti
 -- Dumping data for table `#__paycart_config`
 --
 INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
-('catalogue_dimension_unit', 'm'),
+('catalogue_dimension_unit', 'cm'),
 ('catalogue_image_optimized_height', 'auto'),
 ('catalogue_image_optimized_width', '300'),
 ('catalogue_image_thumb_height', 'auto'),
 ('catalogue_image_thumb_width', '64'),
 ('catalogue_image_squared_size', '200'),
 ('catalogue_image_upload_size', '2'),
-('catalogue_weight_unit', 'kg'),
+('catalogue_weight_unit', 'gm'),
 ('company_address', ''),
 ('company_name', ''),
 ('invoice_serial_prefix', 'paycart'),
