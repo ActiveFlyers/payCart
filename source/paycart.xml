@@ -8,7 +8,7 @@
 	<authorUrl>readybytes.in</authorUrl>
 	<copyright>Team ReadyBytes</copyright>
 	<license>GNU GPL 3</license>
-	<version>@global.version@.@global.build.number@</version>
+	<version>@global.version@</version>
 	<description>Try to focus on: Simplicity, Product Based and Easy to Customized.</description>
 	
 	<!-- Public front end files -->

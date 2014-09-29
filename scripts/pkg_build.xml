@@ -136,7 +136,7 @@
 			 <filterchain>
 				<replacetokens>
 				    <token key="build.number"   				value="${build.number}" />
-				    <token key="build.version"   				value="${file.version}.${build.number}" />
+				    <token key="build.version"   				value="${file.version}" />
 				    <token key="rbframework.name"   			value="${rbframework.name}" />
 				    <token key="rbframework.build.version"   	value="${rbframework.build.version}" />
 				    <token key="project.shortform"   			value="${project.shortform}" />	
@@ -158,7 +158,7 @@
 	<!-- Target: Create pkg_PayCart			   					-->
 	<!-- ====================================================== -->
 	<target name="create_pkg">
-		<zip destfile="${dir.packages}/${build.package.name}-${file.version}.${build.number}.${file.extension}" basedir="${dir.packages}">
+		<zip destfile="${dir.packages}/${build.package.name}-${file.version}.${file.extension}" basedir="${dir.packages}">
 			<fileset dir="${dir.packages}">
 				<include name="**/*.*"></include>
 			</fileset>

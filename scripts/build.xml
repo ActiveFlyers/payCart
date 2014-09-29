@@ -28,7 +28,7 @@
 			<phingcall target="copy_source_to_tmp" />
 		
 		<echo msg="Zip: Package creating"/>
-		<zip destfile="${dir.packages}/${project.shortform}-${file.version}.${build.number}.${file.extension}" 
+		<zip destfile="${dir.packages}/${project.shortform}-${file.version}.${file.extension}" 
 			 basedir="${dir.tmp}" />
         
     <echo>============================================</echo>
