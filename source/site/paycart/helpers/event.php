@@ -65,8 +65,11 @@ class PaycartHelperEvent extends PaycartHelper
             // trigger
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
-            // send notification after trigger
-            PaycartNotification::getInstanceByEventname($event_name)->sendNotification($cart);
+            //send notification 
+            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($shipment);
+           	}
         }
         
         /**
@@ -84,8 +87,11 @@ class PaycartHelperEvent extends PaycartHelper
             // trigger
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
 
-            // send notification after trigger
-            PaycartNotification::getInstanceByEventname($event_name)->sendNotification($cart);
+            //send notification 
+            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($shipment);
+           	}
 
             /* @var $current_cart PaycartCart */
             $cart_id        = $cart->getId();
@@ -111,8 +117,11 @@ class PaycartHelperEvent extends PaycartHelper
             //trigger
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
-            // send notification after trigger
-            PaycartNotification::getInstanceByEventname($event_name)->sendNotification($cart);
+           //send notification 
+            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($shipment);
+           	}
         }
         
         /**
@@ -130,8 +139,11 @@ class PaycartHelperEvent extends PaycartHelper
             //trigger
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
-            // send notification after trigger
-            PaycartNotification::getInstanceByEventname($event_name)->sendNotification($cart);
+            //send notification 
+            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($shipment);
+           	}
         }
 
 		/**
@@ -149,7 +161,10 @@ class PaycartHelperEvent extends PaycartHelper
             Rb_HelperPlugin::trigger('onPaycartShipmentAfterDispatched', $params, self::$default_plugin_type);
             
             //send notification 
-            PaycartNotification::getInstanceByEventname($event_name)->sendNotification($shipment);
+            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($shipment);
+           	}
         }
         
 		/**
@@ -182,7 +197,10 @@ class PaycartHelperEvent extends PaycartHelper
             	$cart->markDelivered()->save();
             }
             
-            //send notification 
-            PaycartNotification::getInstanceByEventname($event_name)->sendNotification($shipment);
+         	//send notification 
+            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($shipment);
+           	}
          }
 }
