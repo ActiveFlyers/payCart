@@ -14,6 +14,10 @@ JFormHelper::loadFieldClass('list');
 
 class PaycartFormFieldProcessor extends JFormFieldList
 {	
+	/**
+	 * (non-PHPdoc)
+	 * @see /libraries/joomla/form/fields/JFormFieldList::getInput()
+	 */
 	public function getInput()
 	{	
 
@@ -21,11 +25,22 @@ class PaycartFormFieldProcessor extends JFormFieldList
 			throw new Exception('Invalid type of Processor given in Form xml.');
 		}
 		
+		// get list of processor
 		$this->processor_type = (string)$this->element['processor_type'];
+		
+	
+		// if Procesoor type already set then we cant change it after save
+		if ( !empty($this->value) ) {
+			$this->readonly = true;
+		}
 		
 		return parent::getInput();		
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see libraries/joomla/form/fields/JFormFieldList::getOptions()
+	 */
 	public function getOptions()
 	{	
 		$options = parent::getOptions();
