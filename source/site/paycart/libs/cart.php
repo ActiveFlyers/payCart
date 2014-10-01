@@ -789,7 +789,7 @@ class PaycartCart extends PaycartLib
 		$this->calculate();
 		
 		//lock cart after calculation
-                $this->markLocked();
+         $this->markLocked();
 		
 		//register user, if guest checkout  
 		if ($this->isGuestcheckout()) {
@@ -926,13 +926,13 @@ class PaycartCart extends PaycartLib
 	
 	/**
 	 * 
-	 * Invoke to update processor and processor config on cart's invoice
+	 * Invoke to update processor and processor config on cart and cart's invoice
 	 * @param INT $processor_id
 	 * @param array $processorData
 	 *
 	 * @return PaycartCart
 	 */
-	public function updateInvoiceProcessor( $processor_id, Array $processorData = Array())
+	public function updatePaymentProcessor( $processor_id, Array $processorData = Array())
 	{
 		/* @var $invoice_helper PaycartHelperInvocie */
 		$invoice_helper		= PaycartFactory::getHelper('invoice');
@@ -947,12 +947,18 @@ class PaycartCart extends PaycartLib
 		
 		$payment_gateway_lib	= PaycartPaymentgateway::getInstance($processor_id, $processorData);
 		
-		// save the Paymnet Gateway configuration
+		// 1# save the Paymnet Gateway configuration on Invoice
 		$payment_gateway_data	=	Array();
 		$payment_gateway_data['processor_type'] 	= $payment_gateway_lib->getType();
 		$payment_gateway_data['processor_config'] 	= $payment_gateway_lib->getConfig()->toObject();
-		
 		$invoice_helper->updateInvoice($this, $payment_gateway_data);
+		
+		// 2# save Payment gateway {id , title} on cart params
+		$details = new stdClass();
+		$details->id	= $payment_gateway_lib->getId();
+		$details->title	= $payment_gateway_lib->getTitle();
+		
+		$this->params->set('payment_gateway', $details);
 		
 		return $this;
 	}

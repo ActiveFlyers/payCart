@@ -65,6 +65,10 @@ class PaycartPaymentgateway extends PaycartLib
 		return $this;
 	}
 	
+	public function getTitle()
+	{
+		return $this->title;
+	}
 	
 	public function getType()
 	{

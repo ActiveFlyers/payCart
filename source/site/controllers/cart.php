@@ -491,7 +491,7 @@ class PaycartSiteControllerCart extends PaycartController
 			$errors[] = $error;	
 		}
 		else{
-			$this->cart->updateInvoiceProcessor($gateway_id);
+			$this->cart->updatePaymentProcessor($gateway_id)->save();
 			$this->getView()->set('cart', 		$this->cart);
 		}
 		
