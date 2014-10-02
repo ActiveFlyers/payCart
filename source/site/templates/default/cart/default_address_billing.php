@@ -128,7 +128,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		}
 		
 		<?php if (!$is_platform_mobile) : ?>
-			<?php echo "$('#pc-buyeraddress-billing-address').chosen()";?>
+			$('#pc-buyeraddress-billing-address, #paycart_billing_country_id, #paycart_billing_state_id').chosen();
 		<?php endif;?>	
 		
 	})(paycart.jQuery);

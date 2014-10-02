@@ -111,7 +111,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			
 		(function($){
 			<?php if (!$is_platform_mobile) : ?>
-				<?php echo "$('#pc-buyeraddress-shipping-address').chosen()";?>
+				$('#pc-buyeraddress-shipping-address, #paycart_shipping_country_id, #paycart_shipping_state_id').chosen();
 			<?php endif;?>
 
 
