@@ -4,7 +4,7 @@
 	<name>PayCart</name>
 	<creationDate>Jun2013</creationDate>
 	<author>Team Readybytes</author>
-	<authorEmail>team@readybytes.in</authorEmail>
+	<authorEmail>support+paycart@readybytes.in</authorEmail>
 	<authorUrl>readybytes.in</authorUrl>
 	<copyright>Team ReadyBytes</copyright>
 	<license>GNU GPL 3</license>
@@ -42,6 +42,13 @@
 			<file driver="mysql" charset="utf8">install/sql/install.mysql.utf8.sql</file>
 		</sql>
 	</install>
+	
+	<!-- Runs on updation -->
+	<update>
+		<schemas> 
+             <schemapath type="mysql">install/sql/updates/mysql</schemapath> 
+        </schemas> 
+	</update>
 	
 	<!-- Administrator back-end section -->
 	<administration>
