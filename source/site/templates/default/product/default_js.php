@@ -51,9 +51,15 @@ if(!defined( '_JEXEC' )){
 		}
 		$('.pc-product-attributes').submit();
 	},
-	
-	paycart.product.addtocart = function(productId){
-		paycart.ajax.go('index.php?option=com_paycart&view=cart&task=addProduct&product_id='+productId);
+
+	//@PCTODO :: Should be move in paycart.js file so other extension can utilize it
+	// and trigger must be hard coded,  not as a callback success 
+	paycart.product.addtocart = function(productId) { 
+		paycart.ajax.go(
+							'index.php?option=com_paycart&view=cart&task=addProduct&product_id='+productId,
+							{},
+							paycart.trigger.cart.after.updateproduct);
+		
 		paycart.product.changeButtonText();
 	},
 
@@ -62,5 +68,6 @@ if(!defined( '_JEXEC' )){
 		$('.pc-btn-addtocart').attr('onClick','rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display'); ?>"); return false;');
 		$('.pc-btn-buynow').replaceWith("<h3 class='text-center text-info'><?php echo JText::_('COM_PAYCART_PRODUCT_ADDED_TO_CART')?></h3>");
 	}
+
 })(paycart.jQuery);
 </script>

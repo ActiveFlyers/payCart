@@ -739,4 +739,14 @@ class PaycartSiteControllerCart extends PaycartController
 		$view->assign('errors', $errors);
 		return true;	
 	}
+	
+	/**
+	 * ============================================================================================
+	 *  @PCTODO :: should be created new controller for this kind of task
+	 *  Json function invoke to retrive data
+	 * ============================================================================================
+	 */
+	
+	public function getProductCount() 
+	{}
 }

@@ -71,6 +71,79 @@ if (typeof(paycart.element)=='undefined'){
 		});
 	};
 	
+	/*
+	 --------------------------------------------------------------
+	  JSON request
+	 --------------------------------------------------------------
+	 */
+	
+	// @PCTODO :: Should be paycart.request.json
+	// fetch json data
+	paycart.request = function (request) 
+	{
+		if ( typeof request['url'] == "undefined"  ) {
+			console.log('request url must be required')
+			return;
+		}
+		
+		request['url'] = request['url']+'&format=json';
+		
+		$.ajax({
+
+			url		: request['url'] ,
+						
+		    cache	: ( typeof request['cache'] == "undefined" ) 
+    					? false
+						: request['cache'] ,
+						
+			data	: ( typeof request['data'] == "undefined" ) 
+			    		? {}
+						: request['data'] ,
+						
+			type 	: ( typeof request['type'] == "undefined" ) 
+    					? 'POST'
+						: request['type'] ,
+						
+		    success : function( response ) {
+
+						//console.log ("Success:  " + response );
+
+						//clear data (remove warnings and error)
+						response = paycart.ajax.junkFilter(response);									
+
+						// Any callback available
+				    	if( typeof response['callback'] != "undefined"  && response['callback'] ) {
+					    	//@PCTODO:: cross check function existing into paycart namespace  
+				    		var callback = new Function(response['callback']);
+				    		callback(response);
+							return true;
+						}
+
+				    	// Any callback available
+				    	if( typeof request['success_callback'] != "undefined"  && request['success_callback'] ) { 
+				    		var callback = request['success_callback'];
+				    		callback(response);
+				    		return true;
+						}
+
+				    	if( typeof response['valid'] != "undefined" && response['valid'] == false) { 
+							console.log ( {" response contain error :  " : response } );
+				    		return false;
+						}
+						
+						return true;
+				    },
+
+				error : function( response ) {
+
+				    	console.log ({"Error on fetching JSON data :  " :response} );
+
+				    	return response;
+				    }
+		  });
+	};
+
+	
 /*--------------------------------------------------------------
   Address related to works
    	address.state 		: do all address related work
@@ -101,6 +174,19 @@ if (typeof(paycart.element)=='undefined'){
 			paycart.ajax.go( link, {'country_id' : $(country_selector).val(), 'state_selector' : state_selector, 'default_state' : default_selected_state });
 		}
 	};
+	
+	//@PCTODO :: add seperatly JS file  
+	// Paycart Triggers
+	paycart.trigger = {};
+
+	// define all cart related trigger 
+	paycart.trigger.cart = {};
+	paycart.trigger.cart.after = {};
+	paycart.trigger.cart.after.updateproduct = function()
+	{
+		$.event.trigger( "onPaycartCartAfterUpdateproduct");
+	};
+
 	
 
 // ENDING :

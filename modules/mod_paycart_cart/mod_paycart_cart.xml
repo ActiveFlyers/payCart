@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension
+	type="module"
+	version="1.0"
+	client="site"
+	method="upgrade">
+	<name>mod_paycart_cart</name>
+	<author>Team Readybytes</author>
+	<creationDate>Oct 2014</creationDate>
+	<copyright>Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>support+paycart@readybytes.in</authorEmail>
+	<authorUrl>www.readybytes.in</authorUrl>
+	<version>1.0.0</version>
+	<description>MOD_PAYCART_CART_XML_DESCRIPTION</description>
+	<files>
+		<filename module="mod_paycart_cart">mod_paycart_cart.php</filename>
+		<folder>tmpl</folder>
+		<filename>index.html</filename>		
+		<filename>mod_paycart_cart.xml</filename>
+	</files>
+	
+<!--	<languages>-->
+<!--		<language tag="en-GB">en-GB.mod_paycart_cart.ini</language>-->
+<!--		<language tag="en-GB">en-GB.mod_paycart_cart.sys.ini</language>-->
+<!--	</languages>-->
+</extension>
