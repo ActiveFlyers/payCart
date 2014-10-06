@@ -11,8 +11,8 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>support+paycart@readybytes.in</authorEmail>
 	<authorUrl>www.readybytes.in</authorUrl>
-	<version>1.0.0</version>
-	<description>MOD_PAYCART_CART_XML_DESCRIPTION</description>
+	<version>0.9.0</version>
+	<description>Render current cart link with number of products.</description>
 	<files>
 		<filename module="mod_paycart_cart">mod_paycart_cart.php</filename>
 		<folder>tmpl</folder>
@@ -24,4 +24,9 @@
 <!--		<language tag="en-GB">en-GB.mod_paycart_cart.ini</language>-->
 <!--		<language tag="en-GB">en-GB.mod_paycart_cart.sys.ini</language>-->
 <!--	</languages>-->
+
+    <alias>pc-cart-module</alias>
+    <version_number>0.9.0</version_number>
+    <version_name>Paycart Cart Module 0.9.0</version_name>
+
 </extension>

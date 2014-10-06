@@ -18,6 +18,14 @@
 						<depth max="0" min="0" />
 				  	</fileset>
 				</foreach>
+
+				<foreach param="dirname" absparam="absname" target="versioning">
+					<fileset dir="${dir.modules}">
+						<type type="dir" />
+						<depth max="0" min="0" />
+				  	</fileset>
+				</foreach>
+
 			</then>	
 		</if>
 
@@ -34,8 +42,9 @@
 		</if>
 
 		<!-- Delete and create plugins package folder -->
-		<delete dir="${dir.packages}/plugins" includeemptydirs="true" />
-		<mkdir dir="${dir.packages}/plugins" />
+		<delete dir="${dir.packages}/app" includeemptydirs="true" />
+		<mkdir dir="${dir.packages}/app" />
+
 
 		<!-- Delete and create tmp folder -->
 		<delete dir="${dir.tmp}" includeemptydirs="true" />
@@ -44,6 +53,12 @@
 		<!-- Copy Source Code -->
 		<copy todir="${dir.tmp}" >
 			<fileset dir="${dir.plugins}">
+				<exclude name="**/md5.txt" />
+		  	</fileset>
+		</copy>
+
+		<copy todir="${dir.tmp}" >
+			<fileset dir="${dir.modules}">
 				<exclude name="**/md5.txt" />
 		  	</fileset>
 		</copy>		
@@ -62,7 +77,7 @@
 	<target name="zip_plugin">
 
 		<echo msg="${dirname}" />
-		<zip destfile="${dir.packages}/plugins/${dirname}.zip" 
+		<zip destfile="${dir.packages}/app/${dirname}.zip" 
 		     basedir="${absname}" />		
 	</target>
 

@@ -6,6 +6,7 @@ dir.packages=${dir.root}/packages
 dir.tmp		=${dir.packages}/tmp
 dir.src		=${dir.root}/source
 dir.plugins	=${dir.root}/plugins
+dir.modules	=${dir.root}/modules
 dir.report	=${dir.root}/data/report
 
 # where to pick source code
