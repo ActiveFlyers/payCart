@@ -71,7 +71,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				   			paycart.cart.product.get();
 
 				   			// after validation invoke trigger
-				   			paycart.trigger.cart.after.updateproduct();
+				   			paycart.event.cart.updateproduct();
 							return true;
 						}		
 						
@@ -104,7 +104,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							paycart.cart.product.get();
 
 							// after validation invoke trigger
-				   			paycart.trigger.cart.after.updateproduct();
+				   			paycart.event.cart.updateproduct();
 				   			
 							return true;
 						}		
@@ -459,7 +459,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							paycart.cart.confirm.get();
 
 							// after validation invoke trigger
-				   			paycart.trigger.cart.after.updateproduct();
+				   			paycart.event.cart.updateproduct();
 							return true;
 						}		
 						
@@ -492,7 +492,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							paycart.cart.confirm.get();
 
 							// after validation invoke trigger
-				   			paycart.trigger.cart.after.updateproduct();
+				   			paycart.event.cart.updateproduct();
 				   			
 							return true;
 						}		

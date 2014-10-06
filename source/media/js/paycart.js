@@ -175,16 +175,14 @@ if (typeof(paycart.element)=='undefined'){
 		}
 	};
 	
-	//@PCTODO :: add seperatly JS file  
-	// Paycart Triggers
-	paycart.trigger = {};
+	//Paycart JS Event
+	paycart.event = {};
 
 	// define all cart related trigger 
-	paycart.trigger.cart = {};
-	paycart.trigger.cart.after = {};
-	paycart.trigger.cart.after.updateproduct = function()
+	paycart.event.cart = {};
+	paycart.event.cart.updateproduct = function()
 	{
-		$.event.trigger( "onPaycartCartAfterUpdateproduct");
+		$.event.trigger( "onPaycartCartUpdateproduct");
 	};
 
 	

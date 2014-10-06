@@ -58,9 +58,11 @@ if(!defined( '_JEXEC' )){
 		paycart.ajax.go(
 							'index.php?option=com_paycart&view=cart&task=addProduct&product_id='+productId,
 							{},
-							paycart.trigger.cart.after.updateproduct);
-		
-		paycart.product.changeButtonText();
+							function(){
+								paycart.event.cart.updateproduct();
+								paycart.product.changeButtonText();								
+							});
+
 	},
 
 	paycart.product.changeButtonText = function(){
