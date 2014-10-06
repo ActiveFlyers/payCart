@@ -68,7 +68,7 @@ class PaycartHelperEvent extends PaycartHelper
             //send notification 
             $instance = PaycartNotification::getInstanceByEventname($event_name);
             if($instance instanceof PaycartNotification){
-            	$instance->sendNotification($shipment);
+            	$instance->sendNotification($cart);
            	}
         }
         
@@ -90,7 +90,7 @@ class PaycartHelperEvent extends PaycartHelper
             //send notification 
             $instance = PaycartNotification::getInstanceByEventname($event_name);
             if($instance instanceof PaycartNotification){
-            	$instance->sendNotification($shipment);
+            	$instance->sendNotification($cart);
            	}
 
             /* @var $current_cart PaycartCart */
@@ -120,7 +120,7 @@ class PaycartHelperEvent extends PaycartHelper
            //send notification 
             $instance = PaycartNotification::getInstanceByEventname($event_name);
             if($instance instanceof PaycartNotification){
-            	$instance->sendNotification($shipment);
+            	$instance->sendNotification($cart);
            	}
         }
         
@@ -142,7 +142,7 @@ class PaycartHelperEvent extends PaycartHelper
             //send notification 
             $instance = PaycartNotification::getInstanceByEventname($event_name);
             if($instance instanceof PaycartNotification){
-            	$instance->sendNotification($shipment);
+            	$instance->sendNotification($cart);
            	}
         }
 
