@@ -178,21 +178,22 @@ echo $this->loadTemplate('edit_css');
 									<input type="file" name="paycart_form[images][]" multiple="true">
 								<?php else :?>								
 									<script>
-										var pc_product_images 	= <?php echo json_encode($images);?>;
-										var pc_product_id		= <?php echo $record_id;?>;
-										var pc_cover_media		= <?php echo $product->getCoverMedia(false);?>;
+										var pc_product_images 	= <?php echo json_encode(array_values($images));?>;
+										var pc_product_id		= <?php echo $record_id;?>;										
 									</script>
 									
-									<div data-ng-controller="pcngProductImagesCtrl">
+									<div data-ng-controller="pcngProductImagesCtrl" id="pcngProductImagesCtrl">
 										<ul class="thumbnails">
-		    								<li data-ng-repeat="(index,image) in images" class="thumbnail">		    									
-		    									<a href="#pc-product-gallery-modal" data-toggle="modal" onClick="return false;" data-ng-click="setActiveImage(index);">
+		    								<li data-ng-repeat="image in images" class="thumbnail" ng-class="{ 'pc-product-coverimage center' : $index == 0 }">		    									
+		    									<a href="#pc-product-gallery-modal" data-toggle="modal" onClick="return false;" data-ng-click="setActiveImage($index);">
 		    									<img data-ng-src="{{ image.thumbnail }}" alt="">
 		    									</a>
 		    									<div>		    										
-		    										<span class="pull-right"><a href="#" onClick="return false;" class="muted" data-ng-click="remove(index);"><i class="fa fa-trash-o"></i></a></span>
+		    										<span class="pull-right"><a href="#" onClick="return false;" class="muted" data-ng-click="remove($index);"><i class="text-error fa fa-trash-o"></i></a></span>
+		    									</div>		    									
+		    									<div class="badge" ng-show=" $index == 0 ">
+		    										<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_COVER_IMAGE');?>
 		    									</div>
-		    									<input type="radio" name="paycart_form[cover_media]" value="{{image.media_id}}" data-ng-model="cover_media">
 		    								</li>		    									    								
 		    							</ul>
 		    							

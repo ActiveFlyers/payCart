@@ -12,7 +12,7 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 Rb_HelperTemplate::loadMedia(array('angular'));
 // Depends on jQuery UI
-JHtml::_('jquery.ui', array('core'));
+JHtml::_('jquery.ui', array('core', 'sortable'));
 Rb_Html::script('com_paycart/jquery.ui.draggable.js');
 Rb_Html::script('com_paycart/jquery.ui.droppable.js');		
 		
@@ -30,6 +30,20 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 					scope.$apply();
 		    	}
 			});
+
+			var startIndex = 0;
+			$(".thumbnails").disableSelection();
+			$(".thumbnails").sortable({						
+				start:function (e, ui) {
+					startIndex = ($(ui.item).index());
+				},
+				stop:function (e, ui) {
+					var newIndex = ($(ui.item).index());
+					var scope = angular.element(document.getElementById('pcngProductImagesCtrl')).scope();
+					scope.reorder(startIndex, newIndex);
+					scope.$apply();
+				}
+			});			
 		});
 	})(rb.jQuery);
 
@@ -41,7 +55,6 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		$scope.message 		= '';
 		$scope.errMessage 	= '';
 		$scope.productId 	= pc_product_id;
-		$scope.cover_media  = pc_cover_media;
 		
 		$scope.setActiveImage = function(index){
 				$scope.message = '';
@@ -91,11 +104,39 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		            } else {
 		            	// if successful, bind success message to message
 		                $scope.message = data.message;
-		                delete $scope.images[index];	
-		                $scope.cover_media = data.coverMedia;										                										                
+		                $scope.images.splice(index, 1);                										                
 		            }
 			});			
 		};
+
+		$scope.reorder = function(startIndex, newIndex){
+			var toMove = $scope.images[startIndex];
+			$scope.images.splice(startIndex,1);			
+			$scope.images.splice(newIndex,0,toMove);
+
+			var imageids = [];
+			for(var index in $scope.images){
+				if($scope.images.hasOwnProperty(index)){
+					imageids.push($scope.images[index].media_id);
+				}
+			} 
+			
+			$http({
+		        method  : 'POST',
+		        url     : 'index.php?option=com_paycart&task=reorderImages&view=product&format=json',
+		        data    : paycart.jQuery.param({'image_ids': imageids, 'product_id':$scope.productId}),  // pass in data as strings
+		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+		    })
+		    .success(function(data) {										         
+					data = paycart.ajax.junkFilter(data);
+		            if (!data.success) {					            	
+		            	// if not successful, bind errors to error variables
+		                alert('Error');
+		            } else {
+		            											                										                
+		            }
+			});
+		};		
 	});
 
 

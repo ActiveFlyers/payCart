@@ -49,5 +49,15 @@ ul.pc-attribute-list li.pc-attribute.pc-attribute-draggable{
 .pc-attribute-draggable:hover{
 	cursor: move; 
 }
+
+.pc-product-coverimage{
+	border : 3px solid #CCCCCC;
+}
+
+.pc-product .thumbnails .thumbnail img{
+	max-height : 128px;
+	cursor: grab;
+}
+
 </style>
 <?php 

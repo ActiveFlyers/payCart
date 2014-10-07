@@ -175,6 +175,25 @@ class PaycartAdminControllerProduct extends PaycartController
 		
 		$view = $this->getView();
 		if($ret){
+			$view->assign('success', true);			
+		}
+		else{
+			$view->assign('success', false);
+		}
+	
+		return true;
+	}
+	
+	public function reorderImages()
+	{
+		$productId 		= $this->input->get('product_id',0);
+		$instance  		= PaycartProduct::getInstance($productId);
+		$imageIds   	= $this->input->get('image_ids', array(), 'array');		
+		$coverImageId 	= reset($imageIds);		
+		$ret = $instance->setImages($imageIds)->setCoverMedia($coverImageId)->save();
+		
+		$view = $this->getView();
+		if($ret){
 			$view->assign('success', true);
 			$view->assign('coverMedia',$instance->getCoverMedia(false));
 		}
