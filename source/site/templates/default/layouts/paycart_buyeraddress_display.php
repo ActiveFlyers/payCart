@@ -22,11 +22,17 @@ if(is_array($displayData)) {
 	$displayData = (object) $displayData;
 }
 
+/* @var $formatter PaycartHelperFormat */
+$formatter = PaycartFactory::getHelper('format');
+
 if(!isset($displayData->state_name) && isset($displayData->state_id)){
-	$record = PaycartFactory::getModel('state')->loadRecords(array('state_id' => $displayData->state_id));
-	$state  = array_shift($record);
-	$displayData->state_name = @$state->title;
+	$displayData->state_name = $formatter->state($displayData->state_id);
 }
+
+if(!isset($displayData->country_name) && isset($displayData->country_id)){
+	$displayData->country_name = $formatter->country($displayData->country_id);;
+}
+
 
 ?>
 
@@ -34,7 +40,7 @@ if(!isset($displayData->state_name) && isset($displayData->state_id)){
   <strong><?php echo@$displayData->to;  ?></strong><br>
   <?php echo @$displayData->address;  ?><br>
   <?php echo @$displayData->city;  ?>, <?php echo @$displayData->state_name;  ?><br>
-  <?php echo @$displayData->country_id;  ?> <?php echo @$displayData->zipcode;  ?><br>
+  <?php echo @$displayData->country_name;  ?> <?php echo @$displayData->zipcode;  ?><br>
   <abbr title="Phone"><i class="fa fa-phone"></i></abbr> <?php echo @$displayData->phone1;  ?><br>
 </address>
 

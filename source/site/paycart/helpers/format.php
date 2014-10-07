@@ -211,7 +211,7 @@ class PaycartHelperFormat extends JObject
             
             
             if ( !isset(static::$_state_data[$state_id]) ) {
-                return JText::_('COM_PAYCART_ERROR_UNKNOWN_state');
+                return JText::_('COM_PAYCART_ERROR_UNKNOWN_STATE');
             }     
             
             return static::$_state_data[$state_id]->title;             
