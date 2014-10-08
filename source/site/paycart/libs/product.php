@@ -485,7 +485,7 @@ class PaycartProduct extends PaycartLib
 		
 		//if cover media is not set then set first image as cover media
 		if(empty($this->cover_media) && !empty($current)){
-			$this->set('cover_media',array_pop($current));
+			$this->set('cover_media',array_shift($current));
 		}
 		
 		return $this;
