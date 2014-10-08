@@ -27,12 +27,12 @@ defined('_JEXEC') or die( 'Restricted access' );
 <div id="rbWindowBody">
 	<div class="modal-body">
             
-            <div class="pc-notification " class="rb-validate-form" >
+            <div class="pc-notification " class="pc-form-validate" >
                     <!-- CONTENT START -->	
                     <div class="row-fluid">
                         
                      <div class="span8 left-config">
-                        <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="paycart_notification_form" class="rb-validate-form">
+                        <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="paycart_notification_form" class="pc-form-validate">
 
                             
                             <div class="row-fluid">

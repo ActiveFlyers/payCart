@@ -10,6 +10,8 @@
 		<field 
 			name="title" 
 			type="text"	
+			required="true"
+			class="input-block-level"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_TITLE"
 			placeholder="asasa"
@@ -17,7 +19,8 @@
 				
 		<field 
 			name="description" 
-			type="textarea"				
+			type="textarea"
+			class="input-block-level"				
 			labelclass="control-label"
 			label="COM_PAYCART_ADMIN_DESCRIPTION"
 			/>

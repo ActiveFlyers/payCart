@@ -38,7 +38,7 @@ PaycartHtml::_('behavior.formvalidation');
 	<!--	 Account Details Tab		-->
 	<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'basic', JText::_('COM_PAYCART_ADMIN_BASIC', true)); ?>
 	
-	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data">
+	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
 
 		<div class="row-fluid">
 			<div class="span3">

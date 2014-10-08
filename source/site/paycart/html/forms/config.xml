@@ -5,43 +5,49 @@
 				type="text"
 				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_THUMB_HEIGHT" 
 				default="auto"
+				required="true"
 				/>
 		
 		<field 	name="catalogue_image_thumb_width" 
 				type="text"
 				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_THUMB_WIDTH" 
 				default="64"
+				required="true"
 				/>
 		
 		<field 	name="catalogue_image_optimized_height" 
 				type="text"
 				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_OPTIMIZED_HEIGHT" 
 				default="auto"
+				required="true"
 				/>
 		
 		<field 	name="catalogue_image_optimized_width" 
 				type="text"
 				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_OPTIMIZED_WIDTH" 
 				default="300"
+				required="true"
 				/>
 		
 		<field 	name="catalogue_image_upload_size" 
 				type="text"
 				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_UPLOAD_SIZE" 
 				default="2"
+				required="true"
 				/>
 
 		<field 	name="catalogue_image_squared_size" 
 				type="text"
 				label="COM_PAYCART_ADMIN_CONFIG_IMAGE_SQAURED_SIZE" 
 				default="200"
+				required="true"
 				/>
 				
 		<field 	name="catalogue_weight_unit" 
 				type="list"
 				label="COM_PAYCART_ADMIN_CONFIG_WEIGHT_UNIT" 
 				default="kg"
-		        >
+				required="true">
 		        <option value='gm'>Gram</option>
 		        <option value='kg'>Kilogram</option>
 		        <option value='lb'>Pound</option>
@@ -51,7 +57,7 @@
 				type="list"
 				label="COM_PAYCART_ADMIN_CONFIG_DIMENSION_UNIT" 
 				default="cm"
-		        >
+				required="true">
 		        <option value='in'>Inch</option>
 		        <option value='cm'>Centimeter</option>
 		        <option value='m'>Meter</option>
@@ -59,6 +65,7 @@
 		
 		<field name="invoice_serial_prefix"
 			   type="text"  
+			   required="true"
 			   label="COM_PAYCART_ADMIN_CONFIG_INVOICE_SERIAL_PREFIX"
 			   default="paycart">
 		</field>
