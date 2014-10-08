@@ -229,17 +229,16 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		                	$scope.available[index] = data.productattribute; 
 		                }
 		                else{			
-		                	$scope.available.push(data.productattribute);
-
-		                	// $time out will call the fucntion automatically when $digest is done
-		                	// replace ment of $scope.$apply();
-		                	$timeout(function() {
-		                	// load draggable
-				            	paycart.jQuery('.pc-attribute').draggable({helper: "clone", revert: 'invalid'});
-		                	}); 
-				                		                	
+		                	$scope.available.push(data.productattribute);				                		                	
 		                }
 
+			            // $time out will call the fucntion automatically when $digest is done
+	                	// replace ment of $scope.$apply();
+	                	$timeout(function() {
+	                	// load draggable
+			            	paycart.jQuery('[data-attribute-id="'+data.productattribute_id+'"]').draggable({helper: "clone", revert: 'invalid'});
+	                	}); 
+	                	
 			            $scope.edit(data.productattribute_id);
 		                
 		                random = Math.random();
