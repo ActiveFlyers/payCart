@@ -20,6 +20,7 @@
 		<folder>views</folder>
 		<folder>templates</folder>
 		<folder>paycart</folder>
+		<folder>layouts</folder>
 	</files>
 	
 	<!-- Media files -->

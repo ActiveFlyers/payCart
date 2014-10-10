@@ -318,7 +318,7 @@ class PaycartHelperToken extends PaycartHelper
        //$tokens['store_logo'] = $config->get('company_logo');
        
        $displayData = json_decode($config->get('localization_origin_address'));
-       $tokens['store_address'] =  JLayoutHelper::render('paycart_buyeraddress_display', $displayData, PAYCART_LAYOUTS_PATH);
+       $tokens['store_address'] =  JLayoutHelper::render('paycart_buyeraddress_display', $displayData);
            
        return $tokens;
     }
@@ -337,7 +337,7 @@ class PaycartHelperToken extends PaycartHelper
         $dispalyData = new stdClass;
         $dispalyData->product_particulars = $product_particulars;
         // Create a layout to render all product details
-        $tokens['products_detail'] = JLayoutHelper::render('paycart_token_product_deatils', $dispalyData, PAYCART_LAYOUTS_PATH);
+        $tokens['products_detail'] = JLayoutHelper::render('paycart_token_product_deatils', $dispalyData);
         
         return $tokens;
     }
@@ -359,7 +359,7 @@ class PaycartHelperToken extends PaycartHelper
     	$display_data = new stdClass();
     	$display_data->products = $products;
     	
-    	$layout = new JLayoutFile('paycart_token_shipment_products', PAYCART_LAYOUTS_PATH);
+    	$layout = new JLayoutFile('paycart_token_shipment_products');
         $tokens['products'] = $layout->render($display_data);
         
         return $tokens;

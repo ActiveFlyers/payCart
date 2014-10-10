@@ -80,7 +80,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 		<div id="pc-confirm-billing-address" class="accordion-body in collapse"">
 				 			<div class="accordion-inner">
 				 				<?php
-				 					$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+				 					$layout = new JLayoutFile('paycart_buyeraddress_display');
 									echo $layout->render($billing_address); 
 				 				?>
 				 											
@@ -107,7 +107,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 					if ( @$billing_to_shipping ) {
 				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('Same as a Billing Address');
 				 					} else {
-				 						$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+				 						$layout = new JLayoutFile('paycart_buyeraddress_display');
 										echo $layout->render($shipping_address);
 				 					} 
 				 				?>	
