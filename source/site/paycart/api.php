@@ -31,8 +31,11 @@ class PaycartAPI
 	 * 
 	 * @return Array of stdclass, which conatin category data
 	 */
-	static public function getCategories($parentId = PAYCART_CATEGORY_ID_ROOT)
+	static public function getCategories($parentId = null)
 	{
+		if ( empty($parentId) ) {
+			$parentId = Paycart::PRODUCTCATEGORY_ROOT_ID;
+		}
 		$catModel = PaycartFactory::getInstance('productcategory', 'model');
 		$categoryFilters = array('published' => 1, 'parent_id'=>$parentId);
 		return $catModel->loadRecords($categoryFilters);
