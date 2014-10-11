@@ -110,7 +110,7 @@ $return_link	= 	base64_encode($link);
                 <i class="fa fa-shopping-cart"></i>
                 <span class="hidden-phone"> 
                 <?php echo JText::_('COM_PAYCART_CART'); ?></span>
-                <span class="badge badge-info pc-demo-cart-counter">0</span>
+                <span class="badge badge-info pc-demo-cart-counter"></span>
                 </a>
             </li>
            
@@ -129,11 +129,15 @@ $return_link	= 	base64_encode($link);
             
              <li class="dropdown ">
                 <a class="dropdown-toggle " data-toggle="dropdown"  href="#">
-                    <i class="fa fa-user"></i>
+                	<span class=" visible-phone">
+	                    <i class="fa fa-user fa-stack-1x"></i>
+						<i class="fa fa-check fa-stack-1x text-info"></i>
+					</span>
+					
                     <span class="hidden-phone"> 
+                    	<i class="fa fa-user"></i>
                     	<?php echo ucfirst($display_name); ?>
                     </span> 
-                    <b class="caret"></b>
                 </a>
                 
                 <ul class="dropdown-menu ">
@@ -227,8 +231,12 @@ $return_link	= 	base64_encode($link);
     				{
     					onSuccess : function(response_data)
     					{
-    						// take action 
-    						$('.pc-demo-cart-counter').html(response_data['products_count']);
+        					$('.pc-demo-cart-counter').html();
+        					
+		        			// 	take action
+        					if ( response_data['products_count'] > 0 ) {
+    						 	$('.pc-demo-cart-counter').html(response_data['products_count']);
+        					}
     					},
 
     					onError : function(response_data)
