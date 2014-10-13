@@ -32,12 +32,11 @@ if(!defined( '_JEXEC' )){
 		});
 
 		$('div.accordion-body').on('shown', function () {
-		    $(this).parent("div").find(".fa-angle-double-down").removeClass("fa-angle-double-down").addClass("fa-angle-double-up");
-
+			$(this).parent("div").find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
 		});
 
 		$('div.accordion-body').on('hidden', function () {
-		    $(this).parent("div").find(".fa-angle-double-up").removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
+			$(this).parent("div").find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square")
 		});
 	});
 	

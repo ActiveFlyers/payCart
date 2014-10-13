@@ -352,6 +352,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							if ('state_id' == index) {
 								state_value 	=	data['buyeraddress'][index];
 							}
+
+						<?php if (!$is_platform_mobile) : ?>
+
+							if ( $('[name="'+selecor_name+'['+index+']"]').is('select') ) {
+								$('[name="'+selecor_name+'['+index+']"]').trigger("liszt:updated");
+							}
+
+						<?php endif; ?>
+							
 						}
 		
 						// special treatment for country and state value

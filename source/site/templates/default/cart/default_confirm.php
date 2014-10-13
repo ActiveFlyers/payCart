@@ -202,7 +202,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 							 endif;  
 				 						?>
 				 						<?php if ($particular->discount) : 
-				 								echo '<div>'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount($particular->discount, true, $currency_id).'</div>';
+				 								echo '<div>-'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount(-($particular->discount), true, $currency_id).'</div>';
 				 							 endif;  
 				 						?>
 				 				</div>

@@ -83,7 +83,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		<!-- buy now -->
                 <?php if($isAvailableInStock):?>                     
 				<div class="row-fluid clearfix">
-                	<div class="span6">                 
+                	<div class="span6 help-block">                 
                     	<?php if(!$isExistInCart):?>
                         	<a class="btn btn-block btn-large btn-primary pc-btn-buynow" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>">
                             	<?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?>
@@ -92,7 +92,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
                         	<h3 class='text-center text-info'><?php echo JText::_('COM_PAYCART_PRODUCT_ADDED_TO_CART')?></h3>
                         <?php endif;?>
                     </div>
-                    <div class="span6">    
+                    <div class="span6 help-block">    
                     	<?php if(!$isExistInCart):?>            
                         	<button class="btn btn-block btn-large pc-btn-addtocart" onClick="paycart.product.addtocart(<?php echo $product->getId();?>);">
                         		<?php echo JText::_("COM_PAYCART_PRODUCT_ADD_TO_CART");?>
@@ -127,7 +127,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		<div class="accordion-group">
 			 		<div class="accordion-heading">
 			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id" data-target=".accordion-body-id">		 				
-			 				<h2><span class="pull-right"><i class="fa fa-angle-double-up"></i></span><?php echo JText::_("COM_PAYCART_DETAILS");?></h2>
+			 				<h2><span class="pull-right"><i class="fa fa-minus-square"></i></span><?php echo JText::_("COM_PAYCART_DETAILS");?></h2>
 			 			</a>		
 			 		</div>
 			 		<!-- use class "in" for keeping it open -->
@@ -147,11 +147,11 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		<div class="accordion-group">
 			 		<div class="accordion-heading">
 			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id2" data-target=".accordion-body-id2">
-			 				<h2><span class="pull-right"><i class="fa fa-angle-double-down"></i></span><?php echo JText::_("COM_PAYCART_PRODUCT_SPECIFICATION");?></h2>
+			 				<h2><span class="pull-right"><i class="fa fa-minus-square"></i></span><?php echo JText::_("COM_PAYCART_PRODUCT_SPECIFICATION");?></h2>
 			 			</a>		
 			 		</div>
 			 		
-			 		 <div class="accordion-body collapse accordion-body-id2">
+			 		 <div class="accordion-body collapse in accordion-body-id2">
 			 		 	<div class="accordion-inner">
 	                        <table class="pc-product-specification table table-responsive">
 	                          		<tr>
