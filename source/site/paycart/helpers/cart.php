@@ -207,4 +207,22 @@ class PaycartHelperCart extends PaycartHelper
 		
 		return $total;
 	}
+
+	/**
+	 * build json object with number of product in current cart  
+	 */
+	public function getProductCount() 
+	{
+		$cart = PaycartFactory::getHelper('cart')->getCurrentCart();
+		
+		$products_count = 0;
+		
+		if ( $cart instanceof Paycartcart ) {
+			foreach ($cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT) as $product) {
+				$products_count += $product->getQuantity();
+			}
+		}
+
+		return $products_count;
+	}
 }

@@ -149,7 +149,7 @@ class PaycartProductcategory extends PaycartLib
 	
 	protected function _delete()
 	{
-		//Delete product
+		//Delete category
 		if(!$this->getModel()->delete($this->getId())) {
 			return false;
 		}
@@ -179,9 +179,11 @@ class PaycartProductcategory extends PaycartLib
 			// @PCTODO : error handling
 			$media->delete();	
 			$this->cover_media = 0;
-			return $this;
 		}
-		return false;
+
+		// always return this (not false)
+		// otherwise after delete trigger will not be fired 
+		return $this;
 	}
 	
 	public function getMetadataTitle()

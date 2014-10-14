@@ -16,18 +16,23 @@ if(!defined( '_JEXEC' )){
 	<div id="pc-categories" class='pc-categories span12 clearfix' data-columns >
 
 		<?php foreach($categories as $c) : ?>
-		<?php $instance = PaycartProductcategory::getInstance($c->productcategory_id, $c);?>
+			<?php $instance = PaycartProductcategory::getInstance($c->productcategory_id, $c);?>
 	
-		<div class="pc-category-outer">
-		<?php $media = $instance->getCoverMedia();?>
-			<div class='pc-category blurground' style="background-image: url('<?php echo $media['squared'];?>');">
-				<div class="pc-category-inner blurground vertical-center-wrapper" >
-					<div class="pc-category-content ">
-						<h2 class="vertical-center-content pc-ellipsis"><a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$c->productcategory_id)?>"><?php echo $instance->getTitle();?></a></h2>
-					</div>
+			<div class="pc-category-outer">
+			<?php $media = $instance->getCoverMedia();?>
+			<?php $url   = PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$c->productcategory_id);?>
+				<div class='pc-category blurground' style="background-image: url('<?php echo $media['squared'];?>');">
+					
+					<a href="<?php echo $url?>">
+						<div class="pc-category-inner blurground vertical-center-wrapper" >
+							<div class="pc-category-content">
+								<h2 class="vertical-center-content pc-ellipsis"><?php echo $instance->getTitle();?></h2>
+							</div>
+						</div>
+					</a>
+					
 				</div>
 			</div>
-		</div>
 		<?php endforeach;?>
 
 	</div>

@@ -233,4 +233,18 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		return PaycartFactory::getModel('product')->updateVariationOf(array_keys($variants),$baseProduct);
 	}
+	
+	/**
+	 * check if the given productId is in stock or not
+	 */
+	function isProductInStock($productId)
+	{
+		$product = PaycartProduct::getInstance($productId);
+		
+		if($product instanceof PaycartProduct){
+			return ($product->getQuantity() > $product->getStockoutLimit())?true:false;
+		}
+		
+		return false;
+	}
 }

@@ -83,7 +83,7 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 		}
 		
 		$isExist = PaycartFactory::getHelper('cart')->isProductExist($productId);
-		$isAvailableInStock = ($product->getQuantity() > $product->getStockoutLimit())?true:false; 
+		$isAvailableInStock = PaycartFactory::getHelper('product')->isProductInStock($productId); 
 		
 		//set meta details
 		$metaTitle       = $product->getMetadataTitle();

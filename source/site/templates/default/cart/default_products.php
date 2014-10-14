@@ -30,9 +30,8 @@ $currencyId = $cart->getCurrency();
         <h3>
         	<span class="pull-left"> <?php echo JText::_('COM_PAYCART_CART');?> 
 	        	<span class="muted">
-	        		<?php $count = count($products);?>
-	        		<?php $string = ($count > 1)?"COM_PAYCART_CART_ITEMS":"COM_PAYCART_CART_ITEM";?>
-	        		<?php echo '('.$count.' '.JText::_($string).')'; ?>
+	        		<?php $string = ($productsCount > 1)?"COM_PAYCART_CART_ITEMS":"COM_PAYCART_CART_ITEM";?>
+	        		<?php echo '('.$productsCount.' '.JText::_($string).')'; ?>
 	        	</span>
         	</span>
         	<span class="pull-right text-error"><strong> <?php echo JText::_('COM_PAYCART_ESTIMATED_TOTAL').' = '.$formatter->amount($cart->getTotal(),true,$currencyId);?></strong></span>

@@ -33,7 +33,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 
 <div class='pc-product-fullview-wrapper row-fluid clearfix'>
 
-	<h1 class="visible-phone"><?php echo $product->getTitle(); ?></h1>
+	<h1 class="visible-phone pc-break-word"><?php echo $product->getTitle(); ?></h1>
 	 
 	 <div class="row-fluid">
 	 
@@ -56,7 +56,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				Right Layout
 		 =========================== -->
 		 <div class="span6">
-				<h1 class="hidden-phone"><?php echo $product->getTitle(); ?></h1>	
+				<h1 class="hidden-phone pc-break-word"><?php echo $product->getTitle(); ?></h1>	
 		 		<h2><?php echo JText::_("COM_PAYCART_PRICE");?> : 
 		 			<span><?php echo $formatter->amount($product->getPrice(),true);?></span>	
 		 		</h2>

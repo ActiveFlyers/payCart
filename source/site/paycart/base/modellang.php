@@ -66,6 +66,15 @@ class PaycartModelLang extends PaycartModel
     		return $return;
     	}
     	
+    	if(!$this->_saveLanguageData($data, $return, $new)){
+    		return false;
+    	}
+    	
+    	return $return;
+    }
+    
+    protected function _saveLanguageData($data, $return, $new)
+    {
     	// get language table
     	$langTable = $this->getLanguageTable();
     	if(!$langTable){
@@ -87,7 +96,7 @@ class PaycartModelLang extends PaycartModel
     		return false;
     	}
     	
-    	return $return;
+    	return true;
     }
     
     public function delete($pk=null)

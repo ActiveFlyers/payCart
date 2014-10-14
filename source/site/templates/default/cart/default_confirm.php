@@ -198,7 +198,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 						</div>
 				 						
 				 						<?php if ($particular->tax) : 
-				 								echo '<div>'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
+				 								echo '<div>+'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
 				 							 endif;  
 				 						?>
 				 						<?php if ($particular->discount) : 
