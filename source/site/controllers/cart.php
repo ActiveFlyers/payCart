@@ -165,7 +165,13 @@ class PaycartSiteControllerCart extends PaycartController
 			//Cart should be save after processing
 			$this->cart->save();
 			
-			$this->execute('address');
+			if ($form_data['emailcheckout'] ) {
+				$this->execute('address');
+			} 
+
+			// need to refresh page when user loggin successfully 
+			$this->setRedirect(JRoute::_('index.php?option=com_paycart&view=cart&task=checkout'));
+
 			return false;
 		}
 		
