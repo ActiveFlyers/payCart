@@ -163,7 +163,6 @@ echo $this->loadTemplate('edit_ng');
 	</div>
 	<div class="span9">
 		<?php 
-			  //$display_data = new stdClass();
 			  $display_data = $origin_address; 
 			  $display_data->prefix = 'paycart_form[localization_origin_address]';
 		?>

@@ -33,7 +33,7 @@ class PaycartAdminViewConfig extends PaycartAdminBaseViewConfig
 			$logo = PaycartMedia::getInstance($logo)->toArray();
 		}
 		
-		$this->assign('origin_address',$origin_address);
+		$this->assign('origin_address',($origin_address)?$origin_address:new stdClass());
 		$this->assign('logo', $logo);
 		$this->assign('form',$form);
 		return $this->setTpl('edit');
