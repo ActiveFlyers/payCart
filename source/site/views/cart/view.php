@@ -44,6 +44,7 @@ class PaycartSiteBaseViewcart extends PaycartView
 		$dutiesParticular    = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_DUTIES);
 		$shippingParticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_SHIPPING);
 
+		$this->assign('is_platform_mobile', PaycartFactory::getApplication()->client->mobile);
 		$this->assign('productsCount',$helper->getProductCount());
 		$this->assign('products',$productParticulars);
 		$this->assign('cart', $cart);

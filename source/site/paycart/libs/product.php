@@ -409,10 +409,7 @@ class PaycartProduct extends PaycartLib
 		if(!$this->getModel()->delete($this->getId())) {
 			return false;
 		}
-		
-		//PCTODO: Should we delete variants or not??
-		//if yes, then delete language and attributes also
-		
+				
 		//delete product attributes
 		if(!$this->deleteAttributeValues()){
 			return false;

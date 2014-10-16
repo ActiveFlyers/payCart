@@ -188,7 +188,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 					<!-- Product Details			 				-->
 				 				<div class="span5">
 				 						<div>
-				 							<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$particular->particular_id);?>" >
+				 							<a class="pc-break-word" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$particular->particular_id);?>" >
 				 								<?php echo $particular->title; ?>
 				 							</a>
 				 						</div>
