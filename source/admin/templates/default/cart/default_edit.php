@@ -128,9 +128,16 @@ PaycartHtml::_('behavior.formvalidation');
 							<div class="control-group">
 								<div class="control-label"><?php echo $field->label; ?> </div>
 								<div class="controls">&nbsp;
-									<?php $billingAddress = (object)$cart->getBillingAddress(true)->toArray() ;?>
-									<?php $layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
-										  echo $layout->render($billingAddress);
+									<?php 
+											$billingAddress = $cart->getBillingAddress(true)->toArray() ;
+
+											if (count(array_filter($billingAddress))) :
+												$billingAddress = (object) $billingAddress;
+												$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+										  		echo $layout->render($billingAddress);
+										  	else : 
+										  		echo JText::_('COM_PAYCART_BUYERADDRESS_NOT_EXIT');
+										  endif;
 									?> 
 								</div>								
 							</div>
@@ -140,9 +147,16 @@ PaycartHtml::_('behavior.formvalidation');
 								<?php $field = $form->getField('shipping_address_id')?>
 								<div class="control-label"><?php echo $field->label; ?> </div>
 								<div class="controls">&nbsp;
-									<?php $shippingAddress = (object)$cart->getShippingAddress(true)->toArray() ;?>
-									<?php $layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
-										  echo $layout->render($shippingAddress);
+									<?php $shippingAddress = $cart->getShippingAddress(true)->toArray() ;
+									
+											if (count(array_filter($shippingAddress))) :
+												$billingAddress = (object) $shippingAddress;
+												$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+										  		echo $layout->render($shippingAddress);
+										  	else : 
+										  		echo JText::_('COM_PAYCART_BUYERADDRESS_NOT_EXIT');
+										  endif;
+									
 									?> 
 								</div>								
 							</div>
