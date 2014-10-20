@@ -146,7 +146,7 @@ $currencyId = $cart->getCurrency();
  	<div class="row-fluid row-fluid text-center">
  		<h3 class="muted"><?php echo JText::_('COM_PAYCART_CART_EMPTY')?></h3>
  		<div class="row-fluid">
- 			<button type="button" class="btn btn-large btn-primary" onclick="rb.url.redirect('<?php echo 'index.php?option=com_paycart';?>'); return false;"> <i class="fa fa-chevron-left"></i> &nbsp; <?php echo JText::_("COM_PAYCART_CONTINUE_SHOPPING");?></button>
+ 			<button type="button" class="btn btn-large btn-primary" onclick="rb.url.redirect('<?php echo paycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>'); return false;"> <i class="fa fa-chevron-left"></i> &nbsp; <?php echo JText::_("COM_PAYCART_CONTINUE_SHOPPING");?></button>
  		</div>
  	</div>
 </div>
