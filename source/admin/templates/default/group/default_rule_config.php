@@ -11,8 +11,8 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 ?>
+<hr/>
 <div class="row-fluid">
-	<hr/>
 	<div class="span10">
 		<?php echo $configHtml;?>
 	</div>
