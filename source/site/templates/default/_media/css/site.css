@@ -218,6 +218,7 @@ Products Display
 	font-size : 14px;	
 }
 
+<<<<<<< HEAD
 .pc-product-stockout{
 	background-color: #ACACAC;
     color: #000000;
@@ -245,4 +246,8 @@ Products Display
 	
 .pc-break-word {
     word-wrap : break-word;
+}
+
+.pc-product-attribute-header{
+	background-color : #F5F5F5;
 }

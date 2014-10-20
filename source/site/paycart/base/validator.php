@@ -51,4 +51,12 @@ class PaycartValidator extends Rb_Validator
 		
 		return !in_array($value, $result);
 	}
+	
+	public function validateAttributeCode($value, $params = array(), $data = array())
+	{
+		$id 	= isset($data['productattribute_id']) ? $data['productattribute_id'] : 0;		 
+		$result = PaycartTableProductAttribute::getRecordsOfCode($value, $id);
+		
+		return !in_array($value, $result);
+	}
 }

@@ -52,10 +52,12 @@ class PaycartAdminViewProductAttribute extends PaycartAdminBaseViewProductAttrib
 			$response = array('success' => true);
 			$response['message'] = JText::_('COM_PAYCART_ADMIN_SUCCESS_ITEM_SAVE');
 			$response['productattribute'] = (object) PaycartProductAttribute::getInstance($id)->toArray();
+			$response['error_fields'] = array();
 		}
 		else{
 			$response = array('success' => false);				
 			$response['message'] = JText::_('COM_PAYCART_ADMIN_ERROR_ITEM_SAVE');
+			$response['error_fields'] = $this->getModel()->getState('error_fields', array());
 		}
 		
 		$response['productattribute_id'] = $id;

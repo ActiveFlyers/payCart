@@ -24,8 +24,12 @@ echo $this->loadTemplate('js');
  * Template Parameters
  * @param $isAvailableInStock
  * @param $product
+ * @param $positions
  * 
  */
+
+$attributes = $product->getAttributeValues();
+$postionedAttributes = (array)$product->getPositionedAttributes();
 ?>
 <script>
 paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');
@@ -60,6 +64,25 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		<h2><?php echo JText::_("COM_PAYCART_PRICE");?> : 
 		 			<span><?php echo $formatter->amount($product->getPrice(),true);?></span>	
 		 		</h2>
+		 		
+		 		<!-- ======================
+				Position == product-overview	
+		 		=========================== -->		 		
+		 		<div class="pc-product-overview">
+		 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>
+		 				<ul>
+		 				<?php foreach($postionedAttributes['product-overview'] as $attributeId) : ?>
+		 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
+		 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+								<?php $options 	= $instance->getOptions();?> 
+								<li><?php echo $options[$attributes[$attributeId]]->title;?></li>
+							<?php endif?>	                         
+		 				<?php endforeach;?>
+		 				</ul>
+		 			<?php endif;?>
+		 		</div>
+		 		
+		 		
 		 		<!-- Filterable Attributes -->
 		 		<div>
 		 		    <form class="pc-product-attributes" method="post">
@@ -109,6 +132,27 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
                     	<h2 class="text-error"><?php echo JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK");?></h2>
                     </div>
                 <?php endif;?>
+                
+                
+                <!-- ======================
+				Position == product-addons	
+		 		=========================== -->		 		
+		 		<div class="row-fluid">		 		
+		 		<div class="pc-product-addons">
+		 			<p>&nbsp;</p>		 			
+		 			<?php if(isset($postionedAttributes['product-addons']) && !empty($postionedAttributes['product-addons'])) : ?>
+		 				<ul>
+		 				<?php foreach($postionedAttributes['product-addons'] as $attributeId) : ?>
+		 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
+		 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+								<?php $options 	= $instance->getOptions();?> 
+								<li><?php echo $options[$attributes[$attributeId]]->title;?></li>
+							<?php endif?>	                         
+		 				<?php endforeach;?>
+		 				</ul>
+		 			<?php endif;?>
+		 		</div>
+		 		</div>
 		 </div>
 	 </div>
 	 
@@ -121,7 +165,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 	 
 	  <div class="span12">
 	  	<?php $description = $product->getDescription();?>
-	  	<?php if(!empty($description)):?>
+	  	<?php if(!empty($description) || (isset($postionedAttributes['product-details']) && !empty($postionedAttributes['product-details']))):?>
 		 	<!-- accordion1 Detail description of product -->
 		 	<div class="accordion" id="accordion-id">
 		 		<div class="accordion-group">
@@ -133,15 +177,36 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 			 		<!-- use class "in" for keeping it open -->
 			 		 <div class="accordion-body collapse in accordion-body-id">
 			 		 	<div class="accordion-inner">
-			 		 		<?php echo $description;?>
+			 		 		<div class="pc-product-details">
+				 		 		<?php if(!empty($description)) : ?>
+					 		 		<div class="row-fluid">
+					 		 			<?php echo $description;?>
+					 		 		</div>
+				 		 		<?php endif;?>
+			 		 		
+			 		 			<div class="row-fluid">						 		
+						 			<p>&nbsp;</p>		 			
+						 			<?php if(isset($postionedAttributes['product-details']) && !empty($postionedAttributes['product-details'])) : ?>
+						 				<ul>
+						 				<?php foreach($postionedAttributes['product-details'] as $attributeId) : ?>
+						 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
+						 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+												<?php $options 	= $instance->getOptions();?> 
+												<li><?php echo $options[$attributes[$attributeId]]->title;?></li>
+											<?php endif?>	                         
+						 				<?php endforeach;?>
+						 				</ul>
+						 			<?php endif;?>
+						 		</div>
+						 	</div>
 			 		 	</div>
 			 		 </div>
 		 		 </div>
 		 	</div>
 		<?php endif;?>
 	 	
-	 	<?php $attributes = $product->getAttributeValues();?>
-	 	<?php if(!empty($attributes)):?>
+	 	
+	 <?php if(isset($postionedAttributes['product-specifications']) && !empty($postionedAttributes['product-specifications'])) : ?>
 		 	<!-- Specification -->
 		 	<div class="accordion" id="accordion-id2">
 		 		<div class="accordion-group">
@@ -154,19 +219,30 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 			 		 <div class="accordion-body collapse in accordion-body-id2">
 			 		 	<div class="accordion-inner">
 	                        <table class="pc-product-specification table table-responsive">
-	                          		<tr>
-	                          			<th colspan="2" bgcolor="#F5F5F5"><?php echo JText::_("COM_PAYCART_GENERAL_DETAILS");?></th>
-	                          		</tr>
-	                              <?php foreach ($attributes as $attributeId => $optionId):?>
-	                                  <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
-	                                  <tr>
-	                                      <td width="25%">
-	                                          <?php echo $instance->getTitle();?>
-	                                      </td>
-	                                      <td width="75%">
-	                                          <?php $options = $instance->getOptions(); echo $options[$optionId]->title;?>
-	                                      </td>
-	                                  </tr>         
+	                          	
+	                            <?php foreach ($postionedAttributes['product-specifications'] as $attributeId):?>
+	                            	<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
+		                                <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+		                                <?php $options = $instance->getOptions();?>
+		                                <?php if($instance->getType() == 'header') : ?>
+		                                	</table>
+		                               		<table class="pc-product-specification table table-responsive">
+			                             	   	<tr>
+		                          					<th colspan="2" class="pc-product-attribute-header">
+		                          					<?php echo $options[$attributes[$attributeId]]->title;?>
+		                          					</th>
+		                          				</tr>
+		                                <?php else : ?>
+			                                <tr>
+			                                	<td width="25%">
+			                                    	<?php echo $instance->getTitle();?>
+			                                	</td>
+			                                    <td width="75%">
+			                                         <?php echo $options[$attributes[$attributeId]]->title;?>
+			                                    </td>
+			                                </tr>
+										<?php endif;?>
+	                                <?php endif;?>         
 	                              <?php endforeach;?>
 	                        </table>
 			 		 	</div>

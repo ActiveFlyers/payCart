@@ -91,6 +91,11 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 		$metaKeywords    = $product->getMetadataKeywords();
 		
 		Rb_HelperJoomla::addDocumentMetadata($metaTitle,$metaKeywords,$metaDescription);
+				
+		// positions
+		/* @var $helper PaycartHelperProduct */
+		$helper = PaycartFactory::getHelper('product');
+		$this->assign('positions', $helper->getPositions()); 	
 		
 		$this->assign('isAvailableInStock',$isAvailableInStock);
 		$this->assign('isExistInCart', $isExist);

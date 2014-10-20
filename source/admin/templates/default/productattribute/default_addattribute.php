@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 
 ?>
 <div class="row-fluid">
-	<div class="span4"><label><?php echo $productAttribute->getTitle();?></label></div>
+	<div class="span4"><label><?php echo $productAttribute->getTitle();?><br/><span class="muted"> ( <?php echo $productAttribute->getCode();?> )</span></label></div>
 	<div class="span6">
 		<?php echo $productAttribute->getEditHtml($productAttributeValue);?>
 	</div>	
