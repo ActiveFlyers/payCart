@@ -84,14 +84,14 @@ class PaycartHelperToken extends PaycartHelper
                     
         // billing specific
         static::$_tokens['billing'] =
-                Array(  'billing_to',   'billing_address',  'billing_phone1',
-                        'billing_phone2', 'billing_zip_code','billing_vat_number',
+                Array(  'billing_to',   'billing_address',  'billing_phone',
+                        'billing_zip_code','billing_vat_number',
                         'billing_country', 'billing_state','billing_city'
                       );
         // shipping specific
         static::$_tokens['shipping'] =   
-                Array(  'shipping_to',      'shipping_address',  'shipping_phone1',
-                        'shipping_phone2',  'shipping_zip_code','shipping_vat_number',
+                Array(  'shipping_to',      'shipping_address',  'shipping_phone',
+                        'shipping_zip_code','shipping_vat_number',
                         'shipping_country', 'shipping_state','shipping_city'
                       );
         
@@ -228,8 +228,7 @@ class PaycartHelperToken extends PaycartHelper
         // cart specific
         $tokens['billing_to']              =   $billing_address->getTo();
         $tokens['billing_address']         =   $billing_address->getAddress();
-        $tokens['billing_phone1']          =   $billing_address->getPhone1();
-        $tokens['billing_phone2']          =   $billing_address->getPhone2();
+        $tokens['billing_phone']           =   $billing_address->getPhone();
         $tokens['billing_zip_code']        =   $billing_address->getZipcode();
         $tokens['billing_vat_number']      =   $billing_address->getVatnumber();
         $tokens['billing_country']         =   $this->_formatter->country($billing_address->getCountryId());
@@ -253,8 +252,7 @@ class PaycartHelperToken extends PaycartHelper
         // cart specific
         $tokens['shipping_to']              =   $shipping_address->getTo();
         $tokens['shipping_address']         =   $shipping_address->getAddress();
-        $tokens['shipping_phone1']          =   $shipping_address->getPhone1();
-        $tokens['shipping_phone2']          =   $shipping_address->getPhone2();
+        $tokens['shipping_phone']           =   $shipping_address->getPhone();
         $tokens['shipping_zip_code']        =   $shipping_address->getZipcode();
         $tokens['shipping_vat_number']      =   $shipping_address->getVatnumber();
         $tokens['shipping_country']         =   $this->_formatter->country($shipping_address->getCountryId());

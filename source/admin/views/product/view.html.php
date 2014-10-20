@@ -83,6 +83,7 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		// @PCTODO:: Set availble variants
 		$this->assign('variants',  Array());
 		$this->assign('global_config', PaycartFactory::getConfig());
+		$this->assign('uploadLimit',PaycartFactory::getHelper('media')->getUploadLimit());
 		return parent::edit($tpl);
 	}
 	

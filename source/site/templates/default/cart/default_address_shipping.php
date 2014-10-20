@@ -28,7 +28,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				<?php echo "{$buyeraddress_details->city}-{$buyeraddress_details->zipcode}"; ?>
 				<?php echo "{$buyeraddress_details->state_id}"; ?>
 				<?php echo "{$buyeraddress_details->country_id}"; ?>
-				<?php echo "{$buyeraddress_details->phone1}"; ?>
+				<?php echo "{$buyeraddress_details->phone}"; ?>
 			</option>
 		<?php endforeach;?>
 	</select>		
@@ -57,11 +57,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	
 	<div class="control-group">	
 	 	<div class="control-label">
- 			<label id="paycart_cart_address_shipping_phone1-lbl" for="paycart_cart_address_shipping_phone1" class="required"><?php echo JText::_('COM_PAYCART_PHONE_NUMBER'); ?></label>
+ 			<label id="paycart_cart_address_shipping_phone-lbl" for="paycart_cart_address_shipping_phone" class="required"><?php echo JText::_('COM_PAYCART_PHONE_NUMBER'); ?></label>
  		</div>
  		<div class="controls">
-			<input type="text" name="paycart_cart_address[shipping][phone1]" id="paycart_cart_address_shipping_phone1" class="input-block-level" required="" value = "<?php echo @$shipping_address->phone1; ?>" />
-			<span class="pc-error" for="paycart_cart_address_shipping_phone1"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>
+			<input type="text" name="paycart_cart_address[shipping][phone]" id="paycart_cart_address_shipping_phone" class="input-block-level" required="" value = "<?php echo @$shipping_address->phone; ?>" />
+			<span class="pc-error" for="paycart_cart_address_shipping_phone"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>
 		</div>
 	</div>
 				

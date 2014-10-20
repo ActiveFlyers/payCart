@@ -72,7 +72,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 		
 		$req_params = array(			
 			'recipient_postalcode' => $request->delivery_address->zipcode,			
-			'shipper_postalcode'   => $this->global_config->origin_address->zipcode,
+			'shipper_postalcode'   => isset($this->global_config->origin_address->zipcode)?$this->global_config->origin_address->zipcode:0,
 		);
 		
 		if(empty($this->processor_config->calculation_mode) || $this->processor_config->calculation_mode == 'ONEPACKAGE'){

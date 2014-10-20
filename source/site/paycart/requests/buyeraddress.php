@@ -21,7 +21,6 @@ class PaycartRequestBuyeraddress
 	public $state;
 	public $country;
 	public $zipcode;
-	public $phone1;
-	public $phone2;
+	public $phone;
 	public $vat_number;
 }

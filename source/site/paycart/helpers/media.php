@@ -71,4 +71,30 @@ class PaycartHelperMedia extends PaycartHelper
 		//Now delete files from actual path 
 		return JFile::delete($files);
 	}
+	
+	/**
+	 * calculate upload limit using the php configuration
+	 */
+	function getUploadLimit()
+	{
+		$max_upload   = $this->_changeToBytes(ini_get('upload_max_filesize'));
+		$max_post     = $this->_changeToBytes(ini_get('post_max_size'));
+		$memory_limit = $this->_changeToBytes(ini_get('memory_limit'));
+		return min($max_upload, $max_post, $memory_limit);
+	
+	}
+	
+	/**
+	 * change the given php ini value to bytes
+     */
+	private function _changeToBytes($size_str)
+	{
+		switch (substr ($size_str, -1))
+	    {
+	        case 'M': case 'm': return (int)$size_str * 1048576;
+	        case 'K': case 'k': return (int)$size_str * 1024;
+	        case 'G': case 'g': return (int)$size_str * 1073741824;
+	        default: return $size_str;
+	    }
+	}
 }

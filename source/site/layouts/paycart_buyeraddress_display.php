@@ -41,7 +41,7 @@ if(!isset($displayData->country_name) && isset($displayData->country_id)){
   <?php echo @$displayData->address;  ?><br>
   <?php echo @$displayData->city;  ?>, <?php echo @$displayData->state_name;  ?><br>
   <?php echo @$displayData->country_name;  ?> <?php echo @$displayData->zipcode;  ?><br>
-  <abbr title="Phone"><i class="fa fa-phone"></i></abbr> <?php echo @$displayData->phone1;  ?><br>
+  <abbr title="Phone"><i class="fa fa-phone"></i></abbr> <?php echo @$displayData->phone;  ?><br>
 </address>
 
 

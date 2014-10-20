@@ -106,7 +106,7 @@ var PCFormValidator = function() {
  	 	// Check the additional validation types
  	 	if ((handler) && (handler !== 'none') && (handlers[handler]) && $el.val()) {
  	 	 	// Execute the validation handler and return result
- 	 	 	if (handlers[handler].exec($el.val()) !== true) {
+ 	 	 	if (handlers[handler].exec($el, $el.val()) !== true) {
  	 	 	 	handleResponse(false, $el);
  	 	 	 	return false;
  	 	 	}
@@ -206,26 +206,35 @@ var PCFormValidator = function() {
  	 	 	return input.type !== "text";
  	 	})();
  	 	// Default handlers
- 	 	setHandler('username', function(value) {
+ 	 	setHandler('username', function(element, value) {
  	 	 	regex = new RegExp("[\<|\>|\"|\'|\%|\;|\(|\)|\&]", "i");
  	 	 	return !regex.test(value);
  	 	});
- 	 	setHandler('password', function(value) {
+ 	 	setHandler('password', function(element, value) {
  	 	 	regex = /^\S[\S ]{2,98}\S$/;
  	 	 	return regex.test(value);
  	 	});
- 	 	setHandler('numeric', function(value) {
+ 	 	setHandler('numeric', function(element, value) {
  	 	 	regex = /^(\d|-)?(\d|,)*\.?\d*$/;
  	 	 	return regex.test(value);
  	 	});
- 	 	setHandler('integer', function(value) {
+ 	 	setHandler('integer', function(element, value) {
  	 	 	regex = /^(\d|-)?(\d|,)*\d*$/;
  	 	 	return regex.test(value);
  	 	});
- 	 	setHandler('email', function(value) {
+ 	 	setHandler('email', function(element, value) {
  	 	 	regex = /^[a-zA-Z0-9.!#$%&‚Äô*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
  	 	 	return regex.test(value);
  	 	});
+ 	 	setHandler('image', function (element, value) {
+			var imageSize  = 0;
+			var fileField = element[0]; //as element is an object
+			for (i = 0; i < fileField.files.length; i++){
+				  //inputField.files[0].size gets the size of your file.
+				  imageSize +=  fileField.files[i].size;
+			}
+			return (element.data('fileuploadlimit') > imageSize); 
+	    });
  	 	// Attach to forms with class 'form-validate'
  	 	jQuery(selector).each(function() {
  	 	 	attachToForm(this);
