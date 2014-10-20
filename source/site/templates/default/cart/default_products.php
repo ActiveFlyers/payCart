@@ -81,7 +81,7 @@ $currencyId = $cart->getCurrency();
 					 	 <label><big><?php echo Jtext::_("COM_PAYCART_QUANTITY")?></big></label>
 				 		 <span>
 				 		 	<!-- when enter key is presssed then also update quantity -->
-				 		 	<input class="span2 pc-cart-quantity-<?php echo $product->getId()?>" type="number" min="1" value="<?php echo $item->getQuantity(); ?>" 
+ 				 		 	<input class="span2 pc-cart-quantity-<?php echo $product->getId()?>" type="text" min="1" value="<?php echo $item->getQuantity(); ?>" 
 				 		 	       onkeydown="if (event.keyCode == 13) return paycart.cart.product.updateQuantity(<?php echo $product->getId();?>); "/>&nbsp;
 				 		 	<a href="javascript:void(0);" onClick="paycart.cart.product.updateQuantity(<?php echo $product->getId();?>)"><i class="fa fa-refresh"></i></a>
 				 		 </span>

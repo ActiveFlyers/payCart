@@ -213,7 +213,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 					<div>
 					 					<?php echo JText::_('COM_PAYCART_QUANTITY'); ?> : 
 					 					<input 
-					 							type="number"   
+					 							type="text"   
 					 							class="input-mini" 
 					 							id='pc-checkout-quantity-<?php echo $particular->particular_id; ?>'
 					 							value="<?php echo $particular->quantity; ?>"
