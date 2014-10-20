@@ -21,7 +21,7 @@ class PaycartProductAttribute extends PaycartLib
 	// Table field
 	protected $productattribute_id	 =	0; 
 	protected $type 		 =	'';
-	protected $css_class	 =	'';
+	protected $code	 		 =	'';
 	protected $filterable	 = 	0;
 	protected $searchable	 =	0;
 	protected $published	 =	1;
@@ -148,6 +148,11 @@ class PaycartProductAttribute extends PaycartLib
 	public function getType()
 	{
 		return $this->type;
+	}
+	
+	public function getCode()
+	{
+		return $this->code;
 	}
 	
 	public function setOptions($options)

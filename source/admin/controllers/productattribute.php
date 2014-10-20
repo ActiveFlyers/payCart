@@ -31,8 +31,16 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 				$view->assign('productattribute_id', $ret->getId());
 			}
 			else{
-				$view->assign('success', true);
-				$view->assign('productattribute_id', $itemId);				
+				$view->assign('success', false);
+				$view->assign('productattribute_id', $itemId);
+
+				// set error fields in model
+				$app = JFactory::getApplication();
+				$model = $this->getModel();
+				$context = $model->getContext();
+				$error_fields 	 = $app->getUserStateFromRequest($context.'.error_fields', 'error_fields', array(), 'array');        		
+        		$app->setUserState($context . '.error_fields', null);
+        		$this->getModel()->setState('error_fields', $error_fields );				
 			}
 		
 			return true;

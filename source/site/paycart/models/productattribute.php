@@ -123,6 +123,20 @@ class PaycartTableProductAttribute extends PaycartTable
 	{
 		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
 	}
+	
+	public static function getRecordsOfCode($code, $id = 0)
+	{
+		$query 	= new Rb_Query();
+		$query->select('`code`')
+			  ->where("`code` LIKE '".$code."%'");
+					  
+		if(!empty($id)){
+			$query->where("`productattribute_id` <> ".intval($id));
+		}
+					  
+		return $query->from('`#__paycart_productattribute`')
+					 ->dbLoadQuery()->loadcolumn();
+	}
 }
 
 /** 

@@ -247,4 +247,9 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		return false;
 	}
+
+	public function getPositions()
+	{
+		return array('product-overview', 'product-addons', 'product-details', 'product-specifications');
+	}
 }

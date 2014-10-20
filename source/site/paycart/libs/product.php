@@ -363,6 +363,11 @@ class PaycartProduct extends PaycartLib
 			$this->_uploaded_files = $data['_uploaded_files'];
 		}
 		
+		if(isset($data['config']['positions'])){
+			// reset $this->config->positions
+			$this->config->set('positions', $data['config']['positions']);
+		}
+		
 		// if custom Attributes available in data then bind with lib object 
 		$attributes = isset($data['attributes']) ? $data['attributes'] : Array();
 		
@@ -599,5 +604,10 @@ class PaycartProduct extends PaycartLib
 	{
 		$this->cover_media = $mediaId;
 		return $this;
+	}
+	
+	public function getPositionedAttributes()
+	{
+		return $this->config->get('positions');
 	}
 }

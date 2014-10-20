@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_config` (
 CREATE TABLE IF NOT EXISTS `#__paycart_productattribute` (
   `productattribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(50) NOT NULL COMMENT 'Type of attribute',
-  `css_class` varchar(100) DEFAULT NULL,
+  `code` varchar(100) DEFAULT NULL,
   `filterable` tinyint(1) NOT NULL COMMENT 'Treat as a filter',
   `searchable` tinyint(1) DEFAULT '0' COMMENT 'Use for keyword search',
   `published` tinyint(1) NOT NULL DEFAULT '1',
