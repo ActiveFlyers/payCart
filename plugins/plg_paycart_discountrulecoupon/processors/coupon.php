@@ -22,27 +22,24 @@ class PaycartDiscountRuleProcessorCoupon extends PaycartDiscountRuleProcessor
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see components/com_paycart/paycart/discountrule/PaycartDiscountRuleProcessor::isApplicable()
+	 * @see /components/com_paycart/paycart/discountrule/PaycartDiscountRuleProcessor::getConfigHtml()
 	 */
-	protected function isApplicable(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
+	public function getConfigHtml(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
 	{
-		// rule have coupon code	
-//		if($request->rule_coupon) {
-//			return false;
-//		}
 		
-		//entity must have coupon stuff 
-		if ($request->entity_coupon){
-			return false;
-		}
+		$coupon_code = $this->rule_config->coupon;
+
+		ob_start();
 		
-		// Check Coupon is valid or not (CASE INSENSITIVE) 
-		if(JString::strtolower($request->rule_coupon) != JString::strtolower($request->entity_coupon)) {
-			$response->message 		= Rb_Text::_('PLG_PAYCART_DISCOUNTRULE_COUPON_INVALID');
-			return false;
-		}
+		include_once 'tmpl/config.php';
 		
-		return parent::isApplicable($request, $response);
+		$html = ob_get_contents();
+		ob_end_clean();
+		
+		$response->configHtml =  $html;
+					
+		return $response;
 	}
+	
 	
 }
