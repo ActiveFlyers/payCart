@@ -608,6 +608,6 @@ class PaycartProduct extends PaycartLib
 	
 	public function getPositionedAttributes()
 	{
-		return $this->config->get('positions');
+		return $this->config->get('positions',array());
 	}
 }
