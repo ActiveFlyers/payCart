@@ -211,10 +211,18 @@ class PaycartHelperFormat extends JObject
             
             
             if ( !isset(static::$_state_data[$state_id]) ) {
-                return JText::_('COM_PAYCART_ERROR_UNKNOWN_state');
+                return JText::_('COM_PAYCART_ERROR_UNKNOWN_STATE');
             }     
             
             return static::$_state_data[$state_id]->title;             
         }
+        
+	public static function attributecode($value)
+	{		
+		// this function is called from filter, so need to be static
+		$value = JApplicationHelper::stringURLSafe($value);
+		$value = strtoupper($value);
+		return str_replace('-', '_', $value); 
+	}
         
 }

@@ -51,7 +51,7 @@ paycart.admin.shippingrule = {};
 
 <div class="span10">
 <div class="row-fluid">	
-	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
+	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">
 		<div class="row-fluid">
 			<div class="span3">
 				<h2><?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_DETAILS_HEADER');?></h2>

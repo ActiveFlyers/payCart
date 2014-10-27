@@ -21,11 +21,15 @@ if (!$is_platform_mobile) {
 
 <!-- @PCTODO :: move style to proper location -->
 <style>
+	
 	.paycart .pc-checkout-loader{
-		position: absolute;
-		top: 0;
-		padding : 50%;
 		background-color: rgba(255, 255, 255, 0.9);
+	
+	}
+	.paycart .pc-checkout-loader i.fa-spinner{
+		position: fixed;
+		top: 50%;
+		left: 50%;
 	}
 	
 	.paycart .position-relative 
@@ -67,7 +71,7 @@ if (!$is_platform_mobile) {
 		</div>
 	</div>	
 	
-	<div class="pc-checkout-loader hide" id="pc-checkout-loader">
+	<div class="modal-backdrop pc-checkout-loader hide" id="pc-checkout-loader">
     	<i class="fa fa-spinner fa-3x fa-spin"></i>
 	</div>			
 </div>

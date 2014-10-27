@@ -14,7 +14,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 ?>
 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data">
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
 
 	<fieldset>
 		<?php foreach ($form->getFieldset('buyeraddress') as $field):?>		

@@ -51,13 +51,8 @@
 					required="true"
 			/>
 			
-			<field 	name="phone1" type="text"
-					label="COM_PAYCART_BUYERADDRESS_PHONE1"	
-					required="true"
-			/>
-			
-			<field 	name="phone2" type="text"
-					label="COM_PAYCART_BUYERADDRESS_PHONE2"
+			<field 	name="phone" type="text"
+					label="COM_PAYCART_BUYERADDRESS_PHONE"
 					required="true"
 			/>
 

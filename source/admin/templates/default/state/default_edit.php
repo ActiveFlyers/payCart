@@ -38,7 +38,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <div id="rbWindowBody">
 	<div class="modal-body">
 		<!--  New state creation body		-->
-		<form method="post"  id="paycart_state_form" class="rb-validate-form">
+		<form method="post"  id="paycart_state_form" class="pc-form-validate">
 		
 			<?php foreach ($form->getFieldset('state') as $field):?>
 					

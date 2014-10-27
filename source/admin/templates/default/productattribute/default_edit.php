@@ -32,6 +32,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 			//load required script for radio buttons
 			paycart.radio.init();
+			paycart.jQuery('.hasTooltip').tooltip();
 			
 	})(paycart.jQuery);
 	
@@ -39,13 +40,24 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 <div class="pc-product-wrapper clearfix">
 <div class="pc-product row-fluid">
-	<form action="index.php" onSubmit="return fasle;" method="post" data="pc-json-attribute-edit">
+	<form action="index.php" onSubmit="return fasle;" method="post" data="pc-json-attribute-edit" id="paycart_productattribute_form">
 	<div class=" span6">
 		<div class="control-group">
 			<div class="control-label"><?php echo $form->getLabel('title'); ?> </div>
 			<div class="controls"><?php echo $form->getInput('title'); ?></div>								
 		</div>
 
+		<div class="control-group">
+			<div class="control-label">
+				<?php echo $form->getLabel('code'); ?>
+			</div>
+			<div class="controls">
+				<?php echo $form->getInput('code'); ?>
+				<?php $field = $form->getField('code') ?>
+				<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_ATTRIBUTECODE');?></div>
+			</div>
+		</div>		
+		
 		<div class="control-group">
 			<div class="control-label">
 				<?php echo $form->getLabel('published'); ?>
@@ -57,7 +69,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		
 		<div class="control-group">
 			<div class="control-label">
-				<?php echo $form->getLabel('filterable'); ?>
+				<?php //echo $form->getLabel('filterable'); ?>
 			</div>
 			<div class="controls">
 				<?php echo $form->getInput('filterable'); ?>
@@ -66,19 +78,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		
 		<div class="control-group">
 			<div class="control-label">
-				<?php echo $form->getLabel('searchable'); ?>
+				<?php //echo $form->getLabel('searchable'); ?>
 			</div>
 			<div class="controls">
 				<?php echo $form->getInput('searchable'); ?>
-			</div>
-		</div>
-		
-		<div class="control-group">
-			<div class="control-label">
-				<?php echo $form->getLabel('css_class'); ?>
-			</div>
-			<div class="controls">
-				<?php echo $form->getInput('css_class'); ?>
 			</div>
 		</div>		
 	</div>

@@ -639,7 +639,13 @@ abstract class PaycartCartparticular extends JObject
 	 * @return boolean type 
 	 */
 	public function isApplicableDiscountRule(Paycartcart $cart, PaycartDiscountrule $discountrule)
-	{		
+	{	
+		// if total amount is 0 then stop process and no need to futher processing
+		if ( $this->total <= 0 ) {
+			// stop further discountrule processing
+			$this->_stopFurtherDiscounts = true;
+			return false;
+		}	
 		
 		// if $discountrule is a first discount which in non-clubbable 
 		// then it should be applied and then say stop further discountrules.

@@ -173,33 +173,19 @@ $id_suffix++;
 	  </div>
 	</div>
 		
-<!--	Buyeraddress Phone1	-->
+<!--	Buyeraddress Phone	-->
 	<div class="control-group">
 	  <label class="control-label" for="textinput">
-	  		<?php echo JText::_('COM_PAYCART_PHONE1');?>
+	  		<?php echo JText::_('COM_PAYCART_PHONE');?>
 	  </label>
 	  <div class="controls">
-		    <input	name="<?php echo $prefix; ?>[phone1]" 
-					id="phone1_<?php echo $id_suffix; ?>" 
-					value="<?php echo @$displayData->phone1; ?>" 
+		    <input	name="<?php echo $prefix; ?>[phone]" 
+					id="phone_<?php echo $id_suffix; ?>" 
+					value="<?php echo @$displayData->phone; ?>" 
 		    		type="text" required="true">
 	  </div>
 	</div>
 
 
-<!--	Buyeraddress Phone2	-->
-	<!--<div class="control-group">
-	  <label class="control-label" for="textinput">
-	  		<?php echo JText::_('COM_PAYCART_PHONE2');?>
-	  </label>
-	  <div class="controls">
-		    <input	name="<?php echo $prefix; ?>[phone2]" 
-					id="phone2_<?php echo $id_suffix; ?>" 
-					value="<?php echo @$displayData->phone2; ?>" 
-		    		type="text">
-	    
-	  </div>
-	</div>
-	
---></fieldset>
+</fieldset>
 <?php 

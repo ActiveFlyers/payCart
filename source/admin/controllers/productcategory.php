@@ -78,4 +78,35 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 	
 		return true;
 	}
+	
+	/**
+	 * Overriding it because in tablenested children will automatically get deleted 
+	 * when try to delete parent category
+	 * So here we check if record exist in table then only try to delete the record
+	 *  
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Controller::_remove()
+	 */
+	function _remove($itemId=null, $userId=null)
+	{
+		//get the model
+		$model 		= $this->getModel();
+	    if($itemId === null || $itemId === 0){
+			$itemId = $model->getId();
+		}
+		
+		//check if record exists
+		if($model->getTable()->load($itemId)){
+			$item = Rb_Lib::getInstance($this->_component->getPrefixClass(), $this->getName(), $itemId, null)
+					->delete();
+	
+			if(!$item){
+				//we need to set error message
+				$this->setError($model->getError());
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

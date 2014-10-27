@@ -54,7 +54,7 @@ define('PAYCART_PATH_CUSTOM_ATTRIBUTES', 	PAYCART_PATH_CORE.'/attributes');
 define('PAYCART_ATTRIBUTE_PATH_MEDIA',  	PAYCART_PATH_CORE_MEDIA.'/media/');
 
 // hard coded layout path with default templt
-define('PAYCART_LAYOUTS_PATH',				PAYCART_PATH_SITE_TEMPLATE.'/default/layouts');
+define('PAYCART_LAYOUTS_PATH',				JPATH_SITE.'/components/com_paycart/layouts');
 
 // object to identify extension, create once, so same can be consumed by constructors
 Rb_Extension::getInstance(PAYCART_COMPONENT_NAME, array('prefix_css'=>'pc'));

@@ -31,6 +31,50 @@ class PaycartModelProductcategory extends PaycartModelLang
 		parent::_buildWhereClause($query,$queryFilters);
 		return $query->clear('order')->order('lft');
 	}
+	
+	/**
+	 * Overriding this function because we need do some checking in between loading and 
+     * binding the given data to table object 
+	 */
+	protected function _save($table, $data, $pk=null, $new=false)
+	{		
+		// Bug #29
+		// If table object was loaded by some code previously
+		// then it can overwrite the previous record
+		// So we must ensure that either PK is set to given value
+		// Else it should be set to 0
+		$table->reset(true);
+
+		//it is a NOT a new record then we MUST load the record
+		//else this record does not exist
+		if($pk && $new===false && $table->load($pk)===false){
+			$this->setError(Rb_Text::_('PLG_SYSTEM_RBSL_NOT_ABLE_TO_LOAD_ITEM'));
+			return false;
+		}
+		
+		// Set the new parent id if parent id not matched OR while New/Save as Copy .
+		if ($table->parent_id != $data['parent_id'] || !$pk){
+			// Specify where to insert the new node.
+			$table->setLocation($data['parent_id'], 'last-child');
+		}
+
+		//bind, and then save
+		//$myData = $data[$this->getName()][$pk===null ? 0 : $pk];
+	    if($table->bind($data) && $table->store())
+	    {
+	    	$return = $table->{$table->getKeyName()};
+	    	
+	    	if(!$this->_saveLanguageData($data, $return, $new)){
+	    		return false;
+	    	}
+	    	// We should return the record's ID rather then true false
+			return $return;
+	    }
+
+		//some error occured
+		$this->setError($table->getError());
+		return false;
+	}
 }
 
 class PaycartModelformProductCategory extends PaycartModelform { }

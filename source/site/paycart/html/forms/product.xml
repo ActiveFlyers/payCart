@@ -163,5 +163,15 @@
 					type="text" 
 					class="input-block-level"
 					label="COM_PAYCART_ADMIN_METADATA_KEYWORD"/>
-		</fieldset>		
+		</fieldset>	
+		
+		<fields name="_uploaded_files">
+			<fieldset name="_uploaded_files">
+				<field name="images"
+				   type="file"
+				   validate="image">
+				 </field>
+			</fieldset>
+		</fields>
+	
 </form>

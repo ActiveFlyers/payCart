@@ -29,7 +29,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 			
 			<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 			
-				<table class="table table-condensed ">
+				<table class="table table-striped ">
 					
                                     <!-- TABLE HEADER START -->
                                     <thead>

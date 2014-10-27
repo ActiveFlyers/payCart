@@ -54,7 +54,8 @@ class PaycartSiteControllerState extends PaycartController
 		}
 		
 		//@PCTODO:: Sorting required 
-		$states = PaycartFactory::getModel('state')->loadRecords(Array('country_id'=> $country_id));
+		// limit must be cleaned other wise only specific number of record will fetch
+		$states = PaycartFactory::getModel('state')->loadRecords(Array('country_id'=> $country_id), Array('limit'));
 		
 		$html = '';
 		

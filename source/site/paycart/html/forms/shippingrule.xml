@@ -13,6 +13,7 @@
 		<field 
 			name="title" 
 			type="text"	
+			required="true"
 			class="input-block-level"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_TITLE"/>
@@ -114,6 +115,7 @@
 			name="handling_charge"
 			type="paycart.amount"
 			class="input-block-level"
+			validate="numeric"
 			labelclass="control-label"
 			label="COM_PAYCART_ADMIN_SHIPPINGRULE_HANDLING_CHARGES"/>
 		

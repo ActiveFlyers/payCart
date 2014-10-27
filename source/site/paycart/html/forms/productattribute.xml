@@ -20,6 +20,7 @@
 		<field 
 			name="type" 
 			type="paycart.attributetype"
+			required="true"
 			label="COM_PAYCART_ADMIN_TYPE"
 			id="attribute_type">
 			<option value="">com_paycart_admin_select</option>
@@ -27,7 +28,7 @@
 			
 		<field 
 			name="filterable" 
-			type="radio"
+			type="hidden"
 			default="0"
 			label="COM_PAYCART_ADMIN_FILTERABLE" 
 			class="btn-group">
@@ -37,7 +38,7 @@
 			
 		<field 
 			name="searchable" 
-			type="radio"
+			type="hidden"
 			default="0"			
 			label="COM_PAYCART_ADMIN_SEARCHABLE" 
 			class="btn-group">
@@ -46,9 +47,13 @@
 		</field>
 
 		<field 	
-			name="css_class" 
+			name="code" 
 			type="text"
-			label="COM_PAYCART_ADMIN_CSS_CLASS"/>
+			required="true"
+			validate="attributecode"
+			filter="PaycartHelperFilter::attributecode"
+			label="COM_PAYCART_ADMIN_ATTRIBUTE_CODE"
+			description="COM_PAYCART_ADMIN_ATTRIBUTE_CODE_DESC" />
 			
 	</fieldset>
 	

@@ -32,12 +32,11 @@ if(!defined( '_JEXEC' )){
 		});
 
 		$('div.accordion-body').on('shown', function () {
-		    $(this).parent("div").find(".fa-angle-double-down").removeClass("fa-angle-double-down").addClass("fa-angle-double-up");
-
+			$(this).parent("div").find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
 		});
 
 		$('div.accordion-body').on('hidden', function () {
-		    $(this).parent("div").find(".fa-angle-double-up").removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
+			$(this).parent("div").find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square")
 		});
 	});
 	
@@ -51,10 +50,18 @@ if(!defined( '_JEXEC' )){
 		}
 		$('.pc-product-attributes').submit();
 	},
-	
-	paycart.product.addtocart = function(productId){
-		paycart.ajax.go('index.php?option=com_paycart&view=cart&task=addProduct&product_id='+productId);
-		paycart.product.changeButtonText();
+
+	//@PCTODO :: Should be move in paycart.js file so other extension can utilize it
+	// and trigger must be hard coded,  not as a callback success 
+	paycart.product.addtocart = function(productId) { 
+		paycart.ajax.go(
+							'index.php?option=com_paycart&view=cart&task=addProduct&product_id='+productId,
+							{},
+							function(){
+								paycart.event.cart.updateproduct();
+								paycart.product.changeButtonText();								
+							});
+
 	},
 
 	paycart.product.changeButtonText = function(){
@@ -62,5 +69,6 @@ if(!defined( '_JEXEC' )){
 		$('.pc-btn-addtocart').attr('onClick','rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display'); ?>"); return false;');
 		$('.pc-btn-buynow').replaceWith("<h3 class='text-center text-info'><?php echo JText::_('COM_PAYCART_PRODUCT_ADDED_TO_CART')?></h3>");
 	}
+
 })(paycart.jQuery);
 </script>

@@ -50,7 +50,7 @@ paycart.admin.discountrule = {};
 
 <div class="span10">
 <div class="row-fluid">	
-	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
+	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">
 		<div class="row-fluid">
 			<div class="span3">
 				<h2><?php echo JText::_('COM_PAYCART_ADMIN_DISCOUNTRULE_DETAILS_HEADER');?></h2>
@@ -103,25 +103,6 @@ paycart.admin.discountrule = {};
 				</div>
 			</div>
 			<div class="span9">
-				<div class="row-fluid">
-					<div class="span6">
-						<?php $field = $form->getField('coupon') ?>
-						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
-						</div>
-					</div>
-					<div class="span6">
-						<?php $field = $form->getField('sequence') ?>
-						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
-						</div>
-					</div>
-				</div>
-									
-				<br/>
-				
 				<div class="row-fluid">
 					<div class="span6">
 						<?php $field = $form->getField('amount') ?>
@@ -193,6 +174,22 @@ paycart.admin.discountrule = {};
 				</div>
 				
 				<br/>
+				
+				<div class="row-fluid">
+				
+					<div class="span6">
+						<?php $field = $form->getField('sequence') ?>
+						<div class="control-group">
+							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="controls"><?php echo $field->input; ?></div>								
+						</div>
+					</div>
+					
+				</div>
+									
+				<br/>
+				
+				
 				<hr/>
 				
 				<div class="row-fluid">		

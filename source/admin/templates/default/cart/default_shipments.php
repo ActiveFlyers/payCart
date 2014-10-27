@@ -34,6 +34,7 @@ echo $this->loadTemplate('edit_ng');
 		var products		= <?php echo json_encode(array_values($product_particular));?>;
 		var errMessage		= false;
 		var tempArray		= [{}]; // used to store indexes of two shipment to show in one row
+		var tempStatus		= [];
 		
 		<?php if($shipments):?>
 			var shipments   = <?php echo json_encode($shipments, true);?>;
@@ -60,10 +61,10 @@ echo $this->loadTemplate('edit_ng');
 						<div data-ng-show="shipments[value].errMessage" class="alert alert-danger">{{ shipments[value].errMessage }}</div>
 						
 						<span class="pull-right">
-							<a href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
+							<a data-ng-if="!shipments[value].shipment_id" href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
 								<i class="fa fa-check"></i>
 							</a>
-							&nbsp; | &nbsp; 
+							<span data-ng-if="!shipments[value].shipment_id">&nbsp; | &nbsp; </span>
 							<a href="javascript:void(0);"  class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-click="remove(value)">
 								<i class="fa fa-trash-o"></i>
 							</a>
@@ -75,7 +76,7 @@ echo $this->loadTemplate('edit_ng');
 							</label>
 							<div class="controls">
 								<select data-ng-model="shipments[value].shippingrule_id" data-ng-options="value as title for (value, title) in shippingMethods" 
-										required="true" class="pc_shipment_selectbox"></select>
+										required="true" class="pc_shipment_selectbox" data-ng-disabled="shipments[value].shipment_id"></select>
 								<input type="hidden" data-ng-model="shipments[value].shipment_id">
 								<input type="hidden" data-ng-model="shipments[value].cart_id" data-ng-init="shipments[value].cart_id = cartId">
 							</div>
@@ -88,7 +89,7 @@ echo $this->loadTemplate('edit_ng');
 							<div class="controls">
 								<div class="input-prepend">
 									<span class="add-on"><?php echo PaycartFactory::getConfig()->get('catalogue_weight_unit');?></span>
-									<input type="text" class="input-mini" data-ng-model="shipments[value].weight">
+									<input type="text" class="input-mini" data-ng-model="shipments[value].weight" data-ng-disabled="shipments[value].shipment_id">
 								</div>
 							</div>
 						</div>
@@ -100,7 +101,7 @@ echo $this->loadTemplate('edit_ng');
 							<div class="controls">
 								<div class="input-prepend">
 									<span class="add-on"><?php echo $formatter->currency(PaycartFactory::getConfig()->get('localization_currency'));?></span>
-									<input type="text" class="input-mini" data-ng-model="shipments[value].actual_shipping_cost">
+									<input type="text" class="input-mini" data-ng-model="shipments[value].actual_shipping_cost" data-ng-disabled="shipments[value].shipment_id">
 								</div>
 							</div>
 						</div>
@@ -110,7 +111,10 @@ echo $this->loadTemplate('edit_ng');
 								<?php echo JText::_('COM_PAYCART_TRACKING_NUMBER');?>
 							</label>
 							<div class="controls">
-								<input type="text" class="input-mini" data-ng-model="shipments[value].tracking_number">
+								<input type="text" class="input-mini" data-ng-model="shipments[value].tracking_number"> 
+								<a data-ng-if="shipments[value].shipment_id" href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
+								<i class="fa fa-check"></i>
+							</a>
 							</div>
 						</div>
 						
@@ -118,9 +122,17 @@ echo $this->loadTemplate('edit_ng');
 							<label title="" class="hasTooltip control-label">
 								<?php echo JText::_('COM_PAYCART_ADMIN_STATUS');?>
 							</label>
-							<div class="controls">
-								<select data-ng-model="shipments[value].status" data-ng-options="value as title for (value, title) in status" 
-										required="true" class="pc_shipment_selectbox"></select>
+							<div class="controls" data-ng-init="shipments[value].status = shipments[value].status || 'pending'">
+								<span data-ng-init="tempStatus[value] = getStatus(shipments[value].status, shipments[value].shipment_id)">
+									<label data-ng-repeat="s in tempStatus[value]"  data-ng-class="{muted : s.disabled}">
+									    <input data-ng-disabled="{{s.disabled}}"
+									        name="status{{value}}"
+									        type="radio"
+									        value="{{s.value}}"
+									        data-ng-model="shipments[value].status" data-ng-confirm-click="<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_STATUS_CHANGE_CONFIRMATION");?>" confirmed-click="save(value);" />
+									        {{ s.title }} 
+									</label>
+								</span>
 							</div>
 						</div>
 						
@@ -131,13 +143,13 @@ echo $this->loadTemplate('edit_ng');
 							<div class="controls">
 								<span data-ng-repeat="product in shipments[value].products">
 									<select data-ng-model="product.product_id" data-ng-options="p.particular_id as p.title for p in products" 
-									        required="true" class="pc_shipment_selectbox"></select>
-									: <input type="text" class="input-mini" data-ng-model="product.quantity" required="true">
+									        required="true" class="pc_shipment_selectbox" data-ng-disabled="shipments[value].shipment_id"></select>
+									: <input type="text" class="input-mini" data-ng-model="product.quantity" required="true" data-ng-disabled="shipments[value].shipment_id">
 									<a data-ng-show="$index != 0" href="javascript:void(0);" data-ng-click="removeProduct(value, $index)" 
-									   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>">
+									   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-class="{hide:shipments[value].shipment_id}" >
 										<i class="fa fa-trash-o"></i>
 									</a>
-									<a data-ng-show="$index == 0" href="javascript:void(0);" data-ng-click="addMoreProduct(value)" 
+									<a data-ng-show="$index == 0" href="javascript:void(0);" data-ng-click="addMoreProduct(value)" data-ng-class="{hide:shipments[value].shipment_id}"
 									   class="hasTooltip" title="<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_ADD_NEW")?>">
 										<i class="fa fa-plus"></i>
 									</a>

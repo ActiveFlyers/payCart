@@ -12,7 +12,7 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 Rb_HelperTemplate::loadMedia(array('angular'));
 // Depends on jQuery UI
-JHtml::_('jquery.ui', array('core'));
+JHtml::_('jquery.ui', array('core', 'sortable'));
 Rb_Html::script('com_paycart/jquery.ui.draggable.js');
 Rb_Html::script('com_paycart/jquery.ui.droppable.js');		
 		
@@ -20,16 +20,52 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 <script type="text/javascript">	
 	(function($){
 		$(document).ready(function(){
+			var attrStartIndex = 0;
+			var attrstartPosition = '';
+			
 			$('.pc-attribute').draggable({helper: "clone", revert: 'invalid'});
+
+			$('.pc-product-attribute-list')
+				.sortable({
+					connectWith : '.pc-product-attribute-list', 
+					placeholder: "ui-state-highlight",
+					start:function (e, ui) {
+						attrStartIndex = ($(ui.item).index());
+						attrstartPosition = $(ui.item).parent().attr('data-pc-product-position');
+					},
+					stop:function (e, ui) {
+						var newIndex = ($(ui.item).index());
+						var newPosition = $(ui.item).parent().attr('data-pc-product-position');
+						var scope = angular.element(document.getElementById('pcngProductAttributeCtrl')).scope();
+						scope.reorder(attrStartIndex, attrstartPosition, newIndex, newPosition);
+						scope.$apply();
+					}
+				});
+			
 			$('.pc-product-attribute-list').droppable({
-				accept : '.pc-attribute-draggable',
-				hoverClass: "pc-droppable-highlight",
-				drop:function(e,source){
-					var scope = angular.element(document.getElementById('pcngProductAttributeCtrl')).scope();				
-					scope.addToProduct(source.draggable.attr('data-attribute-id'));
-					scope.$apply();
-		    	}
+					accept : '.pc-attribute-draggable',
+					hoverClass: "pc-droppable-highlight",
+					drop:function(e,source){
+						var position  = $(this).attr('data-pc-product-position');
+						var scope = angular.element(document.getElementById('pcngProductAttributeCtrl')).scope();				
+						scope.addToProduct(position, source.draggable.attr('data-attribute-id'));
+						scope.$apply();
+			    	}
 			});
+
+			var startIndex = 0;
+			$(".thumbnails").disableSelection();
+			$(".thumbnails").sortable({						
+				start:function (e, ui) {
+					startIndex = ($(ui.item).index());
+				},
+				stop:function (e, ui) {
+					var newIndex = ($(ui.item).index());
+					var scope = angular.element(document.getElementById('pcngProductImagesCtrl')).scope();
+					scope.reorder(startIndex, newIndex);
+					scope.$apply();
+				}
+			});			
 		});
 	})(rb.jQuery);
 
@@ -41,7 +77,6 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		$scope.message 		= '';
 		$scope.errMessage 	= '';
 		$scope.productId 	= pc_product_id;
-		$scope.cover_media  = pc_cover_media;
 		
 		$scope.setActiveImage = function(index){
 				$scope.message = '';
@@ -91,17 +126,46 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		            } else {
 		            	// if successful, bind success message to message
 		                $scope.message = data.message;
-		                delete $scope.images[index];	
-		                $scope.cover_media = data.coverMedia;										                										                
+		                $scope.images.splice(index, 1);                										                
 		            }
 			});			
 		};
+
+		$scope.reorder = function(startIndex, newIndex){
+			var toMove = $scope.images[startIndex];
+			$scope.images.splice(startIndex,1);			
+			$scope.images.splice(newIndex,0,toMove);
+
+			var imageids = [];
+			for(var index in $scope.images){
+				if($scope.images.hasOwnProperty(index)){
+					imageids.push($scope.images[index].media_id);
+				}
+			} 
+			
+			$http({
+		        method  : 'POST',
+		        url     : 'index.php?option=com_paycart&task=reorderImages&view=product&format=json',
+		        data    : paycart.jQuery.param({'image_ids': imageids, 'product_id':$scope.productId}),  // pass in data as strings
+		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+		    })
+		    .success(function(data) {										         
+					data = paycart.ajax.junkFilter(data);
+		            if (!data.success) {					            	
+		            	// if not successful, bind errors to error variables
+		                alert('Error');
+		            } else {
+		            											                										                
+		            }
+			});
+		};		
 	});
 
 
 	paycart.ng.product.controller('pcngProductAttributeCtrl', function($scope, $timeout, $http){
 		$scope.available = pc_attributes_available;
-		$scope.added = pc_attributes_added;		
+		$scope.added = pc_attributes_added;
+		$scope.positions = pc_positions;		
 		$scope.edit_html = '';
 		$scope.message 		= '';
 		$scope.errMessage 	= '';
@@ -114,29 +178,45 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 			return 'index.php?option=com_paycart&task=getEditHtml&view=productattribute&productattribute_id=' + attribute_id +'&format=json&value='+value+'&r=' + random;
 		};
 		
-		$scope.addToProduct = function(attribute_id){
-			var index = $scope.addedAtIndex($scope.added, attribute_id);
-			if(index != null){
-				// do nothing
-				return false;
+		$scope.addToProduct = function(position, attribute_id){
+			if(typeof($scope.added[position]) == 'undefined'){
+				$scope.added[position] = [];	
 			}
-
+			else{
+				var index = $scope.addedAtIndex($scope.added[position], attribute_id);
+				if(index != null){
+					// do nothing
+					return false;
+				}
+			}
+			
 			var data = {};			
 			data.productattribute_id 	= attribute_id;
 			data.value			 	= '';
 			
-			$scope.added.push(data);
+			$scope.added[position].push(data);
+			return false;			
+		};
+
+		$scope.isAlreadyAdded = function(added, attribute_id){
+			for(var i in $scope.positions){
+				if($scope.positions.hasOwnProperty(i)){
+					if(typeof(added[$scope.positions[i]]) == 'undefined'){
+						continue;
+					}
+					
+					var index = $scope.addedAtIndex(added[$scope.positions[i]], attribute_id);
+					if(index != null){
+						return true;
+					}
+				}
+			}
+			
 			return false;			
 		};
 		
-		$scope.removeFromProduct = function(attribute_id){
-			var index = $scope.addedAtIndex($scope.added, attribute_id);
-			if(index == null){
-				// do nothing
-				return false;
-			}
-
-			$scope.added.splice(index, 1);
+		$scope.removeFromProduct = function(position, index){
+			$scope.added[position].splice(index, 1);			
 			return false;			
 		};
 
@@ -165,6 +245,10 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		 };
 		  
 		$scope.save = function(){
+			if(!paycart.formvalidator.isValid(document.id('paycart_productattribute_form'))){
+				return false;
+			}
+			
 			var elem = paycart.jQuery('[data="pc-json-attribute-edit"]');
 			var data = paycart.jQuery(elem).serializeArray();
 			$http({
@@ -178,7 +262,15 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		    	
 		            if (!data.success) {					            	
 		            	// if not successful, bind errors to error variables
-		                $scope.errMessage = data.message;		                
+		                $scope.errMessage = data.message;
+		                if(data.error_fields.length > 0){
+			                for(var field_id in data.error_fields){
+								if(data.error_fields.hasOwnProperty(field_id) == false){
+									continue;
+								}
+								paycart.formvalidator.handleResponse(false, paycart.jQuery('#'+data.error_fields[field_id]));
+							}	                
+		            	}
 		            } else {
 		            	// if successful, bind success message to message
 		                $scope.message = '';
@@ -188,17 +280,16 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		                	$scope.available[index] = data.productattribute; 
 		                }
 		                else{			
-		                	$scope.available.push(data.productattribute);
-
-		                	// $time out will call the fucntion automatically when $digest is done
-		                	// replace ment of $scope.$apply();
-		                	$timeout(function() {
-		                	// load draggable
-				            	paycart.jQuery('.pc-attribute').draggable({helper: "clone", revert: 'invalid'});
-		                	}); 
-				                		                	
+		                	$scope.available.push(data.productattribute);				                		                	
 		                }
 
+			            // $time out will call the fucntion automatically when $digest is done
+	                	// replace ment of $scope.$apply();
+	                	$timeout(function() {
+	                	// load draggable
+			            	paycart.jQuery('[data-attribute-id="'+data.productattribute_id+'"]').draggable({helper: "clone", revert: 'invalid'});
+	                	}); 
+	                	
 			            $scope.edit(data.productattribute_id);
 		                
 		                random = Math.random();
@@ -243,8 +334,19 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		
 		$scope.cancel = function(){
 			$scope.edit_html = '';
+			$scope.message = '';
+			 $scope.errMessage = '';
 		};					         
-			
+
+		$scope.reorder = function(attrStartIndex, attrstartPosition, newIndex, newPosition){
+			var toMove = $scope.added[attrstartPosition][attrStartIndex];
+			$scope.added[attrstartPosition].splice(attrStartIndex,1);
+
+			if(typeof($scope.added[newPosition]) == 'undefined'){
+				$scope.added[newPosition] = [];	
+			}
+			$scope.added[newPosition].splice(newIndex,0,toMove);
+		};
 	});
 </script>
 <?php 

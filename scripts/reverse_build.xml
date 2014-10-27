@@ -7,6 +7,7 @@
 	<target name="copy_to_repo" description="copy target" depends="pre_config">
 		<phingcall target="copy_package" />
 		<phingcall target="copy_plugins" />
+		<phingcall target="copy_modules" />
 		<phingcall target="copy_testcases" />
 		<!-- reverse build and delete xml	-->
 		<phingcall target="copy_extra_stuff" />
@@ -80,6 +81,23 @@
 		    <then>
 				<copy todir="${target}/plugins">
 					<fileset dir="${source}/plugins/paycart">
+						<include name="**/*.*" />
+					</fileset>
+				</copy>
+		    </then>
+	  	</if>	
+	</target>
+	
+	
+	<!-- ============================================  -->
+	<!-- Target: Copy Modules				           -->
+	<!-- ============================================  -->
+	<target name="copy_modules">
+		<if>
+		    <available file="${source}/modules/mod_paycart_**.**" type='dir' />
+		    <then>
+				<copy todir="${target}/modules">
+					<fileset dir="${source}/modules/mod_paycart_**.**">
 						<include name="**/*.*" />
 					</fileset>
 				</copy>

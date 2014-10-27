@@ -28,8 +28,7 @@ class PaycartBuyeraddress extends PaycartLib
 	protected $state_id;
 	protected $country_id;
 	protected $zipcode;
-	protected $phone1;
-	protected $phone2;
+	protected $phone;
 	protected $vat_number;
 	protected $md5;
 	
@@ -59,8 +58,7 @@ class PaycartBuyeraddress extends PaycartLib
 		$this->state_id			=	'';
 		$this->country_id			=	'';
 		$this->zipcode			=	'';
-		$this->phone1			=	'';
-		$this->phone2			=	'';
+		$this->phone			=	'';
 		$this->vat_number		=	'';
 		
 		return $this;
@@ -79,7 +77,7 @@ class PaycartBuyeraddress extends PaycartLib
 	{
 		$string = 	$this->buyer_id.$this->to.$this->address.$this->city.
 					$this->state_id.$this->country_id.$this->zipcode.
-					$this->phone1.$this->phone2.$this->vat_number;
+					$this->phone.$this->vat_number;
 					
 		//remove all white spaces
 		$string = preg_replace('/\s+/','',$string);
@@ -149,19 +147,11 @@ class PaycartBuyeraddress extends PaycartLib
 	}
 	
 	/**
-	 * @return buyeraddress phone1 field
+	 * @return buyeraddress phone field
 	 */
-	public function getPhone1()
+	public function getPhone()
 	{
-		return $this->phone1;
-	}
-	
-	/**
-	 * @return buyeraddress phone2 field
-	 */
-	public function getPhone2()
-	{
-		return $this->phone2;
+		return $this->phone;
 	}
 	
 	/**

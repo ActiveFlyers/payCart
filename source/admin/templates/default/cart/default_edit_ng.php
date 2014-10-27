@@ -24,6 +24,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		$scope.status	       = status;
 		$scope.products		   = products;
 		$scope.tempArray	   = tempArray;
+		$scope.tempStatus	   = tempStatus;
 		
 		/*
 	     * save new/existing shipment
@@ -55,7 +56,10 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		               // if successful, bind success message to message
 		               $scope.shipments[index] = data.data;
 		               $scope.shipments[index].message = data.message;
-
+   
+					   //update status
+					   $scope.tempStatus[index] = $scope.getStatus(data.data.status, data.data.shipment_id);	
+		               
 					   //remove message after timeout
 		               $timeout(function() {
 		                	 $scope.shipments[index].message = false;
@@ -158,7 +162,63 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 			$scope.tempArray = [index];
 			return $scope.tempArray;
 		};
+
+		$scope.getStatus = function(currentStatus, shipmentId){
+
+			var shipmentStatus = angular.copy($scope.status);
+
+			for(a=0; a<shipmentStatus.length; a++){
+				shipmentStatus[a].disabled = false;
+				if(!shipmentId && shipmentStatus[a].value != "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>"){
+					shipmentStatus[a].disabled = true;
+					continue;
+				}
+
+				if((currentStatus == "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>") && 
+				   (shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>" &&  
+					shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_DISPATCHED?>")){
+					shipmentStatus[a].disabled = true;
+					continue;
+				}
+
+				if((currentStatus == "<?php echo Paycart::STATUS_SHIPMENT_DISPATCHED?>") && 
+				   (shipmentStatus[a].value == "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>")){
+					shipmentStatus[a].disabled = true;
+					continue;
+				}
+
+				if((currentStatus == "<?php echo Paycart::STATUS_SHIPMENT_DELIVERED?>") && 
+				   (shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_DELIVERED?>")){
+					shipmentStatus[a].disabled = true;
+					continue;
+				}
+
+				if((currentStatus == "<?php echo Paycart::STATUS_SHIPMENT_FAILED?>") && 
+				   (shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_FAILED?>")){
+					shipmentStatus[a].disabled = true;
+					continue;
+				}
+			}
+
+			return shipmentStatus;
+		}
+		
 	});
+	
+	paycart.ng.cart.directive('ngConfirmClick', [
+        function(){
+              return{
+                    link: function (scope, element, attr) {
+                           var msg = attr.ngConfirmClick || "<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_STATUS_CHANGE_CONFIRMATION");?>";
+                           var clickAction = attr.confirmedClick;
+                           element.bind('click',function (event) {
+	                           if ( window.confirm(msg) ) {
+	                              	 scope.$apply(clickAction)
+	                           }
+                           });
+                     }
+              };
+    }])
 
 </script>
 <?php 

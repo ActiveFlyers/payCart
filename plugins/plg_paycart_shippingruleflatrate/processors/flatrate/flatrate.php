@@ -76,7 +76,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		}
 		 
 		// if range is empty empty then return false
-		$ranges = $this->processor_config->weight_range;
+		$ranges = $this->processor_config->range;
 		if($ranges === false || empty($ranges)){
 			return false;		
 		}

@@ -80,7 +80,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 		<div id="pc-confirm-billing-address" class="accordion-body in collapse"">
 				 			<div class="accordion-inner">
 				 				<?php
-				 					$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+				 					$layout = new JLayoutFile('paycart_buyeraddress_display');
 									echo $layout->render($billing_address); 
 				 				?>
 				 											
@@ -107,7 +107,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 					if ( @$billing_to_shipping ) {
 				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('Same as a Billing Address');
 				 					} else {
-				 						$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+				 						$layout = new JLayoutFile('paycart_buyeraddress_display');
 										echo $layout->render($shipping_address);
 				 					} 
 				 				?>	
@@ -188,7 +188,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 					<!-- Product Details			 				-->
 				 				<div class="span5">
 				 						<div>
-				 							<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$particular->particular_id);?>" >
+				 							<a class="pc-break-word" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$particular->particular_id);?>" >
 				 								<?php echo $particular->title; ?>
 				 							</a>
 				 						</div>
@@ -198,11 +198,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 						</div>
 				 						
 				 						<?php if ($particular->tax) : 
-				 								echo '<div>'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
+				 								echo '<div>+'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
 				 							 endif;  
 				 						?>
 				 						<?php if ($particular->discount) : 
-				 								echo '<div>'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount($particular->discount, true, $currency_id).'</div>';
+				 								echo '<div>-'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount(-($particular->discount), true, $currency_id).'</div>';
 				 							 endif;  
 				 						?>
 				 				</div>
@@ -213,7 +213,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 					<div>
 					 					<?php echo JText::_('COM_PAYCART_QUANTITY'); ?> : 
 					 					<input 
-					 							type="number"   
+					 							type="text"   
 					 							class="input-mini" 
 					 							id='pc-checkout-quantity-<?php echo $particular->particular_id; ?>'
 					 							value="<?php echo $particular->quantity; ?>"

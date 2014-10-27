@@ -36,7 +36,7 @@ JHtml::_('behavior.formvalidation');
 	<!--  Country Details Tab	-->
 	<?php echo JHtml::_('bootstrap.addTab', 'country', 'detail', JText::_('COM_PAYCART_COUNTRY')); ?>
 	
-	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data">
+	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
 		
 		<div class="row-fluid">
 			<div class="span3">

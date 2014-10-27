@@ -118,10 +118,10 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 								<input type="text" class="input-small" name="paycart_form[processor_config][range][0][price]" value=""/>
 							</span>
 						</td>
-						<td><a href="javascript:void(0)"><i class="fa fa-trash-o" onClick="paycart.shipping.flatrate.deleteRange(0)"></i></a></td>
 					</tr>
 				<?php else :?>
 				
+					<?php $firstKey = key($config->range);?>
 					<?php foreach ($config->range as $key => $value):?>
 						<tr class="pc-shipping-flaterate-range-<?php echo $key?>">
 							<td><input class="input-small" type="text" name="paycart_form[processor_config][range][<?php echo $key?>][min]" value="<?php echo $value->min;?>"/></td>
@@ -132,7 +132,9 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 									<input type="text" class="input-small" name="paycart_form[processor_config][range][<?php echo $key?>][price]" value="<?php echo $value->price;?>"/>
 								</span>
 							</td>
-							<td><a href="javascript:void(0)"><i class="fa fa-trash-o" onClick="paycart.shipping.flatrate.deleteRange(<?php echo $key;?>)"></i></a></td>
+							<?php if($key != $firstKey):?>
+								<td><a href="javascript:void(0)"><i class="fa fa-trash-o" onClick="paycart.shipping.flatrate.deleteRange(<?php echo $key;?>)"></i></a></td>
+							<?php endif;?>
 						</tr>
 					<?php endforeach;?>				
 				<?php endif;?>

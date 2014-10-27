@@ -83,7 +83,7 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 		}
 		
 		$isExist = PaycartFactory::getHelper('cart')->isProductExist($productId);
-		$isAvailableInStock = ($product->getQuantity() > $product->getStockoutLimit())?true:false; 
+		$isAvailableInStock = PaycartFactory::getHelper('product')->isProductInStock($productId); 
 		
 		//set meta details
 		$metaTitle       = $product->getMetadataTitle();
@@ -91,6 +91,11 @@ class PaycartSiteViewProduct extends PaycartSiteBaseViewProduct
 		$metaKeywords    = $product->getMetadataKeywords();
 		
 		Rb_HelperJoomla::addDocumentMetadata($metaTitle,$metaKeywords,$metaDescription);
+				
+		// positions
+		/* @var $helper PaycartHelperProduct */
+		$helper = PaycartFactory::getHelper('product');
+		$this->assign('positions', $helper->getPositions()); 	
 		
 		$this->assign('isAvailableInStock',$isAvailableInStock);
 		$this->assign('isExistInCart', $isExist);

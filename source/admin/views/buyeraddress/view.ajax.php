@@ -47,8 +47,7 @@ class PaycartAdminViewBuyeraddress extends PaycartAdminBaseViewBuyeraddress
 		$display_data->country_id	 	=	$buyer_address->getCountryId();
 		$display_data->zipcode		 	=	$buyer_address->getZipcode();
 		$display_data->vat_number		=	$buyer_address->getVatnumber();
-		$display_data->phone1		 	=	$buyer_address->getPhone1();
-		$display_data->phone2		 	=	$buyer_address->getPhone2();
+		$display_data->phone		 	=	$buyer_address->getPhone();
 		
 		// set display data
 		$this->assign('display_data', $display_data);

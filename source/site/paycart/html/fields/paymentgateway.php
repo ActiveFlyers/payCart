@@ -14,6 +14,10 @@ JFormHelper::loadFieldClass('list');
 
 class PaycartFormFieldPaymentgateway extends JFormFieldList
 {	
+	/**
+	 * (non-PHPdoc)
+	 * @see libraries/joomla/form/fields/JFormFieldList::getOptions()
+	 */
 	public function getOptions()
 	{
 		$options = parent::getOptions();
@@ -33,6 +37,21 @@ class PaycartFormFieldPaymentgateway extends JFormFieldList
 		
 		return array_merge($options, PaycartHtml::buildOptions($processors_options));		
 	}	
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see libraries/joomla/form/fields/JFormFieldList::getInput()
+	 */
+	protected function getInput()
+	{
+		// if Payment gateway already set then we cant change it after save
+		if ( !empty($this->value) ) {
+			$this->readonly = true;
+		}
+		
+		return parent::getInput();
+		
+	}
 	
 	
 }

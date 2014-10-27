@@ -165,7 +165,13 @@ class PaycartSiteControllerCart extends PaycartController
 			//Cart should be save after processing
 			$this->cart->save();
 			
-			$this->execute('address');
+			if ($form_data['emailcheckout'] ) {
+				$this->execute('address');
+			} 
+
+			// need to refresh page when user loggin successfully 
+			$this->setRedirect(JRoute::_('index.php?option=com_paycart&view=cart&task=checkout'));
+
 			return false;
 		}
 		
@@ -491,7 +497,7 @@ class PaycartSiteControllerCart extends PaycartController
 			$errors[] = $error;	
 		}
 		else{
-			$this->cart->updateInvoiceProcessor($gateway_id);
+			$this->cart->updatePaymentProcessor($gateway_id)->save();
 			$this->getView()->set('cart', 		$this->cart);
 		}
 		
@@ -739,4 +745,14 @@ class PaycartSiteControllerCart extends PaycartController
 		$view->assign('errors', $errors);
 		return true;	
 	}
+	
+	/**
+	 * ============================================================================================
+	 *  @PCTODO :: should be created new controller for this kind of task
+	 *  Json function invoke to retrive data
+	 * ============================================================================================
+	 */
+	
+	public function getProductCount() 
+	{}
 }

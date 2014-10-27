@@ -68,14 +68,24 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		}	
 		$this->assign('availableAttributes',  $availableAttributes);
 		
+		$positionedAttributes = $product->getPositionedAttributes();		
 		// prepare addedAttributes
 		$productAttributes = $product->getAttributeValues();
 		$addedAttributes = array();
-		foreach($productAttributes as $attribute_id => $value){
-			$addedAttributes[] = array('productattribute_id' => $attribute_id, 'value' => $value);
-		}		
+		foreach($positionedAttributes as $position => $positionAttributes){
+			$addedAttributes[$position] = array(); 
+			foreach($positionAttributes as $attribute_id){
+				if(isset($attributes[$attribute_id])){
+					$addedAttributes[$position][] = array('productattribute_id' => $attribute_id, 'value' => isset($productAttributes[$attribute_id]) ? $productAttributes[$attribute_id] : '');
+				}
+			}		
+		}
 		$this->assign('addedAttributes', $addedAttributes);
 		
+		// positions
+		/* @var $helper PaycartHelperProduct */
+		$helper = PaycartFactory::getHelper('product');
+		$this->assign('positions', $helper->getPositions()); 	
 		
 		//set images
 		$this->assign('images', $product->getImages());
@@ -83,6 +93,7 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		// @PCTODO:: Set availble variants
 		$this->assign('variants',  Array());
 		$this->assign('global_config', PaycartFactory::getConfig());
+		$this->assign('uploadLimit',PaycartFactory::getHelper('media')->getUploadLimit());
 		return parent::edit($tpl);
 	}
 	

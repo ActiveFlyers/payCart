@@ -69,6 +69,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	   	paycart.cart.product.response = function(response){
 				   		if(response.valid){
 				   			paycart.cart.product.get();
+
+				   			// after validation invoke trigger
+				   			paycart.event.cart.updateproduct();
 							return true;
 						}		
 						
@@ -99,6 +102,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	   	paycart.cart.product.remove.response = function(response){				
 						if(response.valid){
 							paycart.cart.product.get();
+
+							// after validation invoke trigger
+				   			paycart.event.cart.updateproduct();
+				   			
 							return true;
 						}		
 						
@@ -345,6 +352,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							if ('state_id' == index) {
 								state_value 	=	data['buyeraddress'][index];
 							}
+
+						<?php if (!$is_platform_mobile) : ?>
+
+							if ( $('[name="'+selecor_name+'['+index+']"]').is('select') ) {
+								$('[name="'+selecor_name+'['+index+']"]').trigger("liszt:updated");
+							}
+
+						<?php endif; ?>
+							
 						}
 		
 						// special treatment for country and state value
@@ -450,6 +466,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		paycart.cart.confirm.onChangeProductQuantity.response = function(response){				
 						if(response.valid){
 							paycart.cart.confirm.get();
+
+							// after validation invoke trigger
+				   			paycart.event.cart.updateproduct();
 							return true;
 						}		
 						
@@ -480,6 +499,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		paycart.cart.confirm.onRemoveProduct.response = function(response){				
 						if(response.valid){
 							paycart.cart.confirm.get();
+
+							// after validation invoke trigger
+				   			paycart.event.cart.updateproduct();
+				   			
 							return true;
 						}		
 						

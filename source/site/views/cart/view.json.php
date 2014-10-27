@@ -159,4 +159,18 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		$this->assign('json', $response);
 		return true;	
 	}
+	
+	/**
+	 * build json object with number of product in current cart  
+	 */
+	public function getProductCount() 
+	{
+		$products_count = PaycartFactory::getHelper('cart')->getProductCount();
+		
+		$this->json 	= Array('products_count' => $products_count);
+		
+		return true;
+	}
+
+	
 }

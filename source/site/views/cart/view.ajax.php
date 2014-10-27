@@ -29,11 +29,9 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	 */
 	public function addProduct()
 	{
-		$productId = $this->input->get('product_id');
-		
-		$this->assign('productId', $productId);
-		$this->setTpl('product');
-		return true;	
+		// @PCTODO :: Convey error from controller and  handle here 
+
+		return false;
 	}
 	
 	public function login()

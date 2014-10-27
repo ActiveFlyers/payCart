@@ -23,13 +23,27 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 	public function deleteImage()
 	{		
 		if($this->get('success', false)){			
-			$response = array('success' => true, 'coverMedia' => $this->get('coverMedia', 0));
+			$response = array('success' => true);
 			$response['message'] = JText::_('COM_PAYCART_ADMIN_PRODUCT_IMAGE_DELETE_SUCCESS');
 		}
 		else{
 			$response = array('success' => false);				
 			$response['message'] = JText::_('COM_PAYCART_ADMIN_PRODUCT_IMAGE_DELETE_ERROR');
 		}
+		$this->assign('json', $response);
+		
+		return true;	
+	}
+	
+	public function reorderImages()
+	{		
+		if($this->get('success', false)){			
+			$response = array('success' => true, 'coverMedia' => $this->get('coverMedia', 0));		
+		}
+		else{
+			$response = array('success' => false);
+		}
+		
 		$this->assign('json', $response);
 		
 		return true;	

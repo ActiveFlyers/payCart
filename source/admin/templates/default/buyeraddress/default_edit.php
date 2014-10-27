@@ -26,7 +26,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <div class="modal-body" id="rbWindowBody">
 	
 	<!--  New_atrribute_creation body		-->
-	<form id="paycart_buyeraddress_form" class="rb-validate-form">
+	<form id="paycart_buyeraddress_form" class="pc-form-validate">
 	 
 		<?php
 				$layout = new JLayoutFile('paycart_buyeraddress_edit', PAYCART_LAYOUTS_PATH);

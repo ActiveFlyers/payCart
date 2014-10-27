@@ -16,58 +16,13 @@ CREATE TABLE IF NOT EXISTS `#__paycart_config` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `#__paycart_log`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_log` (
-  `log_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `#__paycart_product_review`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_review` (
-  `review_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `publish` bit(1) NOT NULL,
-  `parent_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `email` varchar(250) NOT NULL,
-  `ip` varchar(15) NOT NULL,
-  `created_date` datetime NOT NULL,
-  `text` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `#__paycart_rating`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_rating` (
-  `rating_id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `value` tinyint(4) NOT NULL,
-  `ip` varchar(15) NOT NULL,
-  `created_date` datetime NOT NULL,
-  PRIMARY KEY (`rating_id`),
-  KEY `product_id` (`product_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Product rating will store here' AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `#__paycart_productattribute`
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_productattribute` (
   `productattribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(50) NOT NULL COMMENT 'Type of attribute',
-  `css_class` varchar(100) DEFAULT NULL,
+  `code` varchar(100) DEFAULT NULL,
   `filterable` tinyint(1) NOT NULL COMMENT 'Treat as a filter',
   `searchable` tinyint(1) DEFAULT '0' COMMENT 'Use for keyword search',
   `published` tinyint(1) NOT NULL DEFAULT '1',
@@ -294,40 +249,16 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `to` varchar(100) NOT NULL COMMENT 'reference name',
   `address` text,
   `city` varchar(100) DEFAULT NULL,
-  `state_id` VARCHAR(7) NOT NULL COMMENT 'State ISO code3',
+  `state_id` int(11) NOT NULL COMMENT 'State id',
   `country_id` char(3) NOT NULL COMMENT 'Country ISO code3',
   `zipcode` varchar(10) NOT NULL DEFAULT '',
   `vat_number` varchar(100) NOT NULL,
-  `phone1` varchar(32) NOT NULL,
-  `phone2` varchar(32) NOT NULL,
+  `phone` varchar(32) NOT NULL
   PRIMARY KEY (`buyeraddress_id`),
   KEY `idx_md5` (`md5`),
   KEY `idx_buyer_id` (`buyer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-
--- --------------------------------------------------------
---
--- Table structure for table `#__paycart_filter`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_productfilter` (
-  `product_id` int(11) NOT NULL,
-   PRIMARY KEY (`product_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Filter Column Available here as Fields';
-
-
--- --------------------------------------------------------
---
--- Table structure for table `#__paycart_indexer`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_productindex` (
-  `product_id` int(11) NOT NULL COMMENT 'Product identification',
-  `content` longtext CHARACTER SET utf8 NOT NULL COMMENT 'Use for keyword search',
-   PRIMARY KEY (`product_id`),  
-   FULLTEXT KEY `content` (`content`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 --
@@ -448,7 +379,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_state` (
 
 CREATE TABLE IF NOT EXISTS `#__paycart_state_lang` (
   `state_lang_id` int(11) NOT NULL AUTO_INCREMENT,
-  `state_id` char(3) NOT NULL,
+  `state_id` int(11) NOT NULL,
   `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL,
   PRIMARY KEY (`state_lang_id`)
@@ -718,62 +649,6 @@ CREATE TABLE IF NOT EXISTS `#__paycart_notification_lang` (
 CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule` (
   `shippingrule_id` int(11) NOT NULL AUTO_INCREMENT,
   `published` tinyint(1) NOT NULL,
-  `grade` tinyint(1) NOT NULL COMMENT '0-9 (according to speed of shipping delivery) 9 is fastest and 0 is slowest',
-  `min_days` tinyint(2) NOT NULL,
-  `max_days` tinyint(2) NOT NULL,
-  `packaging_weight` decimal(12,4) DEFAULT '0.0000',
-  `handling_charge` double(15,5) NOT NULL,
-  `tracking_url` text NOT NULL COMMENT 'Common url related to shipping method that will be used to tracks shipments',
-  `processor_classname` varchar(100) NOT NULL COMMENT 'Classname of processor in small-case',
-  `processor_config` text NOT NULL COMMENT 'processor configuration',
-  `created_date` datetime NOT NULL,
-  `modified_date` datetime NOT NULL,
-  `ordering` int(11) NOT NULL,
-  PRIMARY KEY (`shippingrule_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
---
--- Table structure for table `#__paycart_shippingrule_lang`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule_lang` (
-  `shippingrule_lang_id` int(11) NOT NULL AUTO_INCREMENT,
-  `shippingrule_id` int(11) NOT NULL,
-  `lang_code` char(7) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
-  PRIMARY KEY (`shippingrule_lang_id`),
-  KEY `idx_shippingrule_id` (`shippingrule_id`),
-  KEY `idx_lang_code` (`lang_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `#__paycart_shippingrule_x_group`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule_x_group` (
-  `shippingrule_id` int(11) NOT NULL,
-  `group_id` int(11) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  KEY `idx_shippingrule_id` (`shippingrule_id`),
-  KEY `idx_group_id` (`group_id`),
-  KEY `idx_type` (`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Mapping of shippingrule and groups' AUTO_INCREMENT=1 ;
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `#__paycart_shippingrule`
---
-
-CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule` (
-  `shippingrule_id` int(11) NOT NULL AUTO_INCREMENT,
-  `published` tinyint(1) NOT NULL,
   `delivery_grade` tinyint(1) NOT NULL COMMENT '0-9 (according to speed of shipping delivery) 9 is fastest and 0 is slowest',
   `delivery_min_days` tinyint(2) NOT NULL,
   `delivery_max_days` tinyint(2) NOT NULL,
@@ -913,4 +788,205 @@ INSERT IGNORE INTO `#__paycart_productcategory_lang` (`productcategory_lang_id`,
 
 INSERT IGNORE INTO `#__paycart_productcategory` (`productcategory_id`, `cover_media`, `parent_id`, `lft`, `rgt`, `level`, `published`, `created_date`, `modified_date`, `ordering`) VALUES
 (1, NULL, 0, 0, 1, 0, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0);
+
+
+--
+-- Dumping data for table `#__paycart_country`
+--
+
+INSERT IGNORE INTO `#__paycart_country` (`country_id`, `isocode2`, `call_prefix`, `zip_format`, `published`, `ordering`) VALUES
+('IND', 'IN', '91', 'NNNNNN', 1, 1),
+('USA', 'US', '', 'NNNNN', 1, 2);
+
+--
+-- Dumping data for table `#__paycart_country_lang`
+--
+
+INSERT IGNORE INTO `#__paycart_country_lang` (`country_lang_id`, `country_id`, `lang_code`, `title`) VALUES
+(1, 'IND', 'en-GB', 'India'),
+(2, 'USA', 'en-GB', 'United States');
+
+--
+-- Dumping data for table `#__paycart_state`
+--
+
+INSERT IGNORE INTO `#__paycart_state` (`state_id`, `isocode`, `country_id`, `published`, `ordering`) VALUES
+(1, 'AND', 'IND', 1, 1),
+(2, 'ANI', 'IND', 1, 2),
+(3, 'ARU', 'IND', 1, 3),
+(4, 'ASS', 'IND', 1, 4),
+(5, 'BIH', 'IND', 1, 5),
+(6, 'CHA', 'IND', 1, 6),
+(7, 'CHH', 'IND', 1, 7),
+(8, 'DAD', 'IND', 1, 8),
+(9, 'DAM', 'IND', 1, 9),
+(10, 'DEL', 'IND', 1, 10),
+(11, 'GOA', 'IND', 1, 11),
+(12, 'GUJ', 'IND', 1, 12),
+(13, 'HAR', 'IND', 1, 13),
+(14, 'HIM', 'IND', 1, 14),
+(15, 'JAM', 'IND', 1, 15),
+(16, 'JHA', 'IND', 1, 16),
+(17, 'KAR', 'IND', 1, 17),
+(18, 'KER', 'IND', 1, 18),
+(19, 'LAK', 'IND', 1, 19),
+(20, 'MAD', 'IND', 1, 20),
+(21, 'MAH', 'IND', 1, 21),
+(22, 'MAN', 'IND', 1, 22),
+(23, 'MEG', 'IND', 1, 23),
+(24, 'MIZ', 'IND', 1, 24),
+(25, 'NAG', 'IND', 1, 25),
+(26, 'ORI', 'IND', 1, 26),
+(27, 'PON', 'IND', 1, 27),
+(28, 'PUN', 'IND', 1, 28),
+(29, 'RAJ', 'IND', 1, 29),
+(30, 'SIK', 'IND', 1, 30),
+(31, 'TAM', 'IND', 1, 31),
+(32, 'TRI', 'IND', 1, 32),
+(33, 'UAR', 'IND', 1, 33),
+(34, 'UTT', 'IND', 1, 34),
+(35, 'WES', 'IND', 1, 35),
+(36, 'ALA', 'USA', 1, 36),
+(37, 'ALK', 'USA', 1, 37),
+(38, 'ARK', 'USA', 1, 38),
+(39, 'ARZ', 'USA', 1, 39),
+(40, 'CAL', 'USA', 1, 40),
+(41, 'CCT', 'USA', 1, 41),
+(42, 'COL', 'USA', 1, 42),
+(43, 'DEL', 'USA', 1, 43),
+(44, 'DOC', 'USA', 1, 44),
+(45, 'FLO', 'USA', 1, 45),
+(46, 'GEA', 'USA', 1, 46),
+(47, 'HWI', 'USA', 1, 47),
+(48, 'IDA', 'USA', 1, 48),
+(49, 'ILL', 'USA', 1, 49),
+(50, 'IND', 'USA', 1, 50),
+(51, 'IOA', 'USA', 1, 51),
+(52, 'KAS', 'USA', 1, 52),
+(53, 'KTY', 'USA', 1, 53),
+(54, 'LOA', 'USA', 1, 54),
+(55, 'MAI', 'USA', 1, 55),
+(56, 'MIC', 'USA', 1, 56),
+(57, 'MIN', 'USA', 1, 57),
+(58, 'MIO', 'USA', 1, 58),
+(59, 'MIS', 'USA', 1, 59),
+(60, 'MLD', 'USA', 1, 60),
+(61, 'MOT', 'USA', 1, 61),
+(62, 'MSA', 'USA', 1, 62),
+(63, 'NEB', 'USA', 1, 63),
+(64, 'NEH', 'USA', 1, 64),
+(65, 'NEJ', 'USA', 1, 65),
+(66, 'NEM', 'USA', 1, 66),
+(67, 'NEV', 'USA', 1, 67),
+(68, 'NEY', 'USA', 1, 68),
+(69, 'NOC', 'USA', 1, 69),
+(70, 'NOD', 'USA', 1, 70),
+(71, 'OHI', 'USA', 1, 71),
+(72, 'OKL', 'USA', 1, 72),
+(73, 'ORN', 'USA', 1, 73),
+(74, 'PEA', 'USA', 1, 74),
+(75, 'RHI', 'USA', 1, 75),
+(76, 'SOC', 'USA', 1, 76),
+(77, 'SOD', 'USA', 1, 77),
+(78, 'TEN', 'USA', 1, 78),
+(79, 'TXS', 'USA', 1, 79),
+(80, 'UTA', 'USA', 1, 80),
+(81, 'VIA', 'USA', 1, 81),
+(82, 'VMT', 'USA', 1, 82),
+(83, 'WAS', 'USA', 1, 83),
+(84, 'WEV', 'USA', 1, 84),
+(85, 'WIS', 'USA', 1, 85),
+(86, 'WYO', 'USA', 1, 86);
+
+--
+-- Dumping data for table `#__paycart_state_lang`
+--
+
+INSERT IGNORE INTO `#__paycart_state_lang` (`state_lang_id`, `state_id`, `lang_code`, `title`) VALUES
+(1, 1, 'en-GB', 'Andaman & Nicobar Islands'),
+(2, 2, 'en-GB', 'Andhra Pradesh'),
+(3, 3, 'en-GB', 'Arunachal Pradesh'),
+(4, 4, 'en-GB', 'Assam'),
+(5, 5, 'en-GB', 'Bihar'),
+(6, 6, 'en-GB', 'Chandigarh'),
+(7, 7, 'en-GB', 'Chhatisgarh'),
+(8, 8, 'en-GB', 'Daman & Diu'),
+(9, 9, 'en-GB', 'Dadra & Nagar Haveli'),
+(10, 10, 'en-GB', 'Delhi'),
+(11, 11, 'en-GB', 'Goa'),
+(12, 12, 'en-GB', 'Gujarat'),
+(13, 13, 'en-GB', 'Haryana'),
+(14, 14, 'en-GB', 'Himachal Pradesh'),
+(15, 15, 'en-GB', 'Jammu & Kashmir'),
+(16, 16, 'en-GB', 'Jharkhand'),
+(17, 17, 'en-GB', 'Karnataka'),
+(18, 18, 'en-GB', 'Kerala'),
+(19, 19, 'en-GB', 'Lakshadweep'),
+(20, 20, 'en-GB', 'Madhya Pradesh'),
+(21, 21, 'en-GB', 'Meghalaya'),
+(22, 22, 'en-GB', 'Maharashtra'),
+(23, 23, 'en-GB', 'Mizoram'),
+(24, 24, 'en-GB', 'Manipur'),
+(25, 25, 'en-GB', 'Nagaland'),
+(26, 26, 'en-GB', 'Orissa'),
+(27, 27, 'en-GB', 'Pondicherry'),
+(28, 28, 'en-GB', 'Punjab'),
+(29, 29, 'en-GB', 'Rajasthan'),
+(30, 30, 'en-GB', 'Sikkim'),
+(31, 31, 'en-GB', 'Tamil Nadu'),
+(32, 32, 'en-GB', 'Tripura'),
+(33, 33, 'en-GB', 'Uttaranchal'),
+(34, 34, 'en-GB', 'Uttar Pradesh'),
+(35, 35, 'en-GB', 'West Bengal'),
+(36, 36, 'en-GB', 'Alaska'),
+(37, 37, 'en-GB', 'Alabama'),
+(38, 38, 'en-GB', 'Arkansas'),
+(39, 39, 'en-GB', 'Arizona'),
+(40, 40, 'en-GB', 'California'),
+(41, 41, 'en-GB', 'Colorado'),
+(42, 42, 'en-GB', 'Connecticut'),
+(43, 43, 'en-GB', 'District Of Columbia'),
+(44, 44, 'en-GB', 'Delaware'),
+(45, 45, 'en-GB', 'Florida'),
+(46, 46, 'en-GB', 'Georgia'),
+(47, 47, 'en-GB', 'Hawaii'),
+(48, 48, 'en-GB', 'Iowa'),
+(49, 49, 'en-GB', 'Idaho'),
+(50, 50, 'en-GB', 'Illinois'),
+(51, 51, 'en-GB', 'Indiana'),
+(52, 52, 'en-GB', 'Kansas'),
+(53, 53, 'en-GB', 'Kentucky'),
+(54, 54, 'en-GB', 'Louisiana'),
+(55, 55, 'en-GB', 'Massachusetts'),
+(56, 56, 'en-GB', 'Maryland'),
+(57, 57, 'en-GB', 'Maine'),
+(58, 58, 'en-GB', 'Michigan'),
+(59, 59, 'en-GB', 'Minnesota'),
+(60, 60, 'en-GB', 'Missouri'),
+(61, 61, 'en-GB', 'Mississippi'),
+(62, 62, 'en-GB', 'Montana'),
+(63, 63, 'en-GB', 'North Carolina'),
+(64, 64, 'en-GB', 'North Dakota'),
+(65, 65, 'en-GB', 'Nebraska'),
+(66, 66, 'en-GB', 'New Hampshire'),
+(67, 67, 'en-GB', 'New Jersey'),
+(68, 68, 'en-GB', 'New Mexico'),
+(69, 69, 'en-GB', 'Nevada'),
+(70, 70, 'en-GB', 'New York'),
+(71, 71, 'en-GB', 'Ohio'),
+(72, 72, 'en-GB', 'Oklahoma'),
+(73, 73, 'en-GB', 'Oregon'),
+(74, 74, 'en-GB', 'Pennsylvania'),
+(75, 75, 'en-GB', 'Rhode Island'),
+(76, 76, 'en-GB', 'South Carolina'),
+(77, 77, 'en-GB', 'South Dakota'),
+(78, 78, 'en-GB', 'Tennessee'),
+(79, 79, 'en-GB', 'Texas'),
+(80, 80, 'en-GB', 'Utah'),
+(81, 81, 'en-GB', 'Virginia'),
+(82, 82, 'en-GB', 'Vermont'),
+(83, 83, 'en-GB', 'Washington'),
+(84, 84, 'en-GB', 'Wisconsin'),
+(85, 85, 'en-GB', 'West Virginia'),
+(86, 86, 'en-GB', 'Wyoming');
 

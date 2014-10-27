@@ -30,8 +30,7 @@ class PaycartHelperRequest extends PaycartHelper
 		$object->state		= $buyer_address->getStateId();
 		$object->city		= $buyer_address->getCity();
 		$object->zipcode	= $buyer_address->getZipcode();
-		$object->phone1		= $buyer_address->getPhone1();
-		$object->phone2		= $buyer_address->getPhone2();		
+		$object->phone		= $buyer_address->getPhone();		
 		$object->vat_number = $buyer_address->getVatNumber();
 		
 		return $object;

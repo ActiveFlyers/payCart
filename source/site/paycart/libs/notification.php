@@ -86,7 +86,7 @@ class PaycartNotification extends PaycartLib
          */
         public static function getInstanceByEventname($event_name)
         {
-            $records = PaycartFactory::getModel('notification')->loadRecords(Array('event_name' => strtolower($event_name)));
+            $records = PaycartFactory::getModel('notification')->loadRecords(Array('event_name' => strtolower($event_name),'published'=>1));
             
             if (empty($records)) {
                 return false;

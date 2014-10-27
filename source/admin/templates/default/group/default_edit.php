@@ -50,7 +50,7 @@ paycart.admin.group.ruleCounter = <?php echo $ruleCounter;?>;
 
 <div class="span10">
 <div class="row-fluid">	
-	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
+	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">
 		<div class="row-fluid">
 			<div class="span3">
 				<h2><?php echo JText::_('COM_PAYCART_ADMIN_GROUP_DETAILS_HEADER');?></h2>
@@ -64,7 +64,8 @@ paycart.admin.group.ruleCounter = <?php echo $ruleCounter;?>;
 						<?php $field = $form->getField('title') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls"><?php echo $field->input; ?></div>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>								
 						</div>
 						<?php $field = $form->getField('description') ?>
 						<div class="control-group">
