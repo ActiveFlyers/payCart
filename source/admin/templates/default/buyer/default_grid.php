@@ -11,18 +11,30 @@
 
 defined('_JEXEC') OR die();
 ?>
+<div class="pc-buyer-wrapper clearfix">
+<div class="pc-buyer row-fluid">
 
+<!-- CONTENT START -->
+
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=buyer'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
+<div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
 	<?php // echo $this->loadTemplate('filter'); ?>
-	<table class="table table-hover">
+	<table class="table table-striped">
 		<thead>
 		<!-- TABLE HEADER START -->
 			<tr>
-			
-				<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" /></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_USER_ID_LABEL", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_USER_USERNAME_LABEL", 'username', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_BUYER_ID", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_USERNAME", 'username', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_EMAIL", 'email', $filter_order_Dir, $filter_order);?></th>
 				
 			</tr>
 		<!-- TABLE HEADER END -->
@@ -31,15 +43,14 @@ defined('_JEXEC') OR die();
 		<tbody>
 		<!-- TABLE BODY START -->
 			<?php $count= $limitstart;
-			$cbCount = 0;
 			foreach ($records as $record):?>
 			
 				<tr class="<?php echo "row".$count%2; ?>">								
-					<th><?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} );?></th>
 					<td><?php echo $record->buyer_id;?></td>
 					<td>
 						<?php echo PaycartHtml::link('index.php?option=com_paycart&view=buyer&task=edit&buyer_id='.$record->buyer_id, $record->username);?>
-						<br />
+					</td>
+					<td>
 						<?php echo $record->email;?>
 					</td>
 				</tr>
@@ -60,7 +71,9 @@ defined('_JEXEC') OR die();
 	<input type="hidden" name="filter_order" value="<?php echo $filter_order;?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $filter_order_Dir;?>" />
 	<input type="hidden" name="task" value="" />
-	<input type="hidden" name="boxchecked" value="0" />
 	
 </form>
+</div>
+</div>
+</div>
 <?php 

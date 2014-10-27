@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+
+	<!-- Display into Menu Select list -->
+	<layout title="COM_PAYCART_MENU_PRODUCTCATEGORY_DEFAULT_VIEW_TITLE" option="com_paycart_paycartdashboard_view_default_option">
+		<message><![CDATA[COM_PAYCART_MENU_PRODUCTCATEGORY_DEFAULT_VIEW_TITLE_MESSAGE]]></message>
+	</layout>
+	
+	<fields name="request">
+	    <fieldset name="request" addfieldpath="/components/com_paycart/paycart/html/fields" label="Basic Parameters">
+			
+			<field 	name="productcategory_id" 
+					type="paycart.category"							
+					label="COM_PAYCART_ADMIN_CATEGORY" 
+					class="paycart_category_class"
+					show_root="0"
+			>
+					<option value=''> COM_PAYCART_ADMIN_SELECT </option>
+					
+			</field>
+			
+	        
+	        <field 	name="task" 			type="hidden"
+	            	required="required" 	default="display"
+	            	value="display"
+	        />
+	        
+	    </fieldset>
+	</fields>
+
+
+</metadata>

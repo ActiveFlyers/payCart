@@ -21,7 +21,8 @@ class PaycartFormFieldAttributeType extends JFormFieldList
 	 */
 	public function getOptions()
 	{
-		return PaycartHtml::buildOptions(self::getAttributeList());		
+		$options = parent::getOptions();
+		return array_merge($options, PaycartHtml::buildOptions(self::getAttributeList()));		
 	}
 	
 	//@PCTODO:: Should be moved to helper if attribute inject from outside

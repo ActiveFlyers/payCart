@@ -19,10 +19,10 @@ class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategor
 {	
 	protected function _adminGridToolbar()
 	{
-		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADD_NEW_PRODUCT_CATEGORY');
+		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADMIN_ADD');
 		Rb_HelperToolbar::editList();
 		Rb_HelperToolbar::divider();
-		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ENTITY_DELETE_CONFIRMATION'));
+		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ADMIN_DELETE_PROMPT'));
 		Rb_HelperToolbar::publish();
 		Rb_HelperToolbar::unpublish();
 	}
@@ -36,15 +36,39 @@ class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategor
 	
 	public function edit($tpl = null)
 	{
-		$catId	  =  $this->getModel()->getId();
-		$category =  PaycartProductcategory::getInstance($catId);
+		$model 	  = $this->getModel();
+		$catId	  = $model->getId();
+		$category = PaycartProductcategory::getInstance($catId);
 		
-		$form 		= $category->getModelform()->getForm($category);
-	    $language   = array('language'=> $category->getLanguage());
-	    $form->bind($language);
+
+		// Get the prvioisly posted data if any
+		// if it is not empty it means there were some errors
+		$post_data = $model->getState('post_data', array());
+		if(!empty($post_data)){
+			$category->bind($post_data);
+		}	
+		$this->assign('error_fields', $model->getState('error_fields', array()));
+		
+		$form 	  = $category->getModelform()->getForm($category);
+				
+		//set images
+		$this->assign('cover_media', $category->getCoverMedia());
 		
 		$this->assign('form', $form );
+		$this->assign('productCategory',$category);
 		
 		return parent::edit($tpl);
+	}
+	
+	function _displayGrid($records)
+	{
+		//unset root category from records, so that root won't be listed on grid
+		unset($records[Paycart::PRODUCTCATEGORY_ROOT_ID]);
+		
+		if(count($records) > 0){
+			return parent::_displayGrid($records);
+		}
+		
+		return $this->_displayBlank();
 	}
 }

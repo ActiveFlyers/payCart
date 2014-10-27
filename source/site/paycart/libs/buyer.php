@@ -96,4 +96,18 @@ class PaycartBuyer extends PaycartLib
 		return $this->shipping_address_id;
 	}
 	
+	public function getEmail() 
+	{
+		return $this->email;
+	}
+
+	public function getUsername() 
+	{
+		return $this->username;
+	}
+	
+	public function getRealName() 
+	{
+		return $this->realname;
+	}
 }

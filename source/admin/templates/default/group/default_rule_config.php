@@ -11,10 +11,15 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 ?>
-<div>
-	<a href="#" onClick="paycart.jQuery(this).parent().remove(); return false;">
-		<i class="icon icon-delete"> </i>
-	</a>
-	<?php echo $configHtml;?>		
+<hr/>
+<div class="row-fluid">
+	<div class="span10">
+		<?php echo $configHtml;?>
+	</div>
+	<div class="span2">
+		<a href="#" onClick="paycart.jQuery(this).parent().parent().remove(); return false;">
+			<i class="icon icon-delete"> </i>
+		</a>
+	</div>		
 	<input type="hidden" name="<?php echo $namePrefix;?>[ruleClass]" value="<?php echo $ruleClass;?>" />		
 </div>

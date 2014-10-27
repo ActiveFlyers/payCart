@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @author mManishTrivedi
  *
  */
-class PaycartModelDiscountrule extends PaycartModel
+class PaycartModelDiscountrule extends PaycartModelLang
 {
 //	var $filterMatchOpeartor = Array(
 //									'coupon' => array('LIKE')
@@ -58,75 +58,93 @@ class PaycartModelDiscountrule extends PaycartModel
 		return $records;
 			  
 	}
+	
+	public function getGroups($pk, $type)
+	{
+		$query = new Rb_Query();
+		$query->select('group_id')
+				->from('#__paycart_discountrule_x_group')
+				->where('`type` = "'.$type.'"')
+				->where('`discountrule_id` = '.$pk);
+				
+		return   $query->dbLoadQuery()->loadColumn();
+	}
+	
+	public function saveGroups($pk, $type, $values)
+	{
+		// remove empty values [0, null, false, ''] 
+		$values = array_filter($values);
+		 
+		$query = new Rb_Query();
+		$query->delete()
+				->from('#__paycart_discountrule_x_group')
+				->where('`type` = "'.$type.'"')
+				->where('`discountrule_id` = '.$pk);
+				
+		if(!$query->dbLoadQuery()->execute()){
+			throw new Exception('Error in deleting Taxrule Group Mapping');
+		}
+		
+		if(empty($values)){
+			return $this;
+		}
+		
+		$sql = 'INSERT INTO `#__paycart_discountrule_x_group` (`discountrule_id`, `group_id`, `type`) VALUES';		
+		
+		$insert = array();
+		foreach($values as $value){
+			if(empty($value)){
+				continue;
+			}
+			
+			$insert[] = '('.$pk.', '.$value.', "'.$type.'")';
+		}
+		$sql .= implode(', ', $insert);
+		
+		$db = PaycartFactory::getDbo();
+		$db->setQuery($sql);
+		if(!$db->execute()){
+			throw new Exception('Error in inserting Discountrule Group Mapping');
+		}
+		
+		return $this;
+	}
+	
+	public function delete($pk=null)
+	{
+		//try to calculate automatically
+		if($pk === null){
+			$pk = (int) $this->getId();
+		}
+		
+		if(!$pk){
+			$this->setError('Invalid itemid to delete for model : '.$this->getName());
+			return false;
+		}
+		
+		$query = new Rb_Query();
+		$query->delete()
+				->from('#__paycart_discountrule_x_group')
+				->where('`discountrule_id` = '.$pk);
+				
+		if(!$query->dbLoadQuery()->execute()){
+			$this->setError('Error in deleting Discountrule Group Mapping');
+			return false;
+		}
+		
+		return parent::delete($pk);
+	}
 }
 
 class PaycartModelformDiscountrule extends PaycartModelform { }
 
 
-/**
- * 
- * Discountrule Lang model
- * @author mManishTrivedi
- *
- */
-class PaycartModelDiscountruleLang extends PaycartModel
+class PaycartTableDiscountrule extends PaycartTable{ }
+
+class PaycartTableDiscountruleLang extends PaycartTable
 {
-	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Model::save()
-	 */
-	public function save($data, $pk=null, $new=false)
+	function __construct($tblFullName='#__paycart_discountrule_lang', $tblPrimaryKey='discountrule_lang_id', $db=null)
 	{
-		
-		// 1#.no data then return true without any action
-		if(empty($data)) {
-			return true;
-		}
-		// 2#. Valiadate Data
-		if(!$this->validate($data)) {
-			return false;
-		}
-		
-		// 3#. Delete existing data
-		//$this->deleteMany(Array('discountrule_id'=>$discountruleId));
-		
-		// 4#. Insert new data
-		$query = $this->_db->getQuery(true);
-		
-		// build inert query
-//		$query->insert($this->getTable()->get('_tbl'))
-//					->columns(
-//						array(
-//							$this->_db->quoteName('discountrule_id'),
-//							$this->_db->quoteName('lang_id'), $this->_db->quoteName('message')
-//						)
-//					);
-
-		foreach ($data as $row) {
-			$query->values("{$this->_db->quote($row['discountrule_id'])}, 
-							{$this->_db->quote($row['lang_code'])},
-							{$this->_db->quote($row['message'])}
-						   ");
-		}
-
-		$this->_db->setQuery($query);
-		try	{
-			$this->_db->execute();
-		}
-		catch (RuntimeException $e) {
-			//@PCTODO::proper message propagates
-			Rb_Error::raiseError(500, $e->getMessage());
-		}
-		
-		return true;	
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
 	}
 }
-
-/**
- * 
- * Discountrule and class Mapper model
- * @author mManishTrivedi
- *
- */
-class PaycartModelDiscountruleXGroup extends PaycartModel
-{}

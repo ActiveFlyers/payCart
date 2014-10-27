@@ -11,21 +11,11 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-PaycartHtml::_('behavior.framework', true);
-// validation for required fields
-PaycartHtml::_('behavior.formvalidation');
 ?>
 <script src="<?php echo Rb_HelperTemplate::mediaURI(PAYCART_PATH_CORE.'/attributes/color/jquery.minicolors.js',false)?>" type="text/javascript"></script>
 <link rel="stylesheet" href="<?php echo Rb_HelperTemplate::mediaURI(PAYCART_PATH_CORE.'/attributes/color/jquery.minicolors.css',false);?>"/>
 
 <script type="text/javascript">
-	Joomla.submitbutton = function(task)
-	{
-		if (task == 'cancel' || document.formvalidator.isValid(document.id('paycart_productattribute_form'))) {
-			Joomla.submitform(task, document.getElementById('paycart_productattribute_form'));
-		}
-	};
-
 	(function($)
 		{
 			$(document).ready(function()
@@ -42,33 +32,44 @@ PaycartHtml::_('behavior.formvalidation');
 
 			//load required script for radio buttons
 			paycart.radio.init();
+			paycart.jQuery('.hasTooltip').tooltip();
 			
 	})(paycart.jQuery);
 	
 </script>
 
-<form action="<?php echo Rb_Route::_('index.php?option=com_paycart&view=productattribute'); ?>" method="post" name="adminForm" id="paycart_productattribute_form" class="rb-validate-form">
-<div class="row-fluid">
-	<div class=" span6 form-horizontal">
-		<?php $language = $form->getFieldset('language');?>
-		<?php $field    = $language['paycart_form_language_title']?>
+<div class="pc-product-wrapper clearfix">
+<div class="pc-product row-fluid">
+	<form action="index.php" onSubmit="return fasle;" method="post" data="pc-json-attribute-edit" id="paycart_productattribute_form">
+	<div class=" span6">
 		<div class="control-group">
-			<div class="control-label"><?php echo $field->label; ?> </div>
-			<div class="controls"><?php echo $field->input; ?></div>								
+			<div class="control-label"><?php echo $form->getLabel('title'); ?> </div>
+			<div class="controls"><?php echo $form->getInput('title'); ?></div>								
 		</div>
 
 		<div class="control-group">
 			<div class="control-label">
-				<?php echo $form->getLabel('status'); ?>
+				<?php echo $form->getLabel('code'); ?>
 			</div>
 			<div class="controls">
-				<?php echo $form->getInput('status'); ?>	
+				<?php echo $form->getInput('code'); ?>
+				<?php $field = $form->getField('code') ?>
+				<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_ATTRIBUTECODE');?></div>
+			</div>
+		</div>		
+		
+		<div class="control-group">
+			<div class="control-label">
+				<?php echo $form->getLabel('published'); ?>
+			</div>
+			<div class="controls">
+				<?php echo $form->getInput('published'); ?>	
 			</div>
 		</div>
 		
 		<div class="control-group">
 			<div class="control-label">
-				<?php echo $form->getLabel('filterable'); ?>
+				<?php //echo $form->getLabel('filterable'); ?>
 			</div>
 			<div class="controls">
 				<?php echo $form->getInput('filterable'); ?>
@@ -77,24 +78,15 @@ PaycartHtml::_('behavior.formvalidation');
 		
 		<div class="control-group">
 			<div class="control-label">
-				<?php echo $form->getLabel('searchable'); ?>
+				<?php //echo $form->getLabel('searchable'); ?>
 			</div>
 			<div class="controls">
 				<?php echo $form->getInput('searchable'); ?>
 			</div>
-		</div>
-		
-		<div class="control-group">
-			<div class="control-label">
-				<?php echo $form->getLabel('css_class'); ?>
-			</div>
-			<div class="controls">
-				<?php echo $form->getInput('css_class'); ?>
-			</div>
 		</div>		
 	</div>
 	
-	<div class="span6 form-horizontal">
+	<div class="span6">
 			<div class="control-group">
 				<div class="control-label">
 					<?php echo $form->getLabel('type'); ?>
@@ -103,13 +95,19 @@ PaycartHtml::_('behavior.formvalidation');
 					<?php echo $form->getInput('type'); ?>
 				</div>
 			</div>
-			
-			<?php echo $attributeHtml;?>
+			<div id="paycart-attribute-config">
+				<?php echo $attributeHtml;?>
+			</div>
 	</div>	
-</div>
-
-<!--========	Hiddens variables	========-->	
+	
+	<!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
 	<?php echo $form->getInput('productattribute_id');?>
 	<?php echo $form->getInput('productattribute_lang_id');?>
-</form>
+	
+	</form>
+</div>
+</div>
+
+
+

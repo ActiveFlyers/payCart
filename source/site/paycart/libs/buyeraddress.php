@@ -25,12 +25,12 @@ class PaycartBuyeraddress extends PaycartLib
 	protected $to;
 	protected $address;
 	protected $city;
-	protected $state;
-	protected $country;
+	protected $state_id;
+	protected $country_id;
 	protected $zipcode;
-	protected $phone1;
-	protected $phone2;
+	protected $phone;
 	protected $vat_number;
+	protected $md5;
 	
 
 	/**
@@ -55,14 +55,35 @@ class PaycartBuyeraddress extends PaycartLib
 		$this->to				=	'';
 		$this->address			=	'';
 		$this->city				=	'';
-		$this->state			=	'';
-		$this->country			=	'';
+		$this->state_id			=	'';
+		$this->country_id			=	'';
 		$this->zipcode			=	'';
-		$this->phone1			=	'';
-		$this->phone2			=	'';
+		$this->phone			=	'';
 		$this->vat_number		=	'';
 		
 		return $this;
+	}
+	
+	public function bind($data, $ignore=Array()) 
+	{		
+		parent::bind($data, $ignore);
+		
+		$this->md5 = $this->createMD5();
+		
+		return $this;
+	}
+	
+	public function createMD5()
+	{
+		$string = 	$this->buyer_id.$this->to.$this->address.$this->city.
+					$this->state_id.$this->country_id.$this->zipcode.
+					$this->phone.$this->vat_number;
+					
+		//remove all white spaces
+		$string = preg_replace('/\s+/','',$string);
+		
+		//string should be lower beofre md5
+		return md5(strtolower($string));
 	}
 	
 	/**
@@ -112,9 +133,9 @@ class PaycartBuyeraddress extends PaycartLib
 	/**
 	 * @return buyeraddress state field
 	 */
-	public function getState()
+	public function getStateId()
 	{
-		return $this->state;
+		return $this->state_id;
 	}
 	
 	/**
@@ -126,27 +147,19 @@ class PaycartBuyeraddress extends PaycartLib
 	}
 	
 	/**
-	 * @return buyeraddress phone1 field
+	 * @return buyeraddress phone field
 	 */
-	public function getPhone1()
+	public function getPhone()
 	{
-		return $this->phone1;
-	}
-	
-	/**
-	 * @return buyeraddress phone2 field
-	 */
-	public function getPhone2()
-	{
-		return $this->phone2;
+		return $this->phone;
 	}
 	
 	/**
 	* @return buyeraddress country field
 	 */
-	public function getCountry()
+	public function getCountryId()
 	{
-		return $this->country;
+		return $this->country_id;
 	}
 	
 	/**
@@ -157,5 +170,17 @@ class PaycartBuyeraddress extends PaycartLib
 		return $this->vat_number;
 	}
 	
-
+	public function setBuyerId($buyer_id)
+	{
+		$this->buyer_id = $buyer_id;
+	}
+	
+	/**
+	 * @return buyeraddress MD5 field
+	 */
+	public function getMD5()
+	{
+		return $this->md5;
+	}
+	
 }

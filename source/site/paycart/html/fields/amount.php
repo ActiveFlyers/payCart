@@ -12,19 +12,18 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 jimport('joomla.form.formfield');
 
-class PaycartFormFieldAmount extends JFormField
+class PaycartFormFieldAmount extends JFormFieldText
 {	
 	public function getInput()
 	{
 		//Currency get from global config
-		$currency = PaycartFactory::getConfig()->get('currency', '$');
-		$value	  = $this->value;
+		$currency = PaycartFactory::getHelper('format')->currency(PaycartFactory::getConfig()->get('localization_currency'));
+		$html = parent::getInput();
 		return 
 				"<div class='input-prepend'>
 					<span class='add-on'>{$currency}</span>
-					<input name='{$this->name}'class='input-small' type='text' value='{$value}'>
-				</div>";
-					
-	}
-	
+					$html
+				</div>
+				";					
+	}	
 }

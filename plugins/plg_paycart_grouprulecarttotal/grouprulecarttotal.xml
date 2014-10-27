@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="paycart" method="upgrade">
+    <name>Paycart GroupRule CartTotal</name>
+    <version>1.0.0</version>
+    <creationDate>Nov 2012</creationDate>
+    <author>Ready Bytes</author>
+    <authorEmail>support+paycart@readybytes.in</authorEmail>
+    <authorUrl>http://www.readybytes.net/paycart</authorUrl>
+    <copyright>2009-14 Ready Bytes Software Labs Pvt. Ltd.</copyright>
+    <license>GNU General Public License v2</license>
+    <description>Used to create grouprules on the basis of cart's total</description>
+    <files>
+	<filename plugin="grouprulecarttotal">grouprulecarttotal.php</filename>
+	<folder>rules</folder>
+	<filename>index.html</filename>
+    </files>
+    <config>
+    </config>
+ 
+    <alias>pc-grouprule-carttotal</alias>
+    <version_number>1.0.0</version_number>
+    <version_name>Grouprule CartTotal 1.0</version_name>
+</extension>

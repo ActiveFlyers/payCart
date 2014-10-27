@@ -4,21 +4,23 @@
 	<name>PayCart</name>
 	<creationDate>Jun2013</creationDate>
 	<author>Team Readybytes</author>
-	<authorEmail>team@readybytes.in</authorEmail>
+	<authorEmail>support+paycart@readybytes.in</authorEmail>
 	<authorUrl>readybytes.in</authorUrl>
 	<copyright>Team ReadyBytes</copyright>
 	<license>GNU GPL 3</license>
-	<version>@global.version@.@global.build.number@</version>
+	<version>@global.version@</version>
 	<description>Try to focus on: Simplicity, Product Based and Easy to Customized.</description>
 	
 	<!-- Public front end files -->
 	<files folder="site">
 		<filename>index.html</filename>
 		<filename>paycart.php</filename>
+		<filename>router.php</filename>
 		<folder>controllers</folder>
 		<folder>views</folder>
 		<folder>templates</folder>
 		<folder>paycart</folder>
+		<folder>layouts</folder>
 	</files>
 	
 	<!-- Media files -->
@@ -42,14 +44,22 @@
 		</sql>
 	</install>
 	
+	<!-- Runs on updation -->
+	<update>
+		<schemas> 
+             <schemapath type="mysql">install/sql/updates/mysql</schemapath> 
+        </schemas> 
+	</update>
+	
 	<!-- Administrator back-end section -->
 	<administration>
 		
 		<menu img="">COM_PAYCART</menu>
 		<submenu>
-			<menu 	view="product" 		img="">COM_PAYCART_PRODUCT</menu>
-			<menu 	view="cart"			img="">COM_PAYCART_CART</menu>
-			<menu 	view="buyer"			img="">COM_PAYCART_BUYER</menu>
+			<menu 	view="product" 		img="">COM_PAYCART_ADMIN_MENU_CATALOGUE</menu>
+			<menu 	view="cart"			img="">COM_PAYCART_ADMIN_MENU_SALES</menu>
+			<menu 	view="buyer"		img="">COM_PAYCART_ADMIN_MENU_BUYER</menu>
+			<menu 	view="config"		img="">COM_PAYCART_ADMIN_MENU_SETTINGS</menu>
 		</submenu>
 		
 	

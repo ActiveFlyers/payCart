@@ -1,98 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-		<fieldset name="basic-attributes" label="COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL">
-			<field name="productcategory_id" type="text"
+	<fieldset name="basic-attributes" label="COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL">
+		<field 	name="productcategory_id" 
+				type="hidden"
 				default="0"
-				label="COM_PAYCART_PRODUCTCATEGORY_ID_LABEL"
-				description="COM_PAYCART_PRODUCTCATEGORY_ID_DESC"
+				label="COM_PAYCART_ADMIN_ID"				
 				readonly="true"
-				size="10"
-			/>
+				size="10"/>
 			
-			<field 	name="status" type="list"
-					default="1"
-					description="COM_PAYCART_PRODUCT_STATUS_DESC"
-					label="COM_PAYCART_PRODUCT_STATUS_LABEL" 
-				>
-				<option value='published'>COM_PAYCART_PUBLISHED</option>
-				<option value='unpublished'>COM_PAYCART_UNPUBLISHED</option>
-				<option value='invisible'>COM_PAYCART_INVISIBLE</option>
-				<option value='trashed'>COM_PAYCART_TRASHED</option>
-			</field>
+		<field 	
+				name="published" 
+				type="radio"				
+				default="1"		
+				class="btn-group"			
+				label="COM_PAYCART_ADMIN_PUBLISHED">
+				<option value='1'>JYES</option>
+				<option value='0'>JNO</option>				
+		</field>	
 
-<!-- Custom Element for paycart product category			-->
-			<field name="parent" type="paycart.category"
+		<!-- Custom Element for paycart product category			-->
+		<field 	name="parent_id" 
+				type="paycart.category"
 				default=""
-				description="COM_PAYCART_PRODUCTCATEGORY_DESC"
-				label="COM_PAYCART_PRODUCTCATEGORY_PARENT_LABEL" 
-				addnew="false"
-			>
-				<option>COM_PAYCART_SELECT_CATEGORY_PARENT</option>
-			</field>
-			
-			<field name="cover_media" type="paycart.media"
-				description="COM_PAYCART_PRODUCTCATEGORY_COVER_MEDIA_DESC"
-				label="COM_PAYCART_PRODUCTCATEGORY_COVER_MEDIA_LABEL" 
-			/>
-			
-			<field name="created_date" type="calendar"
-				default=""
-				description="COM_PAYCART_PRODUCTCATEGORY_CREATED_DATE_DESC"
-				label="COM_PAYCART_PRODUCTCATEGORY_CREATED_DATE_LABEL" 
-				format="%Y-%m-%d %H:%M:%S"
-				readonly="true"
-			/>
-			
-			<field name="modified_date" type="calendar"
-				description="COM_PAYCART_PRODUCTCATEGORY_MODIFIED_DATE_DESC"
-				label="COM_PAYCART_PRODUCTCATEGORY_MODIFIED_DATE_LABEL" 
-				format="%Y-%m-%d %H:%M:%S"
-				readonly="true"
-			/>
-			
-		</fieldset>	
+				label="COM_PAYCART_ADMIN_PARENT"
+				addnew="false" />			
 		
-		<fields name="language">
-			<fieldset name='language'>
-				<field name="productcategory_lang_id" type="text"
-					default="0"
-					label="COM_PAYCART_PRODUCTCATEGORY_LANG_ID_LABEL"
-					description="COM_PAYCART_PRODUCTCATEGORY_LANG_ID_DESC"
-					readonly="true"
-					size="10"
-				/>
-				
-				<field name="title" type="text"
-				label="COM_PAYCART_PRODUCTCATEGORY_TITLE"
-				description="COM_PAYCART_PRODUCTCATEGORY_TITLE_DESC"
-				required="true"
-				/>
-				
-				<field name="alias" type="text"
-					label="COM_PAYCART_PRODUCTCATEGORY_ALIAS_LABEL"
-					description="COM_PAYCART_PRODUCTCATEGORY_ALIAS_DESC"
-				/>
-				
-				<field name="description" type="editor"
-					description="COM_PAYCART_PRODUCTCATEGORY_DESCRIPTION_DESC"
-					label="COM_PAYCART_PRODUCTCATEGORY_DESCRIPTION_LABEL" 
-					hide="readmore,pagebreak"
-				/>
+		<field 	name="cover_media" 
+				type="paycart.media"
+				label="COM_PAYCART_ADMIN_IMAGE" />
 			
-				<field	name="metadata_title" type="text"
-						label="COM_PAYCART_PRODUCTCATEGORY_META_DATA_TITLE_LABEL" 
-						description="COM_PAYCART_PRODUCTCATEGORY_META_DATA_TITLE_DESC"
-				/>
-				
-				<field 	name="metadata_descriprion" type="text"
-						description="COM_PAYCART_PRODUCTCATEGORY_META_DATA_DESCRIPRION_DESC" 
-						label="COM_PAYCART_PRODUCTCATEGORY_META_DATA_DESCRIPRION_LABEL"
-				/>
-				
-				<field	name="metadata_keyword" type="text"
-						description="COM_PAYCART_PRODUCTCATEGORY_META_DATA_KEYWORD_DESC" 
-						label="COM_PAYCART_PRODUCTCATEGORY_META_DATA_KEYWORD_LABEL"
-				/>
-			</fieldset>
-		</fields>
+		<field 	name="created_date" 
+				type="calendar"				
+				label="COM_PAYCART_ADMIN_CREATED_DATE" 
+				format="%Y-%m-%d %H:%M:%S"
+				readonly="true"/>
+			
+		<field 	name="modified_date" type="calendar"				
+				label="COM_PAYCART_ADMIN_MODIFIED_DATE" 
+				format="%Y-%m-%d %H:%M:%S"
+				readonly="true"/>
+			
+	</fieldset>	
+		
+	<fieldset name='language'>
+		<field 	name="productcategory_lang_id" 
+				type="hidden"
+				default="0"/>
+		
+		<field 	name="title" 
+				type="text"
+				class="input-block-level"
+				label="COM_PAYCART_ADMIN_TITLE"
+				required="true"/>
+		
+		<field 	name="alias" 
+				type="text"
+				filter="JApplicationHelper::stringURLSafe"
+				validate="productcategoryalias"
+				class="input-block-level"
+				label="COM_PAYCART_ADMIN_ALIAS"/>
+		
+		<field 	name="description" 
+				type="editor"										
+				label="COM_PAYCART_ADMIN_DESCRIPTION"
+				filter="JComponentHelper::filterText" />
+		
+		<field	name="metadata_title" 
+				type="text"
+				class="input-block-level"
+				label="COM_PAYCART_ADMIN_METADATA_TITLE"/>
+		
+		<field 	name="metadata_description" 
+				type="text"
+				class="input-block-level"
+				label="COM_PAYCART_ADMIN_METADATA_DESCRIPTION"/>
+		
+		<field	name="metadata_keywords" 
+				type="text" 
+				class="input-block-level"
+				label="COM_PAYCART_ADMIN_METADATA_KEYWORD"/>
+	</fieldset>	
 </form>

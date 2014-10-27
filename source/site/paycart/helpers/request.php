@@ -20,25 +20,18 @@ class PaycartHelperRequest extends PaycartHelper
 	/**
 	 * @return PaycartRequestBuyeraddress
 	 */
-	public function getBuyeraddressObject($address)
-	{
-		//@PCTODO:
-		// if its numeric then get instance of address
-		if(is_numeric($particular)){
-			$address = PaycartBuyeraddress::getInstance($address);
-		}
-		
+	public function getBuyeraddressObject(PaycartBuyeraddress $buyer_address)
+	{		
 		$object = new PaycartRequestBuyeraddress();
 		
-		$object->to			= $address->getTo();
-		$object->address 	= $address->getAddress();
-		$object->country	= $address->getCountry();
-		$object->state		= $address->getState();
-		$object->city		= $address->getCity();
-		$object->zipcode	= $address->getZipcode();
-		$object->phone1		= $address->getPhone1();
-		$object->phone2		= $address->getPhone2();		
-		$object->vat_number = $address->getVatNumber();
+		$object->to			= $buyer_address->getTo();
+		$object->address 	= $buyer_address->getAddress();
+		$object->country	= $buyer_address->getCountryId();
+		$object->state		= $buyer_address->getStateId();
+		$object->city		= $buyer_address->getCity();
+		$object->zipcode	= $buyer_address->getZipcode();
+		$object->phone		= $buyer_address->getPhone();		
+		$object->vat_number = $buyer_address->getVatNumber();
 		
 		return $object;
 	}
@@ -46,12 +39,8 @@ class PaycartHelperRequest extends PaycartHelper
 	/**
 	 * @return PaycartRequestBuyer
 	 */
-	public function getBuyerObject($buyer)
+	public function getBuyerObject(PaycartBuyer $buyer)
 	{
-		if(is_numeric($particular)){
-			// get buyer instance		
-			$buyer 	= PaycartBuyer::getInstance($buyer_id);
-		}		
 		$object = new PaycartRequestBuyer();
 		
 		$object->email 		= $buyer->getEmail();
@@ -64,13 +53,8 @@ class PaycartHelperRequest extends PaycartHelper
 	/**
 	 * @return PaycartRequestCatparticular
 	 */
-	public function getCartparticularObject($cartparticular)
+	public function getCartparticularObject(PaycartCartparticular $particular)
 	{
-		// if its numeric then get instance of cart particular
-		if(is_numeric($cartparticular)){
-			$particular = PaycartCartparticular::getInstance($cartparticular);
-		}
-		
 		$object = new PaycartRequestCartparticular();
 		
 		// core

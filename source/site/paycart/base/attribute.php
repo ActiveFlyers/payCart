@@ -20,7 +20,7 @@ class PaycartAttribute
 {
 	static $instance = array();
 
-	public function getEditHtml($attribute, $value=null)
+	public function getEditHtml($attribute,$selectedValue ='', Array $options = array())
 	{
 		return true;
 	}
@@ -81,7 +81,6 @@ class PaycartAttribute
 		}
 		
 		$attrOptionModel 	 = PaycartFactory::getModel('productattributeoption');
-		$attrOptionLangModel = PaycartFactory::getModelLang('productattributeoption');
 		
 		foreach ($options as $option){
 			$data = array();
@@ -89,19 +88,13 @@ class PaycartAttribute
 			//save option data
 			$data['option_ordering'] = $option->option_ordering;
 			$data['productattribute_id'] = $attribute->getId();
+			$data['lang_code'] = $attribute->getLanguageCode();
+			$data['productattribute_option_lang_id'] = $option->productattribute_option_lang_id;
+			$data['title']	   = $option->title;
+			
 			$optionId = $attrOptionModel->save($data, $option->productattribute_option_id);
 			if(!$optionId){
 				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $attrOptionModel->getError());
-			}
-			
-			//save langauge specific data of options
-			$data = array();
-			$data['productattribute_option_id'] = $optionId;
-			$data['lang_code'] = $attribute->getLanguageCode();
-			$data['title']	   = $option->title;
-			$optionLangId = $attrOptionLangModel->save($data,$option->productattribute_option_lang_id );
-			if(!$optionLangId){
-				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $attrOptionLangModel->getError());
 			}
 		}
 		return true;
@@ -110,23 +103,32 @@ class PaycartAttribute
 	/**
 	 * get config Html
 	 */
-	function getConfigHtml($attribute)
+	function getConfigHtml($attribute,$selectedValue ='', Array $options = array())
 	{
 		$type = $attribute->getType();
 		
-		$html = '<div id="paycart-attribute-config">';
-		
-		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
-		
 		$options = $this->getOptions($attribute);
 		$count	 = (count($options) >= 1)?count($options):1;
+
+		//needed to reset keys for proper counter management
+		$options = array_values($options);		
+
+		//add global javascript to maintain counter 
+		ob_start();
+		?>	
+			<script type="text/javascript">
+				var attributeCounter = <?php echo (!empty($options))?(max(array_keys($options))):'1';?>;
+			</script>
+		<?php 
+		$html .= ob_get_contents();
+		ob_clean();
 		
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $options);
-		}  
+		}
 		
-		$html .= "</div>";
-		
+		$html = '<div id="paycart-attribute-options">'.$html.'</div>';
+		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("COM_PAYCART_ADMIN_ADD").'</button>';
 		return $html;
 	}
 	
@@ -143,14 +145,12 @@ class PaycartAttribute
 		?>	
 			<div id="option_row_<?php echo $counter?>">
 				 <div class="control-group">
-					 <div class='control-label'><label id='title_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTES_OPTION_LABEL") ?></label></div>
-					
 					 <div class='controls'>
 					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' 
-					      	value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>'/>
-					      	<button class="btn" id="paycart-attribute-option-remove" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>');">
-								<?php echo JText::_('Delete');?>
-				 			</button>
+					      	value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_OPTION") ?>"/>
+					      	<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">
+								<i class="fa fa-trash"></i>
+							</button>
 					</div>
 				</div>
 				 
@@ -195,5 +195,33 @@ class PaycartAttribute
 	function formatValue($data)
 	{
 		return $data;
+	}
+	
+	/**
+	 * Returns html that will be used for selector
+	 * 
+	 * @param $attribute : Instance of PaycartProductAttribute 
+	 * @param $selectedOption : Option that should be selected by default
+	 * @param $options : comma separaterd string containing optionids that would be considered in filters
+	 */
+	function getSelectorHtml($attribute,  $selectedOption = '', Array $options = array())
+	{
+		$options  = PaycartFactory::getModel('productattributeoption')->loadOptions($attribute->getId(), $attribute->getLanguageCode(),$options);
+		if(empty($options)){
+			return '';
+		}	
+		
+		$html = '<select id="pc-attr-'.$attribute->getId().'" name="attributes['.$attribute->getId().']" onchange="paycart.product.selector.onChange(this)">';
+		
+		foreach ($options as $option){
+			$selected = '';
+			if(!empty($selectedOption) && $selectedOption == $option['productattribute_option_id']){
+				$selected = "selected='selected'";
+			}
+			$html  .= '<option value="'.$option['productattribute_option_id'].'" '.$selected.' >'.$option['title'].'</option>' ;
+		}
+		
+		$html .= '</select>';
+		return $html;
 	}
 }

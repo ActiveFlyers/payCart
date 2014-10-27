@@ -22,10 +22,29 @@ class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
 {	
 	public function display($tpl=null) 
 	{
-		$availiableGroupRules = $this->_helper->getList();	
-		$this->assign('availiableGroupRules', $availiableGroupRules);
+		$availableGroupRules = $this->_helper->getList();	
+		$this->assign('availableGroupRules', $availableGroupRules);
 		
 		return parent::display($tpl);
+	}
+	
+	protected function _adminGridToolbar()
+	{
+		Rb_HelperToolbar::editList();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::publish();
+		Rb_HelperToolbar::unpublish();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::deleteList();
+	}
+	
+	protected function _adminEditToolbar()
+	{
+		Rb_HelperToolbar::apply();
+		Rb_HelperToolbar::save();
+		//Rb_HelperToolbar::save2new('savenew'); //not needed, because grouptype is required to be selected manually, while creating new
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::cancel();
 	}
 	
 	public function edit($tpl=null) 
@@ -39,17 +58,17 @@ class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
 		if(!$itemId){
 			$type = $this->input->get('type', '');
 			if(empty($type)){
-				throw new Exception(JText::_('COM_PAYCART_ERROR_GROUP_TYPE_ARGUMENT_MISSING'), 404);			
+				throw new Exception('Group type argument missing');			
 			}
 
 			$item->bind(array('type' => $type));
 		}
 		else{
 			$type 		= $item->getType();			
-			$config 	= $item->getParams(true, 'config');			
+			$params 	= $item->getParams();			
 			  
-			foreach($config as $rule){
-				$namePrefix = $this->_component->getNameSmall().'_form[config]['.$ruleCounter.']';
+			foreach($params as $rule){
+				$namePrefix = $this->_component->getNameSmall().'_form[params]['.$ruleCounter.']';
 				
 				// get instance of rule
 				$groupRule = PaycartFactory::getGrouprule($type, $rule->ruleClass, (array)$rule);

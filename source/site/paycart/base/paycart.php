@@ -28,26 +28,24 @@ class Paycart
 	const PRODUCT_TYPE_DIGITAL	=	20;		
 	
 	// Image constant	
-	const IMAGES_ROOT_PATH					= '/media/com_paycart/images/';
-	const IMAGE_ORIGINAL_PREFIX 			= 'original_';
-	const IMAGE_ORIGINAL_SUFIX 				= '.orig';
-	const IMAGE_OPTIMIZE_WIDTH 				= 200;
-	const IMAGE_OPTIMIZE_HEIGHT				= 200;
-	const IMAGE_THUMB_PREFIX 				= 'thumb_';
-	const IMAGE_THUMB_WIDTH 				= 133;
-	const IMAGE_THUMB_HEIGHT				= 100;
-	const IMAGE_FILE_DEFAULT_MAXIMUM_SIZE 	= 2; 	// 2MB
-	const IMAGE_FILE_DEFAULT_EXTENSION 		= '.png';
+	const MEDIA_PATH_ROOT					= PAYCART_PATH_CORE_IMAGES;
+	
+	const MEDIA_THUMB_FOLDER_NAME			= 'thumbs';
+	const MEDIA_OPTIMIZED_FOLDER_NAME		= 'optimized';
+	const MEDIA_SQUARED_FOLDER_NAME			= 'squared';
 
 	const PRODUCT_FILTER_FIELD_PREFIX	= 'attr_';
 
 	// Cart Entity Status
-	const STATUS_CART_DRAFT		= 	'draft';		// none
-	const STATUS_CART_CHECKOUT	=	'checkout';
+	const STATUS_CART_DRAFTED	=	'drafted';		// none, Just created cart
 	const STATUS_CART_PAID 		=	'paid';
-	const STATUS_CART_CANCEL 	=	'cancel';
-	const STATUS_CART_COMPLETE 	=	'complete';
+	const STATUS_CART_CANCELLED	=	'cancelled';
 	
+	//shipment status
+	const STATUS_SHIPMENT_PENDING		= 'pending';
+	const STATUS_SHIPMENT_DISPATCHED	= 'dispatched';
+	const STATUS_SHIPMENT_DELIVERED		= 'delivered';
+	const STATUS_SHIPMENT_FAILED		= 'failed';
 	
 	// JOOMLA System Message Type
 	const MESSAGE_TYPE_MESSAGE	= 'message'; 
@@ -59,14 +57,6 @@ class Paycart
 	const PROCESSOR_TYPE_DISCOUNTRULE = 'discountrule';
 	const PROCESSOR_TYPE_TAXRULE   	  = 'taxrule';
 	const PROCESSOR_TYPE_SHIPPINGRULE = 'shippingrule';
-	
-	//Paycart Status
-	const STATUS_PUBLISHED 		= 'published';		// Content publish for end-user
-	const STATUS_TRASHED 		= 'trashed';		// Trashed content 
-	const STATUS_UNPUBLISHED 	= 'unpublished';	// Unpublish content. Visible only backend
-	const STATUS_INVISIBLE		= 'invisible';		// Not listed in front-end, access by url
-	//@PCTODO :: admin or owner
-	const STATUS_ADMIN	 		= 'admin';			// visible only for admin-user (at front-end)
 		
 
 	// shipping rule
@@ -74,6 +64,8 @@ class Paycart
 	const SHIPPINGRULE_LIST_ORDER_BY_ORDERING 	= 'ordering';
 	const SHIPPINGRULE_LIST_ORDER_IN_ASC 		= 'ASC';
 	const SHIPPINGRULE_LIST_ORDER_IN_DESC		= 'DESC';
+	const SHIPPING_BEST_IN_PRICE				= 'price';
+	const SHIPPING_BEST_IN_TIME					= 'time';
 
 
 	// Cart Particulars Type
@@ -85,16 +77,63 @@ class Paycart
 	const CART_PARTICULAR_TYPE_ADJUSTMENT			= 'adjustment';
 
 	const CART_PARTICULAR_QUANTITY_MINIMUM = 1;
-
-	const CHECKOUT_SEQUENCE_OPTION_VALUE_TAX_DISCOUNT = 'td';
-	const CHECKOUT_SEQUENCE_OPTION_VALUE_DISCOUNT_TAX = 'dt';
 	
 	const GROUPRULE_TYPE_PRODUCT = 'product';
 	const GROUPRULE_TYPE_BUYER 	 = 'buyer';
+	const GROUPRULE_TYPE_CART 	 = 'cart';
 
 	const ATTRIBUTE_PATH_MEDIA	= '/media/com_paycart/media/';
 	
 	const RULE_APPLY_ON_PRODUCT 	= 'product';
 	const RULE_APPLY_ON_CART 		= 'cart';
 	const RULE_APPLY_ON_SHIPPING	= 'shipping';
+
+	const PRODUCTCATEGORY_ROOT_ID		 = 1;
+	
+	const CHECKOUT_STEP_LOGIN		=	'login';
+	const CHECKOUT_STEP_ADDRESS		=	'address';
+	const CHECKOUT_STEP_CONFIRM		=	'confirm';
+	const CHECKOUT_STEP_PAYMENT		=	'payment';
+	
+	const WEIGHT_UNIT_KILOGRAM		= 'kg';
+	const WEIGHT_UNIT_GRAM			= 'gm';
+	const WEIGHT_UNIT_PONUD			= 'lb';
+	const WEIGHT_UNIT_OUNCE			= 'oz';
+	
+	const DIMENSION_UNIT_CENTIMETER	= 'cm';
+	const DIMENSION_UNIT_METER		= 'm';
+	const DIMENSION_UNIT_INCH		= 'in';
+	
+	/**
+	 * 
+	 * Return All available shipment status
+	 * 
+	 * @return Array()
+	 */
+	public static function getShipmentStatus()
+	{
+		return 
+			Array( 
+					array('title'=>JText::_('COM_PAYCART_SHIPMENT_STATUS_PENDING'), 'value' => Paycart::STATUS_SHIPMENT_PENDING),
+					array('title'=>JText::_('COM_PAYCART_SHIPMENT_STATUS_DISPATCHED'), 'value' => Paycart::STATUS_SHIPMENT_DISPATCHED),
+					array('title'=>JText::_('COM_PAYCART_SHIPMENT_STATUS_DELIVERED'), 'value' => Paycart::STATUS_SHIPMENT_DELIVERED),
+					array('title'=>JText::_('COM_PAYCART_SHIPMENT_STATUS_FAILED'), 'value' => Paycart::STATUS_SHIPMENT_FAILED)
+			     );
+	}
+	
+	/**
+	 * 
+	 * Return All available cart status
+	 * 
+	 * @return Array()
+	 */
+	public static function getCartStatus()
+	{
+		return 
+			Array(
+                Paycart::STATUS_CART_DRAFTED   => JText::_('COM_PAYCART_CART_STATUS_DRAFTED'),
+				Paycart::STATUS_CART_PAID      => JText::_('COM_PAYCART_CART_STATUS_PAID'),
+				Paycart::STATUS_CART_CANCELLED => JText::_('COM_PAYCART_CART_STATUS_CANCELLED'),
+			 );
+	}
 }

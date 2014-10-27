@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="paycart" method="upgrade">
-    <name>PLG_PAYCART_GROUPRULEBUYERJUSERGROUP</name>
+    <name>Paycart Grouprule Jusergroup</name>
     <version>1.0.0</version>
     <creationDate>Nov 2012</creationDate>
     <author>Ready Bytes</author>
@@ -8,7 +8,7 @@
     <authorUrl>http://www.readybytes.net/paycart</authorUrl>
     <copyright>2009-14 Ready Bytes Software Labs Pvt. Ltd.</copyright>
     <license>GNU General Public License v2</license>
-    <description>PLG_PAYCART_GROUPRULEBUYERJUSERGROUP_DESCRIPTION</description>
+    <description>Used to create grouprule using joomla user groups</description>
     <files>
 	<filename plugin="grouprulebuyerjusergroup">grouprulebuyerjusergroup.php</filename>
 	<folder>rules</folder>
@@ -16,5 +16,9 @@
     </files>
     <config>
     </config>
+
+    <alias>pc-grouprule-jusergroup</alias>
+    <version_number>1.0.0</version_number>
+    <version_name>Grouprule Jusergroup 1.0</version_name>
 </extension>
 

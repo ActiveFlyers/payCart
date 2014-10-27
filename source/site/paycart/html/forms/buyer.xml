@@ -1,35 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <form>
-	<fieldset name="basic-user" label="COM_PAYCART_CART_BASIC_USER_FIELDSET_LABEL">
+	<fieldset>
 		<field 	name="buyer_id"
 				type="text"
-				default="0"
+				label="COM_PAYCART_ADMIN_BUYER_ID"
 				readonly="true"/>
 
   		<field 	name="realname" 
 				type="text"
-				label="COM_PAYCART_USER_NAME_LABEL"
-				description="COM_PAYCART_USER_NAME_DESC"	
+				label="COM_PAYCART_NAME"	
 				required="true"			 
-				labelclass="control-label"
 				readonly="true"
 				/>
 
 		<field 	name="username" 
 				type="text"
 				readonly="true"	
-				label="COM_PAYCART_USER_USERNAME_LABEL"
-				description="COM_PAYCART_USER_USERNAME_DESC"
+				label="COM_PAYCART_USERNAME"
 				default=""
-				required="true"	
-				labelclass="control-label"/>
+				required="true"	/>
 
 		<field 	name="email" 
 				type="email"
-				label="COM_PAYCART_USER_EMAIL_LABEL"
-				description="COM_PAYCART_USER_EMAIL_DESC"				
-				labelclass="control-label"
+				label="COM_PAYCART_EMAIL"
 				required="true"
 				readonly="true"
 				/>
@@ -37,10 +31,6 @@
 		<field 	name="usertype" 
 				type="text"
 				readonly="true"
-				label="COM_PAYCART_USER_USERTYPE_LABEL"
-				description="COM_PAYCART_USER_USERTYPE_DESC" 
-				labelclass="control-label"/>
-
-
+				label="COM_PAYCART_USERTYPE"/>
 		</fieldset>
 </form>

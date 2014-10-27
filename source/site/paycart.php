@@ -4,7 +4,7 @@
 * @license			GNU GPL 3
 * @package			paycart
 * @subpackage		Backend
-* @contact			@contact@
+* @contact			support+paycart@readybytes.in
 */
 
 // no direct access
@@ -18,7 +18,7 @@ if(!defined('RB_FRAMEWORK_LOADED')){
 
 require_once  dirname(__FILE__).'/paycart/includes.php';
 $option	= 'com_paycart';
-$view	= 'dashboard';
+$view	= 'productcategory';
 $task	= null;
 $format	= 'html';
 

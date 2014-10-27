@@ -11,265 +11,343 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-// validation for required fields
-PaycartHtml::_('behavior.formvalidation');
+Rb_HelperTemplate::loadMedia(array('angular'));
+
+echo $this->loadTemplate('edit_js');
+echo $this->loadTemplate('edit_ng');
+echo $this->loadTemplate('edit_css');
 ?>
+<style>
+.paycart .label-left label{
+	float:left;
+}
+</style>
 
-<script type="text/javascript">
-	Joomla.submitbutton = function(task)
-	{
-		if (task == 'addvariant' && !setVariant()) {
-			return false;
-		}
+<div class="pc-product-wrapper clearfix">
+<div class="pc-product row-fluid" data-ng-app="pcngProductApp">
 
-		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-			Joomla.submitform(task, document.getElementById('adminForm'));
-		}
-	};
+<!-- CONTENT START -->
 
-	
-	(function($){
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=product'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
 
-		// Change Attributes on bases of product type		
-		typeAttributes = function(type) 
-		{
-			switch(type) 
-			{//@PCTODO :: use constant
-				case '10':	// Physical type
-					$('.paycart_product_digital_file').hide();
-					$('.paycart_product_quantity').show();
-					break;
-				case '20' :	// Digital Type
-					$('.paycart_product_digital_file').show();
-					$('.paycart_product_quantity').hide();
-					break;
-			}
-
-		};	
-
-		setVariant = function()
-		{
-			var variantOf = $('#product_id').val();
-
-			// Creating Variant without Product Creation
-			if(!variantOf) {
-				// @PCTODO :: Alert to create Product first
-				return false;
-			}
-			//set variation_of var on admin form beofre submit it
-			$('#adminForm').append("<input type='hidden' name='variant_of' value='"+
-					 variantOf+"' />");
- 			return true;			
-		};
-
-		$(document).ready(function($){
-			
-			typeAttributes($('#paycart_form_type').val());
-
-			$('#paycart_form_type').change( function() {
-				typeAttributes($(this).val());
-			});
-
-			<!-- Callback function when Alias successfully generated				-->
-			var callbackOnSuccess = function(data)
-			{	// Add alias to element
-				$('#paycart_form_alias').val(data[0][1]);
-			};
-			
-			// When product title assign then create alias			
-			$('#paycart_form_title').blur( function() 
-			{
-					var title = $(this).val();
-			
-					// if title empty or alias pre-define
-					if (!title || $('#paycart_form_alias').val()) {
-						return true;
-					}
-
-					// Get Product id
-					var id = $('input[name="id"]').val();
-					
-					// pass title, Product ID, callbackOnSuccess,  callbackOnError
-					//@PCTODO :: Proper Error-handling in callbackOnError
-					paycart.admin.product.alias.add(	title, id,callbackOnSuccess,
-										function(){alert('error in alias generating')}
-							);
-			});
-
-			// When alias is empty then create new alias
-			$('#paycart_form_alias').blur( function() 
-			{
-				var alias = $(this).val();
-				var title = $('#paycart_form_title').val();
-
-				// if alias pre-define Or product title empty 
-				if (alias || !title) {
-					return true;
-				}
-
-				// Get Product id
-				var id = $('input[name="id"]').val();
-
-				// pass title, Product ID , callbackOnSuccess,  callbackOnError
-				//@PCTODO :: Proper Error-handling in callbackOnError
-				paycart.admin.product.alias.add(	title, id,callbackOnSuccess,
-									function(){alert('error in alias generating')}
-						);
-			});
-			
-		});
-			
-	 	
-	})(paycart.jQuery);
-	
-
-	
-</script>
-
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data" >
+<div class="span10">
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data" >
 	<div class="row-fluid">
-		<div class="<?php echo count($variants)? 'span10' : 'span12'; ?> form-horizontal">
+		<div class="<?php echo count($variants)? 'span10' : 'span12'; ?>">
 			<?php echo PaycartHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>
 <!--========	Product Basic Attributes	========-->
-			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_PRODUCT_BASIC_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
-				
-				<!--	Product Meta Data			-->
-				<div class="span6">
-					<fieldset class="form-horizontal">	
-							<?php foreach ($form->getFieldset('language') as $field):?>
+			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'basic', Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_DETAILS', true)); ?>			
+				<!-- PRODUCT DETAILS -->
+				<div class="row-fluid">
+					<div class="span3">
+						<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_DETAILS_HEADER');?></h2>
+						<div>
+							<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_DETAILS_HEADER_MSG');?>
+						</div>
+					</div>
+					<div class="span9">
+						<fieldset class="form">
+							<div class="row-fluid">
+								<?php $field = $form->getField('title') ?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>								
 								</div>
-							<?php endforeach;?>
-					</fieldset>
+								<?php $field = $form->getField('alias') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_ALIAS');?></div>								
+								</div>
+								<?php $field = $form->getField('description') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>								
+								</div>
+							</div>
+							
+							<!--  Some hidden Fields -->
+							<?php $field = $form->getField('type') ?>
+							<input type="hidden" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo Paycart::PRODUCT_TYPE_PHYSICAL;?>">
+
+							<?php $field = $form->getField('featured') ?>
+							<input type="hidden" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="0">
+														
+							<div class="row-fluid">
+								<div class="span6">
+									<?php $field = $form->getField('productcategory_id') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls "><?php echo $field->input; ?></div>								
+									</div>
+								</div>
+								<div class="span6">
+									<?php $field = $form->getField('published') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls"><?php echo $field->input; ?></div>								
+									</div>
+								</div>							
+							</div>							
+						</fieldset>
+					</div>					
 				</div>
 				
-				<div class="span6">
-					
-					<?php $field = $form->getField('status') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>	
+				<hr/>
 				
-					<?php $field = $form->getField('productcategory_id') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
+				<!-- INVENTORY DETAILS -->
+				<div class="row-fluid">
+					<div class="span3">
+						<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_PRICING_AND_INVENTORY_HEADER');?></h2>
+						<div>
+							<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_PRICING_AND_INVENTORY_HEADER_MSG');?>
+						</div>
 					</div>
-					
-					<?php $field = $form->getField('price') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
+					<div class="span9">
+						<fieldset class="form">
+							<div class="row-fluid">
+								<div class="span6">
+									<?php $currency = $global_config->get('currency', '$'); ?>
+									<?php $field = $form->getField('price') ?>
+									<div class="control-group">
+										<div class="control-label label-left"><?php echo $field->label; ?>&nbsp; ( <?php echo $currency;?> )</div>										
+										<div class="controls"><?php echo $field->input; ?></div>
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>								
+									</div>
+								</div>
+								<div class="span6">
+									<?php $field = $form->getField('sku') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls"><?php echo $field->input; ?></div>																		
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span6">
+									<?php $field = $form->getField('quantity') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls"><?php echo $field->input; ?></div>	
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
+									</div>
+								</div>
+								<div class="span6">
+									<?php $field = $form->getField('stockout_limit') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls"><?php echo $field->input; ?></div>	
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</div>					
+				</div>
+				
+				<hr/>
+				
+				<!-- INVENTORY DETAILS -->
+				<div class="row-fluid">
+					<div class="span3">
+						<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_GALLERY_HEADER');?></h2>
+						<p>
+							<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_GALLERY_HEADER_MSG');?>
+						</p>
+						
+						<?php if(!empty($images)):?>
+							<div>								
+								<div class="row-fluid">
+									<input type="file" class="validate-image" name="paycart_form[images][]" multiple="true" id="paycart_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
+								</div>								
+							</div>
+						<?php endif;?>
 					</div>
-					
-					<?php $field = $form->getField('sku') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
+					<div class="span9">
+						<fieldset class="form">
+							<div class="row-fluid">
+								<?php if(empty($images)):?>
+									<input type="file" class="validate-image" name="paycart_form[images][]" multiple="true" id="paycart_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
+									
+								<?php else :?>								
+									<script>
+										var pc_product_images 	= <?php echo json_encode(array_values($images));?>;
+										var pc_product_id		= <?php echo $record_id;?>;										
+									</script>
+									
+									<div data-ng-controller="pcngProductImagesCtrl" id="pcngProductImagesCtrl">
+										<ul class="thumbnails">
+		    								<li data-ng-repeat="image in images" class="thumbnail" ng-class="{ 'pc-product-coverimage center' : $index == 0 }">		    									
+		    									<a href="#pc-product-gallery-modal" data-toggle="modal" onClick="return false;" data-ng-click="setActiveImage($index);">
+		    									<img data-ng-src="{{ image.thumbnail }}" alt="">
+		    									</a>
+		    									<div>		    										
+		    										<span class="pull-right"><a href="#" onClick="return false;" class="muted" data-ng-click="remove($index);"><i class="text-error fa fa-trash-o"></i></a></span>
+		    									</div>		    									
+		    									<div class="badge" ng-show=" $index == 0 ">
+		    										<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_COVER_IMAGE');?>
+		    									</div>
+		    								</li>		    									    								
+		    							</ul>
+		    							
+		    							<!-- Modal Popup -->
+		    							<div id="pc-product-gallery-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:600px; margin-left:-300px;">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+												<h3 id="myModalLabel"><?php echo JText::_('COM_PAYCART_ADMIN_IMAGE_EDIT_TITLE');?></h3>
+											</div>
+											
+											<div class="modal-body">											
+												<div data-ng-show="message" class="alert alert-success">{{ message }}</div>
+												<div data-ng-show="errMessage" class="alert alert-danger">{{ errMessage }}</div>
+												
+												<div class="row-fluid">
+													<div class="span5 center">
+														<img data-ng-src="{{ activeImage.thumbnail }}">
+													</div>
+													<div class="span7">
+														<div class="control-group">
+															<div class="control-label">
+																<label id="title_lbl"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_TITLE')?></label>
+															</div>
+															 <div class="controls">
+																<input type="text" data-ng-model="activeImage.title" value=""/>																
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+											<div class="modal-footer text-center">
+												<button class="btn" data-ng-click="cancel();" onclick="return false;" data-dismiss="modal"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CANCEL')?></button>
+												<button class="btn btn-primary" data-ng-click="save();" onclick="return false;"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_SAVE')?></button>												
+											</div>
+										</div>	
+									</div>
+								<?php endif;?>
+							</div>
+							<br>
+							<div class="pc-error" for="paycart_form__uploaded_files_images"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INVALID_IMAGE');?></div>
+							
+						</fieldset>
+					</div>					
+				</div>
+				
+				<hr />
+				
+				<!--	Product Meta Data			-->
+				<div class="row-fluid">
+					<div class="span3">
+						<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_METADATA_HEADER');?></h2>
+						<div>
+							<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_METADATA_HEADER_MSG');?>
+						</div>
 					</div>
-					
-					<?php $field = $form->getField('cover_media') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
+					<div class="span9">
+						<fieldset class="form">
+							<div class="row-fluid">								
+								<?php $field = $form->getField('metadata_title') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>								
+								</div>
+								
+								<?php $field = $form->getField('metadata_description') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>								
+								</div>
+								
+								<?php $field = $form->getField('metadata_keywords') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>								
+								</div>								
+							</div>
+						</fieldset>
+					</div>					
+				</div>
+				
+				<hr />
+				<!--	Dimenssions 	-->
+				<div class="row-fluid">
+					<div class="span3">
+						<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_WEIGHT_AND_DIMENSION_HEADER');?></h2>
+						<div>
+							<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_WEIGHT_AND_DIMENSION_HEADER_MSG');?>
+						</div>
 					</div>
-					
-					<?php $field = $form->getField('type') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('quantity') ?>
-					<div class="control-group paycart_product_quantity">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-	
-					<?php $field = $form->getField('featured') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('stockout_limit') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('weight') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('weight_unit') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('height') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('depth') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('length') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('dimension_unit') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-				</div>	
+					<div class="span9">
+						<fieldset class="form label-left">
+							<div class="row-fluid">							
+								<?php $catalogue_weight_unit = $global_config->get('catalogue_weight_unit');?>
+								<?php $field = $form->getField('weight_unit') ?>
+								<input type="hidden" name="<?php echo $field->name;?>" value="<?php echo $catalogue_weight_unit;?>">					
+																
+								<?php $field = $form->getField('weight') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?>&nbsp; ( <?php echo $catalogue_weight_unit;?> )</div>
+									<div class="controls">
+										<input class="input-block-level validate-numeric" type="text" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo $formatter->weight($product->getWeight())?>">																															
+									</div>								
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+								</div>						
+							</div>
+							
+							<?php $catalogue_dimension_unit = $global_config->get('catalogue_dimension_unit');?>
+							<div class="row-fluid">								
+								<?php $field = $form->getField('dimension_unit') ?>									
+								<input type="hidden" name="<?php echo $field->name;?>" value="<?php echo $catalogue_dimension_unit;?>">					
+							
+								<?php $field = $form->getField('height') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> &nbsp; ( <?php echo $catalogue_dimension_unit;?> )</div>
+									<div class="controls">
+										<input class="input-block-level validate-numeric" type="text" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo $formatter->dimension($product->getHeight())?>">										
+									</div>		
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>						
+								</div>							
+							</div>
+							<div class="row-fluid">
+								<?php $field = $form->getField('length') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> &nbsp; ( <?php echo $catalogue_dimension_unit;?> )</div>
+									<div class="controls">
+										<input class="input-block-level validate-numeric" type="text" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo $formatter->dimension($product->getLength())?>">										
+									</div>			
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>				
+								</div>
+							</div>
+							<div class="row-fluid">
+								<?php $field = $form->getField('width') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> &nbsp; ( <?php echo $catalogue_dimension_unit;?> )</div>
+									<div class="controls">
+										<input class="input-block-level validate validate-numeric" type="text" name="<?php echo $field->name;?>" id="<?php echo $field->id;?>" value="<?php echo $formatter->dimension($product->getWidth())?>">										
+									</div>
+									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>								
+								</div>
+							</div>						
+						</fieldset>
+					</div>					
+				</div>
 				
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 			
 <!--========	Product Custom Attributes	========-->			
-			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'custom', Rb_Text::_('COM_PAYCART_PRODUCT_CUSTOM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>				
+			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'custom', Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_CUSTOM_ATTRIBUTES', true)); ?>				
 				<?php 
 						echo $this->loadtemplate('attribute');
 				?>
 			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
-
-<!--========	Product System Attributes	========-->			
-			<?php echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'system', Rb_Text::_('COM_PAYCART_PRODUCT_SYSTEM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
-			
-				<div class="span6">
-					<?php $field = $form->getField('product_id') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-					<?php $field = $form->getField('created_date') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					<?php $field = $form->getField('modified_date') ?>
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>		
-				</div>
-				
-			<?php echo PaycartHtml::_('bootstrap.endTab'); ?>	
 				
 <!--========	Product Custom Attributes	========-->			
 			<!--<?php // echo PaycartHtml::_('bootstrap.addTab', 'myTab', 'log', Rb_Text::_('COM_PAYCART_PRODUCT_SYSTEM_ATTRIBUTES_FIELDSET_LABEL', true)); ?>
@@ -295,4 +373,9 @@ PaycartHtml::_('behavior.formvalidation');
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
 	<input type='hidden' name='id' id="product_id" value='<?php echo $record_id;?>' />	
+	<?php echo $form->getInput('product_id') ?>	
 </form>
+</div>
+</div>
+</div>
+<?php 

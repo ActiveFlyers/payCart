@@ -56,10 +56,11 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 .pc-category-content{
 	height:100%;
 	margin:2px;
+	padding : 2%;
 }
 
-.pc-category a ,
-.pc-category a:hover {
+.pc-category-outer a ,
+.pc-category-outer a:hover {
 	color : #fff;
 }
 
@@ -141,8 +142,10 @@ Products Display
 }
 
 /* primiary border when hover */
-.pc-product:hover{
-	border : 1px solid #00f;
+.pc-product:hover, 
+.pc-category-inner:hover{
+	border : 2px solid #0088CC;
+	cursor : pointer;
 }
 
 .pc-product-content{
@@ -165,10 +168,85 @@ Products Display
 
 
 /** checkout page */
-.pc-checkout-wrapper .pc-item-attribute	{
+.pc-cart-wrapper .pc-item-attribute	{
 	text-transform: capitalize;
 }
 
-.pc-checkout-wrapper hr{
+.pc-cart-wrapper hr{
 	margin: 5px 0px;
+}
+
+/** product-full-view */
+.pc-attribute-color{
+	border: 1px solid #e2e2e2;
+	min-height: 20px;
+	min-width: 20px;
+	display: inline-block;
+	margin-left:5px; 
+}
+
+.pc-product-specification.table,
+.pc-product-specification td{
+    border-collapse: collapse;
+    border-color: #ddd #ddd #ddd -moz-use-text-color;
+    border-style: none none solid none;
+    border-width: 1px 1px 1px 0;
+}
+							
+.pc-product-specification.table th {
+	border: none;
+}
+							
+.pc-product-specification td:first-child{
+    border-right: 1px solid #ddd;
+}
+
+@media (max-width: 480px) {
+	.pc-product-content{
+		padding: 0;
+	}
+}
+
+@media (min-width: 980px){
+	.pc-product-content{
+		padding: 7px 7px 0 7px;
+	}
+}
+	
+.pc-product-title{
+	padding-top : 5%;
+	font-size : 14px;	
+}
+
+.pc-product-stockout{
+	background-color: #ACACAC;
+    color: #000000;
+    padding: 5px 0;
+    text-shadow: 0 1px 0 #FFFFFF;
+    top: 50%;
+    left:0;
+    right:0;
+    position:absolute;
+}
+
+.pc-product-content{
+	position:relative;
+}	
+
+.pc-product-image,
+.pc-product-image:hover{
+	color: inherit;
+	text-decoration: none;
+}
+	
+.pc-product-stockout-image{
+	opacity: 0.2;
+}
+	
+.pc-break-word {
+    word-wrap : break-word;
+}
+
+.pc-product-attribute-header{
+	background-color : #F5F5F5;
 }

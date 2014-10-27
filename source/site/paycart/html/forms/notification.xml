@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+	<fieldset name="notification">
+		<field 	
+			name="notification_id" 
+			type="hidden"
+			default="0"/>
+
+         <field 	
+			name="notification_lang_id" 
+			type="hidden"
+			default="0"/>
+                        
+			
+		<field
+			name="published"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"
+			label="COM_PAYCART_ADMIN_PUBLISHED"			
+			default="1">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		
+		<field
+			name="event_name"
+			type="text"
+			labelclass="control-label"
+			class="input-block-level"
+			readonly="true"
+			label="COM_PAYCART_ADMIN_TYPE"
+			 />
+                
+<!--  Make sure field type is not email otherwise validation will be stop to save it               -->
+                <field 
+			name="to"  type="text"	required="true"
+                        class="input-block-level paycart-token-container"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_NOTIFICATION_TO"/>
+		<field 
+			name="cc" 
+			type="text"	
+			class="input-block-level paycart-token-container"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_NOTIFICATION_CC"/>
+
+		<field 
+			name="bcc" 
+			type="text"	
+			class="input-block-level paycart-token-container"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_NOTIFICATION_BCC"/>
+
+		<field 
+			name="subject"  type="text"	
+                        required="true"
+			class="input-block-level paycart-token-container"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_NOTIFICATION_SUBJECT"/>
+            
+		<field 
+			name="body"  required="true"
+			type="textarea"	
+                        class="input-block-level paycart-token-container"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_NOTIFICATION_BODY"
+            rows="10" 
+			filter="JComponentHelper::filterText"/>
+		
+	</fieldset>
+</form>

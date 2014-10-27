@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="paycart" method="upgrade">
-    <name>PLG_PAYCART_TAXRULE_EUVAT_XML_NAME</name>
+    <name>Paycart Taxrule Euvat</name>
     <version>1.0.0</version>
     <creationDate>Dec 2013</creationDate>
     <author>Team PayCart</author>
@@ -8,7 +8,7 @@
     <authorUrl>http://www.readybytes.net</authorUrl>
     <copyright>2009-13 Ready Bytes Software Labs Pvt. Ltd.</copyright>
     <license>GNU General Public License v2</license>
-    <description>PLG_PAYCART_TAXRULE_EUVAT_XML_DESC</description>
+    <description>Apply European Union value added tax</description>
 	<files>
 		<filename plugin="taxruleeuvat">taxruleeuvat.php</filename>
 		<filename>index.html</filename>

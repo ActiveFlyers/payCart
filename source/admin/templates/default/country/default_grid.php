@@ -13,21 +13,33 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 ?>
+<div class="pc-country-wrapper clearfix">
+<div class="pc-country row-fluid">
 
+<!-- CONTENT START -->
 
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=country'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
+<div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
 	<?php // echo $this->loadTemplate('filter'); ?>
-	<table class="table table-hover">
+	<table class="table table-striped">
 		<thead>
 		<!-- TABLE HEADER START -->
 			<tr>
 			
-				<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" /></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_COUNTRY_TITLE_LABEL", 'title', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_COUNTRY_COUNTRY_ID_LABEL", 'country_id', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_COUNTRY_ISOCODE2_LABEL", 'isocode', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_COUNTRY_STATUS_LABEL", 'status', $filter_order_Dir, $filter_order);?></th>
+				<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_COUNTRY_ISOCODE_3", 'country_id', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_COUNTRY_ISOCODE_2", 'isocode', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
 				
 			</tr>
 		<!-- TABLE HEADER END -->
@@ -41,16 +53,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			
 				<tr class="<?php echo "row".$count%2; ?>">								
 					<th><?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} );?></th>
-					<td>
-						<?php echo PaycartHtml::link('index.php?option=com_paycart&view=country&task=edit&country_id='.$record->country_id, $record->title);?>
-						<br />
-						<?php echo 'state-link' ;?>
-					</td>
-					
+					<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=country&task=edit&country_id='.$record->country_id, $record->title);?></td>
 					<td><?php echo $record->country_id;?></td>
 					<td><?php echo $record->isocode2;?></td>
-					<td><?php echo $record->status;?></td>
-					
+					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+
 				</tr>
 			<?php $count++;?>
 			<?php endforeach;?>
@@ -72,5 +79,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<input type="hidden" name="boxchecked" value="0" />
 	
 </form>
-
+</div>
+</div>
+</div>
+<?php 
 

@@ -36,10 +36,11 @@ class PaycartAdminViewShippingRule extends PaycartAdminBaseViewShippingRule
 	{	
 		$itemId	=  $this->getModel()->getId();
 		$item	=  PaycartShippingRule::getInstance($itemId);
+		$form 	= $item->getModelform()->getForm($item);
 		
-		$processor = $this->_helper->getProcessor('flatrate');
-		$this->assign('params_html', $item->getConfigHtml());
-		$this->assign('form',  $item->getModelform()->getForm($item));		
+		$this->assign('form', $form );
+		$this->assign('rule',$item);
+		
 		return parent::edit($tpl);
 	}
 }

@@ -40,9 +40,12 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 	const WEIGHT 				= "WEIGHT";
 	const PRICE 				= "PRICE";
 	
+	public $location			= __DIR__;
+	public $trackingUrl 		= '';
+	
 	public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
 	{
-		if($this->processor_config->billing_price === self::WEIGHT){
+		if($this->processor_config->billing === self::WEIGHT){
 			$shipping_cost = $this->getTotalPackageShippingCostByWeight($request);
 		}		
 		else{
@@ -73,7 +76,7 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		}
 		 
 		// if range is empty empty then return false
-		$ranges = $this->processor_config->weight_range;
+		$ranges = $this->processor_config->range;
 		if($ranges === false || empty($ranges)){
 			return false;		
 		}
@@ -109,11 +112,11 @@ class PaycartShippingruleProcessorFlatRate extends PaycartShippingruleProcessor
 		$price = 0;
 		foreach($products as $product){
 			/* @var $product PaycartShippingruleRequestProduct */
-			$price += $product->total * $product->quantity;
+			$price += $product->total;
 		}
 		 
 		// if range is empty empty then return false
-		$ranges = $this->processor_config->price_range;
+		$ranges = $this->processor_config->range;
 		if($ranges === false || empty($ranges)){
 			return false;		
 		}

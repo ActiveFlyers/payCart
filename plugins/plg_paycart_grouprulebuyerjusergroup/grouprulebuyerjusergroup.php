@@ -25,8 +25,8 @@ class PlgPaycartGroupruleBuyerjusergroup extends RB_Plugin
 						array(
 							'filepath' 	=> dirname(__FILE__).'/rules/buyerjusergroup/buyerjusergroup.php',
 							'type'		=> paycart::GROUPRULE_TYPE_BUYER,
-							'title' 	=> Rb_Text::_('PLG_PAYCART_GROUPRULEBUYERJUSERGROUP_TITLE'),
-							'description'=> Rb_Text::_('PLG_PAYCART_GROUPRULEBUYERJUSERGROUP_DESC'),
+							'title' 	=> 'PLG_PAYCART_GROUPRULEBUYERJUSERGROUP_TITLE',
+							'description'=> 'PLG_PAYCART_GROUPRULEBUYERJUSERGROUP_DESC',
 							'icon' 		=> ''
                       ));
 	}

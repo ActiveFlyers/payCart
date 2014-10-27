@@ -18,29 +18,29 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @author rimjhim
  *
  */
-class PaycartModelMedia extends PaycartModel
+class PaycartModelMedia extends PaycartModelLang
+{}
+
+/** 
+ * media Table
+ * @author rimjhim
+ */
+class PaycartTableMedia extends PaycartTable
 {
-	/**
-	  * returns single record
-	  */
-	function loadRecord($languageCode, $mediaId)
+	function __construct($tblFullName='#__paycart_media', $tblPrimaryKey='media_id', $db=null)
 	{
-		$query = new Rb_Query();
-		
-		return $query->select('*')
-		 		     ->from('#__paycart_media as m')
-		 		     ->join('INNER', '#__paycart_media_lang as ml ON m.media_id = ml.media_id')
-		 		     ->where('ml.lang_code = "'.$languageCode.'"')
-		 		     ->where('ml.media_id = '.$mediaId)
-		 		     ->dbLoadQuery()
-		 		     ->loadAssocList();
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
 	}
 }
 
-/**
- * 
- * Media language Model
+/** 
+ * media language Table
  * @author rimjhim
- *
  */
-class PaycartModelLangMedia extends PaycartModel{}
+class PaycartTableMedialang extends PaycartTable
+{
+	function __construct($tblFullName='#__paycart_media_lang', $tblPrimaryKey='media_lang_id', $db=null)
+	{
+		return parent::__construct($tblFullName, $tblPrimaryKey, $db);
+	}
+}

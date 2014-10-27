@@ -19,12 +19,12 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 {	
 	protected function _adminGridToolbar()
 	{
-		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADD_NEW_PRODUCT');
+		Rb_HelperToolbar::addNew('new');
 		Rb_HelperToolbar::editList();
 		Rb_HelperToolbar::divider();
 		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ENTITY_DELETE_CONFIRMATION'));
-//		Rb_HelperToolbar::publish();
-//		Rb_HelperToolbar::unpublish();
+		Rb_HelperToolbar::publish();
+		Rb_HelperToolbar::unpublish();
 	}
 	
 	protected function _adminEditToolbar()
@@ -32,7 +32,6 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		Rb_HelperToolbar::apply();
 		Rb_HelperToolbar::save();
 		Rb_HelperToolbar::cancel();
-		Rb_HelperToolbar::custom('addvariant','retweet','',Rb_Text::_('COM_PAYCART_VARIANT_ADD'),false);
 	}
 	
 	/**
@@ -41,22 +40,60 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 	 */
 	public function edit($tpl=null) {
 		
-		$productId	=  $this->getModel()->getId();
+		$model = $this->getModel();
+		$productId	=  $model->getId();
 		$product	=  PaycartProduct::getInstance($productId);
 		
-		$form 		= $product->getModelform()->getForm($product);
-	    $language   = array('language'=> $product->getLanguage());
-	    $form->bind($language);
+		// Get the prvioisly posted data if any
+		// if it is not empty it means there wer some error
+		$post_data = $model->getState('post_data', array());
+		if(!empty($post_data)){
+			$product->bind($post_data);
+		}	
+		$this->assign('error_fields', $model->getState('error_fields', array()));
 		
+		$form 		= $product->getModelform()->getForm($product);
+	    
 		$this->assign('form', $form );
 		$this->assign('product', $product );
 		
-		$attributeModel = PaycartFactory::getModel('productattribute');
-		$this->assign('availableAttributes',  $attributeModel->loadRecords());
+		
+		// ATTRIBUTES
+		$attributes 					= PaycartFactory::getModel('productattribute')->loadRecords();
+		$availableAttributes 			= array();
+		$availableAttributesInstances 	= array();
+		foreach($attributes as $attribute){
+			$instance = PaycartProductAttribute::getInstance($attribute->productattribute_id, $attribute);
+			$availableAttributes[] = (object) $instance->toArray();
+		}	
+		$this->assign('availableAttributes',  $availableAttributes);
+		
+		$positionedAttributes = $product->getPositionedAttributes();		
+		// prepare addedAttributes
+		$productAttributes = $product->getAttributeValues();
+		$addedAttributes = array();
+		foreach($positionedAttributes as $position => $positionAttributes){
+			$addedAttributes[$position] = array(); 
+			foreach($positionAttributes as $attribute_id){
+				if(isset($attributes[$attribute_id])){
+					$addedAttributes[$position][] = array('productattribute_id' => $attribute_id, 'value' => isset($productAttributes[$attribute_id]) ? $productAttributes[$attribute_id] : '');
+				}
+			}		
+		}
+		$this->assign('addedAttributes', $addedAttributes);
+		
+		// positions
+		/* @var $helper PaycartHelperProduct */
+		$helper = PaycartFactory::getHelper('product');
+		$this->assign('positions', $helper->getPositions()); 	
+		
+		//set images
+		$this->assign('images', $product->getImages());
 		
 		// @PCTODO:: Set availble variants
 		$this->assign('variants',  Array());
-		
+		$this->assign('global_config', PaycartFactory::getConfig());
+		$this->assign('uploadLimit',PaycartFactory::getHelper('media')->getUploadLimit());
 		return parent::edit($tpl);
 	}
 	

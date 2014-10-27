@@ -40,6 +40,8 @@ class PaycartFactory extends Rb_Factory
 	 * 
 	 * Invoke to get Paycart Helper instance
 	 * @param string $name : Entity name
+	 * 
+	 * @return PaycartHelper Entity 
 	 */
 	public static function getHelper($name)
 	{
@@ -50,6 +52,8 @@ class PaycartFactory extends Rb_Factory
 	 * 
 	 * Invoke to get Paycart Model instance
 	 * @param string $name : Entity name
+	 * 
+	 * @return PaycartModel Entity 
 	 */
 	public static function getModel($name)
 	{
@@ -165,5 +169,20 @@ class PaycartFactory extends Rb_Factory
 	public static function getGrouprule($type, $className, $config = Array()) 
 	{
 		return self::getHelper('group')->getInstance($type, $className, $config);
+	}
+	
+	public static function getCurrentLanguageCode()
+	{
+		return PaycartFactory::getLanguage()->getTag();
+	}
+	
+	public static $validator = null;
+	public static function getValidator()
+	{	
+		if(!self::$validator){
+			self::$validator = new PaycartValidator();
+		}
+		
+		return self::$validator;
 	}
 }

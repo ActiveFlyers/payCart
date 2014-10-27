@@ -38,7 +38,7 @@ abstract class PaycartShippingruleProcessor
 	 */
 	public $processor_config = null;
 	
-	protected function _requestConfightml(PaycartShippingruleRequest $request)
+	public function getConfigHtml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
 	{
 		$config 	= $this->getConfig();
 		$location	= $this->getLocation();
@@ -50,20 +50,41 @@ abstract class PaycartShippingruleProcessor
 		$content = ob_get_contents();
 		ob_end_clean();
 		
-		return $content;
+		$response->configHtml = $content;
+		return true;
 	}
 	
 	public function getConfig($key = null, $defaultValue = null)
 	{
 		if($key === null){
-			return $this->config;
+			return $this->processor_config;
 		}
 		
-		if(isset($this->config->$key)){
-			return $this->config->$key;
+		if(isset($this->processor_config->$key)){
+			return $this->processor_config->$key;
 		}
 		
 		return $defaultValue;
+	}
+	
+	public function getLocation()
+	{
+		return $this->location;
+	}
+	
+	/**
+	 * Get tracking url of shipping processor
+	 * This property must be set in each shipping processor
+	 */
+	public function getTrackingUrl()
+	{
+		return $this->trackingUrl;
+	}
+	
+	public function convertWeight($value, $inputUnit, $resultantUnit)
+	{
+		$formatter = PaycartFactory::getHelper('format');
+		return $formatter->convertWeight($value, $inputUnit, $resultantUnit);
 	}
 	
 	abstract public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response);

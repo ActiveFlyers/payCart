@@ -24,16 +24,21 @@ class PaycartAttributeColor extends PaycartAttribute
 	/**
 	 *  return edit html that will be displayed on product edit screen
 	 */
-	function getEditHtml($attribute, $value = null)
+	function getEditHtml($attribute, $selectedValue ='', Array $options = array())
 	{
 		$html 	 = '';
-		$colors  = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
+
+		$id = $attribute->getId(); 
+		$colors = array(); 
+		if($id){
+			$colors  = PaycartFactory::getModel('color')->loadOptions($id, $attribute->getLanguageCode());
+		}
 		
 		if( !empty($colors)){
-			$html .= "<select id='attribute".$attribute->getId()."' name='paycart_form[attributes][".$attribute->getId()."]'>";
+			$html .= "<select id='attribute".$id."' name='paycart_form[attributes][".$id."]'>";
 			
 			foreach($colors as $color){
-				$selected = ($color['color_id'] == $value) ? "selected='selected'":'';
+				$selected = ($color['color_id'] == $selectedValue) ? "selected='selected'":'';
 				$html .= "<option value='".$color['color_id'] ."'".$selected.">".$color['title']."</option>";
 			}
 			$html.= '</select>';
@@ -41,27 +46,39 @@ class PaycartAttributeColor extends PaycartAttribute
 				
 		return $html;
 	}
+	
 	/**
 	 * get config Html
 	 */
-	function getConfigHtml($attribute)
+	function getConfigHtml($attribute, $selectedValue ='', Array $options = array())
 	{
-		$html   = '';
 		$type   = $attribute->getType();
-				
-		$html = '<div id="paycart-attribute-config">';
 		
-		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("Add Option").'</button>'; 
+		$id = $attribute->getId(); 
+		$colors = array(); 
+		if($id){
+			$colors = PaycartFactory::getModel('color')->loadOptions($id, $attribute->getLanguageCode());
+		}
 		
-		$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
 		$count  = (count($colors) > 0)?count($colors):1;
+
+		//needed to reset keys for proper counter management
+		$colors = array_values($colors);		
+
+		ob_start();
+		?>	
+			<script type="text/javascript">
+				var attributeCounter = <?php echo (!empty($colors))?(max(array_keys($colors))):'1';?>;
+			</script>
+		<?php 
+		$html = ob_get_contents();
+		ob_clean();
 		
 		for($i=0; $i < $count ; $i++){
 			$html .= $this->buildCounterHtml($i, $type, $colors);
 		}
-		
-		$html .= "</div>";
-		
+		$html = '<div id="paycart-attribute-options">'.$html.'</div>';
+		$html .= '<button id="paycart-attribute-option-add" type="button" class="btn" onClick="paycart.admin.attribute.addOption(\''.$type.'\')">'.JText::_("COM_PAYCART_ADMIN_ADD").'</button>';
 		return $html;
 	}
 	
@@ -77,33 +94,26 @@ class PaycartAttributeColor extends PaycartAttribute
 		ob_start();
 			?>	
 			<div id="option_row_<?php echo $counter?>">
+				<fieldset class="form">
 				 <div class="control-group">
-					 <div class='control-label'><label id='hashcode_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_HASHCODE_LABEL") ?></label></div>
-					
 					 <div class='controls'>
 					 		<input type='text' name='options[<?php echo $counter?>][hash_code]' id='hash_code_<?php echo $counter?>'  class='wheel-color' placeholder='#rrggbb' data-control="wheel"
 					      	value='<?php echo (isset($options[$counter]['hash_code'])?$options[$counter]['hash_code']:'')?>'/>
-					      	<button class="btn" id="paycart-attribute-option-remove" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>');">
-								<?php echo JText::_('Delete');?>
-				 			</button>
+					      	<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_TITLE"); ?>"/>
+							<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">
+								<i class="fa fa-trash"></i>
+							</button>
 					 </div>
-				 </div>
-				 
-				 <div class="control-group">
-					 <div class='control-label'><label id='title_<?php echo $counter?>_lbl' title=''><?php echo Rb_Text::_("COM_PAYCART_ATTRIBUTE_COLOR_TITLE_LABEL") ?></label></div>
-					
-					 <div class='controls'>
-					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>'/>
-					 </div>
-				 </div>
-				 
-				 <input type='hidden' name='options[<?php echo $counter?>][color_id]' id='color_id_<?php echo $counter?>'  
+				 </div>				 
+				 <input type='hidden' name='options[<?php echo $counter?>][color_id]' id='productattribute_option_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['color_id'])?$options[$counter]['color_id']:0) ?>' />
 						  
 				 <input type='hidden' name='options[<?php echo $counter?>][color_lang_id]' id='color_lang_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['color_lang_id'])?$options[$counter]['color_lang_id']:0) ?>' />
-				 
+				</fieldset>
+				<hr />				 
 			</div>
+			
 			<?php 
 			
 			$html = ob_get_contents();
@@ -129,7 +139,7 @@ class PaycartAttributeColor extends PaycartAttribute
 		$colors = (isset($data['_options'])) ? $data['_options']: array();
 		
 		if(empty($colors) && $attribute->getId()){
-			$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getLanguageCode());
+			$colors = PaycartFactory::getModel('color')->loadOptions($attribute->getId(), $attribute->getLanguageCode());
 		}
 		
 		$result = array();
@@ -155,25 +165,20 @@ class PaycartAttributeColor extends PaycartAttribute
 			return false;
 		}
 		
+		//save option data			
+		$colorModel 	   = PaycartFactory::getModel('color');
+			
 		foreach ($options as $option){
 			$data = array();
+			$data['hash_code'] = $option->hash_code;			
+			$data['lang_code'] = $attribute->getLanguageCode();
+			$data['productattribute_id'] = $attribute->getId();
+			$data['color_lang_id'] = $option->color_lang_id;
+			$data['title']	   = $option->title;	
 			
-			//save option data
-			$data['hash_code'] = $option->hash_code;
-			$colorModel 	   = PaycartFactory::getModel('color');
 			$colorId 		   = $colorModel->save($data, $option->color_id);
 			if(!$colorId){
 				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $colorModel->getError());
-			}
-			//save langauge specific data of options
-			$data = array();
-			$data['color_id']  = $colorId;
-			$data['lang_code'] = $attribute->getLanguageCode();
-			$data['title']	   = $option->title;
-			$colorLangModel    = PaycartFactory::getModelLang('color');
-			$colorLangId 	   = $colorLangModel->save($data,$option->color_lang_id );
-			if(!$colorLangId){
-				throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $colorLangModel->getError());
 			}
 		}
 		return true;
@@ -184,6 +189,40 @@ class PaycartAttributeColor extends PaycartAttribute
 	 */
 	function deleteOptions($attributeId=null, $optionId=null)
 	{
-		return false;
+		$attrColorModel = PaycartFactory::getModel('color');
+		
+		return $attrColorModel->deleteOptions($attributeId, $optionId);	
+	}
+	
+	/**
+	 * Returns html that will be used for selectors
+	 * 
+	 * @param $attribute : Instance of PaycartProductAttribute 
+	 * @param $selectedOption : Option that should be selected by default
+	 * @param $options : comma separaterd string containing optionids that would be considered in filters
+	 */
+	function getSelectorHtml($attribute, $selectedOption = '', Array $options = array())
+	{
+		$suffix   = '';		
+		$colors   = PaycartFactory::getModel('color')->loadOptions($attribute->getId(), $attribute->getLanguageCode(),$options);
+		
+		if(empty($colors)){
+			return '';
+		}
+		
+		$html 	= '<div><select id="pc-attr-'.$attribute->getId().'" name="attributes['.$attribute->getId().']" onChange = "paycart.product.selector.onChange(this)">';
+		
+		//build option html
+		foreach ($colors as $color){
+			$selected = '';
+			if(!empty($selectedOption) && $selectedOption == $color['color_id']){
+				$selected = 'selected="selected"';
+				$suffix   = '<span class="pc-attribute-color" style="background-color:'.$color['hash_code'].'" title="'.$color['title'].'"></span>';
+			}
+			$html  .= '<option value="'.$color['color_id'].' " ' .$selected.' >'.$color['title'].'</option>' ;
+		}
+		
+		$html .= '</select>'.$suffix.'</div>';
+		return $html;
 	}
 }

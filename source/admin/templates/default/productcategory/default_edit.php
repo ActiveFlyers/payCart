@@ -13,81 +13,165 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 JHtml::_('behavior.formvalidation');
-
+Rb_HelperTemplate::loadMedia(array('angular'));
+echo $this->loadTemplate('edit_js');
+echo $this->loadTemplate('edit_ng');
 ?>
+<div class="pc-productCategory-wrapper clearfix">
+<div class="pc-productCategory row-fluid" data-ng-app="pcngProductCategoryApp">
 
-<script type="text/javascript">
-	Joomla.submitbutton = function(task)
-	{
-		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-			Joomla.submitform(task, document.getElementById('adminForm'));
-		}
-	}
-</script>
+<!-- CONTENT START -->
 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form">
-	
-<fieldset>
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=productcategory'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
 
-	<div class="span6">
-		<div class="control-group">
-			<?php echo $form->getLabel('productcategory_id'); ?>
-			<div class="controls">
-				<?php echo $form->getInput('productcategory_id'); ?>
+<div class="span10">
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
+	<div class="row-fluid">
+		<div class="span3">
+			<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCTCATEGORY_DETAILS_HEADER');?></h2>
+			<div>
+				<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCTCATEGORY_DETAILS_HEADER_MSG');?>
 			</div>
 		</div>
-		
-		<div class="control-group">
-			<?php echo $form->getLabel('status'); ?>
-			<div class="controls">
-				<?php echo $form->getInput('status'); ?>
+		<div class="span9">
+			<div class="row-fluid">
+				<?php $field = $form->getField('title') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>
+					<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>								
+				</div>
+				<?php $field = $form->getField('alias') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>
+					<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_ALIAS');?></div>								
+				</div>
+				<?php $field = $form->getField('description') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>								
+				</div>
 			</div>
-		</div>
-		
-		<div class="control-group">
-			<?php echo $form->getLabel('parent'); ?>
-			<div class="controls">
-				<?php echo $form->getInput('parent'); ?>
-			</div>
-		</div>
-		
-		<fieldset class="form-horizontal">	
-				<?php foreach ($form->getFieldset('language') as $field):?>
+			<div class="row-fluid">
+				<div class="span6">
+					<?php $field = $form->getField('parent_id') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
-				<?php endforeach;?>
-		</fieldset>
+					
+					<?php $field = $form->getField('published') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+				</div>
+				<div class="span6">
+					<?php $field = $form->getField('created_date') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('modified_date') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+				</div>			
+			</div>		
+		</div>
+	</div>	
+	
+	<hr />
+		
+	<!--	Category Image			-->
+	<div class="row-fluid">
+		<div class="span3">
+			<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCTCATEGORY_IMAGE_HEADER');?></h2>
+			<div>
+				<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCTCATEGORY_IMAGE_HEADER_MSG');?>
+			</div>
+		</div>
+		<div class="span9">
+			<fieldset class="form">	
+				<?php if(!empty($cover_media)):?>
+				<script>
+					var pc_productCategory_id		= <?php echo $record_id;?>;
+					var pc_cover_media				= <?php echo json_encode($productCategory->getCoverMedia());?>;
+				</script>
+				<div data-ng-controller="pcngProductCategoryImagesCtrl">				
+					<ul data-ng-show="cover_media" class="thumbnails">
+		    			<li class="thumbnail">		    									
+    						<a href="#" onClick="return false;">
+    							<img data-ng-src="{{ cover_media.thumbnail }}" alt="">
+    						</a>
+    						<div>		    										
+    							<span class="pull-right"><a href="#" onClick="return false;" class="muted" data-ng-click="remove()">
+    								<i class="fa fa-trash-o"></i></a>
+    							</span>
+    						</div>
+    					</li>		    									    								
+    				</ul>
+    			</div>
+				<?php endif;?>	    			
+				<div class="row-fluid">								
+					<input type="file" name="paycart_form[cover_media]" multiple="true">
+				</div>				
+			</fieldset>
+		</div>					
 	</div>
 	
-	<div class="span6">
-		<div class="control-group">
-			<?php echo $form->getLabel('cover_media'); ?>
-			<div class="controls">
-				<?php echo $form->getInput('cover_media'); ?>
+	<hr />
+	
+	<!--	Product Meta Data			-->
+	<div class="row-fluid">
+		<div class="span3">
+			<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCTCATEGORY_METADATA_HEADER');?></h2>
+			<div>
+				<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCTCATEGORY_METADATA_HEADER_MSG');?>
 			</div>
 		</div>
-		
-		<div class="control-group">
-			<?php echo $form->getLabel('created_date'); ?>
-			<div class="controls">
-				<?php echo $form->getInput('created_date'); ?>
-			</div>
-		</div>
-		
-		<div class="control-group">
-			<?php echo $form->getLabel('modified_date'); ?>
-			<div class="controls">
-				<?php echo $form->getInput('modified_date'); ?>
-			</div>
-		</div>
+		<div class="span9">
+			<fieldset class="form">
+				<div class="row-fluid">								
+					<?php $field = $form->getField('metadata_title') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('metadata_description') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>
+					
+					<?php $field = $form->getField('metadata_keywords') ?>
+					<div class="control-group">
+						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="controls"><?php echo $field->input; ?></div>								
+					</div>								
+				</div>
+			</fieldset>
+		</div>					
 	</div>
 	
-	
-</fieldset>
+	<hr />
 
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="save" />
-	<input type='hidden' name='id' value='<?php echo $record_id;?>' />	
+	<?php echo $form->getInput('productcategory_id');?>
 </form>
+</div>
+</div>
+</div>
+<?php 

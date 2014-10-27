@@ -20,23 +20,24 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartCartparticularShipping extends PaycartCartparticular
 {	
 	protected $_rule_apply_on = Paycart::RULE_APPLY_ON_SHIPPING;	
-	protected $_details = array(); 
 	
 	public function bind($binddata = array()) 
-	{
-		$this->unit_price 		= $data['total_price_without_tax'];
+	{		
+		$this->unit_price		= $binddata['price'];
 		$this->quantity			= 1;		
 		$this->type 			= Paycart::CART_PARTICULAR_TYPE_SHIPPING;
 		$this->particular_id	= $binddata['shippingrule_id'];		
 		$this->tax				= 0;
 		$this->discount			= 0;
-		$this->price 			= $this->getPrice();
+		$this->price 			= $binddata['price'];
 		$this->total 			= $this->getTotal();
-
+		$this->cart_id			= $binddata['cart_id'];
+		$this->updateTotal();
+		
 		$this->title 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_SHIPPING_TITLE');  // @PCTODO : Calulate dynamically
 		$this->message 	= Rb_Text::_('COM_PAYCART_CARTPARTICULAR_SHIPPING_MESSAGE'); // @PCTODO : Calulate dynamically
 		
-		$this->_details 		= $data;
+		$this->params->bind($binddata['params']);
 		
 		return $this;
 	}
@@ -52,16 +53,19 @@ class PaycartCartparticularShipping extends PaycartCartparticular
 	{
 		/* @var $groupHelper PaycartHelperGroup */
 		$groupHelper = PaycartFactory::getHelper('group');
+		$groups		 = array();
 		
 		//@PCTODO : caching
-		$groups = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+	    $groups[Paycart::GROUPRULE_TYPE_BUYER] = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+
+		$groups[Paycart::GROUPRULE_TYPE_CART] =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
-		$products = $this->_details['product_list'];
-		foreach($products as $productId){
-			$groups = array_merge($groups, $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $productId));	
+		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array();
+		$products = $this->params->get('product_list');
+		foreach($products as $productId => $detail){
+			$groups[Paycart::GROUPRULE_TYPE_PRODUCT] =  array_merge($groups[Paycart::GROUPRULE_TYPE_PRODUCT],$groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $productId));	
 		}
 		
-		$groups = array_unique($groups);
 		return $groups;	
 	}
 }

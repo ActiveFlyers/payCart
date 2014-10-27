@@ -25,7 +25,7 @@ class PaycartAdminViewBuyeraddress extends PaycartAdminBaseViewBuyeraddress
 	 */
 	public function edit($tpl=null)
 	{
-		$buyer_address_id	=  $this->getModel()->getState('id');
+		$buyer_address_id	=  $this->getModel()->getState('id',0);
 		$buyer_id			=  $this->getModel()->getState('buyer_id');
 		$buyer_address 		= PaycartBuyeraddress::getInstance($buyer_address_id);
 		
@@ -43,12 +43,11 @@ class PaycartAdminViewBuyeraddress extends PaycartAdminBaseViewBuyeraddress
 		$display_data->to		 		=	$buyer_address->getTo();
 		$display_data->address		 	=	$buyer_address->getAddress();
 		$display_data->city		 		=	$buyer_address->getCity();
-		$display_data->state		 	=	$buyer_address->getState();
-		$display_data->country		 	=	$buyer_address->getCountry();
+		$display_data->state_id		 	=	$buyer_address->getStateId();
+		$display_data->country_id	 	=	$buyer_address->getCountryId();
 		$display_data->zipcode		 	=	$buyer_address->getZipcode();
 		$display_data->vat_number		=	$buyer_address->getVatnumber();
-		$display_data->phone1		 	=	$buyer_address->getPhone1();
-		$display_data->phone2		 	=	$buyer_address->getPhone2();
+		$display_data->phone		 	=	$buyer_address->getPhone();
 		
 		// set display data
 		$this->assign('display_data', $display_data);

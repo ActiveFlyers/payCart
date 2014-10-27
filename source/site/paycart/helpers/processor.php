@@ -41,8 +41,8 @@ class PaycartHelperProcessor extends JObject
 	 */
 	public function push($type, $className, $data)
 	{
-		$type 		= JString::strtolower($type);
-		$className 	= JString::strtolower($className);
+		$type 		= strtolower($type);
+		$className 	= strtolower($className);
 		
 		if (!is_object($data)) {
 			$data = (object)$data;
@@ -53,16 +53,17 @@ class PaycartHelperProcessor extends JObject
 	
 	/**
 	 * Get list of all avaialable processor
+	 * @param $type : processor type  [ 'taxrule', 'discountrule', 'shippingrule']
 	 * 
-	 * @return Array of all processors
+	 * @return Array of all available processors[type]
 	 */
 	public function getList($type)
 	{
-		$type 		= JString::strtolower($type);
+		$type 		= strtolower($type);
 		
 		// if any processor of this type is not available yet then return fasle
 		if(!isset($this->_processors[$type])){
-			return false;
+			return Array();
 		}
 		
 		//load specific type plugins
@@ -81,17 +82,17 @@ class PaycartHelperProcessor extends JObject
 	 */
 	public function getInstance($type, $className, $config = Array())
 	{
-		$type 		= JString::strtolower($type);
-		$className 	= JString::strtolower($className);
+		$type 		= strtolower($type);
+		$className 	= strtolower($className);
 		
 		// get all loaded processor
 		if(!isset($this->_processors[$type][$className])) {
-			throw new RuntimeException(Rb_Text::sprintf('COM_PAYCART_PROCESSOR_NOT_EXIST'), $className);
+			throw new RuntimeException("Processor class $className does not exist");
 		}
 		
 		if(!class_exists($className)) {
 			// if instance is not exist then need to autoload
-			require_once $processorList[$type][$className]['filepath'];
+			require_once $this->_processors[$type][$className]->filepath;
 		}
 		
 		// create processor instane 

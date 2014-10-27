@@ -14,7 +14,6 @@ if(!defined( '_JEXEC' )){
 }
 
 Rb_HelperTemplate::loadSetupEnv();
-Rb_HelperTemplate::loadSetupScripts();
 
 // load bootsrap, font-awesome
 Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
@@ -25,4 +24,5 @@ Rb_Html::stylesheet(dirname(__FILE__).'/_media/css/site.css');
 
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/paycart.js');
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/salvattore.js');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/validate.js');
 Rb_Html::script(dirname(__FILE__).'/_media/js/site.js');

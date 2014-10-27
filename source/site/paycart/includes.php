@@ -69,3 +69,14 @@ Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/attributes',  'attribute'
 
 //request
 Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/requests',		'Request',	 'Paycart');
+
+//Cartparticular
+Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/cartparticulars',	'cartparticular',	 'Paycart');
+
+//@PCFIXME : move to proper location
+Rb_HelperJoomla::loadPlugins('paycart');
+
+//Load language file for plugins
+$filename = 'com_paycart_plugins';
+$language = JFactory::getLanguage();
+$language->load($filename, JPATH_SITE);

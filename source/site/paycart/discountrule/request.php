@@ -37,7 +37,6 @@ class PaycartDiscountruleRequest
 	 */
 	public $buyer;
 	
-	public $previous_applied_rules	=	Array();	// used when checking clubbale 
 	
 	public $discountable_amount	= 0;
 	//	public $particular_coupon	 			=	NULL;		// @PCTODO: cart or particular. if user have entered any coupon code

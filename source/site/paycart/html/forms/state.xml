@@ -5,40 +5,31 @@
 		
 		<field 	name="title" 
 				type="text"
-				label="COM_PAYCART_STATE_TITLE_LABEL"
-				description="COM_PAYCART_STATE_NAME_DESC"	
+				label="COM_PAYCART_ADMIN_TITLE"	
 				required="true"			 
-				labelclass="control-label"
 				/>
 		
   		<field 	name="isocode"
 				type="text"
 				maxlength="7"
 				required="true"
-				label="COM_PAYCART_STATE_ISOCODE_LABEL"
-				description="COM_PAYCART_STATE_ISOCODE_DESC"
-				labelclass="control-label"
+				label="COM_PAYCART_ADMIN_ISOCODE"
 				/>
 				
 		<field 	name="country_id"
 				type="text"
 				maxlength="3"
 				required="true"
-				label="COM_PAYCART_STATE_COUNTRY_ID_LABEL"
-				description="COM_PAYCART_STATE_COUNTRY_ID_DESC"
-				labelclass="control-label"
+				label="COM_PAYCART_ADMIN_COUNTRY_ID"
 				readonly="true"
 				/>
-				
-		<field 	name="status" type="radio"
-				default="published"
-				description="COM_PAYCART_STATE_STATUS_DESC"
-				label="COM_PAYCART_STATE_STATUS_LABEL" 
-				class="btn-group"
-				labelclass="control-label"
-			>
-				<option value='unpublished'>COM_PAYCART_STATUS_UNPUBLISH</option>
-				<option value='published'>COM_PAYCART_STATUS_PUBLISH</option>
+			
+		<field 	name="published" type="radio"
+				default="1"
+				label="COM_PAYCART_ADMIN_PUBLISHED" 
+				class="btn-group">
+				<option value='1'>JYES</option>
+				<option value='0'>JNO</option>
 		</field>
 		
 <!--	Hidden Variable	-->
@@ -48,11 +39,7 @@
 		
 		<field 	name="state_id"
 				type="hidden"
-				label="COM_PAYCART_STATE_ID_LABEL"
-				description="COM_PAYCART_STATE_ID_DESC"
-				labelclass="control-label"
 				/>
-				
 
 		</fieldset>
 </form>

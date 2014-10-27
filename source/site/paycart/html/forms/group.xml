@@ -10,25 +10,24 @@
 		<field 
 			name="title" 
 			type="text"	
+			required="true"
+			class="input-block-level"
 			labelclass="control-label"			
-			label="Title"
-			placeholder="asasa"
-			description="Enter the title of the group so that you can understand it by name. Like : Users who wants shipping in India."/>
+			label="COM_PAYCART_ADMIN_TITLE"/>
 				
 		<field 
 			name="description" 
 			type="textarea"				
 			labelclass="control-label"
-			label="Description"
-			description="Enter the description of the group so that you can understand. This desription is have detailed knowledge about the group your are creating."/>
+			class="input-block-level"
+			label="COM_PAYCART_ADMIN_DESCRIPTION"/>
 			
 		<field
 			name="published"
 			type="radio"
 			labelclass="control-label"
 			class="btn-group"
-			label="Published"
-			description="Published"
+			label="COM_PAYCART_ADMIN_PUBLISHED"			
 			default="1">
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
@@ -38,11 +37,9 @@
 			name="type"
 			type="text"
 			labelclass="control-label"
-			class="btn-group"
+			class="input-block-level"
 			readonly="true"
-			label="Type"
-			description="Type of group, like Product or Buyer."
-			default="" />
+			label="COM_PAYCART_ADMIN_TYPE"/>
 				
 		<fields name="params">
 		</fields>		

@@ -30,14 +30,14 @@ class PlgPaycartDiscountruleflat extends Rb_Plugin
 	{
 		parent::__construct($subject, $config);
 		
-		$fileLocation = __FILE__.'/processor/flat.php';
+		$fileLocation = dirname(__FILE__).'/processors/flat.php';
 		
 		$processor = PaycartFactory::getHelper('processor');
 		
 		$processor->push( 	Paycart::PROCESSOR_TYPE_DISCOUNTRULE,
 							'PaycartDiscountruleProcessorFlat',
 							Array( 'filepath'	 => $fileLocation,
-								   'title'		 => Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_FLAT_NAME'),
+								   'title'		 => Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_FLAT_TITLE'),
 								   'icon'		 => '',
 								   'tooltip'	 =>	'',
 								   'description' => Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_FLAT_DESC')

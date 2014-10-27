@@ -13,6 +13,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 //jimport('joomla.form.formfield');
 JFormHelper::loadFieldClass('list');
 
+//load Paycart stuff (required when anybody use this element without paycart page like on menu-creation)
+include_once JPATH_SITE.'/components/com_paycart/paycart/includes.php';
+ 
 /**
  * Custom Element for paycart product category.
  * Type = paycart.productcategory
@@ -25,51 +28,51 @@ class PaycartFormFieldCategory extends JFormFieldList
 {	
 	public function getInput()
 	{
-		self::_addScript();
-		
 		$html = parent::getInput();
 		// add new category option should be required or not			
 		$addNew = $this->element['addnew'] ? (string) $this->element['addnew'] : false;
 		
 		if($addNew == 'true') {
+			
+			self::_addScript();
+			
 			$html = "
-					{$html}
+					<div>{$html}</div>
+					<br/>
 					<div class='input-append'>
-						<input class='' type='text' id='add_new_category' placeholder='Add category name'>
+						<input class='' type='text' id='add_new_category' placeholder='".JText::_('COM_PAYCART_ADMIN_CATEGORY_ETER_NEW_TITLE')."'>
 						<button class='btn' type='button' id='add_new_category_button'>".
-								Rb_Text::_('COM_PAYCART_ADD_NEW_PRODUCT_CATEGORY')."
+								Rb_Text::_('COM_PAYCART_ADMIN_ADD')."
 						</button>
 					</div>";
 		}
 		
 		return $html;
 	}
+	
 	/**
 	 * Return all availble category options
 	 * @see libraries/joomla/form/fields/JFormFieldList::getOptions()
 	 */
 	public function getOptions()
 	{
-		$category = self::getCategory();
+		$options = parent::getOptions();
+		$category = PaycartFactory::getHelper('productcategory')->getCategory();
+		 
+		// remove root category
+		if ( isset($this->element['show_root']) && !(int)$this->element['show_root'] ) {
+			unset($category[Paycart::PRODUCTCATEGORY_ROOT_ID]);
+		} 
 
-		$listLabel = parent::getOptions();
-		if($listLabel) {
-			$listLabel[0]->title = $listLabel[0]->text;
-			$category = array_merge($listLabel, $category);
+		foreach ($category as $key => $cat){
+			$category[$key]->title = str_repeat('&mdash;', ($cat->level - 1)<0?0:($cat->level - 1)).' '.$cat->title;
 		}
 		
-		return PaycartHtml::buildOptions($category);		
+		return array_merge($options, PaycartHtml::buildOptions($category));		
 	}
 	
 	private function _addScript()
 	{
-		$result = self::getCategory();
-		
-		$category 	= Array();
-		foreach ($result as $categoryId => $value) {
-			$category[$categoryId] = "'$value->title'";
-		}
-		
 		ob_start();
 		?>
 		paycart.jQuery(document).ready(function($)
@@ -83,7 +86,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 				//append new oprion to select list
 				$('.paycart_category_class').append(option);
 				// default selected
-				$('.paycart_category_class').val(response.productcategory_id);
+				$('.paycart_category_class').val(response.productcategory_id).trigger("liszt:updated");
 			};
 			<!-- Callback function when error occur during category adding operation	-->
 			var callbackOnError = function ()
@@ -102,14 +105,7 @@ class PaycartFormFieldCategory extends JFormFieldList
 							$('#add_new_category').focus();
 							return false;
 						}
-						// get All available options				
-						var options = [<?php echo implode(",", $category); ?>];
-						
-						if(-1 != $.inArray(value, options)) {
-							alert(rb.cms.text._('COM_PAYCART_JS_CATEGORY_NAME_ALREADY_EXIST', 'Category name already available'));
-							$('#add_new_category').focus();
-							return false;
-						}
+
 						paycart.admin.product.category.add(value, callbackOnSuccess, callbackOnError);
 					}
 				);		
@@ -121,25 +117,5 @@ class PaycartFormFieldCategory extends JFormFieldList
 		ob_end_clean();
 		JFactory::getDocument()->addScriptDeclaration($script); 
 		;
-	}
-		
-	 /**
-	 * @return all available category array('category_id'=>'Array of category stuff')
-	 */
-	private static function getCategory($reset = false)
-	{
-		static $result ;
-		if ($result && !$reset ) {
-			return $result;
-		}
-		
-		$model = PaycartFactory::getModellang('Productcategory');
-		// Should be sorted according to 'title' so need to write query with "order by"
-		$model->clearQuery();  
-		$query = $model->getQuery()->clear('order')->order('title');
-		
-		$result = $model->loadRecords();
-		 
-		return $result;
 	}
 }

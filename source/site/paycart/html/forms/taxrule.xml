@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+	<fieldset name="taxrule">
+		<field 	
+			name="taxrule_id" 
+			type="hidden"
+			default="0"/>
+		
+		<field 
+			name="title" 
+			type="text"	
+			required="true"
+			class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_TITLE"/>
+				
+		<field 
+			name="description" 
+			type="textarea"				
+			labelclass="control-label"
+			class="input-block-level"
+			label="COM_PAYCART_ADMIN_DESCRIPTION"/>
+			
+		<field
+			name="published"
+			type="radio"
+			labelclass="control-label"
+			class="btn-group"
+			label="COM_PAYCART_ADMIN_PUBLISHED"			
+			default="1">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		
+		<field
+			name="amount"
+			type="paycart.amount"
+			required="true"
+			labelclass="control-label"
+			class="input-block-level"/>
+		
+		<field
+			name="apply_on"
+			type="paycart.applyon"
+			labelclass="control-label"/>
+					
+		<field
+			name="processor_classname"
+			type="paycart.processor"
+			labelclass="control-label"
+			processor_type="taxrule">
+			<option value="">COM_PAYCART_ADMIN_SELECT</option>
+		</field>
+			
+		<field
+			name="_buyergroups"
+			type="paycart.group"
+			labelclass="control-label"
+			class="input-block-level"
+			group_type="buyer"	
+			multiple="true"	
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_BUYER" />
+			
+		<field
+			name="_productgroups"
+			type="paycart.group"
+			labelclass="control-label"
+			class="input-block-level"
+			group_type="product"
+			multiple="true"		
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_PRODUCT" />
+			
+		<field
+			name="_cartgroups"
+			type="paycart.group"
+			class="input-block-level"
+			labelclass="control-label"
+			multiple="true"
+			group_type="cart"		
+			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_CART" />
+			
+		<field 
+			name="message" 
+			type="text"	
+			class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_MESSAGE"/>
+			
+		<fields name="processor_config">
+		</fields>
+		
+		<field 
+			name="taxrule_lang_id"
+			type="hidden"
+			default="0"/>	
+	
+		<field 
+			name="lang_code"
+			type="hidden"
+			default="en-GB"/>	
+	</fieldset>
+</form>

@@ -1,41 +1,58 @@
 <?php
+
 /**
 * @copyright	Copyright (C) 2009 - 2013 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
-* @license		http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
-* @package		PayCart
-* @subpackage	Frontend
-* @contact 		manish@readybytes.in
-* @author 		Manish Trivedi
+* @license		GNU/GPL, see LICENSE.php
+* @package 		PAYCART
+* @subpackage	Back-end
+* @contact		support+paycart@readybytes.in 
 */
 
-/**
- * List of Populated Variables
- * $heading = COM_PAYCART_ADMIN_BLANK_PRODUCT
- * $msg 	= COM_PAYCART_ADMIN_BLANK_PRODUCT_MSG
- * $model	= Instance of PaycartModelProduct
- * $filters = Array of availble filters
- * $uri		= Current URL (SITE_NAME/administrator/index.php?option=com_paycart&view=product&task=display)
- * 
- */
-defined('_JEXEC') or die();
-
+defined('_JEXEC') or die( 'Restricted access' );
 ?>
+<div class="pc-product-wrapper clearfix">
+<div class="pc-group row-fluid">
 
+<!-- CONTENT START -->
+
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=productcategory'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
+
+
+<div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 	<div class="row-fluid">
-		<div class="span12">
-			<p class="lead center"><?php echo $heading; ?></p>
-			<p class="center"><?php echo $msg; ?></p>
+		<div class="center muted">
+			<div>
+				<h1>&nbsp;</h1>
+				<i class="fa fa-sitemap fa-5x"></i>
+			</div>			
+			<div>
+				<h3><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCTCATEGORY_GRID_BLANK_MSG');?></h3>
+			</div>
 		</div>
-		
+	</div>
+	<div class="row-fluid">	
 		<div class="center">
-			<a href="<?php echo JUri::base().'index.php?option=com_paycart&view=product&task=new';?>" class="btn btn-success"><i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ADD_NEW_PRODUCT');?></a>
-			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-question-sign "></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_SUPPORT_LINK');?></a>
-			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-book"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_DOCUMENTATION_LINK');?></a>
+			<a href="<?php echo JUri::base().'index.php?option=com_paycart&view=productcategory&task=new';?>" class="btn btn-success btn-large">
+				<i class="icon-plus-sign icon-white"></i>&nbsp;
+				<?php echo Rb_Text::_('COM_PAYCART_ADMIN_CATEGORY_ADD');?>
+			</a>			
 		</div>
 	</div>
 	
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 </form>
+</div>
+<!-- CONTENT END -->
+
+</div>
+</div>
 <?php 

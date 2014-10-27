@@ -5,8 +5,7 @@
 		
 		<field 	name="title" 
 				type="text"
-				label="COM_PAYCART_COUNTRY_TITLE_LABEL"
-				description="COM_PAYCART_COUNTRY_NAME_DESC"	
+				label="COM_PAYCART_ADMIN_TITLE"
 				required="true"			 
 				labelclass="control-label"
 				/>
@@ -15,8 +14,7 @@
 				type="text"
 				maxlength="3"
 				required="true"
-				label="COM_PAYCART_COUNTRY_COUNTRY_ID_LABEL"
-				description="COM_PAYCART_COUNTRY_COUNTRY_ID_DESC"
+				label="COM_PAYCART_ADMIN_COUNTRY_ISOCODE_3"
 				labelclass="control-label"
 				/>
 
@@ -25,39 +23,35 @@
 				type="text"
 				maxlength="2"
 				required="true"
-				label="COM_PAYCART_COUNTRY_ISOCODE2_LABEL"
-				description="COM_PAYCART_COUNTRY_ISOCODE2_DESC"
+				label="COM_PAYCART_ADMIN_COUNTRY_ISOCODE_2"
 				labelclass="control-label"
 				/>
   		
 
 		<field 	name="call_prefix" 
 				type="text"
-				label="COM_PAYCART_COUNTRY_CALL_PREFIX_LABEL"
-				description="COM_PAYCART_COUNTRY_CALL_PREFIX_DESC"
+				label="COM_PAYCART_ADMIN_COUNTRY_CALL_PREFIX"
 				required="true"	
 				labelclass="control-label"/>
 
 		<field 	name="zip_format" 
 				type="text"
-				label="COM_PAYCART_COUNTRY_ZIP_FORMAT_LABEL"
-				description="COM_PAYCART_COUNTRY_ZIP_FORMAT_DESC"				
+				label="COM_PAYCART_ADMIN_COUNTRY_ZIP_FORMAT"
+				description="COM_PAYCART_ADMIN_COUNTRY_ZIP_FORMAT_DESC"				
 				labelclass="control-label"
 				required="true"
 				maxlength="7"
 				/>
 
-		<field 	name="status" type="radio"
-				default="published"
-				description="COM_PAYCART_COUNTRY_STATUS_DESC"
-				label="COM_PAYCART_COUNTRY_STATUS_LABEL" 
-				class="btn-group"
-			>
-				<option value='unpublished'>COM_PAYCART_STATUS_UNPUBLISH</option>
-				<option value='published'>COM_PAYCART_STATUS_PUBLISH</option>
+		<field 	name="published" type="radio"
+				default="1"
+				label="COM_PAYCART_ADMIN_PUBLISHED" 
+				class="btn-group">
+				<option value='1'>JYES</option>
+				<option value='0'>JNO</option>
 		</field>
 		
-<!--	Hidden Variable	-->
+		<!--	Hidden Variable	-->
 		<field 	name="country_lang_id"
 				type="hidden"
 				/>

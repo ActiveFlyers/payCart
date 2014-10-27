@@ -27,8 +27,8 @@ class PlgPaycartTaxruleFlat extends RB_Plugin
 		$helper = PaycartFactory::getHelper('processor');
 		
 		// push processor of flatRate
-		$helper->push(paycart::PROCESSOR_TYPE_TAX,
-					 'PaycartTaxruleProcessorFlatTax',		  
+		$helper->push(paycart::PROCESSOR_TYPE_TAXRULE,
+					 'PaycartTaxruleProcessorFlatRate',		  
                       array(
                             'filepath'   => dirname(__FILE__).'/processors/flatrate/flatrate.php',
                             'title'      => Rb_Text::_('PLG_PAYCART_TAXRULE_FLAT_RATE_TITLE'),
@@ -37,7 +37,7 @@ class PlgPaycartTaxruleFlat extends RB_Plugin
                       ));
         
         // push processor of flatAmount
-        $helper->push(paycart::PROCESSOR_TYPE_TAX,
+        $helper->push(paycart::PROCESSOR_TYPE_TAXRULE,
 					 'PaycartTaxruleProcessorFlatAmount',		  
                       array(
                             'filepath'   => dirname(__FILE__).'/processors/flatamount/flatamount.php',

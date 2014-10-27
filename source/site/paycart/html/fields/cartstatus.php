@@ -17,7 +17,7 @@ class PaycartFormFieldCartStatus extends JFormFieldList
 {	
 	public function getOptions()
 	{
-		$status = PaycartFactory::getHelper('cart')->getStatus();
+		$status = Paycart::getCartStatus();
 		return PaycartHtml::buildOptions($status);		
 	}
 	

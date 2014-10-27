@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="paycart" method="upgrade">
-    <name>PLG_PAYCART_SHIPPINGRULEFLATRATE</name>
+    <name>Paycart Shippingrule Flat</name>
     <version>1.0.0</version>
     <creationDate>Nov 2012</creationDate>
     <author>Ready Bytes</author>
@@ -8,7 +8,7 @@
     <authorUrl>http://www.readybytes.net/paycart</authorUrl>
     <copyright>2009-14 Ready Bytes Software Labs Pvt. Ltd.</copyright>
     <license>GNU General Public License v2</license>
-    <description>PLG_PAYCART_SHIPPINGRULEFLATRATE_DESCRIPTION</description>
+    <description>Apply shipping amount automatically without any external system</description>
     <files>
 	<filename plugin="shippingruleflatrate">shippingruleflatrate.php</filename>
 	<folder>processors</folder>

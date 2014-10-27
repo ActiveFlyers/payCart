@@ -63,3 +63,8 @@ class PaycartModelBuyer extends PaycartModel
 }
 
 class PaycartModelformBuyer extends PaycartModelform { }
+
+/** 
+ * User Table
+ */
+class PaycartTableBuyer extends PaycartTable {}

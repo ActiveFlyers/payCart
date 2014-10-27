@@ -19,21 +19,41 @@
  */
 defined('_JEXEC') or die();
 ?>
+<div class="pc-cart-wrapper clearfix">
+<div class="pc-cart row-fluid">
 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm">
+<!-- CONTENT START -->
+
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=cart'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
+
+<div class="span10">
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 	<div class="row-fluid">
-		<div class="span3">&nbsp;</div>
-		<div class="span6 pc-blank-heading">
-			<p class="muted"><?php echo $msg; ?></p>
-		</div>
-		<div class="span3">&nbsp;</div>
-	</div>
-	<div class="row-fluid">	
-		<div class="center">
-			<a href="<?php echo JUri::base().'index.php?option=com_paycart&view=cart&task=new';?>" class="btn btn-success"><i class="icon-shopping-cart icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ADD_NEW_CART');?></a>
-			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-question-sign "></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_SUPPORT_LINK');?></a>
-			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-book"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_DOCUMENTATION_LINK');?></a>
+		<div class="center muted">
+			<div>
+				<h1>&nbsp;</h1>
+				<i class="fa fa-shopping-cart fa-5x"></i>
+			</div>
+			
+			<div>
+				<h3><?php echo JText::_('COM_PAYCART_ADMIN_CART_GRID_BLANK_MSG');?></h3>
+			</div>
 		</div>
 	</div>
+	
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="boxchecked" value="0" />
 </form>
+</div>
+<!-- CONTENT END -->
+
+</div>
+</div>
 <?php 

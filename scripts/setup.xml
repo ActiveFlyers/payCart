@@ -70,11 +70,11 @@
 	<!-- ============================================  -->
 	<target name="copy_package">
 		<!-- Copy PayCart Zip	-->
-		<copy 	file="${dir.packages}/${project.shortform}-${file.version}.${build.number}.${file.extension}" 
-				tofile="${joomla.rootpath}/${joomla.folder}/${project.shortform}-${file.version}.${build.number}.${file.extension}" />
+		<copy 	file="${dir.packages}/${project.shortform}-${file.version}.${file.extension}" 
+				tofile="${joomla.rootpath}/${joomla.folder}/${project.shortform}-${file.version}.${file.extension}" />
 		<!--	Copy paycart Package		-->
-		<copy 	file="${dir.packages}/${build.package.name}-${file.version}.${build.number}.${file.extension}" 
-				tofile="${joomla.rootpath}/${joomla.folder}/${build.package.name}-${file.version}.${build.number}.${file.extension}" />
+		<copy 	file="${dir.packages}/${build.package.name}-${file.version}.${file.extension}" 
+				tofile="${joomla.rootpath}/${joomla.folder}/${build.package.name}-${file.version}.${file.extension}" />
 	</target>
 
 	<!-- ============================================  -->

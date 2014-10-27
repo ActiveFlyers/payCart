@@ -21,44 +21,43 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartProductcategory extends PaycartLib
 {
 	// Table Fields
-	protected $productcategory_id	=	0; 
-	protected $status				=	1;
-	protected $parent 		 		=	0;
-	protected $cover_media	 		=	null; 	
-	protected $created_date  		=	'';	
-	protected $modified_date 		=	'';
-
-	// Related Table fields (Language specific fields)
-	protected $_language;
+	protected $productcategory_id	= 0; 
+	protected $published			= 1;
+	protected $parent_id	 		= Paycart::PRODUCTCATEGORY_ROOT_ID;
+	protected $cover_media	 		= 0; 	
+	protected $created_date  		= '';	
+	protected $modified_date 		= '';
 	
+	// language table
+	protected $productcategory_lang_id	= 0;
+	protected $lang_code 			= '';
+	protected $title				= '';
+	protected $alias				= '';
+	protected $description			= '';
+	protected $metadata_title		= '';
+	protected $metadata_keywords	= '';
+	protected $metadata_description	= '';
+
 	public function reset() 
 	{		
 		// Table Fields
-		$this->productcategory_id	=	0; 
-		$this->status		 		=	Paycart::STATUS_PUBLISHED;
-		$this->parent 		 		=	0;
-		$this->cover_media	 		=	null; 	
-		$this->created_date  		=	Rb_Date::getInstance();	
-		$this->modified_date 		=	Rb_Date::getInstance();
-		
-		// Related Table Fields
-		$this->_language	 = new stdClass();
-		
-		// use only by system 
-		$this->_language->productcategory_lang_id	= 0;
-		$this->_language->productcategory_id	    = 0;
-		$this->_language->lang_code 	= PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag	
-		$this->_language->title			= '';
-		$this->_language->alias			= '';
-		$this->_language->description	= ''; 	
-		
-		$this->_language->metadata_title		= '';
-		$this->_language->metadata_keywords	= '';
-		$this->_language->metadata_description	= '';
+		$this->productcategory_id	= 0; 
+		$this->published		 	= 1;
+		$this->parent_id	 		= Paycart::PRODUCTCATEGORY_ROOT_ID; //set id of root 
+		$this->cover_media	 		= 0; 	
+		$this->created_date  		= Rb_Date::getInstance();	
+		$this->modified_date 		= Rb_Date::getInstance();		
+		$this->productcategory_lang_id = 0;
+		$this->lang_code 			= PaycartFactory::getCurrentLanguageCode();
+		$this->title				= '';
+		$this->alias				= '';
+		$this->description			= '';		
+		$this->metadata_title		= '';
+		$this->metadata_keywords	= '';
+		$this->metadata_description	= '';
 		
 		return $this;
 	}
-	
 	
 	/**
 	 * 
@@ -75,180 +74,130 @@ class PaycartProductcategory extends PaycartLib
 		return parent::getInstance('productcategory', $id, $data);
 	}
 
+	public function getAlias() 
+	{
+		return $this->alias;
+	}
+	
 	/**
-	 * (non-PHPdoc)
+	 * Override it due to _uploaded_files variable
+	 *
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 */
-	public function bind($data,  $ignore=array())
+	function bind($data, $ignore = Array())
 	{
 		if(is_object($data)){
 			$data = (array) ($data);
 		}
-		
-		//1#. Bind Table specific fields
 		parent::bind($data, $ignore);
 		
-		//2#. Bind related table fields (language specific)
-		$records = array();
-		//@PCTODO :: improve condition as per your requirment
-		if(isset($data['language'])){
-			// like data is Posted
-			$records = $data['language'];
-		} else if($this->getId()){
-			//@PCTODO :: move to helper and array_shift record
-			$records	 = PaycartFactory::getModelLang('Productcategory')
-										->loadRecords(Array('lang_code' => $this->_language->lang_code,
-															'productcategory_id' => $this->getId()
-															));
-			$records = (array)array_shift($records);															
-		}
-		
-		$this->setLanguageData($records);
-		
-		return $this;
-	}
-	
-	/**
-	 *
-	 * Set language specific data on $this _language property
-	 * @param $data, Array of available data which are set on $this language
-	 * 
-	 * @return $this
-	 */
-	public function setLanguageData($data)
-	{
-		if(!is_array($data)){
-			$data = (array) ($data);
-		}
-		
-		// set _language stuff
-		foreach ($this->_language as $key => $value) {
-			// set data value on $this if key is set on data 
-			if(isset($data[$key])) {
-				$this->_language->$key = $data[$key];
-			}
+		if( isset($data['_uploaded_files'])) {
+			$this->_uploaded_files = $data['_uploaded_files'];
 		}
 		
 		return $this;
 	}
-	
 	
 	/**
 	 * (non-PHPdoc)
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::save()
 	 */
 	public function save()
-	{
-		// Title is must for any item 
-		if(!$this->_language->title) {
-			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_TITLE_REQUIRED', $this->getName()));
-		}
-		
-		// if alias empty then set title on alias
-		if (!$this->_language->alias) {
-			$this->_language->alias = $this->_language->title;
-		}
-		
-		//resave existing product then need to productcat_lang_id to avoid alias checking on specific ID.  
-		if( $this->getId() && !$this->_language->productcategory_lang_id) {
-			$helper = PaycartFactory::getHelper('Productcategory');
-			
-			$this->_language->productcategory_lang_id = $helper->translateAliasToKey($this->_language->alias);
-			
-			// Create new alias if put alias is already exist for other category 
-			if ($this->getId() != $helper->translateAliasToKey($this->_language->alias, 'productcategory_id')) {
-				$this->_language->productcategory_lang_id = 0;
+	{		
+		// Process If images exist
+		if(isset($this->_uploaded_files['cover_media'])  && isset($this->_uploaded_files['cover_media']['tmp_name']) && !empty($this->_uploaded_files['cover_media']['tmp_name'])){
+			if($this->cover_media){
+				$media = PaycartMedia::getInstance($this->cover_media);
 			}
+			else{
+				$media = PaycartMedia::getInstance();
+				$data = array();
+				$data['language']['title'] = $image['name'];
+				$media->bind($data);
+				$media->save();
+			}
+			
+			$media->moveUploadedFile($this->_uploaded_files['cover_media']['tmp_name'], JFile::getExt($this->_uploaded_files['cover_media']['name']));
+			$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'),PaycartFactory::getConfig()->get('catalogue_image_thumb_height'));
+			$media->createOptimized(PaycartFactory::getConfig()->get('catalogue_image_optimized_width'),PaycartFactory::getConfig()->get('catalogue_image_optimized_height'));
+			$media->createSquared(PaycartFactory::getConfig()->get('catalogue_image_squared_size'));
+			$this->cover_media = $media->getId();
 		}
-		
-		// alias must be unique
-		$this->_language->alias = PaycartFactory::getTableLang('Productcategory')->getUniqueAlias($this->_language->alias, $this->_language->productcategory_lang_id);
-		
-		//@PCTODO :: before parent save. Create cover_media path and set on $this
-		
+				
 		return parent::save();
 	}
 	
-	
 	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
+	 * @return media id/media set as productcategory's Cover Media 
 	 */
-	protected function _save($previousObject) 
+	public function getCoverMedia($requireMediaArray = true) 
 	{
-		// 1# Save Table fields data
-		$saveId = parent::_save($previousObject);
-		
-		if (!$saveId) {
+		if(empty($this->cover_media)){
 			return false;
 		}
 		
-		$this->setId($saveId);
-		
-		//2#. Process Cover media
-		//@PCTODO :: process cover media 
-		
-		//3#. Save Related table fields (Language stuff)
-		$languageData = (Array)$this->_language;
-		$languageData['productcategory_id'] = $saveId;
-				
-		// store new data
-		if(!PaycartFactory::getModelLang('Productcategory')->save($languageData,$this->_language->productcategory_lang_id)) {
-			//@PCTODO :: notify to admin
+		if($requireMediaArray && !empty($this->cover_media)){
+			return PaycartMedia::getInstance($this->cover_media)->toArray();
 		}
-		
-		// few class properties might be changed by model validation or might be chage related fields
-		// so we need to reflect these kind of changes to lib object
-		$this->reload();
-		
-		return $saveId;
+		return $this->cover_media;
+	}
+
+	function getTitle()
+	{
+		return $this->title;
 	}
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_delete()
-	 */
 	protected function _delete()
 	{
-		//1#. Delete Table fields
+		//Delete category
 		if(!$this->getModel()->delete($this->getId())) {
 			return false;
 		}
 		
-		//2#. Delete Related table fields
-		if (!$this->_deleteLanguageData()) {
-			// @PCTODO :: notify to admin 
+		//Delete product images
+		if(!$this->deleteImage()){
+			return false;
 		}
 		
 		return true;
 	}
 	
 	/**
-	 * 
-	 * Delete language specific data for product category
-	 * @param string $langCode, have language code if need to delete specificlanguage code data
-	 * 
+	 * Delete image if image id is given
+	 * @param $imageId : Imgae id that is required to be deleted (optional)
 	 */
-	protected function _deleteLanguageData($langCode = '')
+	public function deleteImage($imageId = null)
 	{
-		// Product category id
-		$condition['productcategory_id'] = $this->getId();
+		$mediaId = $this->cover_media;
 		
-		// specific language code
-//		if ($langCode) {
-//			$condition['lang_code'] = $langCode;
-//		}
+		if(!empty($imageId)){
+			$mediaId = $imageId;
+		}
 		
-		return PaycartFactory::getModelLang('Productcategory')->deleteMany($condition);
+		if(!empty($mediaId)){
+			$media = PaycartMedia::getInstance($mediaId);
+			// @PCTODO : error handling
+			$media->delete();	
+			$this->cover_media = 0;
+		}
+
+		// always return this (not false)
+		// otherwise after delete trigger will not be fired 
+		return $this;
 	}
 	
-	function getLanguage()
+	public function getMetadataTitle()
 	{
-		return $this->_language;
+		return $this->metadata_title;
 	}
 	
-	function getTitle()
+	public function getMetadataDescription()
 	{
-		return $this->_language->title;
+		return $this->metadata_description;
+	}
+	
+	public function getMetadataKeywords()
+	{
+		return $this->metadata_keywords;
 	}
 }

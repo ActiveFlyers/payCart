@@ -37,6 +37,7 @@ class PaycartShippingruleRequest
 class PaycartShippingruleRequestGlobalconfig {
 	public $dimenssion_unit;
 	public $weight_unit; 
+	public $origin_address;
 }
 
 class PaycartShippingruleRequestRuleconfig {

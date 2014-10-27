@@ -23,3 +23,11 @@ class PaycartModelBuyeraddress extends PaycartModel
 }
 
 class PaycartModelformBuyeraddress extends PaycartModelform { }
+
+/**
+ * 
+ * Address Table
+ * @author manish
+ *
+ */
+class PaycartTableBuyeraddress extends PaycartTable{}

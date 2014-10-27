@@ -19,13 +19,13 @@ class PaycartProduct extends PaycartLib
 {
 	protected $product_id	 	= 0; 
 	protected $productcategory_id		= 0;
-	protected $status		 	= '';
+	protected $published		= 1;
 	protected $type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
-	protected $price		 	= 0.00;
-	protected $quantity		 	= 0;
+	protected $price		 	= null;
+	protected $quantity		 	= null;
 	protected $sku			 	= '';	
 	protected $variation_of		= 0;  		// This product is variation of another product. 	
-	protected $cover_media		= NULL;
+	protected $cover_media		= null;
 	protected $created_date  	= '';	
 	protected $modified_date 	= ''; 
 	protected $ordering		 	= 0;
@@ -34,7 +34,7 @@ class PaycartProduct extends PaycartLib
 	protected $weight		 	= 0.00;
 	protected $height		 	= 0.00;
 	protected $length		 	= 0.00;
-	protected $depth		 	= 0.00;
+	protected $width		 	= 0.00;
 	protected $weight_unit	 	= '';
 	protected $dimension_unit	= '';
 	protected $stockout_limit	= 0;
@@ -42,10 +42,21 @@ class PaycartProduct extends PaycartLib
 	
 	//Extra fields (not related to columm) 
 	protected $_uploaded_files   = array();
+	protected $_images			 = array();
 	protected $_attributeValues;
 	
 	//language specific data
-	protected $_language;
+	protected $product_lang_id	   = 0;
+	protected $lang_code 		   = '';	
+	protected $title 			   = '';	
+	protected $alias  			   = '';
+	protected $description 		   = '';	
+	protected $metadata_title  	   = '';
+	protected $metadata_keywords   = '';
+	protected $metadata_description = '';	
+
+	//variants of current product
+	protected $_variants 			= array();
 	
 	/**
 	 * (non-PHPdoc)
@@ -55,44 +66,54 @@ class PaycartProduct extends PaycartLib
 	{	
 		$this->product_id	 	= 0; 
 		$this->productcategory_id		= 0;
-		$this->status		 	= '';
+		$this->published		= 1;
 		$this->type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
-		$this->price		 	= 0.00;
-		$this->quantity		 	= 0;
+		$this->price		 	= null;
+		$this->quantity		 	= null;
 		$this->sku			 	= '';	
 		$this->variation_of		= 0;  		// This product is variation of another product. 	
-		$this->cover_media		= NULL;
+		$this->cover_media		= null;
 		$this->ordering		 	= 0;
 		$this->featured			= 0;
 	
 		$this->weight		 	= 0.00;
 		$this->height		 	= 0.00;
 		$this->length		 	= 0.00;
-		$this->depth		 	= 0.00;
+		$this->width		 	= 0.00;
 		$this->weight_unit	 	= '';
 		$this->dimension_unit	= '';
-		$this->stockout_limit	= 0;
-		$this->config			= '';
+		$this->stockout_limit	= null;
+		$this->config			= new Rb_Registry();
 		$this->created_date  	= Rb_Date::getInstance();	
 		$this->modified_date 	= Rb_Date::getInstance(); 
 		
 		$this->_attributeValues = array();
+		$this->_images			= array();
 		
-		$this->_language = new stdClass();
-		$this->_language->product_lang_id	   = 0;
-		$this->_language->product_id 		   = 0;	
-		$this->_language->lang_code 		   = PaycartFactory::getLanguage()->getTag(); //Current Paycart language Tag	
-		$this->_language->title	 			   = '';	
-		$this->_language->alias  			   = '';
-		$this->_language->teaser 			   = '';
-		$this->_language->description 		   = '';	
-		$this->_language->metadata_title  	   = '';
-		$this->_language->metadata_keywords	   = '';
-		$this->_language->metadata_description = '';	
+		$this->product_lang_id	   = 0;		
+		$this->lang_code 		   = PaycartFactory::getCurrentLanguageCode();	
+		$this->title	 		   = '';	
+		$this->alias  			   = '';
+		$this->description 		   = '';	
+		$this->metadata_title  	   = '';
+		$this->metadata_keywords   = '';
+		$this->metadata_description = '';	
+
+		$this->_variants 			= array();
 		
 		return $this;
 	}
 	
+	/**
+	 * 
+	 * PaycartProduct Instance
+	 * @param  $id, existing Product id
+	 * @param  $data, required data to bind on return instance	
+	 * @param  $dummy1, Just follow code-standards
+	 * @param  $dummy2, Just follow code-standards
+	 * 
+	 * @return PaycartProduct lib instance
+	 */
 	public static function getInstance($id = 0, $data = null, $dummy1 = null, $dummy2 = null)
 	{
 		return parent::getInstance('Product', $id, $data);
@@ -105,29 +126,11 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function save()
 	{	
-		//title is mandatory
-		if(!$this->_language->title){
-			throw new UnexpectedValueException(Rb_Text::sprintf('COM_PAYCART_TITLE_REQUIRED', $this->getName()));
-		}
-		
-		//set title if alias doesn't exist
-		if (!$this->_language->alias) {
-			$this->_language->alias = $this->_language->title;
-		}
-		
-		// alias must be unique
-		$this->_language->alias = PaycartFactory::getTableLang('Product')->getUniqueAlias($this->_language->alias, $this->_language->product_lang_id);
-
-		if (!$this->sku) {
-			$this->sku = $this->_language->alias;
-		}
-		
 		// @PCTODO :: Set default Image 
-		// Set Cover Image Path
-		if ( isset($this->_uploaded_files['cover_media']) && !empty($this->_uploaded_files['cover_media']['name'])) {
+		if(isset($this->_uploaded_files['images']) && !empty($this->_uploaded_files['images']['name'])){
 			$extension = PaycartFactory::getConfig()->get('image_extension', Paycart::IMAGE_FILE_DEFAULT_EXTENSION);
-			$this->cover_media = PaycartHelper::getHash($this->_uploaded_files['cover_media']['name']);
-			$this->cover_media = $this->getName().'/'.$this->cover_media.$extension;			
+			$this->_images['path'] = PaycartHelper::getHash($this->_uploaded_files['images']['name']);
+			$this->_images['path'] = $this->getName().'/'.$this->_images['path'].$extension;	
 		}
 		
 		return parent::save();
@@ -138,19 +141,42 @@ class PaycartProduct extends PaycartLib
 	 */
 	public function getTitle() 
 	{	
-		return $this->_language->title;
+		return $this->title;
 	}
 	
-	public function getLanguage()
-	{
-		return $this->_language;
+	public function getAlias() 
+	{	
+		return $this->alias;
+	}
+	
+	public function getWidth() 
+	{	
+		return $this->width;
+	}
+	
+	public function getWeight() 
+	{	
+		return $this->weight;
+	}
+
+	public function getHeight() 
+	{	
+		return $this->height;
+	}
+
+	public function getLength() 
+	{	
+		return $this->length;
 	}
 	
 	/**
-	 * @return name of Product Cover Media 
+	 * @return media id set as product Cover Media 
 	 */
-	public function getCoverMedia() 
+	public function getCoverMedia($requireMediaArray = true) 
 	{	
+		if($requireMediaArray && !empty($this->cover_media)){
+			return PaycartMedia::getInstance($this->cover_media)->toArray();
+		}
 		return $this->cover_media;
 	}
 
@@ -170,6 +196,25 @@ class PaycartProduct extends PaycartLib
 		return $this->price;
 	}
 	
+	public function getMetadataTitle()
+	{
+		return $this->metadata_title;
+	}
+	
+	public function getMetadataDescription()
+	{
+		return $this->metadata_description;
+	}
+	
+	public function getMetadataKeywords()
+	{
+		return $this->metadata_keywords;
+	}
+	
+	public function getStockoutLimit()
+	{
+		return $this->stockout_limit;
+	}
 	
 	/**
 	 * We required media/image processing after Product save
@@ -178,8 +223,6 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function _save($previousObject)
 	{
-		//PCTODO: First convert weight, height. depth, length into common storage : can be done in toDatabase function for each value
-		
 		$id = parent::_save($previousObject);
 		
 		// if save fail
@@ -195,22 +238,43 @@ class PaycartProduct extends PaycartLib
 		// because every base plan should be a variation of itself
 		if(!$this->variation_of){
 			//to reflect the automatic changes in object, it is required (like ordering)
-			$this->reload();
+//			$this->reload();
 			
 			$this->variation_of = $id;
 			parent::_save($previousObject);
 			
 			//to reflect variation_of property, it is required
-			$this->reload();
+//			$this->reload();
 		}
 		
-		// Process If Cover-media exist
-		if(!empty($this->cover_media)) {
-			$this->_saveCoverMedia($previousObject);
+		// Process If images exist
+		if(isset($this->_uploaded_files['images']) && count($this->_uploaded_files['images'])) {
+			$media_ids = array();
+			foreach($this->_uploaded_files['images'] as $image){
+				// empty array is posted, if there is no file to upload
+				if(!isset($image['tmp_name']) || empty($image['tmp_name'])){
+					continue;
+				}
+				
+				$media = PaycartMedia::getInstance();
+				$data = array();
+				$data['title'] = $image['name'];
+				$media->bind($data);
+				$media->save();
+
+				$media->moveUploadedFile($image['tmp_name'], JFile::getExt($image['name']));
+				$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'), PaycartFactory::getConfig()->get('catalogue_image_thumb_height'));
+				$media->createOptimized(PaycartFactory::getConfig()->get('catalogue_image_optimized_width'),PaycartFactory::getConfig()->get('catalogue_image_optimized_height'));
+
+				$media_ids[] = $media->getId();
+			}
+			
+			if(count($media_ids)){
+				$this->addImages($media_ids);
+			}
+			
+			parent::_save($previousObject);
 		}
-		
-		//save langauge data
-		$this->_saveLanguageData($previousObject);
 		
 		// Process Attribute Value
 		$this->_saveAttributeValue($previousObject);
@@ -224,40 +288,23 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * Save langauge specific data
+	 * Bind/populate model data on lib object if required
+	 * @return PaycartProduct
 	 */
-	protected function _saveLanguageData($previousObject)
+	protected function _bindAfterSave()
 	{
-		//PCTODO: Handle it 
-		if(empty($this->_language)){
-			return false;
+		$data = PaycartFactory::getModel('product')->loadRecords(array('product_id' => $this->getId()));
+		
+		//populate only required data
+		if(!empty($data)){
+			$data = array_shift($data);
+			
+			$this->product_lang_id = $data->product_lang_id;
+			$this->variation_of    = $data->variation_of;
+			$this->ordering		   = $data->ordering;
 		}
-		
-		$data = (array)$this->_language;
-		$data['product_id'] = $this->getId();
-		
-		//save data
-		$model = PaycartFactory::getModelLang('product');
-		$productLangId = $model->save($data, $data['product_lang_id']);
-		
-		if(!$productLangId){
-			throw new RuntimeException(Rb_Text::_("COM_PAYCART_UNABLE_TO_SAVE"), $model->getError());
-		}
-		
+
 		return $this;
-	}
-	
-	/**
-	 * 
-	 * Reload current object
-	 * 
-	 * @return PaycartProduct instance
-	 * @PCTODO:: move to upper level
-	 */
-	public function reload()
-	{
-		$data = $this->getModel()->loadRecords(array('id'=>$this->getId()));
-		return $this->bind($data[$this->getId()]);
 	}
 	
 	/**
@@ -284,18 +331,12 @@ class PaycartProduct extends PaycartLib
 			foreach ($this->_attributeValues as $attributeId => $attributeValue) {
 				//format Value before save
 				$attribute 		= PaycartProductAttribute::getInstance($attributeId);
-				$attributeValue = PaycartAttribute::getInstance($attribute->getType())->formatValue($attributeValue);
-				
-				if(!is_array($attributeValue)){
-					$attributeValue = (array)$attributeValue;
-				}
+				$value = PaycartAttribute::getInstance($attribute->getType())->formatValue($attributeValue);
 
-				//in case of multiple values
-				foreach ($attributeValue as $value){
-					$data[++$count]['product_id'] 		 = $productId;
-					$data[$count]['productattribute_id'] = $attributeId;
-					$data[$count]['productattribute_value'] = $value;
-				}
+				$data[++$count]['product_id'] 		 = $productId;
+				$data[$count]['productattribute_id'] = $attributeId;
+				$data[$count]['productattribute_value'] = $value;
+
 			}
 			PaycartFactory::getInstance('productAttributeValue', 'model')->save($data);
 		}
@@ -304,46 +345,9 @@ class PaycartProduct extends PaycartLib
 	}
 	
 	/**
-	 * 
-	 * Process Cover Media
-	 * @param  $previousObject, Product lib object
-	 * @throws RuntimeException OR InvalidArgumentException
-	 * 
-	 * @return Product Lib object 
-	 */
-	protected function _saveCoverMedia($previousObject)
-	{
-		try {
-			// Create new product or re-save existing product
-			// IMP :: Don't check here isset otherwise it will true (In < PHP 5.4) (for $this->_uploaded_files['cover_media']['name'])
-			// is_array check for it's not a variant && Post data is not empty
-			if (isset($this->_uploaded_files['cover_media']) && is_array($this->_uploaded_files['cover_media']) && !empty($this->_uploaded_files['cover_media']['name']) ) {
-				$this->_ImageProcess($this->_uploaded_files['cover_media'], $previousObject);
-			}
-			
-			// Create new variant then you dont have any uploaded image. Use parent Image
-			if (!$previousObject && $this->variation_of != $this->getId()) {
-				// Image store path
-				$path = PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
-				// Source Image
-				$sourceImage = $path.'/'.$this->_uploaded_files['cover_media'];
-				$this->_ImageProcess($sourceImage);
-			}
-			
-		//PCTODO:: exception fire at proper location	
-		} catch (RuntimeException $e) {
-			//PCTODO :: Notify to User Or set-up error queue
-			$message = $e->getMessage();
-		} catch (InvalidArgumentException $e) {
-			//PCTODO :: Notify to User Or set-up error queue
-			$message = $e->getMessage();
-		}
-			
-		return $this;
-	}
-	
-	/**
 	 * Override it due to set language and _uploaded_files variable
+	 * 
+	 * IMP : In the given data, weight, length, height and width must be formatted in our standard database format
 	 * 
 	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::bind()
 	 */
@@ -353,19 +357,16 @@ class PaycartProduct extends PaycartLib
 			$data = (array) ($data);
 		}
 		
-		//PCTODO: Change weight, height, depth, length etc in a format as per set weight/dimension unit
-		
 		parent::bind($data, $ignore);
 		
 		if( isset($data['_uploaded_files'])) {
 			$this->_uploaded_files = $data['_uploaded_files'];
 		}
 		
-		//Collect langauge data
-		$language = (isset($data['language'])) ? $data['language']: array();
-		
-		//bind it to lib instance
-		$this->setLanguageData($language);
+		if(isset($data['config']['positions'])){
+			// reset $this->config->positions
+			$this->config->set('positions', $data['config']['positions']);
+		}
 		
 		// if custom Attributes available in data then bind with lib object 
 		$attributes = isset($data['attributes']) ? $data['attributes'] : Array();
@@ -373,30 +374,6 @@ class PaycartProduct extends PaycartLib
 		// Bind attributevalue-lib's instance on Product lib  
 		$this->setAttributeValues($attributes);
 
-		return $this;
-	}
-
-	public function setLanguageData(Array $langauge = Array())
-	{
-		//if langauge data is not available and its an existing record
-		if(empty($langauge) && $this->getId()){
-			$langauge = PaycartFactory::getModelLang('Product')
-					                           ->loadRecords(Array('lang_code' => $this->_language->lang_code,
-																   'product_id' => $this->getId()));
-			$langauge = (array)array_shift($langauge);
-		}
-		
-		if(empty($langauge)) {
-			return false;
-		}
-		
-		// set language data
-		foreach ($this->_language as $key => $value) { 
-			if(isset($langauge[$key])) {
-				$this->_language->$key = $langauge[$key];
-			}
-		}
-		
 		return $this;
 	}
 	
@@ -420,48 +397,14 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 		
+		//IMP : should be reset before binding
+		$this->_attributeValues = array();
+		
 		//Get all attributes
 		foreach ($attributeData as $attributeId => $value){
 			//array of attribute values
 			$this->_attributeValues[$attributeId] = $value;
 		}
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * Process Cover Image
-	 * @param $imageFile, File type requested data.
-	 * @param Lib_object $previousObject
-	 * @throws RuntimeException OR InvalidArgumentException
-	 * 
-	 * @return ProductLib
-	 * @PCTODO:: move to parent lib
-	 */
-	protected function _ImageProcess($sourceImage, $previousObject = null)
-	{	
-		// Get file path where Image will be saved 
-		//PCTODO :: get it from helper
-		$path	= PaycartFactory::getConfig()->get('image_upload_directory', JPATH_ROOT.Paycart::IMAGES_ROOT_PATH);
-
-		$image = PaycartFactory::getHelper('image');
-		
-		// Upload new image while Previous Image exist 
-		// need to remove previous image { Original, Optimized and thumbnail image }
-		if ($previousObject && $previousObject->getCoverMedia()) {
-			$previousImage 	=  $previousObject->getCoverMedia();
-			$image->delete($path.'/'.$previousImage);
-		}
-		
-		// target file-info 
-		$targetFileInfo = $image->imageInfo($this->cover_media);
-		$targetFolder 	= $path.'/'.$targetFileInfo['dirname'];
-		
-		// Load, validate and then create image 
-		$image->loadFile($sourceImage)
-			  ->validate()
-			  ->create($targetFolder, $targetFileInfo['filename']);
-			 
 		return $this;
 	}
 	
@@ -471,26 +414,23 @@ class PaycartProduct extends PaycartLib
 		if(!$this->getModel()->delete($this->getId())) {
 			return false;
 		}
-		
-		//PCTODO: Should we delete variants or not??
-		//if yes, then delete language and attributes also
-		
+				
 		//delete product attributes
 		if(!$this->deleteAttributeValues()){
 			return false;
 		}
 		
-		//Delete language related data
-		if (!$this->_deleteLanguageData()) {
+		//Delete product images
+		if(!$this->deleteImages()){
+			return false;
+		}
+
+		//update base product of all the variants i.e variation_of property
+		if(!PaycartFactory::getHelper('product')->updateVariationOf($this->getVariants())){
 			return false;
 		}
 		
 		return true;
-	}
-	
-	protected function _deleteLanguageData()
-	{
-		return PaycartFactory::getModelLang('Product')->deleteMany(array('product_id' => $this->getId()));
 	}
 	
 	public function deleteAttributeValues($productattributeId = null)
@@ -501,11 +441,173 @@ class PaycartProduct extends PaycartLib
 			$condition['productattribute_id'] = $productattributeId;
 		}
 		
-		return PaycartFactory::getInstance('productattributevalue', 'model')->deleteMany($condition);
+		unset($this->_attributeValues[$productattributeId]);
+		return PaycartFactory::getModel('productattributevalue')->deleteMany($condition);
 	}
 	
-	public function getAttributeValues()
+	public function getAttributeValues($productAttributeId = null)
 	{
+		if(!empty($productAttributeId) && isset($this->_attributeValues[$productAttributeId])){
+			$attributeValue = $this->_attributeValues[$productAttributeId];
+			return $attributeValue;
+		}
 		return $this->_attributeValues;
+	}
+	
+	/**
+	 * Get all the images of product
+	 * @return array containing detail all images
+	 */
+	public function getImages($requireArrayData = true)
+	{
+		$imageIds = $this->config->get('images', array());
+		if(!$requireArrayData){
+			return $imageIds;
+		}
+		
+		$images   = array();
+		if(!empty($imageIds)){
+			foreach ($imageIds as $imageId){
+				$images[$imageId] = PaycartMedia::getInstance($imageId)->toArray(); 
+			}
+		}
+		
+		return $images;
+	}
+	
+	/**
+	 * Set images and merge them with existing images 
+	 * @param array $images : array of image ids
+	 */
+	public function addImages(Array $images = array())
+	{
+		$existing = $this->config->get('images', array());
+		$current  = array_merge($existing, $images);
+		$this->config->set('images', $current);
+		
+		//if cover media is not set then set first image as cover media
+		if(empty($this->cover_media) && !empty($current)){
+			$this->set('cover_media',array_shift($current));
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Set images and merge them with existing images
+	 * @param array $images : array of image ids
+	 */
+	public function setImages(Array $images = array())
+	{
+		$this->config->set('images', $images);
+		return $this;
+	}
+
+	/**
+	 * Delete a particular image if image id is given otherwise all 
+	 * @param $imageId : Imgae id that is required to be deleted (optional)
+	 */
+	public function deleteImages($imageIds = array())
+	{
+		$allMediaIds = $this->config->get('images',array());
+		
+		if(empty($imageIds)){
+			$imageIds = $allMediaIds;
+		}
+		
+		foreach($imageIds as $mediaId){
+			$media = PaycartMedia::getInstance($mediaId);
+			// @PCTODO : error handling
+			$media->delete();
+		}
+		
+		//update existing images of product
+		$imageIds = array_diff($allMediaIds, $imageIds);
+		$imageIds = array_values($imageIds);
+		return $this->setImages($imageIds);
+	}
+	
+	/**
+	 * Get detailed description of product
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	} 
+	
+	/**
+	 * Load all the variants of the product
+	 * @return vaiants array of stdClass  
+	 */
+	public function getVariants()
+	{
+		if(empty($this->_variants)){
+			$records = PaycartFactory::getModel('product')->loadRecords(array('variation_of' => $this->getVariationOf()));
+			foreach ($records as $record){
+				$this->_variants[$record->product_id] = PaycartProduct::getInstance($record->product_id,$record);
+			}
+		}
+		
+		return $this->_variants; 
+	}
+	
+	/**
+	 * Load attributes from which product variants can be filtered
+	 */
+	public function getSelectorAttributes(Array $productIds = array())
+	{
+		return PaycartFactory::getModel('productattributevalue')->loadSelectorAttributes($productIds);
+	}
+	
+	/**
+	 * return html of specified type
+	 * @param String $type : Type of html to be render  (edit and selector etc)
+	 * @param $attributeId : attribute id
+	 * @param String $selectedValue : selected value if any
+	 * @param array $attributeOptions : options that is required to be displayed related to the current attribute
+	 */
+	public function getAttributeHtml($type, $attributeId, $selectedValue = '', Array $attributeOptions = array()) 
+	{
+		if(empty($attributeId)){
+			return '';
+		}
+		
+		$attribute	  = PaycartProductAttribute::getInstance($attributeId);
+		$functionName = 'get'.ucfirst($type).'Html';
+		return $attribute->$functionName($selectedValue, $attributeOptions);
+	}
+	
+	public function getQuantity()
+	{
+		return $this->quantity;
+	}
+	
+	/**
+	 * return productcategory id or instance
+	 */
+	public function getProductCategory($requireInstance = false)
+	{
+		if($requireInstance){
+			return PaycartCategory::getInstance($this->productcategory_id);
+		}
+		
+		return $this->productcategory_id;
+	}
+
+	/**
+	 * set the given mediaId as cover image of product
+	 *
+	 * @param int $mediaId
+	 */
+	public function setCoverMedia($mediaId)
+	{
+		$this->cover_media = $mediaId;
+		return $this;
+	}
+	
+	public function getPositionedAttributes()
+	{
+		return $this->config->get('positions',array());
 	}
 }

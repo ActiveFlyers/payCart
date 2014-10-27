@@ -31,14 +31,14 @@ class PlgPaycartDiscountrulecoupon extends Rb_Plugin
 		parent::__construct($subject, $config);
 		
 		// processor file path
-		$fileLocation 	= __FILE__.'/processor/coupon.php';
+		$fileLocation 	= dirname(__FILE__).'/processors/coupon.php';
 		
 		$processor 		= PaycartFactory::getHelper('processor');
 		// push into processor list
 		$processor->push( Paycart::PROCESSOR_TYPE_DISCOUNTRULE,
 						  'PaycartDiscountruleProcessorCoupon',
 						  Array( 'filepath'	 	=> $fileLocation,
-								 'title'		=> Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_FLAT_NAME'),
+								 'title'		=> Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_COUPON_TITLE'),
 								 'icon'		 	=> '',
 								 'tooltip'	 	=>	'',
 								 'description'	=> Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_FLAT_DESC')

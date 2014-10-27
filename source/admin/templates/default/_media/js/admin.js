@@ -62,15 +62,12 @@ paycart.admin.grid = {
 			}
 			
 			if(isValidAction){
-				if (!$('#adminForm').find("input,textarea,select").jqBootstrapValidation("hasErrors")) {
-					Joomla.submitform(action, document.getElementById('adminForm'));
+				if (!paycart.formvalidator.isValid(document.id('adminForm'))) {
+					return false;
 				}
-				else{
-					$('#adminForm').submit();
-				}
-			}else{
-				Joomla.submitform(action, document.getElementById('adminForm'));
-			}
+			}			
+			
+			Joomla.submitform(action, document.getElementById('adminForm'));			
 		},
 		
 		filters : {
@@ -117,50 +114,13 @@ paycart.admin.product =
 				paycart.ajax.go(link,data, CallbackOnSuccess, CallbackOnError);
 			}
 		},
-		attribute :
-		{
-			window: function()
-			{
-				var link  = 'index.php?option=com_paycart&task=edit&view=productattribute';
-				paycart.url.modal(link, null);
-			},
-			
-			//PCTODO : Common function for validation
-			create : function()
-			{
-				//Validation Checking
-				if($("#paycart_productattribute_form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation("hasErrors")){
-					// Our validation work on submit call therefore first we will ensure that form is not properly fill 
-					// then we will call submit method. So proper msg display and focus on required element. 
-					$("#paycart_productattribute_form").submit();
-					return false;
-				}
-				
-				var link  = 'index.php?option=com_paycart&view=productattribute';
-				// get all form data for post	
-				var postData = $("#paycart_productattribute_form").serializeArray();
 		
-				var productId = $('#paycart_form_product_id', window.parent.document).val();
-				// Override task value to ajax task
-				postData.push({'name':'task','value':'create'});
-				postData.push({'name' : 'productId', 'value' : productId});
-				paycart.ajax.go(link, postData);
-			},
-			
-			attach : function(appliedAttributes)
-			{
-				var link  = 'index.php?option=com_paycart&task=getEditHtml&view=productattribute';
-				var data  = {'productattributeIds': appliedAttributes};
-				paycart.ajax.go(link,data);
-			},
-			
-			detach : function(attributeId)
-			{
-				var link  = 'index.php?option=com_paycart&task=detachAttribute&view=product';
-				var productId = $('#paycart_form_product_id').val();
-				var data  = {'productattribute_id': attributeId, 'product_id' :productId};
-				paycart.ajax.go(link,data);
-			}
+		deleteImage : function(imageId)
+		{
+			var link  = 'index.php?option=com_paycart&task=deleteImage&view=product';
+			var productId = $('#paycart_form_product_id').val();
+			var data  = {'image_id': imageId, 'product_id':productId};
+			paycart.ajax.go(link,data);
 		}
 	};
 
@@ -172,8 +132,8 @@ paycart.admin.attribute = {
 		},
 			
 		addOption : function(type){
-			var totalRows = $('*[id^="option_row_"]').length
-			var url = 'index.php?option=com_paycart&view=productattribute&task=addOption&attributeType='+type+'&totalRows='+totalRows;
+			var url = 'index.php?option=com_paycart&view=productattribute&task=addOption&attributeType='+type+'&totalRows='+attributeCounter;
+			attributeCounter++;
 			paycart.ajax.go(url);
 		},
 		
@@ -313,7 +273,7 @@ paycart.admin.buyeraddress =
 		// data is json string		
 		success : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window
@@ -326,7 +286,7 @@ paycart.admin.buyeraddress =
 		// data is json string
 		error : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window and handle error
@@ -379,23 +339,10 @@ paycart.admin.state =
 			paycart.ajax.go(link, postData);
 		},
 		
-		// data is json string		
-		success : function(data)
-		{
-			var response = JSON.parse(data);
-			alert(response.message);
-			// @PCTODO::
-			// 1#.Close Model window
-			rb.ui.dialog.autoclose(1);
-			// 2#.Fetch html of new created state
-			// 3# append into state template
-			// 4#.Good Job
-		},
-		
 		// data is json string
 		error : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window and handle error
@@ -418,7 +365,7 @@ paycart.admin.state =
 		// data is json string		
 		success : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window
@@ -431,7 +378,7 @@ paycart.admin.state =
 		// data is json string
 		error : function(data)
 		{
-			var response = JSON.parse(data);
+			var response = $.parseJSON(data);
 			alert(response.message);
 			// @PCTODO::
 			// 1#.Close Model window and handle error
@@ -442,7 +389,8 @@ paycart.admin.state =
 		}
 		
 	}
-},
+},    
+     
 
 paycart.form = 
 	{
@@ -490,7 +438,7 @@ paycart.radio = {
 				  input.prop('checked', true);
 			  }
 		}
-}
+};
 
 /*--------------------------------------------------------------
   on Document ready 

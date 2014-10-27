@@ -37,7 +37,44 @@ class PaycartAdminControllerProduct extends PaycartController
 			}
 		}
 		
+		/*
+		 * Format measurement data into standard format before saving
+		 * 
+		 * It should be on controller level so that bind data will always be in standard format
+		 * both for new and existing records  
+		 */
+		$data = $this->_formatMeasurementData($data);
+		
 		return parent::_save($data, $itemId, $type);
+	}
+	
+	/**
+	 * Format measurement data into our standard format
+	 */
+	protected function _formatMeasurementData($data)
+	{
+		$formatter           = PaycartFactory::getHelper('format');
+		$weightUnitConfig    = PaycartFactory::getConfig()->get('catalogue_weight_unit');
+		$dimensionUnitConfig = PaycartFactory::getConfig()->get('catalogue_dimension_unit');
+		
+				
+		if(isset($data['weight'])){
+			$data['weight'] = $formatter->convertWeight($data['weight'],$weightUnitConfig);
+		}
+		
+		if(isset($data['length'])){
+			$data['length'] = $formatter->convertDimension($data['length'],$dimensionUnitConfig);	
+		}
+		
+		if(isset($data['width'])){
+			$data['width']  = $formatter->convertDimension($data['width'],$dimensionUnitConfig);	
+		}
+		
+		if(isset($data['height'])){
+			$data['height'] = $formatter->convertDimension($data['height'],$dimensionUnitConfig);	
+		}
+		
+		return $data;
 	}
 	
 	/**
@@ -81,14 +118,19 @@ class PaycartAdminControllerProduct extends PaycartController
 		// Check variantof 
 		if(!$variantOf) {
 			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_PARENT_REQUIRED'),'error');
+			$this->setRedirect('index.php?option=com_paycart&view=product');
 			return false;
 		}
+		
 		$product = PaycartProduct::getInstance($variantOf);
+		
 		//Validate Variant exist or not
 		if (!$product) {
 			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_PARENT_NOT_EXIST'),'error');
+			$this->setRedirect('index.php?option=com_paycart&view=product');
 			return false;
 		} 
+		
 		// if everything is ok then create new variant
 		$productHelper = PaycartFactory::getHelper('product');
 		$variant       = $productHelper->addVariant($product);
@@ -117,5 +159,48 @@ class PaycartAdminControllerProduct extends PaycartController
 		$ajax = PaycartFactory::getAjaxResponse();
 		$ajax->addScriptCall('paycart.jQuery(".paycart-product-attribute-'.$productAttributeId.'").remove');
 		return false;
+	}
+	
+	/**
+	 * Ajax task : Delete image attached to product
+	 */
+	public function deleteImage()
+	{
+		$productId = $this->input->get('product_id',0);
+		$instance  = PaycartProduct::getInstance($productId);
+		$imageId   = $this->input->get('image_id',0);
+		
+		$productHelper = PaycartFactory::getHelper('product');
+		$ret 	       = $productHelper->deleteImage($instance,$imageId);
+		
+		$view = $this->getView();
+		if($ret){
+			$view->assign('success', true);			
+		}
+		else{
+			$view->assign('success', false);
+		}
+	
+		return true;
+	}
+	
+	public function reorderImages()
+	{
+		$productId 		= $this->input->get('product_id',0);
+		$instance  		= PaycartProduct::getInstance($productId);
+		$imageIds   	= $this->input->get('image_ids', array(), 'array');		
+		$coverImageId 	= reset($imageIds);		
+		$ret = $instance->setImages($imageIds)->setCoverMedia($coverImageId)->save();
+		
+		$view = $this->getView();
+		if($ret){
+			$view->assign('success', true);
+			$view->assign('coverMedia',$instance->getCoverMedia(false));
+		}
+		else{
+			$view->assign('success', false);
+		}
+	
+		return true;
 	}
 }

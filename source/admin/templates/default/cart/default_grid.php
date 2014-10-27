@@ -12,27 +12,32 @@
 defined('_JEXEC') OR die();
 ?>
 
+<div class="pc-cart-wrapper clearfix">
+<div class="pc-cart row-fluid">
+
+<!-- CONTENT START -->
+
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=cart'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
+<div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
-	<?php // echo $this->loadTemplate('filter'); ?>
-	<table class="table table-hover">
+	<table class="table table-striped">
 		<thead>
 		<!-- TABLE HEADER START -->
 			<tr>
-			
-				<th  width="1%">
-					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($records); ?>);" />
-				</th>
-				<th >
-					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_CART_ID_LABEL", 'cart_id', $filter_order_Dir, $filter_order);?>
-				</th>
-			    				
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_CART_BUYER_LABEL", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Text::_('COM_PAYCART_CART_SUBTOTAL_LABEL');?></th>
-				<th ><?php echo Rb_Text::_('COM_PAYCART_CART_TOTAL_LABEL');?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_CART_STATUS_LABEL", 'status', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Text::_('COM_PAYCART_CART_CHECKOUT_DATE_LABEL');?></th>
-				<th ><?php echo Rb_Text::_('COM_PAYCART_CART_PAID_DATE_LABEL');?></th>			
+				<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /></th>
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_ID", 'cart_id', $filter_order_Dir, $filter_order);?></th>
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_BUYER", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_STATUS", 'status', $filter_order_Dir, $filter_order);?></th>
+				<th><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_LOCKED_DATE');?></th>
+				<th><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_PAID_DATE');?></th>			
 			</tr>
 		<!-- TABLE HEADER END -->
 		</thead>
@@ -42,22 +47,27 @@ defined('_JEXEC') OR die();
 			<?php $count= $limitstart;
 			$cbCount = 0;
 			foreach ($records as $record):
-				$class = '';
-				if($record->status == Paycart::STATUS_CART_PAID){
-					$class = 'success';
-				}
 			?>
 			
-				<tr class="<?php echo "row".$count%2 .' '.$class; ?> ">								
+				<tr class="<?php echo "row".$count%2 .' '; ?> ">								
 					<th>
 				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
 				    </th>				
 					<td><?php echo PaycartHtml::link($uri.'&task=edit&cart_id='.$record->cart_id, $record->cart_id);?></td>
-					<td><?php echo $record->buyer_id;?></td>
-					<td><?php echo PaycartHelper::formatAmount($record->subtotal);?></td>
-					<td><?php echo PaycartHelper::formatAmount($record->total);?></td>
+					<td>
+						<?php $buyer = PaycartBuyer::getInstance($record->buyer_id);?>
+						<?php 
+                                    $buyer_username = $buyer->getUsername();
+
+                                     if (!$record->buyer_id) {
+     						               $buyer_username = JText::_('COM_PAYCART_GUEST');
+                                      }
+
+	                                 echo $buyer_username.' ('.$record->buyer_id.') ';
+    					  ?>
+					</td>
 					<td><?php echo $record->status;?></td>
-					<td><?php echo $record->checkout_date;?></td>
+					<td><?php echo $record->locked_date;?></td>
 					<td><?php echo $record->paid_date;?></td>
 				</tr>
 			<?php $count++;?>
@@ -80,4 +90,7 @@ defined('_JEXEC') OR die();
 	<input type="hidden" name="boxchecked" value="0" />
 	
 </form>
+</div>
+</div>
+</div>
 <?php 

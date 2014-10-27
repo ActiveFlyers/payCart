@@ -18,6 +18,37 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 
 class PaycartAdminControllerProductAttribute extends PaycartController 
 {
+	public function save()
+	{
+		if($this->input->get('format', 'html') == 'json'){
+			$data 	= $this->input->post->get($this->_component->getNameSmall().'_form', array(), 'array');		
+			$itemId = $this->_getId();		
+			$ret 	= $this::_save($data, $itemId);
+			
+			$view = $this->getView();
+			if($ret){
+				$view->assign('success', true);
+				$view->assign('productattribute_id', $ret->getId());
+			}
+			else{
+				$view->assign('success', false);
+				$view->assign('productattribute_id', $itemId);
+
+				// set error fields in model
+				$app = JFactory::getApplication();
+				$model = $this->getModel();
+				$context = $model->getContext();
+				$error_fields 	 = $app->getUserStateFromRequest($context.'.error_fields', 'error_fields', array(), 'array');        		
+        		$app->setUserState($context . '.error_fields', null);
+        		$this->getModel()->setState('error_fields', $error_fields );				
+			}
+		
+			return true;
+		}
+		
+		return parent::save();
+	}
+	
 	/**
 	 * override it due to get all uploaded files 
 	 */
@@ -39,15 +70,14 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 		$data['type']	=  $this->input->get('attributeType',0);
 		
 		$attribute		=  PaycartProductAttribute::getInstance($attributeId)->bind($data);
-		
-		$instance = PaycartAttribute::getInstance($data['type']);
-		$html = $instance->getConfigHtml($attribute);
-		$js	  = $instance->getScript(); 
+
+		$html = $attribute->getConfigHtml();
+		$js	  = $attribute->getScript(); 
 
 		// replace specific div html and call script
 		$ajaxResponse = PaycartFactory::getAjaxResponse();
 		
-		$ajaxResponse->addScriptCall('paycart.jQuery("#paycart-attribute-config").replaceWith', $html);
+		$ajaxResponse->addScriptCall('paycart.jQuery("#paycart-attribute-config").html', $html);
 
 		if(!empty($js)){		
 			$ajaxResponse->addScriptCall($js);
@@ -99,7 +129,7 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 		$js	  = $instance->getScript(); 
 		
 		$ajaxResponse = PaycartFactory::getAjaxResponse();
-		$ajaxResponse->addScriptCall('paycart.jQuery("#paycart-attribute-config").append',$html);
+		$ajaxResponse->addScriptCall('paycart.jQuery("#paycart-attribute-options").append',$html);
 		
 		if(!empty($js)){		
 			$ajaxResponse->addScriptCall($js);
@@ -109,6 +139,21 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 	
 	public function getEditHtml()
 	{
+		return true;
+	}
+	
+	public function deleteAttribute()
+	{
+		$productattribute_id   = $this->input->get('productattribute_id',0);		 
+					
+		$view = $this->getView();
+		if(PaycartProductAttribute::getInstance($productattribute_id)->delete()){
+			$view->assign('success', true);
+		}
+		else{
+			$view->assign('success', false);
+		}
+		
 		return true;
 	}
 }

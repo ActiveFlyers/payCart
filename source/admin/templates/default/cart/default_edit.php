@@ -5,8 +5,8 @@
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
-* @contact		team@readybytes.in
-* @author 		Puneet Singhal 
+* @contact		support+paycart@readybytes.in
+* @author 		Puneet Singhal , rimjhim
 */
 
 // no direct access
@@ -15,93 +15,299 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 PaycartHtml::_('behavior.formvalidation');
 ?>
 
-<?php 
-$fieldsets = $form->getFieldsets();
-?>
+<div class="pc-cart-wrapper clearfix">
+<div class="pc-cart row-fluid">
 
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="rb-validate-form" enctype="multipart/form-data">
+<!-- CONTENT START -->
 
-	<div class="row-fluid">
-		<fieldset class="span6 form-horizontal">
-			<!-- @PCTODO: Cross-check which is correct method -->
-			<legend><?php $fieldset = array_shift($fieldsets); echo JText::_($fieldset->label);	?></legend>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('cart_id'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('cart_id'); ?></div>								
-			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('buyer_id'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('buyer_id'); ?></div>								
-			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('status'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('status'); ?></div>								
-			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('subtotal'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('subtotal'); ?></div>								
-			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('modifiers'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('modifiers'); ?></div>								
-			</div>
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=cart'); 
+                        
+                        echo $this->loadTemplate('edit_js');
 
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('total'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('total'); ?></div>								
+	?>
+</div>
+<!-- ADMIN MENU -->
+
+<div class="span10">
+	
+	<?php echo PaycartHtml::_('bootstrap.startTabSet', 'cart', array('active' => 'basic')); ?>
+	<!--	 Account Details Tab		-->
+	<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'basic', JText::_('COM_PAYCART_ADMIN_BASIC', true)); ?>
+	
+	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
+
+		<div class="row-fluid">
+			<div class="span3">
+				<h2><?php echo JText::_('COM_PAYCART_ADMIN_CART_DETAILS_HEADER');?></h2>
+				<div>
+					<?php echo JText::_('COM_PAYCART_ADMIN_CART_DETAILS_HEADER_MSG');?>
+				</div>
 			</div>
-			
-			
-		</fieldset>
+			<div class="span9">
+				<fieldset class="form">
+					<div class="row-fluid">								
+						<div class="span6">
+							<?php $field = $form->getField('cart_id') ?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+						<div class="span6">
+							<div class="control-group">
+								<?php $field = $form->getField('currency')?>
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">								
+						<div class="span6">
+							<?php $field = $form->getField('status') ?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+						<div class="span6">
+						</div>
+					</div>
+					
+					<!--<div class="row-fluid">
+						<div class="span6">
+							<?php $field = $form->getField('reversal_for') ?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+						
+						<div class="span6">
+						</div>
+					</div>
+				--></fieldset>
+			</div>
+		</div>
 		
+		<hr/>
 		
-		<fieldset class="span6 form-horizontal">
-			<legend><?php $fieldset = array_shift($fieldsets); echo JText::_($fieldset->label);	?></legend>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('created_date'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('created_date'); ?></div>								
+		<div class="row-fluid">
+			<div class="span3">
+				<h2><?php echo JText::_('COM_PAYCART_ADMIN_BUYER_DETAILS_HEADER');?></h2>
+				<div>
+					<?php echo JText::_('COM_PAYCART_ADMIN_BUYER_DETAILS_HEADER_MSG');?>
+				</div>
 			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('modified_date'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('modified_date'); ?></div>								
+			<div class="span9">
+				<fieldset class="form">
+					<div class="row-fluid">								
+						<div class="span6">
+							<?php $field = $form->getField('buyer_id') ?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+						<div class="span6">
+							<div class="control-group">
+								<?php $field = $form->getField('ip_address')?>
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">								
+						<div class="span6">
+							<?php $field = $form->getField('billing_address_id') ?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls">&nbsp;
+									<?php 
+											$billingAddress = $cart->getBillingAddress(true)->toArray() ;
+
+											if (count(array_filter($billingAddress))) :
+												$billingAddress = (object) $billingAddress;
+												$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+										  		echo $layout->render($billingAddress);
+										  	else : 
+										  		echo JText::_('COM_PAYCART_BUYERADDRESS_NOT_EXIT');
+										  endif;
+									?> 
+								</div>								
+							</div>
+						</div>
+						<div class="span6">
+							<div class="control-group">
+								<?php $field = $form->getField('shipping_address_id')?>
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls">&nbsp;
+									<?php $shippingAddress = $cart->getShippingAddress(true)->toArray() ;
+									
+											if (count(array_filter($shippingAddress))) :
+												$billingAddress = (object) $shippingAddress;
+												$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
+										  		echo $layout->render($shippingAddress);
+										  	else : 
+										  		echo JText::_('COM_PAYCART_BUYERADDRESS_NOT_EXIT');
+										  endif;
+									
+									?> 
+								</div>								
+							</div>
+						</div>
+					</div>
+				</fieldset>
 			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('checkout_date'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('checkout_date'); ?></div>								
+		</div>
+	
+		<hr/>
+		
+		<div class="row-fluid">
+			<div class="span3">
+				<h2><?php echo JText::_('COM_PAYCART_ADMIN_DATE_DETAILS_HEADER');?></h2>
+				<div>
+					<?php echo JText::_('COM_PAYCART_ADMIN_DATE_DETAILS_HEADER_MSG');?>
+				</div>
 			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('paid_date'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('paid_date'); ?></div>								
+			<div class="span9">
+				<fieldset class="form">
+					<div class="row-fluid">								
+						<div class="span6">
+							<?php $field = $form->getField('created_date') ?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+						<div class="span6">
+							<div class="control-group">
+								<?php $field = $form->getField('modified_date')?>
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">								
+						<div class="span6">
+							<?php $field = $form->getField('locked_date') ?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+						<div class="span6">
+							<div class="control-group">
+								<?php $field = $form->getField('paid_date')?>
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">								
+						
+                                                <div class="span6">
+							<?php $field = $form->getField('approved_date') ?>
+							<div class="control-group">
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+                                            
+						<div class="span6">
+							<div class="control-group">
+								<?php $field = $form->getField('delivered_date')?>
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+					</div>
+                                    
+                    <div class="row-fluid">								
+						
+                        <div class="span6">
+							<div class="control-group">
+								<?php $field = $form->getField('cancelled_date')?>
+								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+						</div>
+					</div>                               
+				</fieldset>
 			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('complete_date'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('complete_date'); ?></div>								
-			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('cancellation_date'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('cancellation_date'); ?></div>								
-			</div>
-			
-			<div class="control-group">
-				<div class="control-label"><?php echo $form->getLabel('refund_date'); ?> </div>
-				<div class="controls"><?php echo $form->getInput('refund_date'); ?></div>								
-			</div>
-			
-		</fieldset>
-	</div>
+		</div>
 	
 	<input type="hidden" name="task" value="save" />
 	<input type='hidden' name='id' value='<?php echo $record_id;?>' />
 
 </form>
+
+	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+	
+	<?php if($cart->getStatus() != Paycart::STATUS_CART_DRAFTED):?>			
+		<!--	 Invoice Details Tab		-->
+		<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'advance', Rb_Text::_('COM_PAYCART_ADMIN_ADVANCE', true)); ?>
+			
+		<?php echo $this->loadTemplate('particulars'); ?>
+	
+		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+	<?php endif;?>
+	
+	<?php if($cart->isApproved()):?>
+		<!--	 Shipment Details Tab		-->
+		<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'shipment', JText::_('COM_PAYCART_ADMIN_SHIPMENTS', true)); ?>
+			
+		<?php echo $this->loadTemplate('shipments'); ?>
+	
+		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+    <?php endif;?>   
+<!-- Confirm Model        -->
+        <div	
+            class="modal hide fade pc-confimbox"
+            id="pc-confimbox-modal" 
+            tabindex="-1" 
+            role="dialog"
+            aria-labelledby="Login-ModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-header pc-confimbox-title">
+                <h3 id="myModalLabel" class= "rb-icon-login">
+                    <?php
+                        echo JText::_('COM_PAYCART_CONFIRM');
+                    ?>
+                </h3>
+            </div>
+
+            <div class="modal-body pc-confimbox-body">
+                
+            </div>
+            
+            <div class="modal-footer pc-confimbox-footer">
+             
+                <button type="button" class="btn pc-confimbox-ok">
+                    <?php
+                        echo JText::_('COM_PAYCART_OK');
+                    ?>
+                </button>
+                
+                <button type="button" class="btn pc-confimbox-close" data-dismiss="modal" aria-hidden="true">
+                    <?php
+                        echo JText::_('COM_PAYCART_BUTTON_CANCEL');
+                    ?>
+                </button>
+                
+                
+            </div>
+            
+            
+        </div>
+</div>
+</div>
+</div>

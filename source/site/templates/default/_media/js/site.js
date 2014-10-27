@@ -84,50 +84,7 @@ if(typeof(Joomla)=='undefined'){
 		}
 		$(selector).addClass(sizeclass);
 		return sizeclass;
-	};
-	
-	
-	paycart.checkout = {};
-	
-	/*------------------------------------------------------------
-	 * Checkout > Login Screen 
-	 * 
-	 * 1. init 
-	 *      Initialize screen to default settings.
-	 *      Request should be added to paycart.queue from the template
-	 *      
-	 * 2. setGuestCheckout(arg) : 
-	 * 		arg= TRUE then Set mode to guest checkout,
-	 * 		hide elements which have attribute data-pc-guestcheckout="hide"
-	 * 		show elements which have attribute data-pc-guestcheckout="show"
-	 *-------------------------------------------------------------*/
-	paycart.checkout.login = {};
-	
-	paycart.checkout.login.setGuestCheckout = function(guest){
-		//default is guest mode
-		if(guest){
-			$('[data-pc-guestcheckout="show"]').show();
-			$('[data-pc-guestcheckout="hide"]').hide();
-		}else{
-			$('[data-pc-guestcheckout="show"]').hide();
-			$('[data-pc-guestcheckout="hide"]').show();
-		}
-	};
-	
-	paycart.checkout.login.init = function(){
-		// initialize screen interface
-		//1. on click on guest checkout mode
-		paycart.checkout.login.setGuestCheckout(true);
-		
-		$('#paycart_form_guestcheckout_1').click(function(){
-				paycart.checkout.login.setGuestCheckout(true)
-			});
-		
-		$('#paycart_form_guestcheckout_0').click(function(){
-			paycart.checkout.login.setGuestCheckout(false)
-		});
-	};
-	
+	};	
 /*--------------------------------------------------------------
   on Document ready 
 --------------------------------------------------------------*/
@@ -135,12 +92,6 @@ $(document).ready(function(){
 
 	// setup paycart-wrap size
 	var sizeclass = paycart.helper.do_apply_sizeclass('.paycart-wrap');
-	
-	// execute the queued scripts
-	var length = paycart.queue.length ;
-	for (var i = 0; i < length; i++) {
-		eval(paycart.queue[i]);
-	}
 	
 	paycart.jui.defaults();
 	

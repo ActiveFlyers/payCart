@@ -19,13 +19,30 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartShippingrule extends PaycartLib 
 {	
-	protected $shippingrule_id	= 0;
+	protected $shippingrule_id     	= 0;
+	protected $published      		= 1;
+	protected $delivery_grade	    = 0;
+	protected $delivery_min_days	= 0;
+	protected $delivery_max_days	= 0;
+	protected $handling_charge		= 0;
+	protected $packaging_weight		= 0;
 	protected $processor_classname	= '';
+	protected $processor_config		= '';
+	protected $created_date			= null;
+	protected $modified_date		= null;
+	protected $ordering				= 0;
+		
+	// language specific
+	protected $shippingrule_lang_id = 0;
+	protected $lang_code 			= '';
+	protected $message				= '';
+	protected $title	      		= '';
+	protected $description    		= '';
 	
-	/**
-	 * @var Rb_Registry
-	 */
-	protected $processor_config = null;
+	// others
+	protected $_buyergroups			= array();
+	protected $_productgroups		= array();
+	protected $_cartgroups			= array();
 	
 	/**
 	 * @var PaycartHelperShippingRule
@@ -35,6 +52,14 @@ class PaycartShippingrule extends PaycartLib
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
+		
+		// IMP :check for class existance
+		// 		if class is not loaded alread then it will autoload the class
+		// 		We have done this because other request classes are dependent on it 
+		if(!class_exists('PaycartShippingruleRequest', true)){
+			throw new Exception('Class PaycartShippingruleRequest not found');
+		}	
+		
 		$this->_helper = PaycartFactory::getHelper('shippingrule');
 	}
 	
@@ -48,17 +73,30 @@ class PaycartShippingrule extends PaycartLib
 	
 	public function reset() 
 	{	
-		$this->shippingrule_id	= 0;
+		$this->shippingrule_id 		= 0;
+		$this->title				= '';
+		$this->published			= 1;
+		$this->description			= '';
+		$this->delivery_grade		= 0;
+		$this->delivery_min_days	= 0;
+		$this->delivery_max_days	= 0;
+		$this->handling_charge		= 0;
+		$this->packaging_weight		= 0;
 		$this->processor_classname	= '';
-		$this->processor_config = new Rb_Registry();
+		$this->processor_config		= new Rb_Registry();
+		$this->created_date			= new Rb_date();
+		$this->modified_date		= new Rb_date();
+		$this->ordering				= 0;
+		
+		$this->shippingrule_lang_id	= 0;
+		$this->lang_code			= PaycartFactory::getCurrentLanguageCode();
+		$this->message				= '';
+		
+		$this->_buyergroups			= array();
+		$this->_productgroups		= array();
+		$this->_cartgroups			= array();
 		
 		return $this;
-	}
-	
-	public function getConfigHtml()
-	{
-		$processor = $this->_helper->getProcessor('flatrate');
-		return $processor->request('confightml', new PaycartShippingruleRequest())->html;		
 	}
 	
 	public function getOrdering()
@@ -66,9 +104,9 @@ class PaycartShippingrule extends PaycartLib
 		return $this->ordering;
 	}
 	
-	public function getGrade()
+	public function getDeliveryGrade()
 	{
-		return $this->grade;
+		return $this->delivery_grade;
 	}	
 	
 	/**
@@ -99,7 +137,7 @@ class PaycartShippingrule extends PaycartLib
 	 * @throws InvalidArgumentException if any product in $product_list does not exists in $product_details
 	 * 
 	 */	
-	public function getPackageShippingCost($product_list, $delivery_address_id, $product_details)
+	public function getPackageShippingCost($product_list, $delivery_md5_address, $product_details)
 	{		
 		$helperRequest 			= PaycartFactory::getHelper('request');
 		/* @var $helperRequest PaycartHelperRequest */	
@@ -116,10 +154,12 @@ class PaycartShippingrule extends PaycartLib
 		}
 
 		//IMP : Multiple warehouses are not supported yet
-		//@TODO :  load origin address id from global configuration
-		$origin_address_id = 0;
-		$request->origin_address 	= $helperRequest->getBuyeraddressObject($origin_address_id);
-		$request->delivery_address 	= $helperRequest->getBuyeraddressObject($delivery_address_id);
+		$origin_address 			= json_decode(PaycartFactory::getConfig()
+																->get('localization_origin_address'));
+		$request->origin_address 	= $helperRequest->getBuyeraddressObject(PaycartBuyeraddress::getInstance(0,$origin_address));
+		
+		$delivery_address = PaycartFactory::getHelper('shippingrule')->getAddressObject($delivery_md5_address);
+		$request->delivery_address 	= $helperRequest->getBuyeraddressObject(PaycartBuyeraddress::getInstance(0,$delivery_address));
 		
 		// get processor instance and set some parameters
 		$processor = $this->getProcessor();
@@ -129,9 +169,7 @@ class PaycartShippingrule extends PaycartLib
 		
 		$response  = new PaycartShippingruleResponse();
 		$response  = $processor->getPackageShippingCost($request, $response);
-		
-		//@ PCTODO : Trigger for gettin tax on shipping
-		
+				
 		if($response->amount === false){
 			// @PCTODO : Log error if required
 			return array(false, false);
@@ -144,16 +182,129 @@ class PaycartShippingrule extends PaycartLib
 	public function getGlobalconfigRequestObject()
 	{
 		$config = new PaycartShippingruleRequestGlobalconfig();
-		$config->dimenssion_unit  = 'INCH'; //@TODO : get from global config
-		$config->weight_unit	  = 'KG';   //@TODO : get from global config
+		$config->dimension_unit  = PaycartFactory::getConfig()->get('catalogue_dimension_unit');
+		$config->weight_unit	 = PaycartFactory::getConfig()->get('catalogue_weight_unit');
+		$config->origin_address  = json_decode(PaycartFactory::getConfig()->get('localization_origin_address'));
 		return $config;
 	}
 	
 	public function getRuleconfigRequestObject()
 	{
 		$config = new PaycartShippingruleRequestRuleconfig();
-		$config->packaging_weight = $this->getPackagingWeight();
-		$config->package_by		  = $this->getPackageBy(); // per item or per order
+		$config->packaging_weight = $this->packaging_weight;
+		$config->handling_charge  = $this->handling_charge;
 		return $config;
+	}
+	
+	public function getMessage()
+	{
+		return $this->message;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+	
+	public function getProcessorConfigHtml()
+	{
+		$response = $this->getResponseObject();
+		$this->getProcessor()->getConfigHtml(new PaycartShippingruleRequest, $response);
+		return $response->configHtml;
+	}
+	
+	/**
+	 * 
+	 * create response object
+	 * 
+	 * @return PaycartDiscountRuleResponse object
+	 */
+	function getResponseObject()
+	{
+		return new PaycartShippingruleResponse();
+	}
+	
+	public function toArray()
+	{
+		$data = parent::toArray();
+
+		$data['_buyergroups'] 	= $this->_buyergroups;
+		$data['_productgroups'] = $this->_productgroups;
+		$data['_cartgroups'] 	= $this->_cartgroups;
+
+		return $data;
+	}
+	
+	function bind($data, $ignore = Array()) 
+	{
+		if(is_object($data)){
+			$data = (array) ($data);
+		}
+				
+		parent::bind($data, $ignore);		
+		
+		if(!isset($data['_buyergroups'])) {
+			$this->_buyergroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_BUYER);
+		}
+		else{
+			$this->_buyergroups = $data['_buyergroups'];
+		}
+		
+		if(!isset($data['_productgroups'])) {
+			$this->_productgroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_PRODUCT);
+		}
+		else{
+			$this->_productgroups = $data['_productgroups'];
+		}
+		
+		if(!isset($data['_cartgroups'])) {
+			$this->_cartgroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_CART);
+		}
+		else{
+			$this->_cartgroups = $data['_cartgroups'];
+		}	
+		
+		return $this;
+	}	
+	
+	protected function _getGroups($type)
+	{
+		if(!$this->getId()){
+			return array();
+		}
+		
+		return $this->getModel()->getGroups($this->getId(), $type);		
+	}
+	
+	protected function _save($previousObject)
+	{
+		$id = parent::_save($previousObject);
+		
+		// if save fail
+		if (!$id) { 
+			return false;
+		}
+		
+		$model = $this->getModel();
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_BUYER, $this->_buyergroups);
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_PRODUCT, $this->_productgroups);
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_CART, $this->_cartgroups);
+		
+		return $id;
+	}	
+	
+	function getPackagingWeight()
+	{
+		return $this->packaging_weight;
+	}
+	
+	function getDeliveryMinDays()
+	{
+		return $this->delivery_min_days;
+	}
+	
+	function getDeliveryMaxDays()
+	{
+		return $this->delivery_max_days;
 	}
 }

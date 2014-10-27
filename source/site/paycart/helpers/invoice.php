@@ -50,6 +50,37 @@ class PaycartHelperInvoice
 	const STATUS_TRANSACTION_FAIL				= 	Rb_EcommerceResponse::FAIL;					//'fail';
 	
 
+	/**
+	 * 
+	 * Invoke to get all rb-ecommerce processor
+	 * 
+	 * @return array of all available payment processor 
+	 */
+	public function getProecessorList() 
+	{
+		return Rb_EcommerceAPI::get_processors_list();
+	}
+	
+	/**
+	 * 
+	 * Invoke to get Processor config file path
+	 * @param $type : processor type
+	 * @throws RuntimeException
+	 * 
+	 * @return processor config file path
+	 * @since 1.0
+	 */
+	public function getProcessorConfigFile($type) 
+	{
+		if (empty($type)) {
+			throw new RuntimeException('Processor Type required');
+		}
+		
+		$processor = Rb_EcommerceAPI::get_processor_instance($type);
+		$xml_file = $processor->getLocation().'/'.$processor->getName().'.xml';
+		
+		return $xml_file;
+	}
 
 	/**
 	 * 
@@ -119,13 +150,13 @@ class PaycartHelperInvoice
 			$data->object_type 			= get_class($cart);
 			$data->status 				= self::STATUS_INVOICE_DUE;
 
-			// @PCTODO:: get it from global-config
-			$prefix = PaycartFactory::getConfig()->get('invoice_serial_prefix','');
+			// @PCTODO:: get default value from global-config
+			$prefix = PaycartFactory::getConfig()->get('invoice_serial_prefix', 'Paycart-');
 			$suffix = $cartId;
 			
 			//@PCTODO :: Stuff
-			$data->title 				= '';
-			$data->serial 				= $prefix.$cartId;		// like Rb-Invocie-524
+			$data->title 				= $prefix.$cartId;
+			$data->serial 				= $prefix.$cartId;		// like Paycart-Invocie-524
 			
 //			$data->paid_date 			= $cart->getPaymentDate();		
 //			$data->refund_date			= Rb_Date::getInstance('0000-00-00 00:00:00');
@@ -170,7 +201,7 @@ class PaycartHelperInvoice
 //		}
 		
 		$data->processor_type 		= $processorType;
-		$data->processor_config		= new Rb_Registry($processorConfig);
+		$data->processor_config		= $processorConfig;
 //		$data->processor_data		= new Rb_Registry($processorData);
 		
 		return $data;
@@ -222,7 +253,7 @@ class PaycartHelperInvoice
 	 * 
 	 * Update invoice
 	 * @param PaycartCart $cart
-	 * @param $processorData
+	 * @param $processorData	=	Array['processor_type' => _GATEWAY_TYPE_ , 'processor_config' => _CONFIG_IN_STRING_]
 	 * @param  $refresh
 	 * @return int updated invoice's id 
 	 */
@@ -240,31 +271,19 @@ class PaycartHelperInvoice
 	/**
 	 * 
 	 * 
-	 * @param Paycart $cart			
+	 * @param PaycartCart $cart			
 	 * @param Integer $processorId : _PROCESSOR_ID_
 	 * 
 	 */
-	public function getBuildForm(Paycart $cart, $processorId) //$postData)
+	public function getBuildForm(PaycartCart $cart, $build_data = Array('build_type' => 'html'))
 	{
-		$invoiceId		= $cart->getInvoiceId();
-		$invoiceData 	= $this->getInvoiceData($invoiceId);
-		$processor 		= PaycartProcessor::getInstance($processorId);
-		
-		// save the processor configuration on invoice
-		$invoiceData['processor_type'] 		= $processor->getType();
-		$invoiceData['processor_config'] 	= $processor->getParams();
-		
-		$this->_updateInvoice($invoiceId, $invoiceData);
-		
-		$processResponseData = '';
-		
-		// if processor is not selected then only update invoice with blank processor {type and config}   
-		if ($processorId) {
-			$processResponseData = Rb_EcommerceApi::invoice_request('build', $invoiceId, array());
-		}
+		$processResponseData = Rb_EcommerceApi::invoice_request('build', $cart->getInvoiceId(), $build_data);
 		
 		//Create new response and set required cart's stuff. 
 		$response = new stdClass();
+		$response->post_url	=	$processResponseData->data->post_url;
+		//@PCTODO :: if html is not available then process form (XML data)
+		$response->html		=	$processResponseData->data->form;
 		$response->processorResponse = $processResponseData;
 
 		return $response;
@@ -278,7 +297,7 @@ class PaycartHelperInvoice
 	 * 
 	 * @return stdClass 
 	 */
-	private function _processPayment($invoiceId, $paymentData) 
+	public function processPayment($invoiceId, $paymentData) 
 	{
 		// request function suffix
 		$requestName = 'payment';
@@ -289,7 +308,9 @@ class PaycartHelperInvoice
 			
 			// Process Payement : After request need to Process payament data 
 			$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $paymentResponseData);
-						
+
+			PaycartFactory::getHelper('log')->add($processResponseData);
+			
 			// if you still need to process like fist you need to create user profile at payment-gatway then process for payment
 			if($processResponseData->get('next_request', false) == false){
 				break;
@@ -317,10 +338,14 @@ class PaycartHelperInvoice
 	 * 
 	 * @return stdClass 
 	 */
-	private function _processNotification($invoiceId, $responseData) 
+	public function processNotification($invoiceId, $responseData) 
 	{
+		PaycartFactory::getHelper('log')->add($responseData);
+		
 		$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $responseData);
-
+		
+		PaycartFactory::getHelper('log')->add($processResponseData);
+		
 		//Create new response and set required cart's stuff. 
 		$response = new stdClass();
 		$response->processorResponse = $processResponseData;
@@ -343,160 +368,23 @@ class PaycartHelperInvoice
 		$invoiceId	= Rb_EcommerceAPI::invoice_get_from_response($responseData->data['processor'], $responseData);
 		
 		return $invoiceId;
-	}
-	
-	/**
-	 * 
-	 * Process on cart 
-	 * @param PaycartCart $cart	:
-	 * @param $data				:	
-	 * 		# if $processingType  is 'Payment' then $data is post data from Payment Processor
-	 * 		# if $processingType  is 'notify' then $data is request data from Payment Processor 			
-	 * @param $processingType 	: {'payment', 'notify', 'complete' }
-	 * 
-	 * 
-	 * @return bool value
-	 */
-	public function process(PaycartCart $cart, $data, $processingType = 'payment') 
-	{
-		$invoiceId = $cart->getInvoiceId();
-		
-		// before process invoice
-		$invoice_beforeProecess = $this->getInvoiceData($invoiceId); 
-		
-		switch (strtolower($processingType))
-		{
-			case 'payment':
-				// Process Payment data . 
-				$this->_processPayment($invoiceId, $data);
-				break;
-			
-			case 'notify':
-				// Process Notification data
-				$this->_processNotification($invoiceId, $data);
-				break;
-				
-			//case 'complete':
-				
-			default:
-				//@PCTODO:: create log and notify to admin
-				throw new RuntimeException('COM_PAYCART_UNKNOWN_PROCESSING_TYPE');
-		}
-		
-		//after process invoice
-		$invoice_afterProecess = $this->getInvoiceData($invoiceId);
-		
-		// After Payment cart status must be changed
-		$this->processCart($cart, $invoice_beforeProecess, $invoice_afterProecess);	
-		
-		return true;
-	}
-
-	/**
-	 * #######################################################################
-	 * 		1#. ProcessCart
-	 * 		2#. OninvoicePaid
-	 * 		3#. OnInvoiceRefund
-	 * 		4#. OnInvoiceInprocess
-	 * #######################################################################
-	 */	
-	
-	/**
-	 * 
-	 * Process cart on invoice changes
-	 * @param PaycartCart $cart				: Cart which will process
-	 * @param array $data_beforeInvoiceSave	: Invoice-date, Before change invoice
-	 * @param array $data_afterInvoiceSave	: Invoice-date, Aefore change invoice
-	 * 
-	 * @return bool vale
-	 */
-	protected function processCart(PaycartCart $cart , Array $data_beforeInvoiceSave, Array $data_afterInvoiceSave)
-	{
-		// Invoke protected-methods on bases og invoice-changes 
-		
-		// 1#. Is invoice paid
-		if ( self::STATUS_INVOICE_PAID != $data_beforeInvoiceSave['status'] && self::STATUS_INVOICE_PAID === $data_afterInvoiceSave['status']){
-			return $this->onInvoicePaid($cart, $data_beforeInvoiceSave, $data_afterInvoiceSave);
-		}
-		
-		// 2#. Is invoice refunded
-		if ( self::STATUS_INVOICE_REFUNDED != $data_beforeInvoiceSave['status'] && self::STATUS_INVOICE_REFUNDED === $data_afterInvoiceSave['status']){
-			return $this->onInvoiceRefund($cart, $data_beforeInvoiceSave, $data_afterInvoiceSave);
-		}
-		
-		// 3#. Is invoice in-process
-		if ( self::STATUS_INVOICE_INPROCESS != $data_beforeInvoiceSave['status'] && self::STATUS_INVOICE_INPROCESS === $data_afterInvoiceSave['status']){
-			return $this->onInvoiceInprocess($cart, $data_beforeInvoiceSave, $data_afterInvoiceSave);
-		} 
-		
-		//@PCTODO :: Handle other status when required
-		//4#. Is Invoice expired 
-		//5#. Is invoice none
-		//6#. Is Invoice due
-		
-		return true;
-	}
-	
-	
-	/**
-	 * 
-	 * Change cart status on Invoice Piad
-	 * @param PaycartCart $cart			: Current Cart
-	 * @param array $data_beforeSave	: Invoice-Data before save it 
-	 * @param array $data_afterSave		: Invoice-Data After save it
-	 * 
-	 * @return bool value;
-	 */
-	protected function onInvoicePaid(PaycartCart $cart, Array $data_beforeSave, Array $data_afterSave)
-	{
-		// 1#. change stuff which are depends on invoice
-		// change cart status, payment date
-		$cart->status(Paycart::STATUS_CART_PAID);
-		$cart->setPaymentdate(Rb_Date::getInstance());
-		
-		// 2#. save cart
-		$cart->save();
-		
-		return true;
-	}
-	
-	/**
-	 * 
-	 * Change cart status on Invoice refund
-	 * @param PaycartCart $cart			: Current Cart
-	 * @param array $data_beforeSave	: Invoice-Data before save it 
-	 * @param array $data_afterSave		: Invoice-Data After save it
-	 * 
-	 * @return bool value;
-	 */
-	protected function onInvoiceRefund(PaycartCart $cart, Array $data_beforeSave, Array $data_afterSave)
-	{
-		// @PCTODO :: Create new cart  
-		// 1#. change stuff which are depends on invoice
-		// change cart status, payment date (its a reversal cart so same treatment will apply like OnInvoicePaid)
-		//$cart->status(Paycart::STATUS_CART_PAID);	
-		//$cart->setPaymentdate(Rb_Date::getInstance());
-		
-		// 2#. save cart
-		//$cart->save();
-		
-		return true;
-	}
-
-	/**
-	 * 
-	 * Change cart status on Invoice inprocess
-	 * @param PaycartCart $cart			: Current Cart
-	 * @param array $data_beforeSave	: Invoice-Data before save it 
-	 * @param array $data_afterSave		: Invoice-Data After save it
-	 * 
-	 * @return bool value;
-	 */
-	protected function onInvoiceInprocess(PaycartCart $cart, Array $data_beforeSave, Array $data_afterSave)
-	{
-		//@NOTE:: no need to update cart for {status and request date}. 
-		// Becoz at that moment cart is already checkout and req. date is already set 
-		
-		return true;
 	}	
+	
+	/**
+	 * return either the record of the given currencyId or all the existing records
+	 */
+	public function getCurrency($currencyId = null)
+	{
+		static $currencies = null;
+		
+		if(empty($currencies)){
+			$currencies = Rb_EcommerceAPI::currency_get_records();
+		}
+		
+		if(!empty($currencyId)){
+			return $currencies[$currencyId];  
+		}
+		
+		return $currencies;
+	}
 }

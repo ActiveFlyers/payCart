@@ -7,39 +7,52 @@
 * @contact 		manish@readybytes.in
 * @author 		Manish Trivedi
 */
-
-/**
- * List of Populated Variables
- * $heading = COM_PAYCART_ADMIN_BLANK_PRODUCT
- * $msg 	= COM_PAYCART_ADMIN_BLANK_PRODUCT_MSG
- * $model	= Instance of PaycartModelProduct
- * $filters = Array of availble filters
- * $uri		= Current URL (SITE_NAME/administrator/index.php?option=com_paycart&view=product&task=display)
- * 
- */
 defined('_JEXEC') or die();
-
 ?>
+<div class="pc-product-wrapper clearfix">
+<div class="pc-product row-fluid">
 
+<!-- CONTENT START -->
+
+<!-- ADMIN MENU -->
+<div class="span2">
+	<?php
+			$helper = PaycartFactory::getHelper('adminmenu');			
+			echo $helper->render('index.php?option=com_paycart&view=product'); 
+	?>
+</div>
+<!-- ADMIN MENU -->
+
+
+<div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 	<div class="row-fluid">
-		<div class="span3">&nbsp;</div>
-		<div class="span6 pc-blank-heading">
-			<?php echo $heading; ?>
-			<p class="muted"><?php echo $msg; ?></p>
+		<div class="center muted">
+			<div>
+				<h1>&nbsp;</h1>
+				<i class="fa fa-tags fa-5x"></i>
+			</div>
+			
+			<div>
+				<h3><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_GRID_BLANK_MSG');?></h3>
+			</div>
 		</div>
-		<div class="span3">&nbsp;</div>
 	</div>
-
 	<div class="row-fluid">	
 		<div class="center">
-			<a href="<?php echo JUri::base().'index.php?option=com_paycart&view=product&task=new';?>" class="btn btn-success"><i class="icon-plus-sign icon-white"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_ADD_NEW_PRODUCT');?></a>
-			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-question-sign "></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_SUPPORT_LINK');?></a>
-			<a href="http://www.joomlaxi.com/" target="_blank" class="btn disabled"><i class="icon-book"></i>&nbsp;<?php echo Rb_Text::_('COM_PAYCART_DOCUMENTATION_LINK');?></a>
+			<a href="<?php echo JUri::base().'index.php?option=com_paycart&view=product&task=new';?>" class="btn btn-success btn-large">
+				<i class="icon-plus-sign icon-white"></i>&nbsp;
+				<?php echo Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_ADD');?>
+			</a>			
 		</div>
 	</div>
 	
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 </form>
+</div>
+<!-- CONTENT END -->
+
+</div>
+</div>
 <?php 

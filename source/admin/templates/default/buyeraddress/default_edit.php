@@ -19,14 +19,14 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <div id="rbWindowTitle">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3 id="myModalLabel"><?php echo $model_title ?></h3>
+		<h3 id="myModalLabel"><?php echo JText::_($model_title); ?></h3>
 	</div>
 </div>
 
 <div class="modal-body" id="rbWindowBody">
 	
 	<!--  New_atrribute_creation body		-->
-	<form id="paycart_buyeraddress_form" class="rb-validate-form">
+	<form id="paycart_buyeraddress_form" class="pc-form-validate">
 	 
 		<?php
 				$layout = new JLayoutFile('paycart_buyeraddress_edit', PAYCART_LAYOUTS_PATH);
@@ -43,8 +43,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <div id="rbWindowFooter">
 	<div class="modal-footer">
 		<button class="btn btn-primary " onClick="paycart.admin.buyeraddress.add.go();"> 
-			<?php echo JText::_('COM_PAYCART_BUTTON_SAVE'); ?> </button>
-		<button class="btn" data-dismiss="modal" aria-hidden="true" ><?php echo JText::_('COM_PAYCART_BUTTON_CANCLE'); ?> </button>
+			<?php echo JText::_('COM_PAYCART_ADMIN_SAVE'); ?> </button>
+		<button class="btn" data-dismiss="modal" aria-hidden="true" ><?php echo JText::_('COM_PAYCART_ADMIN_CANCEL'); ?> </button>
 	</div>
 </div>
 

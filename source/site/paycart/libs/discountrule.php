@@ -55,18 +55,40 @@ class PaycartDiscountrule extends PaycartLib
 	protected $processor_config;
 	
 	//Lib Specific Fields
-	protected $_stopFurtherRules = true; 		//multiple discount further process or not.  
-	protected $message;							// Have mapped data. (language id => message) 
+	protected $_total_consumption 			= null;
+	protected $_total_consumption_by_byer 	= null;
 		
+	// language specific
+	protected $discountrule_lang_id		= 0;
+	protected $lang_code 			= '';
+	protected $message				= '';		
+	
+	// others
+	protected $_buyergroups			= array();
+	protected $_productgroups		= array();
+	protected $_cartgroups			= array();
+	
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+		
+		
+		// IMP :check for class existance
+		// 		if class is not loaded alread then it will autoload the class
+		// 		We have done this because other request classes are dependent on it 
+		if(!class_exists('PaycartDiscountRuleRequest', true)){
+			throw new Exception('Class PaycartDiscountRuleRequest not found');
+		}		
+	}
 	
 	public function reset() 
 	{		
 		$this->discountrule_id	=	0; 
 		$this->title 		 	=	null;
-		$this->description		=	0;
+		$this->description		=	null;
 		$this->published		=	1;
-		$this->start_date		=	Rb_Date::getInstance('0000-00-00 00:00:00');
-		$this->end_date			=	Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->start_date		=	Rb_Date::getInstance();
+		$this->end_date			=	Rb_Date::getInstance();
 		$this->created_date		= 	Rb_Date::getInstance();
 		$this->modified_date	=	Rb_Date::getInstance();
 		
@@ -83,6 +105,16 @@ class PaycartDiscountrule extends PaycartLib
 		
 		$this->processor_classname	= Null;
 		$this->processor_config		= new Rb_Registry();
+		
+		$this->discountrule_lang_id	= 0;
+		$this->lang_code			= PaycartFactory::getCurrentLanguageCode();
+		$this->message				= '';
+		
+		$this->_buyergroups			= array();
+		$this->_productgroups		= array();
+		$this->_cartgroups			= array();
+		$this->_total_consumption 			= null;
+		$this->_total_consumption_by_byer 	= null;
 				
 		return $this;
 	}
@@ -125,59 +157,43 @@ class PaycartDiscountrule extends PaycartLib
 	{		
 		return $this->processor_config->toObject();
 	}
-		
-	public function getAlreadyAppliedRules()
-	{
-		return array(); //@PCTODO :
-	}
-	
-	public function getTotalConsumption()
-	{
-		return 0; //@PCTODO :
-	}
-	
-	public function getTotalConsumptionByBuyer($buyer_id)
-	{
-		return 0; //@PCTODO :
-	}
 	
 	/**
 	 * 
-	 * Applicability check  
-	 * @param Paycartcart $cart
-	 * @param PaycartCartparticular $cartparticular
-	 * @return boolean type if applicable otherwise false
+	 * Invoke to get total consumption of this discount rule
+	 * 
+	 * @return INT value
 	 */
-	public function isApplicable(Paycartcart $cart, PaycartCartparticular $cartparticular)
-	{		
-		$response = new stdClass();
-		$response->error = true;
-		
-		// if discount is already applied and current discount is non-clubbale
-		// then return false 
-		$appliedRules = $this->getAlreadyAppliedRules();
-		if (!empty($appliedRules) && !$this->is_clubbable) {
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_NON_CLUBBABLE');
-			$response->messageType	= Paycart::MESSAGE_TYPE_MESSAGE;
-			return $response; 
-		}
-				
-		// stop further rule-processing, if usage limit exceeded		
-		if ($this->getTotalConsumption() >= $this->usage_limit) { // @PCTODO: what about unlimited 
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_USAGE_LIMIT_EXCEEDED');
-			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
-			return $response;
+	public function getTotalConsumption()
+	{
+		if (null === $this->_total_consumption) {
+			$filter = Array(	'rule_type' => $this->getType(), 
+								'rule_id' 	=> $this->getId()
+							);
+			
+			$this->_total_consumption = PaycartFactory::getModel('usage')->getCount($filter);
 		}
 		
-		// stop further processing, if rule's buyer-usage limit exceeded
-		if ($this->getTotalConsumptionByBuyer($cart->getBuyer()) >= $this->buyer_usage_limit) {
-			$response->message 		= Rb_Text::_('COM_PAYCART_DISCOUNTRULE_BUYER_USAGE_LIMIT_EXCEEDED');
-			$response->messageType	= Paycart::MESSAGE_TYPE_WARNING;
-			return $response;
+		return $this->_total_consumption;
+	}
+	
+	/**
+	 * Invoke to get total consumption of this discount rule for specific buyer 
+	 * @param INT $buyer_id
+	 * 
+	 * @return INT value
+	 */
+	public function getTotalConsumptionByBuyer($buyer_id)
+	{
+		if (null === $this->_total_consumption_by_byer) {
+			$filter = Array(	'rule_type' => $this->getType(), 
+								'rule_id' 	=> $this->getId(),
+								'buyer_id'	=> $buyer_id
+							);
+			$this->_total_consumption_by_byer = PaycartFactory::getModel('usage')->getCount($filter);
 		}
-
-		$response->error = false;
-		return $response;
+		
+		return $this->_total_consumption_by_byer;
 	}
 	
 	/**
@@ -190,16 +206,17 @@ class PaycartDiscountrule extends PaycartLib
 		
 		$request 							= new PaycartDiscountruleRequest();		
 		$request->cartparticular 			= $helperRequest->getCartparticularObject($cartparticular);
-		$request->shipping_address			= $helperRequest->getBuyeraddressObject($cart->getShippingAddress());
-		$request->billing_address			= $helperRequest->getBuyeraddressObject($cart->getBillingAddress());
-		$request->buyer						= $helperRequest->getBuyerObject($cart->getBuyer());
+		$request->shipping_address			= $helperRequest->getBuyeraddressObject($cart->getShippingAddress(true));
+		$request->billing_address			= $helperRequest->getBuyeraddressObject($cart->getBillingAddress(true));
+		$request->buyer						= $helperRequest->getBuyerObject($cart->getBuyer(true));
 		
-		//@ PCTODO : verify in isApplicable function
-		$request->cartparticular->coupon		= $cart->coupon;// @PCTODO: get Posted coupon code from cart
+		//@PCTODO :: need coupon treatment
+		$request->cartparticular->coupon		= $cart->getPromotions();
 		
 		// amount on which discount should be applied
 		$request->discountable_amount = $request->cartparticular->price;
-		// If discount is successive/row total then applied on total amount.
+		
+		// If discount is successive/row total then applied on particular total.
 		// It will use on multi discount
 		if ($this->is_successive) {
 			$request->discountable_amount = $request->cartparticular->total;
@@ -246,87 +263,98 @@ class PaycartDiscountrule extends PaycartLib
 		return new PaycartDiscountruleResponse();
 	}
 	
-	/**
-	 * @PCTODO :: Discountrule-Helper.php 
-	 * @param PayacartCart $cart
-	 * @param PaycartCartparticular $cartparticular
-	 * @param array $ruleIds Applicable rules
-	 * 
-	 * @return bool value
-	 */
-	protected function _processDiscountRule(PayacartCart $cart, PaycartCartparticular $cartparticular, Array $ruleIds)
+	public function toArray()
 	{
-		//@PCTODO : define constant for applicable_on
-		// {product_price, shipping_price, cart-price}
-		$appliedOn = 'product_price';
-		
-		//@PCTODO :: move into model 
-		// get applicable rules
-		$condition = ' 	`discountrule_id` IN ('.array_values($ruleIds).') AND '.
-					 '	`published` = 1 AND '.
-					 '	`start_date` <= now() AND '.
-					 '	`end_date` >= now() AND '. 
-					 '	`applied_on` LIKE '."'$appliedOn'" ;
-		
-		// sort applicable rule as per sequence.
-		$records = PaycartFactory::getModel('discountrule')
-							->getData($condition, '`sequence`');
+		$data = parent::toArray();
 
-		// no rule for processing
-		if (!$records) {
-			return true;
-		}
-		
-		foreach ($records as $id=>$record) {
-			
-			$discountRule = PaycartDiscountRule::getInstance($id, $record);
-			
-			// process discount
-			$discounRule->process($cart, $cartparticular);
-			
-			//@PCTODO:: set previous applied rules on particular
-			$cartparticular->_appliedDiscountRules[] = $discountRule; 
-			
-			// no further process
-			if ($discountRule->get('_stopFurtherRules')) {
-				break;
-			}			
-		}
-		
-		return true;
-	}	
+		$data['_buyergroups'] 	= $this->_buyergroups;
+		$data['_productgroups'] = $this->_productgroups;
+		$data['_cartgroups'] 	= $this->_cartgroups;
+
+		return $data;
+	}
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_save()
-	 */
-	protected function _save($previousObject) 
+	protected function _save($previousObject)
 	{
-		// save core table data
 		$id = parent::_save($previousObject);
 		
-		if(!id) {
+		// if save fail
+		if (!$id) { 
 			return false;
 		}
 		
-		$data = Array();
-		
-		// Save multilanguage stuff
-		$modelLang = PaycartFactory::getModel('discountrulelang');
-		
-		foreach ($this->message as $langCode => $message) {
-			$data['discountrule_id'] = $id;
-			$data['lang_code'] 		 = $langCode;
-			$data['message'] 		 = $message;
-		}
-		
-		// Before save you need to delete previous data
-		$modelLang->deleteMany(Array('discountrule_id'=>$id));
-		
-		//@PCTODO:: notify to admin if save failed
-		// save language specific content
-		$modelLang->save($data);
+		$model = $this->getModel();
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_BUYER, $this->_buyergroups);
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_PRODUCT, $this->_productgroups);
+		$model->saveGroups($id, Paycart::GROUPRULE_TYPE_CART, $this->_cartgroups);
 		
 		return $id;
 	}
+	
+	function bind($data, $ignore = Array()) 
+	{
+		if(is_object($data)){
+			$data = (array) ($data);
+		}
+				
+		parent::bind($data, $ignore);		
+		
+		if(!isset($data['_buyergroups'])) {
+			$this->_buyergroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_BUYER);
+		}
+		else{
+			$this->_buyergroups = $data['_buyergroups'];
+		}
+		
+		if(!isset($data['_productgroups'])) {
+			$this->_productgroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_PRODUCT);
+		}
+		else{
+			$this->_productgroups = $data['_productgroups'];
+		}
+		
+		if(!isset($data['_cartgroups'])) {
+			$this->_cartgroups = $this->_getGroups(Paycart::GROUPRULE_TYPE_CART);
+		}
+		else{
+			$this->_cartgroups = $data['_cartgroups'];
+		}	
+		
+		return $this;
+	}	
+	
+	protected function _getGroups($type)
+	{
+		if(!$this->getId()){
+			return array();
+		}
+		
+		return $this->getModel()->getGroups($this->getId(), $type);		
+	}
+	
+	public function getProcessorConfigHtml()
+	{
+		$response = $this->getResponseObject();
+		$this->getProcessor()->getConfigHtml(new PaycartDiscountRuleRequest, $response);
+		return $response->configHtml;
+	}
+	
+	/**
+	 * Invoke on usage tracking 
+	 */
+	public function getType()
+	{
+		return Paycart::PROCESSOR_TYPE_DISCOUNTRULE; 
+	}
+	
+	public function getMessage()
+	{
+		return $this->message;
+	}
+	
+	public function getTitle()
+	{
+		return $this->title;
+	}
+	
 }

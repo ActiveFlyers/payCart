@@ -20,19 +20,25 @@ class PaycartAdminViewCart extends PaycartAdminBaseViewCart
 {	
 	protected function _adminGridToolbar()
 	{
-		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADD_NEW_CART');
-		Rb_HelperToolbar::editList();
-		Rb_HelperToolbar::divider();
 		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ENTITY_DELETE_CONFIRMATION'));
-//		Rb_HelperToolbar::publish();
-//		Rb_HelperToolbar::unpublish();
 	}
 	
 	protected function _adminEditToolbar()
 	{
-		Rb_HelperToolbar::apply();
-		Rb_HelperToolbar::save();
-		Rb_HelperToolbar::cancel();
+            Rb_HelperToolbar::cancel();
+            
+            $cart = PaycartCart::getInstance($this->getModel()->getState('id'));
+
+            if ($cart->isLocked() && Paycart::STATUS_CART_PAID != $cart->getStatus()) {
+                
+                // cart Locked but neither approved nor paid
+                if (!$cart->isApproved()) {
+                    Rb_HelperToolbar::custom('approved', ' fa fa-thumbs-up','','COM_PAYCART_ADMIN_CART_APPROVED', false);
+                }
+                
+                Rb_HelperToolbar::custom('paid', ' fa fa-thumbs-up','','COM_PAYCART_ADMIN_CART_PAID', false);
+            }
+            
 	}
 	
 	/**
@@ -44,9 +50,37 @@ class PaycartAdminViewCart extends PaycartAdminBaseViewCart
 		$cart_id	=  $this->getModel()->getState('id');
 		$cart		=  PaycartCart::getInstance($cart_id);
 		
-		$this->assign('form',  $cart->getModelform()->getForm($cart));
+		$cartHelper	= PaycartFactory::getHelper('cart');
+		
+		// collect all particular details		
+		$product_particular	  = $cartHelper->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		$promotion_particular = $cartHelper->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+		$duties_particular	  = $cartHelper->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		$shipping_particular  = $cartHelper->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+				
+		//collect usage of tax, discount and shipping
+		$usage = PaycartFactory::getModel('usage')->loadRecords(array('cart_id' => $cart_id), array(), false, 'cartparticular_id');
+		
+		$shippingMethods = array();
+		foreach ($shipping_particular as $particular){
+			$shippingMethods[$particular->particular_id] = PaycartShippingrule::getInstance($particular->particular_id)->getTitle();
+		}
+
+		//load shipments
+		$shipmentModel = PaycartFactory::getModel('shipment');
+		$shipments     = $shipmentModel->loadRecords(array('cart_id' => $cart_id)); 
+		
+		$this->assign('product_particular',		$product_particular);
+		$this->assign('shipping_particular',	$shipping_particular);
+		$this->assign('promotion_particular',	$promotion_particular);
+		$this->assign('duties_particular',		$duties_particular);
+		$this->assign('shipments', $shipments);
+		$this->assign('usage',$usage);
+		$this->assign('form', $cart->getModelform()->getForm($cart));
+		$this->assign('cart',$cart);
+		$this->assign('shippingMethods',$shippingMethods);
+		$this->assign('status',Paycart::getShipmentStatus());
 		
 		return parent::edit($tpl);
 	}
-	
 }
