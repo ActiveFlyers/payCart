@@ -74,7 +74,8 @@ class PaycartTableNested extends JTableNested
 			$this->set($columnName, $oldValue ? 0 : 1);
 
 		//now save
-		if($this->rb_save()===false)
+		$properties = $this->getProperties();
+		if($this->save($properties)===false)
 		{
 			$this->setError( $this->_db->stderr() );
 			return false;

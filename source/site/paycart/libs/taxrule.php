@@ -169,7 +169,7 @@ class PaycartTaxrule extends PaycartLib
 		$request->shipping_address		= $helperRequest->getBuyeraddressObject($cart->getShippingAddress(true));
 		$request->billing_address		= $helperRequest->getBuyeraddressObject($cart->getBillingAddress(true));
 		$request->buyer					= $helperRequest->getBuyerObject($cart->getBuyer(true));
-		$request->taxable_amount		= $request->cartparticular->price;
+		$request->taxable_amount		= $request->cartparticular->total; //tax will be applied on discounted price
 		
 		return $request;
 	}
