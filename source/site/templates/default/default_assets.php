@@ -18,11 +18,11 @@ Rb_HelperTemplate::loadSetupEnv();
 // load bootsrap, font-awesome
 Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
 
-Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/paycart.css');
-Rb_Html::stylesheet(dirname(__FILE__).'/_media/css/site.css');
+Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/paycart.css');
+Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/site.css');
 
 
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/paycart.js');
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/salvattore.js');
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/validate.js');
-Rb_Html::script(dirname(__FILE__).'/_media/js/site.js');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/validate.js');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/site.js');
