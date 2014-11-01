@@ -66,7 +66,7 @@ class PaycartCartparticularDuties extends PaycartCartparticular
 		$this->updateTotal();
 		
 		// no need to save if total is zero
-		if ($this->getTotal()) { 
+		if ($this->getTotal(true)) { 
 			return parent::save($cart);
 		}
 		

@@ -165,10 +165,10 @@ class PaycartHelperCart extends PaycartHelper
 		if(!isset($particularData[$cartId])){
 			//load data from model
 			$records = PaycartFactory::getModel('cartparticular')
-													->loadRecords(array('cart_id' => $cartId), array(),false, 'particular_id');
+													->loadRecords(array('cart_id' => $cartId), array(),false);
 			
 			foreach ($records as $particularId => $data){
-				$particularData[$cartId][$data->type][$particularId] =  $data;
+				$particularData[$cartId][$data->type][$data->particular_id] =  $data;
 			}	
 		}
 		
