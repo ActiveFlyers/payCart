@@ -11,10 +11,17 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
+
+// load angular
 Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
 
 <script type="text/javascript">	
+
+(function($)
+	{
+
+	paycart.ng.cart = angular.module('pcngCartApp', []);
 
 	paycart.ng.cart.controller('pcngCartShipmentCtrl', function($scope, $http, $timeout){
 		$scope.message 		   = false;
@@ -218,7 +225,58 @@ Rb_HelperTemplate::loadMedia(array('angular'));
                            });
                      }
               };
-    }])
+    }]);
+
+
+	paycart.ng.cart.controller
+		('pcngCartNextActionCtrl', 
+				
+				function($scope, $http, $timeout)
+				{
+					
+					$scope.selected = null;	// action
+					$scope.task = null; 	// task
+
+					$scope.onActionSelection = function(selected)
+					{	
+						// select action
+						$scope.selected  = selected;
+
+						// set task according to action
+						switch($scope.selected) {
+							case 'approve' :
+								$scope.task = 'approve';
+								break;
+							case 'paid_by_transaction_id' :
+							case 'paid_by_anymean' :
+								$scope.task = 'paid'; 	
+								break;
+							default :
+								$scope.task = null; 	
+						} 
+						
+					};
+
+					
+					$scope.onActionExecute = function() 
+					{
+						//@PCFIXME :: validation is not working
+//						if (!paycart.formvalidator.isValid(document.id('pc-cart-action-form'))) {
+//							alert('false');
+//							return;
+//						}
+
+						$("#pc-cart-action-form").submit();
+						return;
+					}
+					
+				}
+		);
+
+
+	})(paycart.jQuery)
+
+
 
 </script>
 <?php 

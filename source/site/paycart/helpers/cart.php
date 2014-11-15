@@ -225,4 +225,28 @@ class PaycartHelperCart extends PaycartHelper
 
 		return $products_count;
 	}
+	
+	/**
+	 * 
+	 * Delete cart Particulars 
+	 * @param unknown_type $cart_id
+	 * 
+	 * @return boolean 
+	 */
+	public function deleteParticulars($cart_id)
+	{
+		$particular_model = PaycartFactory::getModel('cartparticular');
+		
+		// get all particulars
+		$particulars_record = $particular_model->loadRecords(Array('cart_id' => $cart_id));
+		
+		foreach ($particulars_record as $key => $value) {
+			// delete one by one
+			if (!$particular_model->delete($key)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

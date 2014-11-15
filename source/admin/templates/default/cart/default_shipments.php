@@ -14,18 +14,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 PaycartHtml::_('behavior.formvalidation');
 
-Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
 
-<script type="text/javascript">
-	paycart.ng.cart = angular.module('pcngCartApp', []);
-</script>
 
-<?php 
-echo $this->loadTemplate('edit_ng');
-?>
-
-<div data-ng-app="pcngCartApp">
+<div  data-ng-controller="pcngCartShipmentCtrl">
 	
 	<script>
 		var cartId    		= <?php echo $cart->getId();?>;
@@ -43,7 +35,7 @@ echo $this->loadTemplate('edit_ng');
 		<?php endif;?>
 	</script>
 		
-	<div class="row-fluid form-horizontal" data-ng-controller="pcngCartShipmentCtrl"><br>
+	<div class="row-fluid form-horizontal" ><br>
 		<button class="btn btn-primary" data-ng-click="addNewShipment();" onclick="return false;"> 
 			<i class="fa fa-plus">&nbsp;&nbsp;<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_ADD_NEW")?></i>
 		</button><br><br>

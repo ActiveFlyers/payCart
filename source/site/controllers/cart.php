@@ -479,7 +479,7 @@ class PaycartSiteControllerCart extends PaycartController
 			$cart_id		=	$this->input->get('cart_id', 0);
 			$cart_instance	=	PaycartCart::getInstance($cart_id);
 	
-			$cart_instance->collectPayment($payment_data);
+			$cart_instance->requestPayment($payment_data);
 	
 			$this->setRedirect(Rb_Route::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$cart_id));
 	
@@ -558,9 +558,8 @@ class PaycartSiteControllerCart extends PaycartController
 	
 	public function notify()
 	{
-		//@PCTODO : Is it correct way to get it?
-		$get 				= $this->input->getArray($_GET);	//Rb_Request::get('GET'); 
-		$post 				= $this->input->getArray($_POST);	//Rb_Request::get('POST');
+		$get 				= $this->input->get->getArray();	
+		$post 				= $this->input->post->getArray();	
 		
 		$response_data 		= array_merge($get, $post);
 		
@@ -572,7 +571,8 @@ class PaycartSiteControllerCart extends PaycartController
 		//file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response_data,true), FILE_APPEND);
 		
 		if (defined('JDEBUG') && JDEBUG) {
-			// @PCFIXME:: dump data
+			// dump data
+			file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response_data,true), FILE_APPEND);
 		}
 		
 		if(!isset($response_data['processor'])){

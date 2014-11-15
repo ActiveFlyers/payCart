@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `paid_date` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Payment Completion date.',
   `cancelled_date` datetime DEFAULT '0000-00-00 00:00:00',
   `delivered_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `note` varchar(255) DEFAULT '' ,
   `params` text COMMENT 'Products and their quantiy store here initial',
   PRIMARY KEY (`cart_id`),
   KEY `idx_invoice_id` (`invoice_id`),

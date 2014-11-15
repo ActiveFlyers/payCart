@@ -13,6 +13,8 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 PaycartHtml::_('behavior.formvalidation');
+echo $this->loadTemplate('edit_ng');
+
 ?>
 
 <div class="pc-cart-wrapper clearfix">
@@ -25,14 +27,11 @@ PaycartHtml::_('behavior.formvalidation');
 	<?php
 			$helper = PaycartFactory::getHelper('adminmenu');			
 			echo $helper->render('index.php?option=com_paycart&view=cart'); 
-                        
-                        echo $this->loadTemplate('edit_js');
-
 	?>
 </div>
 <!-- ADMIN MENU -->
 
-<div class="span10">
+<div class="span10" data-ng-app="pcngCartApp">
 	
 	<?php echo PaycartHtml::_('bootstrap.startTabSet', 'cart', array('active' => 'basic')); ?>
 	<!--	 Account Details Tab		-->
@@ -72,6 +71,19 @@ PaycartHtml::_('behavior.formvalidation');
 							<div class="control-group">
 								<div class="control-label"><?php echo $field->label; ?> </div>
 								<div class="controls"><?php echo $field->input; ?></div>								
+							</div>
+							
+							<div>
+							
+							<?php if (!$cart->isPaid()) :?>
+							<span>
+								<a href="#pc-cart-next-action-modal" role="button" class="btn" data-toggle="modal">
+									<span class=" fa fa-thumbs-up"></span>
+									<?php echo JText::_('COM_PAYCART_ADMIN_CART_ACTIONS');?>
+								</a>
+							</span>
+							<?php endif; ?>
+
 							</div>
 						</div>
 						<div class="span6">
@@ -251,7 +263,7 @@ PaycartHtml::_('behavior.formvalidation');
 
 	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 	
-	<?php if($cart->getStatus() != Paycart::STATUS_CART_DRAFTED):?>			
+	<?php if($cart->isLocked()): ?>			
 		<!--	 Invoice Details Tab		-->
 		<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'advance', Rb_Text::_('COM_PAYCART_ADMIN_ADVANCE', true)); ?>
 			
@@ -268,46 +280,15 @@ PaycartHtml::_('behavior.formvalidation');
 	
 		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
     <?php endif;?>   
-<!-- Confirm Model        -->
-        <div	
-            class="modal hide fade pc-confimbox"
-            id="pc-confimbox-modal" 
-            tabindex="-1" 
-            role="dialog"
-            aria-labelledby="Login-ModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-header pc-confimbox-title">
-                <h3 id="myModalLabel" class= "rb-icon-login">
-                    <?php
-                        echo JText::_('COM_PAYCART_CONFIRM');
-                    ?>
-                </h3>
-            </div>
+    
+    
+    <?php 
+    
+    if (!$cart->isPaid()) :
+		echo $this->loadTemplate('actions');
+	  endif;
+	?>
 
-            <div class="modal-body pc-confimbox-body">
-                
-            </div>
-            
-            <div class="modal-footer pc-confimbox-footer">
-             
-                <button type="button" class="btn pc-confimbox-ok">
-                    <?php
-                        echo JText::_('COM_PAYCART_OK');
-                    ?>
-                </button>
-                
-                <button type="button" class="btn pc-confimbox-close" data-dismiss="modal" aria-hidden="true">
-                    <?php
-                        echo JText::_('COM_PAYCART_BUTTON_CANCEL');
-                    ?>
-                </button>
-                
-                
-            </div>
-            
-            
-        </div>
 </div>
 </div>
 </div>

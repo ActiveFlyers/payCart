@@ -26,19 +26,6 @@ class PaycartAdminViewCart extends PaycartAdminBaseViewCart
 	protected function _adminEditToolbar()
 	{
             Rb_HelperToolbar::cancel();
-            
-            $cart = PaycartCart::getInstance($this->getModel()->getState('id'));
-
-            if ($cart->isLocked() && Paycart::STATUS_CART_PAID != $cart->getStatus()) {
-                
-                // cart Locked but neither approved nor paid
-                if (!$cart->isApproved()) {
-                    Rb_HelperToolbar::custom('approved', ' fa fa-thumbs-up','','COM_PAYCART_ADMIN_CART_APPROVED', false);
-                }
-                
-                Rb_HelperToolbar::custom('paid', ' fa fa-thumbs-up','','COM_PAYCART_ADMIN_CART_PAID', false);
-            }
-            
 	}
 	
 	/**

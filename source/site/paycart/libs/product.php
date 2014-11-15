@@ -363,7 +363,8 @@ class PaycartProduct extends PaycartLib
 			$this->_uploaded_files = $data['_uploaded_files'];
 		}
 		
-		if(isset($data['config']['positions'])){
+		// is array must be checked other wise wrong data will be binded on loadrecords (Issue with isset)
+		if(is_array($data['config']) && isset($data['config']['positions'])){
 			// reset $this->config->positions
 			$this->config->set('positions', $data['config']['positions']);
 		}

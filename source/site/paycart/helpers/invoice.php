@@ -86,13 +86,14 @@ class PaycartHelperInvoice
 	 * 
 	 * create new invoice
 	 * @param PaycartCart $cart, invoice create on $cart bases
+	 * @param Array $processorData
 	 * @throws RuntimeException if cart is not exist or invoice creation fail
 	 * 
 	 * @return new created invoice id
 	 */
-	public function createInvoice(PaycartCart $cart)
+	public function createInvoice(PaycartCart $cart, $processorData = Array())
 	{
-		$data  		= $this->buildInvoiceData($cart);
+		$data  		= $this->buildInvoiceData($cart, $processorData);
 		
 		// we are not supporting recurring so always created invoice must be master invoice
 		$is_master	= true;
@@ -386,5 +387,30 @@ class PaycartHelperInvoice
 		}
 		
 		return $currencies;
+	}
+	
+	/**
+	 * 
+	 * Invoke to manually process specific invoice 
+	 * 
+	 * @param unknown_type $invoice_id
+	 * @param unknown_type $data
+	 * 
+	 * @return stdClass object with Rb_EcommerceResponse 
+	 */
+	public function processDirectPay($invoice_id, $data)
+	{
+		PaycartFactory::getHelper('log')->add($data);
+		
+		$processResponseData	= Rb_EcommerceAPI::invoice_directPay($invoice_id, $data);
+		
+		PaycartFactory::getHelper('log')->add($processResponseData);
+		
+		//Create new response and set required cart's stuff. 
+		$response = new stdClass();
+		$response->processorResponse = $processResponseData;
+
+		return $response;
+		
 	}
 }
