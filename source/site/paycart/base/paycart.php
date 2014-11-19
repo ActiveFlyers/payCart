@@ -131,9 +131,9 @@ class Paycart
 	{
 		return 
 			Array(
-                Paycart::STATUS_CART_DRAFTED   => JText::_('COM_PAYCART_CART_STATUS_DRAFTED'),
-				Paycart::STATUS_CART_PAID      => JText::_('COM_PAYCART_CART_STATUS_PAID'),
-				Paycart::STATUS_CART_CANCELLED => JText::_('COM_PAYCART_CART_STATUS_CANCELLED'),
+                Paycart::STATUS_CART_DRAFTED   => 'COM_PAYCART_CART_STATUS_DRAFTED',
+				Paycart::STATUS_CART_PAID      => 'COM_PAYCART_CART_STATUS_PAID',
+				Paycart::STATUS_CART_CANCELLED => 'COM_PAYCART_CART_STATUS_CANCELLED',
 			 );
 	}
 }

@@ -92,7 +92,8 @@ class PaycartAdminControllerCart extends PaycartController
 		if (!$action) {
 			$this->setredirect(
 					'index.php?option=com_paycart&view=cart&task=edit&id='.$cart_id,
-					JText::_('COM_PAYCART_ADMIN_WARNING_UNKNOWN_ACTION')
+					JText::_('COM_PAYCART_ADMIN_WARNING_INVALID_ACTION'),
+					'warning'
 					);
             return false;
 		}
@@ -133,11 +134,10 @@ class PaycartAdminControllerCart extends PaycartController
 			
 	        return $this->_paidByAnymean($cart_id, $note);
 		}
-		
-		
+
 		$this->setredirect(
 					'index.php?option=com_paycart&view=cart&task=edit&id='.$cart_id,
-					JText::_('COM_PAYCART_ADMIN_WARNING_UNKNOWN_ACTION')
+					JText::_('COM_PAYCART_ADMIN_WARNING_INVALID_ACTION')
 					);
 					
 		return false;

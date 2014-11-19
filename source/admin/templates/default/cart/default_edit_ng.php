@@ -236,7 +236,9 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 					
 					$scope.selected = null;	// action
 					$scope.task = null; 	// task
+					$scope.task_value='';
 
+					// On Any Action Selection						
 					$scope.onActionSelection = function(selected)
 					{	
 						// select action
@@ -246,34 +248,33 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 						switch($scope.selected) {
 							case 'approve' :
 								$scope.task = 'approve';
+								$scope.task_value= '<?php echo JText::_('COM_PAYCART_ADMIN_APRROVE_TASK');?>';
 								break;
 							case 'paid_by_transaction_id' :
 							case 'paid_by_anymean' :
-								$scope.task = 'paid'; 	
+								$scope.task = 'paid';
+								$scope.task_value= '<?php echo JText::_('COM_PAYCART_ADMIN_PAID_TASK');?>' ;	
 								break;
 							default :
+								$('input[name="action"]').prop('checked', false); 	//unchecked radio button
 								$scope.task = null; 	
+								$scope.task_value= '';
 						} 
-						
 					};
 
-					
+					// On Any Action Execution
 					$scope.onActionExecute = function() 
 					{
-						//@PCFIXME :: validation is not working
-//						if (!paycart.formvalidator.isValid(document.id('pc-cart-action-form'))) {
-//							alert('false');
-//							return;
-//						}
-
-						$("#pc-cart-action-form").submit();
-						return;
-					}
-					
+						// if form is validate then submit it 
+						if (paycart.formvalidator.isValid(document.id('pc-cart-action-form'))) {
+							$("#pc-cart-action-form").submit();
+						}
+						return false;
+					}					
 				}
 		);
-
-
+    
+        
 	})(paycart.jQuery)
 
 
