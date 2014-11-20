@@ -61,22 +61,22 @@ class PaycartAdminControllerCart extends PaycartController
 	
 	/**
 	 * 
-	 * Task : Paid cart
+	 * Task : Pay cart
 	 * 
 	 * task will perform according to action
-	 * 	if action is paid_by_transaction-id
+	 * 	if action is pay_by_transaction-id
 	 * 		- It means Payment successfully transfer by remotely
 	 * 	
-	 * 	if action is paid by any mean
+	 * 	if action is pay by any mean
 	 * 		- Check if procesoor allow to process then do it.
 	 * 		- Oherwise delete previous invoice and create new invoice with manual pay processor
 	 * 
 	 */
-	public function paid()
+	public function pay()
 	{
 		$cart_id 	= $this->input->get('cart_id',	0);
 		
-		//cart_id must be reqired for paid task
+		//cart_id must be reqired for pay task
 		if (!$cart_id) {
 			$this->setredirect(
 					'index.php?option=com_paycart&view=cart',
@@ -100,8 +100,8 @@ class PaycartAdminControllerCart extends PaycartController
         
 		$cart = PaycartCart::getInstance($cart_id);
 		
-		//Case 1 : Paid by transaction id
-		if ('paid_by_transaction_id' == $action) {
+		//Case 1 : pay by transaction id
+		if ('pay_by_transaction_id' == $action) {
 			
 			$gatewaytransaction_id		= $this->input->get('gatewaytransaction_id',	0);
 		
@@ -116,11 +116,11 @@ class PaycartAdminControllerCart extends PaycartController
 	            return false;
 	        }
 	        
-	        return $this->_paidByTransactionId($cart_id, $gatewaytransaction_id);
+	        return $this->_payByTransactionId($cart_id, $gatewaytransaction_id);
 		} 
 		
-		//Case 2 : Paid by anymean
-		if ('paid_by_anymean' == $action) {
+		//Case 2 : pay by anymean
+		if ('pay_by_anymean' == $action) {
 			$note		= $this->input->get('notes',	0, 'RAW');
 			
 			if (!$note) {
@@ -132,7 +132,7 @@ class PaycartAdminControllerCart extends PaycartController
 	            return false;
 	        }
 			
-	        return $this->_paidByAnymean($cart_id, $note);
+	        return $this->_payByAnymean($cart_id, $note);
 		}
 
 		$this->setredirect(
@@ -145,11 +145,11 @@ class PaycartAdminControllerCart extends PaycartController
 	
 	/**
 	 * 
-	 * Invoke to paid cart by any-mean.
+	 * Invoke to pay cart by any-mean.
 	 * Check if procesoor allowe to process then do it.
 	 * Oherwise delete previous invoice and create new invoice without processor
 	 */
-	private function _paidByAnymean($cart_id, $note)
+	private function _payByAnymean($cart_id, $note)
 	{	
         $cart = PaycartCart::getInstance($cart_id);
         
@@ -181,7 +181,7 @@ class PaycartAdminControllerCart extends PaycartController
         if ( isset($processor_config['require_admin_approval']) && $processor_config['require_admin_approval'] ) {
         	$cart->requestPayment(Array());
         } else {
-        	// Caes 2# Process invoice with system will manually carete new invoice, transaction and paid it. 
+        	// Caes 2# Process invoice with system will manually carete new invoice, transaction and pay it. 
         	// Previous invoice will be deleted 
         	$cart->markPaid_withManualPay();
         }
@@ -203,7 +203,7 @@ class PaycartAdminControllerCart extends PaycartController
 	 * 	- Payment successfully transfer by remotely.	 
 	 * 
 	 */
-	private function _paidByTransactionId($cart_id, $gatewaytransaction_id)
+	private function _payByTransactionId($cart_id, $gatewaytransaction_id)
 	{
 		$cart = PaycartCart::getInstance($cart_id);
 		

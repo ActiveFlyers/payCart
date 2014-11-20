@@ -59,20 +59,20 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					</div>
 				</div>
 
-<!-- Cart Paid Task (By any medium) -->
+<!-- Cart pay Task (By any medium) -->
 				<div	class="row-fluid "
-						data-ng-show=" 'paid_by_anymean' == selected  || !selected "
+						data-ng-show=" 'pay_by_anymean' == selected  || !selected "
 				>
 					 
 					<div class="span1 text-center">
-						<input name="action" value="paid_by_anymean" data-ng-click="onActionSelection('paid_by_anymean');" type="radio">
+						<input name="action" value="pay_by_anymean" data-ng-click="onActionSelection('pay_by_anymean');" type="radio">
 					</div>
 					
 					<div class="span10 ">
 					
 						<strong ><?php echo JText::_('COM_PAYCART_ADMIN_PAYMENT_ACCEPTED_BY_ANY_MEAN'); ?></strong><br>
 						<p><small ><?php echo JText::_('COM_PAYCART_ADMIN_PAYMENT_ACCEPTED_BY_ANY_MEAN_SHORT_DESCRIPTION'); ?></small></p>
-						<div data-ng-show=" 'paid_by_anymean' == selected ">
+						<div data-ng-show=" 'pay_by_anymean' == selected ">
 							<div><?php echo JText::_('COM_PAYCART_ADMIN_PAYMENT_ACCEPTED_BY_ANY_MEAN_DESCRIPTION'); ?></div>
 							<div class="control-group">
 								<div class="control-label">
@@ -83,7 +83,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 								</div>		
 								<div class="controls">
 									<textarea id="pc-cart-action-note" name="notes"  
-											required="('paid_by_anymean' == selected) ? 'required': false " 
+											required="('pay_by_anymean' == selected) ? 'required': false " 
 											onblur="paycart.formvalidator.initialize('#pc-cart-action-form');" 
 											></textarea>
 									
@@ -96,12 +96,12 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					</div>					
 				</div>
 				
-<!-- Cart Paid Task (Payment remotely accepted)	-->
+<!-- Cart pay Task (Payment remotely accepted)	-->
 				<div  	class="row-fluid "
-						data-ng-show=" 'paid_by_transaction_id' == selected  || !selected "
+						data-ng-show=" 'pay_by_transaction_id' == selected  || !selected "
 				>
 					<div class="span1 text-center">
-						<input name="action" value="paid_by_transaction_id" data-ng-click="onActionSelection('paid_by_transaction_id');" type="radio"
+						<input name="action" value="pay_by_transaction_id" data-ng-click="onActionSelection('pay_by_transaction_id');" type="radio"
 							onblur="paycart.formvalidator.initialize('#pc-cart-action-form');" 
 						/>
 					</div>
@@ -111,10 +111,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						<strong ><?php echo JText::_('COM_PAYCART_ADMIN_PAYMENT_REMOTELY_ACCEPTED'); ?></strong><br>
 						<p><small ><?php echo JText::_('COM_PAYCART_ADMIN_PAYMENT_REMOTELY_ACCEPTED_SHORT_DESCRIPTION'); ?></small></p>
 						
-						<div data-ng-show=" 'paid_by_transaction_id' == selected ">
+						<div data-ng-show=" 'pay_by_transaction_id' == selected ">
 							<div><?php echo JText::_('COM_PAYCART_ADMIN_PAYMENT_REMOTELY_ACCEPTED_DESCRIPTION'); ?></div>						
 							<br>
-							<div class="control-group" data-ng-show=" 'paid_by_transaction_id' == selected ">
+							<div class="control-group" data-ng-show=" 'pay_by_transaction_id' == selected ">
 								<div class="control-label">
 									<label for="paycart_form_cart_notes" id="paycart_form_cart_notes-lbl">
 										<strong><?php echo JText::_('COM_PAYCART_GATEWAYTRANSACTION_ID'); ?></strong>
@@ -122,7 +122,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 									</label>
 								</div>
 								<div class="controls">
-									<input 	required="('paid_by_transaction_id' == selected) ? 'required': false " 
+									<input 	required="('pay_by_transaction_id' == selected) ? 'required': false " 
 											name="gatewaytransaction_id" type="text"
 											id="pc-cart-action-gateway-txnid" 
 									/>

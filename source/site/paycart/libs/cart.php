@@ -1189,12 +1189,20 @@ class PaycartCart extends PaycartLib
 	 */
 	protected function _delete()
 	{
-		// 1#.  Delete Particulars
-		if ( !$this->_helper->deleteParticulars($this->getId()) ) {
-			return false;
-		}
+		$cart_id = $this->getId();		
+
+		// first delete depended data
 		
-		// 2#.	Delete Invoice if exist
+		// 1#.  Delete Usage
+		$usage_model = PaycartFactory::getModel('usage')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 2#.  Delete Shipment + ( Shipment * Product relation)
+		$shipment_model = PaycartFactory::getModel('shipment')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 3#.  Delete Particulars
+		$particular_model = PaycartFactory::getModel('cartparticular')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 4#.	Delete Invoice if exist
 		$invoice_id = $this->getInvoiceId();
 		
 		if ( $invoice_id) {
@@ -1206,15 +1214,13 @@ class PaycartCart extends PaycartLib
 			}
 		}
 		
-		// 3#.  Delete Self
+		// 5#.  Delete Self
 		if ( !parent::_delete() ) {
 			return false;
 		}
 		
-		
 		/** 
-		 * @TODO :: 
-		 * 	1. Trigger 
+		 * @PCTODO ::  Trigger when required 
 		 */
 		
 		return true;

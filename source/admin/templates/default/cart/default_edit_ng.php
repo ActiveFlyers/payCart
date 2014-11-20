@@ -250,10 +250,10 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 								$scope.task = 'approve';
 								$scope.task_value= '<?php echo JText::_('COM_PAYCART_ADMIN_APRROVE_TASK');?>';
 								break;
-							case 'paid_by_transaction_id' :
-							case 'paid_by_anymean' :
-								$scope.task = 'paid';
-								$scope.task_value= '<?php echo JText::_('COM_PAYCART_ADMIN_PAID_TASK');?>' ;	
+							case 'pay_by_transaction_id' :
+							case 'pay_by_anymean' :
+								$scope.task = 'pay';
+								$scope.task_value= '<?php echo JText::_('COM_PAYCART_ADMIN_PAY_TASK');?>' ;	
 								break;
 							default :
 								$('input[name="action"]').prop('checked', false); 	//unchecked radio button
