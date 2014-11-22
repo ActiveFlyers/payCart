@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `country_id` char(3) NOT NULL COMMENT 'Country ISO code3',
   `zipcode` varchar(10) NOT NULL DEFAULT '',
   `vat_number` varchar(100) NOT NULL,
-  `phone` varchar(32) NOT NULL
+  `phone` varchar(32) NOT NULL,
   PRIMARY KEY (`buyeraddress_id`),
   KEY `idx_md5` (`md5`),
   KEY `idx_buyer_id` (`buyer_id`)
