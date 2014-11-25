@@ -75,7 +75,7 @@ echo $this->loadTemplate('edit_ng');
 							
 							<div>
 							
-							<?php if (!$cart->isPaid()) :?>
+							<?php if ($cart->islocked() && !$cart->isPaid()) :?>
 							<span>
 								<a href="#pc-cart-next-action-modal" role="button" class="btn btn-success" data-toggle="modal">
 									<?php echo JText::_('COM_PAYCART_ADMIN_CART_ACTIONS');?>

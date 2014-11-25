@@ -24,5 +24,4 @@ Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/site.css');
 
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/validate.js');
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/site.js');

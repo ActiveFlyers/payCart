@@ -67,7 +67,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	    	    	};
 
 	   	paycart.cart.product.response = function(response){
-				   		if(response.valid){
+				   		if(response.isValid){
 				   			paycart.cart.product.get();
 
 				   			// after validation invoke trigger
@@ -100,7 +100,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	    	      	};
 	    	      		        
 	   	paycart.cart.product.remove.response = function(response){				
-						if(response.valid){
+						if(response.isValid){
 							paycart.cart.product.get();
 
 							// after validation invoke trigger
@@ -120,7 +120,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						$('.pc-cart-remove-error-'+productId).text(message);						
 					};  	
 
-		
+		//@PCTODO:: Ues paycart.request. Availanle into Paycart.js
 		paycart.cart.request = function(request){
 						var url = ( typeof request['url'] == "undefined"  ) 
 			    					? 'index.php?option=com_paycart&view=cart'
@@ -166,7 +166,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 								    		return true;
 										}
 
-								    	if( typeof response['valid'] != "undefined" && response['valid'] == false) { 
+								    	if( typeof response['isValid'] != "undefined" && response['isValid'] == false) { 
 											console.log ( {" response contain error :  " : response } );
 								    		return false;
 										}
@@ -400,9 +400,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						paycart.cart.address.do();
 					};
 
-			/**
-			 * Invoke to submit to get action
-			 */
+		/**
+		 * Invoke to submit to get action
+		 */
 		paycart.cart.address.do = function(){
 						//console.log('paycart.cart.address.do');
 						if(paycart.formvalidator.isValid('#pc-checkout-form')){
@@ -464,7 +464,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 		paycart.cart.confirm.onChangeProductQuantity.response = function(response){				
-						if(response.valid){
+						if(response.isValid){
 							paycart.cart.confirm.get();
 
 							// after validation invoke trigger
@@ -497,7 +497,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 					
 		paycart.cart.confirm.onRemoveProduct.response = function(response){				
-						if(response.valid){
+						if(response.isValid){
 							paycart.cart.confirm.get();
 
 							// after validation invoke trigger
@@ -529,7 +529,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 					
 		paycart.cart.onApplyPromotionCode.response = function(response){				
-						if(response.valid){
+						if(response.isValid){
 							paycart.cart.confirm.get();
 							return true;
 						}
@@ -563,7 +563,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 		paycart.cart.confirm.onChangeShipping.response = function(response){				
-						if(response.valid){
+						if(response.isValid){
 							paycart.cart.confirm.get();
 							return true;
 						}		
@@ -614,11 +614,14 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							console.log('Payment Gateway required for fetching payment form html');
 							return false;
 						}
-		
+
+						// clean page if any error available 
+						paycart.cart.order.errorHandler(true, [{for : 'header'}]);
+						
 						var request = [];
 						
 						request['data'] = { 
-											'paymentgateway_id'	:	paymentgateway_id, 
+											'paymentgateway_id'	: paymentgateway_id, 
 											'task' 				: 'paymentForm'
 										  };
 						  
@@ -630,7 +633,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 					
 		paycart.cart.getPaymentForm.response = function(response){
-						if(response.valid){
+						if(response.isValid){
 							// Payment-form setup into payment div
 					    	$('.payment-form-html').html(response['html']);
 			
@@ -638,23 +641,24 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					    	$('#payment-form-html').prop('action', response['post_url']); 
 							return true;
 						}
+
+						//Handle  seraver validation fail/ or any other kind of issues
+						paycart.cart.order.errorHandler(false, response.errors);
 						
-						for(var index in response.errors){
-							if(response.errors.hasOwnProperty(index) == false){
-								continue;
-							}
-							message += "\n" + response.errors[index].message;
-						}
 					};
 
 	   /**
 		*	Invoke to checkout cart (Cart will be locked)  
-		*/
+		**/
 		paycart.cart.order = function(){
+			
 						var request = [];
 						
 						request['data'] = { 'task' : 'order'};
-						request['success_callback']	= paycart.cart.initiatePayment;
+						request['success_callback']	= paycart.cart.order.response;
+
+						// before ajax call,  clean page if any error available 
+						paycart.cart.order.errorHandler(true, [{for : 'header'}]);
 						  
 						paycart.cart.request(request);
 		
@@ -662,15 +666,47 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 	   /**
-		*	Invoke to initiate Payment 
+		*	Invoke to chanke response and initiate Payment 
 		*/
-		paycart.cart.initiatePayment = function(){
-						//disabled pay now button and payment-gateways
-						$('#paycart-invoice-paynow, #pc-checkout-payment-gateway ').prop('disabled','disabled');
-						
-						// Submit Form
-				    	$('#payment-form-html').submit();
-					};	
+		paycart.cart.order.response = 
+			function(response){
+
+				if(response.isValid) {
+					// Submit Form to initiate payment
+				    $('#payment-form-html').submit();
+
+				    // always return false 
+				    return false;
+				}
+
+				//Handle  seraver validation fail/ or any other kind of issues
+				paycart.cart.order.errorHandler(false, response.errors);				
+
+				//console.log ({"Error on fetching JSON data :  " :response} );
+				
+				return false;
+			};
+
+		/**
+		 * Handling error on Payment page :
+		 *  @param (boole) isValid : false or true
+		 *	@param error_objects : Array objects
+		 *
+		 */
+		paycart.cart.order.errorHandler = function(isValid, error_objects) 
+			{
+				var error_mapper = {'header' : "#pc-checkout-payment-error"	};
+
+				for (var index in error_objects) {
+					paycart.formvalidator
+								.handleResponse(
+									isValid, 
+									$(error_mapper[error_objects[index].for]), 
+									error_objects[index].message_type, 
+									error_objects[index].message);
+				}
+				
+			}	
 
 		
 	})(paycart.jQuery);

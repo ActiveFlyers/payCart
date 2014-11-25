@@ -525,7 +525,7 @@ class PaycartSiteControllerCart extends PaycartController
 		} catch (Exception $e) {			
 			$error  			   	= new stdClass();	
 			$error->message_type   	= Paycart::MESSAGE_TYPE_ERROR;
-			$error->for				= '';			
+			$error->for				= 'header';			
 			$error->message   		= $e->getMessage();
 			$errors[] 				= $error;
 		}

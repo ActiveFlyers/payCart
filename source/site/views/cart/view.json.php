@@ -29,7 +29,7 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 				
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$this->json->valid  = false;
+			$this->json->isValid  = false;
 			$this->json->errors = $errors;
 			return true;
 		}
@@ -44,7 +44,7 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 				
 		$html =  $this->loadTemplate('payment_form');
 		
-		$this->json->valid = true;
+		$this->json->isValid = true;
 		$this->json->html 		= $html;
 		$this->json->post_url 	= $response_object->post_url;
 		
@@ -97,11 +97,11 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	public function updateProductQuantity()
 	{
 		$response = new stdClass();
-		$response->valid = true;
+		$response->isValid = true;
 		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$response->valid  = false;
+			$response->isValid  = false;
 			$response->errors = $errors;
 		}
 		
@@ -116,11 +116,11 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	public function removeProduct()
 	{
 		$response = new stdClass();
-		$response->valid = true;
+		$response->isValid = true;
 		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$response->valid  = false;
+			$response->isValid  = false;
 			$response->errors = $errors;
 		}
 		
@@ -133,11 +133,11 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	public function applyPromotion()
 	{
 		$response = new stdClass();
-		$response->valid = true;
+		$response->isValid = true;
 		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$response->valid  = false;
+			$response->isValid  = false;
 			$response->errors = $errors;
 		}
 		
@@ -148,11 +148,11 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	function changeShippingMethod()
 	{
 		$response = new stdClass();
-		$response->valid = true;
+		$response->isValid = true;
 		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$response->valid  = false;
+			$response->isValid  = false;
 			$response->errors = $errors;
 		}
 		

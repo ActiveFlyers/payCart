@@ -21,7 +21,6 @@ Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'))
 Rb_Html::_('bootstrap.loadcss');
 
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/validate.js');
 Rb_Html::script(PAYCART_PATH_ADMIN_MEDIA.'/admin.js');
 
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/paycart.css');
