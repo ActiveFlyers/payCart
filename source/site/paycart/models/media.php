@@ -21,6 +21,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartModelMedia extends PaycartModelLang
 {}
 
+class PaycartModelformMedia extends PaycartModelform
+{}
+
 /** 
  * media Table
  * @author rimjhim

@@ -158,12 +158,14 @@
 				type="hidden"
 				default="0"/>
 				
-		<field 
-			name="message" 
-			type="text"	
-			class="input-block-level"
-			labelclass="control-label"			
-			label="COM_PAYCART_ADMIN_MESSAGE"/>
+		<field 	name="lang_code" 
+				type="hidden" />
+					
+		<field 	name="message" 
+				type="text"	
+				class="input-block-level"
+				labelclass="control-label"			
+				label="COM_PAYCART_ADMIN_MESSAGE"/>
 		
 	</fieldset>		
 </form>

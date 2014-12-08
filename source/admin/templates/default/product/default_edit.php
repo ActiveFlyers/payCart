@@ -38,6 +38,23 @@ echo $this->loadTemplate('edit_css');
 <!-- ADMIN MENU -->
 
 <div class="span10">
+
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		if($record_id){
+			$displayData = new stdClass();
+			$displayData->uri  = $uri.'&id='.$record_id;
+			echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+		}
+		
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
+		
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data" >
 	<div class="row-fluid">
 		<div class="<?php echo count($variants)? 'span10' : 'span12'; ?>">
@@ -57,7 +74,7 @@ echo $this->loadTemplate('edit_css');
 							<div class="row-fluid">
 								<?php $field = $form->getField('title') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>
 									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>								
 								</div>
@@ -69,7 +86,7 @@ echo $this->loadTemplate('edit_css');
 								</div>
 								<?php $field = $form->getField('description') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 							</div>
@@ -216,7 +233,7 @@ echo $this->loadTemplate('edit_css');
 													<div class="span7">
 														<div class="control-group">
 															<div class="control-label">
-																<label id="title_lbl"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_TITLE')?></label>
+																<?php echo $flag; ?><label id="title_lbl"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_TITLE')?></label>
 															</div>
 															 <div class="controls">
 																<input type="text" data-ng-model="activeImage.title" value=""/>																
@@ -256,19 +273,19 @@ echo $this->loadTemplate('edit_css');
 							<div class="row-fluid">								
 								<?php $field = $form->getField('metadata_title') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 								
 								<?php $field = $form->getField('metadata_description') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 								
 								<?php $field = $form->getField('metadata_keywords') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>								
 							</div>
@@ -373,7 +390,9 @@ echo $this->loadTemplate('edit_css');
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
 	<input type='hidden' name='id' id="product_id" value='<?php echo $record_id;?>' />	
-	<?php echo $form->getInput('product_id') ?>	
+	<?php echo $form->getInput('product_id') ?>
+	<?php echo $form->getInput('product_lang_id') ?>
+	<?php echo $form->getInput('lang_code') ?>		
 </form>
 </div>
 </div>

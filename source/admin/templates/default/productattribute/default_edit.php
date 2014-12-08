@@ -38,12 +38,22 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	
 </script>
 
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
+
 <div class="pc-product-wrapper clearfix">
 <div class="pc-product row-fluid">
 	<form action="index.php" onSubmit="return fasle;" method="post" data="pc-json-attribute-edit" id="paycart_productattribute_form">
 	<div class=" span6">
 		<div class="control-group">
-			<div class="control-label"><?php echo $form->getLabel('title'); ?> </div>
+			<div class="control-label"><?php echo $flag; ?><?php echo $form->getLabel('title'); ?> </div>
 			<div class="controls"><?php echo $form->getInput('title'); ?></div>								
 		</div>
 
@@ -102,6 +112,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	
 	<!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
+	<?php echo $form->getInput('lang_code'); ?>
 	<?php echo $form->getInput('productattribute_id');?>
 	<?php echo $form->getInput('productattribute_lang_id');?>
 	

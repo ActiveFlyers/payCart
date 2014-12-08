@@ -183,7 +183,23 @@ class PaycartModelProductAttributeValue extends PaycartModel
 		
 		return PaycartFactory::getDbo()->setQuery($query)->loadResult();
 	}
-	
+
+	public function deleteMany($condition, $glue='AND', $operator='=')
+	{
+		// assert if invalid condition
+		Rb_Error::assert(is_array($condition), JText::_('Invalid condition to delete data'));
+		Rb_Error::assert(!empty($condition), JText::_('Invalid_condition_to_delete_data'));
+			
+		$query = new Rb_Query();
+		$query->delete()
+			  ->from($this->getTable()->getTableName());
+			  
+		foreach($condition as $key => $value){
+			$query->where(" $key $operator $value", $glue);
+		}
+		
+		return $query->dbLoadQuery()->execute();
+	}
 }
 
 

@@ -89,7 +89,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		$scope.save = function() {
 			$http({
 		        method  : 'POST',
-		        url     : 'index.php?option=com_paycart&view=media&task=save&format=json',
+		        url     : 'index.php?option=com_paycart&view=media&task=save&format=json&lang_code='+pc_current_language,
 		        data    : paycart.jQuery.param({'paycart_form' : $scope.activeImage}),  // pass in data as strings
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
@@ -114,7 +114,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		$scope.remove = function(index){			
 			$http({
 		        method  : 'POST',
-		        url     : 'index.php?option=com_paycart&task=deleteImage&view=product&format=json',
+		        url     : 'index.php?option=com_paycart&task=deleteImage&view=product&format=json&lang_code='+pc_current_language,
 		        data    : paycart.jQuery.param({'image_id': $scope.images[index].media_id, 'product_id':$scope.productId}),  // pass in data as strings
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
@@ -145,7 +145,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 			
 			$http({
 		        method  : 'POST',
-		        url     : 'index.php?option=com_paycart&task=reorderImages&view=product&format=json',
+		        url     : 'index.php?option=com_paycart&task=reorderImages&view=product&format=json&lang_code='+pc_current_language,
 		        data    : paycart.jQuery.param({'image_ids': imageids, 'product_id':$scope.productId}),  // pass in data as strings
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
@@ -175,7 +175,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		var random = Math.random();
 		
 		$scope.getUrl = function(attribute_id, value){
-			return 'index.php?option=com_paycart&task=getEditHtml&view=productattribute&productattribute_id=' + attribute_id +'&format=json&value='+value+'&r=' + random;
+			return 'index.php?option=com_paycart&task=getEditHtml&view=productattribute&productattribute_id=' + attribute_id +'&format=json&value='+value+'&r=' + random+'&lang_code='+pc_current_language;
 		};
 		
 		$scope.addToProduct = function(position, attribute_id){
@@ -223,7 +223,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		$scope.edit = function(productattribute_id){
 			$http({
 		        method  : 'POST',
-		        url     : 'index.php?option=com_paycart&task=edit&view=productattribute&format=json&productattribute_id='+productattribute_id,
+		        url     : 'index.php?option=com_paycart&task=edit&view=productattribute&format=json&productattribute_id='+productattribute_id+'&lang_code='+pc_current_language,
 		        data    : '',
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
@@ -253,7 +253,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 			var data = paycart.jQuery(elem).serializeArray();
 			$http({
 		        method  : 'POST',
-		        url     : 'index.php?option=com_paycart&task=save&view=productattribute&format=json',
+		        url     : 'index.php?option=com_paycart&task=save&view=productattribute&format=json&lang_code='+pc_current_language,
 		        data    : paycart.jQuery.param(data),  // pass in data as strings
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
@@ -303,7 +303,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		$scope.remove = function(productattribute_id){			
 			$http({
 		        method  : 'POST',
-		        url     : 'index.php?option=com_paycart&task=deleteAttribute&view=productattribute&format=json',
+		        url     : 'index.php?option=com_paycart&task=deleteAttribute&view=productattribute&format=json&lang_code='+pc_current_language,
 		        data    : paycart.jQuery.param({'productattribute_id': productattribute_id}),  // pass in data as strings
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })

@@ -15,7 +15,7 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 JHtml::_('behavior.formvalidation');
-
+echo $this->loadTemplate('js');
 ?>
 <div class="pc-country-wrapper clearfix">
 <div class="pc-country row-fluid">
@@ -32,6 +32,24 @@ JHtml::_('behavior.formvalidation');
 <!-- ADMIN MENU -->
 
 <div class="span10">
+
+	<!-- LANGUAGE SWITCHER -->
+	<?php 
+		if(PAYCART_MULTILINGUAL){
+			if($record_id){
+				$displayData = new stdClass();
+				$displayData->uri  = $uri.'&id='.$record_id;
+				echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+			}
+			
+			$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+			$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+		}
+		else{
+			$flag = '';
+		}
+	?>
+
 	<?php echo JHtml::_('bootstrap.startTabSet', 'country', array('active' => 'detail')); ?>
 	<!--  Country Details Tab	-->
 	<?php echo JHtml::_('bootstrap.addTab', 'country', 'detail', JText::_('COM_PAYCART_COUNTRY')); ?>
@@ -51,7 +69,7 @@ JHtml::_('behavior.formvalidation');
 						<div class="span6">
 							<?php $field = $form->getField('title') ?>
 							<div class="control-group">
-								<div class="control-label"><?php echo $field->label; ?> </div>
+								<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 								<div class="controls"><?php echo $field->input; ?></div>								
 							</div>
 						</div>
@@ -104,7 +122,8 @@ JHtml::_('behavior.formvalidation');
 				
 		<input type="hidden" name="task" value="save" />
 		<input type='hidden' name='id' value='<?php echo $record_id;?>' />
-	
+		<?php echo $form->getInput('lang_code') ?>	
+		<?php echo $form->getInput('country_lang_id') ?>	
 	</form>
 	<?php echo JHtml::_('bootstrap.endTab'); ?>	
 	

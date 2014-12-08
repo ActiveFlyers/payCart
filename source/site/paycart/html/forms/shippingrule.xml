@@ -9,21 +9,6 @@
 			label="COM_PAYCART_SHIPPINGRULE_ID_LABEL"
 			description="COM_PAYCART_SHIPPINGRULE_ID_DESC"
 			readonly="true"/>
-		
-		<field 
-			name="title" 
-			type="text"	
-			required="true"
-			class="input-block-level"
-			labelclass="control-label"			
-			label="COM_PAYCART_ADMIN_TITLE"/>
-				
-		<field 
-			name="description" 
-			type="textarea"				
-			labelclass="control-label"
-			class="input-block-level"
-			label="COM_PAYCART_ADMIN_DESCRIPTION"/>
 				
 		<field
 			name="published"
@@ -128,7 +113,9 @@
 				
 		<fields name="processor_config">
 		</fields>
-			
+	</fieldset>	
+		
+	<fieldset name='language'>	
 		<field 
 			name="shippingrule_lang_id"
 			type="hidden"
@@ -136,8 +123,21 @@
 	
 		<field 
 			name="lang_code"
-			type="hidden"
-			default="en-GB"/>
-						
+			type="hidden"/>
+				
+		<field 
+			name="title" 
+			type="text"	
+			required="true"
+			class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_TITLE"/>
+				
+		<field 
+			name="description" 
+			type="textarea"				
+			labelclass="control-label"
+			class="input-block-level"
+			label="COM_PAYCART_ADMIN_DESCRIPTION"/>		
 	</fieldset>
 </form>

@@ -33,6 +33,11 @@ class Com_paycartInstallerScript
 
 	public function install($parent)
 	{		
+		$lang = JFactory::getLanguage()->getTag();
+		$sql = "INSERT IGNORE INTO `#__paycart_config` values ('localization_default_language', '".$lang."'), ('localization_supported_language', '".json_encode(array($lang))."')";
+		$db = JFactory::getDBO();
+		$db->setQuery($sql);
+		$db->query();
 		return true;
 	}
 

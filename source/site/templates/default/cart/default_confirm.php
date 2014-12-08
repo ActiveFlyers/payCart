@@ -23,7 +23,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
   	
   	// Duties msg
 	$duties_message = '';
- 	foreach ($duties_usage as $usage ) :
+ 	foreach ($duties_usage as $usages ) :
  		foreach ($usages as $usage) :
  			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_TAXRULE)
  				$duties_message[] = $usage->message;

@@ -47,16 +47,20 @@
 <!--	fields must be compulsory. Other wise processor config data will not bind. 		-->
 		<fields name="processor_config">
 		
-		</fields>
-				
+		</fields>		
 	
-			
+	</fieldset>	
+		
+	<fieldset name='language'>
 		<field 
 			name="paymentgateway_lang_id"
 			type="hidden"
 			default="0"
 			/>
-		
+			
+		<field 
+			name="lang_code"
+			type="hidden"/>	
 	</fieldset>	
 
 </form>

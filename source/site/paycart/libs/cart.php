@@ -53,6 +53,11 @@ class PaycartCart extends PaycartLib
     protected $is_delivered;        // All shipment 
     
     protected $note;
+
+    protected $is_delivered;        // All shipment
+
+    protected $lang_code = '';
+
         
     // Related Table Fields: Array of cart-particulars
 	protected $_cartparticulars;
@@ -111,17 +116,19 @@ class PaycartCart extends PaycartLib
 
 		$this->locked_date		= Rb_Date::getInstance('0000-00-00 00:00:00');
 		$this->paid_date		= Rb_Date::getInstance('0000-00-00 00:00:00');
-        $this->approved_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
-		$this->delivered_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
+        $this->approved_date	= Rb_Date::getInstance('0000-00-00 00:00:00'); 
+		$this->delivered_date	= Rb_Date::getInstance('0000-00-00 00:00:00'); 
 		
 		$this->reversal_for		= 0; 
-		$this->cancelled_date		= Rb_Date::getInstance('0000-00-00 00:00:00');  
+		$this->cancelled_date	= Rb_Date::getInstance('0000-00-00 00:00:00');  
 		
 		$this->created_date		= Rb_Date::getInstance();
-		$this->modified_date		= Rb_Date::getInstance();
+		$this->modified_date	= Rb_Date::getInstance();
+		
+		$this->lang_code 		= PaycartFactory::getPCDefaultLanguageCode();	
 		
 		$this->session_id		= '';
-		$this->is_guestcheckout		= false;
+		$this->is_guestcheckout	= false;
 		
         $this->params	=	new Rb_Registry();
         
@@ -159,6 +166,10 @@ class PaycartCart extends PaycartLib
 		return $buyer_instance;
 	}
 
+	public function getLangCode()
+	{
+		return $this->lang_code;
+	}  
 
 	public function getTotal()
 	{

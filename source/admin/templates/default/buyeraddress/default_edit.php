@@ -24,20 +24,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 </div>
 
 <div class="modal-body" id="rbWindowBody">
-	
 	<!--  New_atrribute_creation body		-->
-	<form id="paycart_buyeraddress_form" class="pc-form-validate">
-	 
-		<?php
-				$layout = new JLayoutFile('paycart_buyeraddress_edit', PAYCART_LAYOUTS_PATH);
-				echo $layout->render($display_data); 
-		?>
+	<form id="paycart_buyeraddress_form" class="pc-form-validate">	 
+		<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_edit', $display_data);?>
 		
 		<input type="hidden" name="task" value="save" />
-		<input type='hidden' name='id' value='<?php echo $record_id;?>' />
-		
+		<input type='hidden' name='id' value='<?php echo $record_id;?>' />		
 	</form>
-	
 </div>
 
 <div id="rbWindowFooter">

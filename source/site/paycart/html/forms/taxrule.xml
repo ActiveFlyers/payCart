@@ -80,16 +80,11 @@
 			group_type="cart"		
 			label="COM_PAYCART_ADMIN_GROUPRULE_TYPE_CART" />
 			
-		<field 
-			name="message" 
-			type="text"	
-			class="input-block-level"
-			labelclass="control-label"			
-			label="COM_PAYCART_ADMIN_MESSAGE"/>
-			
 		<fields name="processor_config">
 		</fields>
+	</fieldset>	
 		
+	<fieldset name='language'>
 		<field 
 			name="taxrule_lang_id"
 			type="hidden"
@@ -97,7 +92,13 @@
 	
 		<field 
 			name="lang_code"
-			type="hidden"
-			default="en-GB"/>	
+			type="hidden"/>	
+			
+		<field 
+			name="message" 
+			type="text"	
+			class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_MESSAGE"/>
 	</fieldset>
 </form>

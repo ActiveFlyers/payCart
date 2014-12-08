@@ -28,3 +28,11 @@ Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/paycart.css');
 Rb_Html::stylesheet(PAYCART_PATH_ADMIN_MEDIA.'/admin.css');
 
 Rb_Html::_('formbehavior.chosen', 'select');
+
+// pc_current_language, is required for javascript calls
+$current_language = PaycartFactory::getPCCurrentLanguageCode();
+?>
+<script>
+	var pc_current_language 	= '<?php echo $current_language;?>';									
+</script>
+<?php 

@@ -48,7 +48,7 @@ class PaycartProductcategory extends PaycartLib
 		$this->created_date  		= Rb_Date::getInstance();	
 		$this->modified_date 		= Rb_Date::getInstance();		
 		$this->productcategory_lang_id = 0;
-		$this->lang_code 			= PaycartFactory::getCurrentLanguageCode();
+		$this->lang_code 			= PaycartFactory::getPCDefaultLanguageCode();
 		$this->title				= '';
 		$this->alias				= '';
 		$this->description			= '';		
@@ -112,7 +112,8 @@ class PaycartProductcategory extends PaycartLib
 			else{
 				$media = PaycartMedia::getInstance();
 				$data = array();
-				$data['language']['title'] = $image['name'];
+				$data['lang_code'] = $this->lang_code;
+				$data['language']['title'] = $this->_uploaded_files['cover_media']['name'];
 				$media->bind($data);
 				$media->save();
 			}

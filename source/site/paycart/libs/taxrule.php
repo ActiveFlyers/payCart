@@ -77,7 +77,7 @@ class PaycartTaxrule extends PaycartLib
 		$this->ordering				= 0;
 		
 		$this->taxrule_lang_id		= 0;
-		$this->lang_code			= PaycartFactory::getCurrentLanguageCode();
+		$this->lang_code			= PaycartFactory::getPCDefaultLanguageCode();
 		$this->message				= '';
 		
 		$this->_buyergroups			= array();

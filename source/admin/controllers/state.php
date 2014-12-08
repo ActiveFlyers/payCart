@@ -22,9 +22,6 @@ class PaycartAdminControllerState extends PaycartController
 	{
 		$post = $this->input->post->get('paycart_state_form', array(), 'array');
 		
-		// language data
-		$post['lang_code'] = PaycartFactory::getCurrentLanguageCode();
-		
 		// validation will be done on Model
 		$entity =  $this->getModel()->save($post, $this->_getId());
 
@@ -32,7 +29,7 @@ class PaycartAdminControllerState extends PaycartController
 		$country_id	=	$post['country_id'];
 		
 		//perform redirection
-		$redirect  = "index.php?option=com_paycart&view=country&task=edit&id={$country_id}";
+		$redirect  = "index.php?option=com_paycart&view=country&task=edit&id={$country_id}&lang_code=".PaycartFactory::getPCCurrentLanguageCode();
 		
 		// if buyeraddress isn't saved succesfully  
 		if(!$entity) {			
@@ -74,7 +71,7 @@ class PaycartAdminControllerState extends PaycartController
 		$country_id		=	$state_details[$state_id]->country_id;
 		
 		//perform redirection
-		$redirect  = "index.php?option=com_paycart&view=country&task=edit&id={$country_id}";
+		$redirect  = "index.php?option=com_paycart&view=country&task=edit&id={$country_id}&lang_code=".PaycartFactory::getPCCurrentLanguageCode();
 		
 		// if buyeraddress is not successfully removed 
 		if(!$this->getModel()->delete($this->_getId())) {	

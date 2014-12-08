@@ -70,6 +70,18 @@
 			   default="paycart">
 		</field>
 		
+		<field  name="localization_default_language" 
+				type="paycart.supportedlanguage"
+				label="COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_DEFAULT_LANGUAGE">
+				<option value="">COM_PAYCART_ADMIN_SELECT</option>
+		</field>
+			
+		<field  name="localization_supported_language" 
+				type="list"
+				multiple="true"
+				label="COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_SUPPORTED_LANGUAGE">				
+		</field>
+		
 		<field name="localization_date_format"
 			   type="list"  
 			   label="COM_PAYCART_ADMIN_CONFIG_DATE_FORMAT"

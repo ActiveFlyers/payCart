@@ -201,18 +201,31 @@ class PaycartHelperToken extends PaycartHelper
      * @return type Array of tokens
      * @throws RuntimeException 
      */
-    public function getTokens($lib_object)
+    public function getTokens($lib_object, $lang_code = null)
     {
+		//if lang_code is different than current lang, then load that file
+		$current_lang = PaycartFactory::getPCCurrentLanguageCode();
+		$language = PaycartFactory::getLanguage();		 
+		if($lang_code !== null && $lang_code !== $current_lang){			
+			$language->load('com_paycart', JPATH_SITE, $lang_code, true, false);
+		}
+			
         // get all relative objects
         if ($lib_object instanceof PaycartCart) {
-            return $this->buildCartTokens($lib_object);
-         } 
-
-		if ($lib_object instanceof PaycartShipment) {
-            return $this->buildShipmentTokens($lib_object);
-         }
-
-        throw new RuntimeException('Unknown object for token fetching ');
+            $tokens = $this->buildCartTokens($lib_object);
+        } 
+		elseif($lib_object instanceof PaycartShipment) {
+            $tokens = $this->buildShipmentTokens($lib_object);
+        }
+        else{
+        	throw new RuntimeException('Unknown object for token fetching ');
+        }
+                
+        // load the current language file again, if another language file was loaded previously
+        if($lang_code !== null && $lang_code !== $current_lang){
+        	$language->load('com_paycart', JPATH_SITE, $current_lang, true, false);
+        }
+        return $tokens;
     }
 
     /**
@@ -315,7 +328,7 @@ class PaycartHelperToken extends PaycartHelper
        
        //$tokens['store_logo'] = $config->get('company_logo');
        
-       $displayData = json_decode($config->get('localization_origin_address'));
+       $displayData = $config->get('localization_origin_address');
        $tokens['store_address'] =  JLayoutHelper::render('paycart_buyeraddress_display', $displayData);
            
        return $tokens;

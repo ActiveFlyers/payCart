@@ -46,7 +46,10 @@
 		<field 	name="productcategory_lang_id" 
 				type="hidden"
 				default="0"/>
-		
+				
+		<field 	name="lang_code"
+				type="hidden"/>
+					
 		<field 	name="title" 
 				type="text"
 				class="input-block-level"

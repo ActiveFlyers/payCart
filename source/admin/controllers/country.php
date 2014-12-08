@@ -24,12 +24,9 @@ class PaycartAdminControllerCountry extends PaycartController
 	 * Saves an item (new or old)
 	 */
 	public function _save(array $data, $itemId=null)
-	{
-		// language data
-		$data['lang_code'] = PaycartFactory::getCurrentLanguageCode();
-		
+	{		
 		// validation will be done on Model
-		return  $this->getModel()->save($data, $data['country_id']);
+		return  $this->getModel()->save($data, $itemId);
 	}
 	
 	/**

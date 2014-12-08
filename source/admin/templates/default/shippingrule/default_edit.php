@@ -50,6 +50,22 @@ paycart.admin.shippingrule = {};
 
 
 <div class="span10">
+<!-- LANGUAGE SWITCHER -->
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		if($record_id){
+			$displayData = new stdClass();
+			$displayData->uri  = $uri.'&id='.$record_id;
+			echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+		}
+		
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
 <div class="row-fluid">	
 	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">
 		<div class="row-fluid">
@@ -64,17 +80,17 @@ paycart.admin.shippingrule = {};
 					<div class="row-fluid">
 						<?php $field = $form->getField('title') ?>
 						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 							<div class="controls"><?php echo $field->input; ?></div>								
 						</div>
 						<?php $field = $form->getField('description') ?>
 						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 							<div class="controls"><?php echo $field->input; ?></div>								
 						</div>
 						<?php $field = $form->getField('message') ?>
 						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 							<div class="controls"><?php echo $field->input; ?></div>								
 						</div>
 					</div>

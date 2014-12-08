@@ -26,6 +26,23 @@ echo $this->loadTemplate('edit_js');
 		<!-- CONTENT START -->
 		<div class="span10">
 		
+		<!-- LANGUAGE SWITCHER -->
+		<?php 
+			if(PAYCART_MULTILINGUAL){
+				if($record_id){
+					$displayData = new stdClass();
+					$displayData->uri  = $uri.'&id='.$record_id;
+					echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+				}
+				
+				$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+				$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+			}
+			else{
+				$flag = '';
+			}
+		?>
+
 			<div class="row-fluid">
 				
 				<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">
@@ -50,13 +67,13 @@ echo $this->loadTemplate('edit_js');
 								
 									<?php $field = $form->getField('title') ?>					
 									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 										<div class="controls"><?php echo $field->input; ?></div>
 									</div>
 								
 									<?php $field = $form->getField('description') ?>
 									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 										<div class="controls"><?php echo $field->input; ?></div>
 									</div>
 									
@@ -117,6 +134,8 @@ echo $this->loadTemplate('edit_js');
 				
 				
 					<?php echo $form->getInput('paymentgateway_id'); ?>
+					<?php echo $form->getInput('paymentgateway_lang_id'); ?>
+					<?php echo $form->getInput('lang_code'); ?>
 					<input type="hidden" name="task" value="" />
 			</form>
 		</div>

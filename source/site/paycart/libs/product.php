@@ -91,7 +91,7 @@ class PaycartProduct extends PaycartLib
 		$this->_images			= array();
 		
 		$this->product_lang_id	   = 0;		
-		$this->lang_code 		   = PaycartFactory::getCurrentLanguageCode();	
+		$this->lang_code 		   = PaycartFactory::getPCDefaultLanguageCode();	
 		$this->title	 		   = '';	
 		$this->alias  			   = '';
 		$this->description 		   = '';	
@@ -258,6 +258,7 @@ class PaycartProduct extends PaycartLib
 				
 				$media = PaycartMedia::getInstance();
 				$data = array();
+				$data['lang_code'] = $this->lang_code;
 				$data['title'] = $image['name'];
 				$media->bind($data);
 				$media->save();

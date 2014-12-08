@@ -141,11 +141,19 @@ class PaycartAttribute
 	 */
 	function buildCounterHtml($counter, $type, $options = array())
 	{
+		if(PAYCART_MULTILINGUAL){
+			$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+			$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+		}
+		else{
+			$flag = '';
+		}
 		ob_start();
 		?>	
 			<div id="option_row_<?php echo $counter?>">
 				 <div class="control-group">
 					 <div class='controls'>
+					 		<?php echo $flag;?>
 					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' 
 					      	value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_OPTION") ?>"/>
 					      	<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">

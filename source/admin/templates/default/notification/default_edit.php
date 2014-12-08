@@ -9,6 +9,16 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 ?>
+<!-- LANGUAGE SWITCHER -->
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
 <style>
     .pc-notification .left-config {
         max-height: 400px; 
@@ -65,7 +75,7 @@ defined('_JEXEC') or die( 'Restricted access' );
                             <div class="row-fluid">
                                 <?php $field = $form->getField('subject') ?>					
                                 <div class="control-group">
-                                        <div class="control-label"><?php echo $field->label; ?> </div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 </div>
                             </div>
@@ -73,7 +83,7 @@ defined('_JEXEC') or die( 'Restricted access' );
                             <div class="row-fluid">
                                 <?php $field = $form->getField('body') ?>					
                                 <div class="control-group">
-                                        <div class="control-label"><?php echo $field->label; ?> </div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 </div>
                             </div>
@@ -81,6 +91,8 @@ defined('_JEXEC') or die( 'Restricted access' );
                             <input type="hidden" name="task" value="save" />
                             <input type='hidden' name='id' value='<?php echo $record_id;?>' />
                             <input type="hidden" name="task" value="" />
+                            <?php echo $form->getInput('notification_lang_id'); ?>
+                            <?php echo $form->getInput('lang_code'); ?>
                         </form>
                         </div>
                         

@@ -7,13 +7,7 @@
 			type="hidden"
 			default="0"/>
 
-         <field 	
-			name="notification_lang_id" 
-			type="hidden"
-			default="0"/>
-                        
-			
-		<field
+     	<field
 			name="published"
 			type="radio"
 			labelclass="control-label"
@@ -34,9 +28,10 @@
 			 />
                 
 <!--  Make sure field type is not email otherwise validation will be stop to save it               -->
-                <field 
-			name="to"  type="text"	required="true"
-                        class="input-block-level paycart-token-container"
+        <field
+            name="to"  
+        	type="text"	required="true"
+            class="input-block-level paycart-token-container"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_NOTIFICATION_TO"/>
 		<field 
@@ -51,23 +46,31 @@
 			type="text"	
 			class="input-block-level paycart-token-container"
 			labelclass="control-label"			
-			label="COM_PAYCART_ADMIN_NOTIFICATION_BCC"/>
-
-		<field 
-			name="subject"  type="text"	
-                        required="true"
-			class="input-block-level paycart-token-container"
-			labelclass="control-label"			
-			label="COM_PAYCART_ADMIN_NOTIFICATION_SUBJECT"/>
-            
-		<field 
-			name="body"  required="true"
-			type="textarea"	
-                        class="input-block-level paycart-token-container"
-			labelclass="control-label"			
-			label="COM_PAYCART_ADMIN_NOTIFICATION_BODY"
-            rows="10" 
-			filter="JComponentHelper::filterText"/>
-		
+			label="COM_PAYCART_ADMIN_NOTIFICATION_BCC"/>		
 	</fieldset>
+	
+	<fieldset name='language'>
+		<field 	name="notification_lang_id" 
+				type="hidden"
+				default="0"/>
+				
+		<field 	name="lang_code" 
+				type="hidden" />
+		
+		<field 	name="subject"  
+				type="text"	
+                required="true"
+				class="input-block-level paycart-token-container"
+				labelclass="control-label"			
+				label="COM_PAYCART_ADMIN_NOTIFICATION_SUBJECT"/>
+            
+		<field 	name="body"  
+				required="true"
+				type="textarea"	
+                class="input-block-level paycart-token-container"
+				labelclass="control-label"			
+				label="COM_PAYCART_ADMIN_NOTIFICATION_BODY"
+            	rows="10" 
+				filter="JComponentHelper::filterText"/>		
+	</fieldset>	
 </form>

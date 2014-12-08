@@ -56,7 +56,7 @@ class PaycartNotification extends PaycartLib
             $this->cc                       = '';
             $this->bcc                      = '';	
             $this->media                    = new Rb_Registry(); 
-            $this->lang_code                = PaycartFactory::getCurrentLanguageCode();	
+            $this->lang_code                = PaycartFactory::getPCDefaultLanguageCode();	
             $this->subject                  = '';	
             $this->body                     = '';
             
@@ -82,11 +82,22 @@ class PaycartNotification extends PaycartLib
         /**
          * Invoke to get PaycartNotification Instances for specific event 
          * @param type $event_name
+         * @param string $lang_code
          * @return PaycartNotification lib instance  
          */
-        public static function getInstanceByEventname($event_name)
+        public static function getInstanceByEventname($event_name, $lang_code = null)
         {
-            $records = PaycartFactory::getModel('notification')->loadRecords(Array('event_name' => strtolower($event_name),'published'=>1));
+        	$model = PaycartFactory::getModel('notification');
+        	
+        	// set cart's language on model
+        	if($lang_code){
+        		$model->language_code = $lang_code;
+        	}
+        	
+            $records = $model->loadRecords(Array('event_name' => strtolower($event_name),'published'=>1));
+            
+            // reset the language set
+            $model->language_code = null;
             
             if (empty($records)) {
                 return false;
@@ -163,10 +174,15 @@ class PaycartNotification extends PaycartLib
          */
         public function sendNotification($lib_object) 
         {
+        	// get lang code so that that language file can be loaded
+        	$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+        	if(method_exists($lib_object, 'getLangCode')){
+        		$lang_code = $lib_object->getLangCode();
+        	}
             /* @var $token_helper PaycartHelperToken  */
             $token_helper = PaycartFactory::getHelper('token');
             
-            $tokens = $token_helper->getTokens($lib_object);
+            $tokens = $token_helper->getTokens($lib_object, $lang_code);
             
             // send notification
             return $this->_sendEmail($tokens);

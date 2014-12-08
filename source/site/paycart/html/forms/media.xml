@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<form>
+	<fieldset name="media">
+		<field 	
+			name="media_id" 
+			type="hidden"
+			default="0"/>	
+				
+		<field 
+			name="filename" 
+			type="text"/>
+		
+		<field 
+			name="mime_type" 
+			type="text"/>
+				
+		<field
+			name="is_free"
+			type="radio"			
+			class="btn-group"
+			label="COM_PAYCART_ADMIN_PUBLISHED"			
+			default="1">
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>		
+	</fieldset>	
+		
+	<fieldset name='language'>
+		<field 
+			name="media_lang_id"
+			type="hidden"
+			default="0"/>	
+	
+		<field 
+			name="lang_code"
+			type="hidden"/>	
+			
+		<field 
+			name="title" 
+			type="text"	
+			required="true"		
+			label="COM_PAYCART_ADMIN_TITLE"/>		
+			
+		<field 	name="description" 
+				type="editor"						
+				label="COM_PAYCART_ADMIN_DESCRIPTION"
+				filter="JComponentHelper::filterText"/>
+	
+		<field	name="metadata_title" 
+				type="text"
+				class="input-block-level"
+				label="COM_PAYCART_ADMIN_METADATA_TITLE"/>
+		
+		<field 	name="metadata_description" 
+				type="text"
+				class="input-block-level"
+				label="COM_PAYCART_ADMIN_METADATA_DESCRIPTION"/>
+		
+		<field	name="metadata_keywords" 
+				type="text" 
+				class="input-block-level"
+				label="COM_PAYCART_ADMIN_METADATA_KEYWORD"/>
+	</fieldset>
+</form>

@@ -19,6 +19,8 @@ if(!defined( '_JEXEC' )){
  */
 class PaycartModelLang extends PaycartModel
 {
+	public $language_code = null;
+	
 	public function getLanguageTable()
 	{
 		$tableName = $this->getName().'lang';
@@ -47,15 +49,12 @@ class PaycartModelLang extends PaycartModel
     {
     	parent::_buildQueryJoins($query);
     	
-    	// @PCTODO : will be removed when multi language support will be given
-    	$lang_code = PaycartFactory::getCurrentLanguageCode();    	 
-    	
-    	if(empty($lang_code)){
-    		throw new Exception(JText::_('COM_PAYCART_ERROR_LANG_CODE_MISSING'));
+    	if(empty($this->language_code)){
+    		$this->language_code = PaycartFactory::getPCCurrentLanguageCode();
     	}
     	
     	$key = $this->getTable()->getKeyName();
-    	$condition = $this->getLanguageTableName().' as lang_tbl ON (tbl.'.$key.' = lang_tbl.'.$key.' AND lang_tbl.lang_code = '.$this->_db->quote($lang_code).')';
+    	$condition = $this->getLanguageTableName().' as lang_tbl ON (tbl.'.$key.' = lang_tbl.'.$key.' AND lang_tbl.lang_code = '.$this->_db->quote($this->language_code).')';
 		$query->leftJoin($condition);		
     }
     
@@ -96,6 +95,17 @@ class PaycartModelLang extends PaycartModel
     		return false;
     	}
     	
+    	// if it is a new record then copy the data in all supported langauge    	
+    	if(!$langPk){
+    		$current_language = $data['lang_code'];
+    		$old_languages	= PaycartFactory::getConfig()->get('localization_supported_language');
+    		$languagesToBeAdded = array_diff($old_languages, array($current_language));
+    		foreach ($languagesToBeAdded as $newLang){
+				if(!$this->copyDefaultData($current_language, $newLang)){
+					//@PCTODO : What to do if any error occurs
+				}
+			}
+    	}
     	return true;
     }
     
@@ -137,5 +147,91 @@ class PaycartModelLang extends PaycartModel
 		
 		// afte deleting all other data not delete main data
 		return parent::delete($pk);	
+	}
+	
+	public function loadRecords(Array $queryFilters=array(), Array $queryClean = array(), $emptyRecord=false, $indexedby = null)
+	{	
+		// clean where clause becasue of caching
+		// if the query is executed then it won't be executed againg after change language
+		$query = $this->getQuery();
+		$query->clear('join');
+		$this->_buildQueryJoins($query); 
+		return parent::loadRecords($queryFilters, $queryClean, $emptyRecord, $indexedby);
+		
+//		$defaultLanguage = PaycartFactory::getPCDefaultLanguageCode();
+//		
+//		if($defaultLanguage == $this->_language_code){
+//			return $currentLanguageRecords;
+//		}
+//		
+//		$this->_language_code = $defaultLanguage; 
+//		
+//		$query = $this->getQuery();
+//		$query->clear('join');
+//		$this->_buildQueryJoins($query);
+//
+//		$defaultLanguageRecords = parent::loadRecords($queryFilters, $queryClean, $emptyRecord, $indexedby);
+//
+//		$keyName = $this->getLanguageTable()->getKeyName();
+//		foreach($currentLanguageRecords as $key => &$record ){
+//			if(!isset($record->product_lang_id) && empty($record->product_lang_id)){
+//				if(!isset($defaultLanguageRecords[$key])){
+//					throw new Exception('Default Language data is missing');
+//				}
+//				
+//				$record = $defaultLanguageRecords[$key];
+//				$record->lang_code = $currentLanguage;
+//				$record->$keyName = 0;
+//			}
+//		}
+//		
+//		return $currentLanguageRecords;
+	}
+	
+	public function copyDefaultLanguageData($prev_lang, $new_lang)
+	{
+		$db = PaycartFactory::getDbo();
+		
+		$langTable 		= $this->getLanguageTable();
+		$langTableName 	= $langTable->getTableName();
+		$fields 		= $langTable->getFields();		
+		// unset primey key 
+		unset($fields[$langTable->getKeyName()]);
+		
+		// query for inserting value
+		$insertPart = '';
+		$selectPart = '';		
+		foreach($fields as $fieldname => $field){
+			$insertPart[] = '`'.$fieldname.'`';
+			
+			if($fieldname == 'lang_code'){
+				$selectPart[] = "'".$new_lang."'";				
+			}
+			else{
+				$selectPart[] = '`'.$fieldname.'`';
+			}
+		}
+		$sql = 'INSERT IGNORE INTO `'.$langTableName.'` ('.implode(', ', $insertPart).') '.
+				'SELECT '.implode(', ', $selectPart).' FROM `'.$langTableName.'` '.
+				'WHERE `lang_code` = '.$db->quote($prev_lang);
+		
+		$db->setQuery($sql);
+		return $db->query();		
+	}
+	
+	
+	public function deleteLanguageData($languagesToBeRemoved)
+	{
+		$languagesToBeRemoved = is_array($languagesToBeRemoved) ? $languagesToBeRemoved : array($languagesToBeRemoved);
+		
+		$tablename = $this->getLanguageTableName();
+		
+		$db 	= Rb_Factory::getDbo();		
+		$query 	= $db->getQuery(true);
+		$query->delete($tablename)
+				->where('`lang_code` IN ("'.implode('", "', $languagesToBeRemoved).'")');
+				
+		$db->setQuery($query);
+		return $db->query();						
 	}
 }

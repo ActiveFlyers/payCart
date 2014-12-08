@@ -18,16 +18,54 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author Rimjhim
  */
 
-Rb_HelperTemplate::loadMedia(array('angular'));
-?>
-
-<script type="text/javascript">
-	paycart.ng.config = angular.module('pcngConfigApp', []);
-</script>
-
-<?php 
+echo $this->loadTemplate('edit_js');
 echo $this->loadTemplate('edit_ng');
 ?>
+
+<div class="row-fluid">
+	<div class="span3">
+		<h2><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_LANGUAGE_HEADER');?></h2>
+		<div>
+		<?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_LANGUAGE_HEADER_MSG');?>
+		</div>
+	</div>
+	<div class="span9">
+		<div class="row-fluid">
+			<div class="span6">
+				<?php $field = $form->getField('localization_default_language') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls">
+						<span id="pc-confic-localization-default-language"> <?php echo PaycartHtmlLanguageflag::getFlag($field->value, true); ?></span>
+						<a href="#pc-config-localization-defaultlang-modal" data-toggle="modal" onClick="return paycart.admin.config.changeDefaultLanguage.init();"><i class="fa fa-edit fa-2x"></i></a>
+						<div id="pc-config-localization-defaultlang-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:800px; margin-left:-400px;" data-backdrop="static" data-keyboard="false">
+							&nbsp;
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="span6">
+				<?php $field = $form->getField('localization_supported_language') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls">
+						<div id="pc-confic-localization-supported-language"> 
+							<?php foreach($field->value as $language) : ?>
+								<div><?php echo PaycartHtmlLanguageflag::getFlag($language, true);?></div>
+							<?php endforeach; ?>
+						</div>
+						<a href="#pc-config-localization-supportedlang-modal" data-toggle="modal" onClick="return paycart.admin.config.updateSupportedLanguage.init();"><i class="fa fa-edit fa-2x"></i></a>
+						<div id="pc-config-localization-supportedlang-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:800px; margin-left:-400px;" data-backdrop="static" data-keyboard="false">
+							&nbsp;
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>		
+
+<hr/>
 
 <div class="row-fluid">
 	<div class="span3">
@@ -166,7 +204,6 @@ echo $this->loadTemplate('edit_ng');
 			  $display_data = $origin_address; 
 			  $display_data->prefix = 'paycart_form[localization_origin_address]';
 		?>
-		<?php $layout = new JLayoutFile('paycart_buyeraddress_edit', PAYCART_PATH_ADMIN_LAYOUTS);?>
-		<?php echo $layout->render($display_data);?>
+		<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_edit', $display_data);?>
 	</div>			
 </div>

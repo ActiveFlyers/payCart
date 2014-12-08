@@ -28,6 +28,17 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 })(paycart.jQuery);
 </script>
 
+<!-- LANGUAGE SWITCHER -->
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
+	
 <div id="rbWindowTitle">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -39,19 +50,34 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<div class="modal-body">
 		<!--  New state creation body		-->
 		<form method="post"  id="paycart_state_form" class="pc-form-validate">
-		
-			<?php foreach ($form->getFieldset('state') as $field):?>
+			<?php $field = $form->getField('title') ?>
+			<div class="control-group">
+				<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
+				<div class="controls"><?php echo $field->input; ?></div>								
+			</div>
+
+			<?php $field = $form->getField('isocode') ?>
+			<div class="control-group">
+				<div class="control-label"><?php echo $field->label; ?> </div>
+				<div class="controls"><?php echo $field->input; ?></div>								
+			</div>
 					
-					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-					
-			<?php endforeach;?>
-		 
+			<?php $field = $form->getField('country_id') ?>
+			<div class="control-group">
+				<div class="control-label"><?php echo $field->label; ?> </div>
+				<div class="controls"><?php echo $field->input; ?></div>								
+			</div>
+				
+			<?php $field = $form->getField('published') ?>
+			<div class="control-group">
+				<div class="control-label"><?php echo $field->label; ?> </div>
+				<div class="controls"><?php echo $field->input; ?></div>								
+			</div>
+		 	
+		 	<?php echo $form->getInput('lang_code'); ?>
+		 	<?php echo $form->getInput('state_lang_id'); ?>			
 			<input type="hidden" name="task" value="save" />
-			<input type='hidden' name='id' value='<?php echo $record_id;?>' />
-			
+			<input type='hidden' name='id' value='<?php echo $record_id;?>' />			
 		</form>
 	</div>
 </div>

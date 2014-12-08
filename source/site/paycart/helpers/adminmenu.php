@@ -201,12 +201,12 @@ class PaycartHelperAdminmenu extends PaycartHelper
 		return true;
 	}
 	
-	public function render($currentUrl, $path = PAYCART_PATH_ADMIN_LAYOUTS)
+	public function render($currentUrl)
 	{
 		$displayData = new stdClass();
 		$displayData->menus = $this->getMenus();
 		$displayData->currentUrl = $currentUrl;
 		
-		return JLayoutHelper::render('paycart_admin_menu', $displayData, $path);		 
+		return Rb_HelperTemplate::renderLayout('paycart_admin_menu', $displayData);		 
 	}
 }

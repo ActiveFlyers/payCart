@@ -46,11 +46,18 @@ class PaycartSiteControllerCart extends PaycartController
 	 */
 	public function __construct($options = array()) 
 	{
+		parent::__construct($options);
+		
+		$this->setCurrentLanguage();
 		$this->helper			=	PaycartFactory::getHelper('checkout');
 		$this->cart				=	PaycartFactory::getHelper('cart')->getCurrentCart();
-		$this->step_sequence	=	$this->helper->getSequence();
 		
-		return parent::__construct($options);
+		// change the language code, only not locked
+		if ( $this->cart instanceof PaycartCart && !$this->cart->isLocked()) {
+			$this->cart->set('lang_code', PaycartFactory::getPCCurrentLanguageCode());
+		}
+		
+		$this->step_sequence	=	$this->helper->getSequence();
 	}
 	
     /**

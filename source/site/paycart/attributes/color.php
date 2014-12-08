@@ -91,6 +91,13 @@ class PaycartAttributeColor extends PaycartAttribute
 	 */
 	function buildCounterHtml($counter, $type, $options=array())
 	{		
+		if(PAYCART_MULTILINGUAL){
+			$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+			$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+		}
+		else{
+			$flag = '';
+		}
 		ob_start();
 			?>	
 			<div id="option_row_<?php echo $counter?>">
@@ -100,6 +107,7 @@ class PaycartAttributeColor extends PaycartAttribute
 					 		<input type='text' name='options[<?php echo $counter?>][hash_code]' id='hash_code_<?php echo $counter?>'  class='wheel-color' placeholder='#rrggbb' data-control="wheel"
 					      	value='<?php echo (isset($options[$counter]['hash_code'])?$options[$counter]['hash_code']:'')?>'/>
 					      	<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_TITLE"); ?>"/>
+					      	<?php echo $flag;?>
 							<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">
 								<i class="fa fa-trash"></i>
 							</button>
