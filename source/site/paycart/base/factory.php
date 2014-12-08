@@ -149,7 +149,7 @@ class PaycartFactory extends Rb_Factory
 		return self::$config;
 	}
 	
-	public static function setConfig($data, $file = null, $type = 'PHP', $namespace = '')
+	public static function saveConfig($data, $file = null, $type = 'PHP', $namespace = '')
 	{	
 		$paycartModelConfig = self::getInstance('config', 'model');
 		if($paycartModelConfig->save($data)){

@@ -76,11 +76,11 @@ class PaycartAdminControllerConfig extends PaycartController
 		
 		switch($action){
 			case 'do' :
-				$prev_lang = PaycartFactory::getConfig()->get('localization_default_language');
+				$prev_lang = PaycartFactory::getPCDefaultLanguageCode();
 				$new_lang = $this->input->get('language');
 				
 				if($prev_lang != $new_lang){					
-					PaycartFactory::setConfig(array('localization_default_language' => $new_lang));
+					PaycartFactory::saveConfig(array('localization_default_language' => $new_lang));
 				}
 				
 				$view->assign('language', $new_lang);
@@ -91,7 +91,7 @@ class PaycartAdminControllerConfig extends PaycartController
 				break;
 				
 			case 'init' :
-				$prev_lang = PaycartFactory::getConfig()->get('localization_default_language');
+				$prev_lang = PaycartFactory::getPCDefaultLanguageCode();
 				$view->assign('prev_lang', $prev_lang);
 			default		:
 				// do nothing			
@@ -111,7 +111,7 @@ class PaycartAdminControllerConfig extends PaycartController
 		switch($action){
 			case 'do' :
 				$new_languages 	= json_decode($this->input->get('languages', '', 'string'));
-				$old_languages	= PaycartFactory::getConfig()->get('localization_supported_language');
+				$old_languages	= PaycartFactory::getPCSupportedLanguageCode();
 				
 				$languagesToBeRemoved = array_diff($old_languages, $new_languages);
 				foreach(self::$_langModelNames as $modelname){
@@ -122,7 +122,7 @@ class PaycartAdminControllerConfig extends PaycartController
 				}
 				
 				$languagesToBeAdded = array_diff($new_languages, $old_languages);
-				$defaultLang = PaycartFactory::getConfig()->get('localization_default_language');
+				$defaultLang = PaycartFactory::getPCDefaultLanguageCode();
 				foreach(self::$_langModelNames as $modelname){
 					$model = PaycartFactory::getModel($modelname);
 					foreach ($languagesToBeAdded as $newLang){
@@ -132,13 +132,13 @@ class PaycartAdminControllerConfig extends PaycartController
 					}
 				}
 					
-				PaycartFactory::setConfig(array('localization_supported_language' => $new_languages));
+				PaycartFactory::saveConfig(array('localization_supported_language' => $new_languages));
 				$view->assign('languages', $new_languages);
 				break;
 
 			case 'confirmed' :
 				$languages 	 = json_decode($this->input->get('languages', '', 'string'));
-				$languages[] = PaycartFactory::getConfig()->get('localization_default_language');  // add default language also, as it will not get posted
+				$languages[] = PaycartFactory::getPCDefaultLanguageCode();  // add default language also, as it will not get posted
 				$view->assign('languages', $languages);
 				break;
 				

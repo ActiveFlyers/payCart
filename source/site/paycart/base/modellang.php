@@ -19,7 +19,7 @@ if(!defined( '_JEXEC' )){
  */
 class PaycartModelLang extends PaycartModel
 {
-	public $language_code = null;
+	public $lang_code = null;
 	
 	public function getLanguageTable()
 	{
@@ -49,12 +49,12 @@ class PaycartModelLang extends PaycartModel
     {
     	parent::_buildQueryJoins($query);
     	
-    	if(empty($this->language_code)){
-    		$this->language_code = PaycartFactory::getPCCurrentLanguageCode();
+    	if(empty($this->lang_code)){
+    		$this->lang_code = PaycartFactory::getPCCurrentLanguageCode();
     	}
     	
     	$key = $this->getTable()->getKeyName();
-    	$condition = $this->getLanguageTableName().' as lang_tbl ON (tbl.'.$key.' = lang_tbl.'.$key.' AND lang_tbl.lang_code = '.$this->_db->quote($this->language_code).')';
+    	$condition = $this->getLanguageTableName().' as lang_tbl ON (tbl.'.$key.' = lang_tbl.'.$key.' AND lang_tbl.lang_code = '.$this->_db->quote($this->lang_code).')';
 		$query->leftJoin($condition);		
     }
     
@@ -98,7 +98,7 @@ class PaycartModelLang extends PaycartModel
     	// if it is a new record then copy the data in all supported langauge    	
     	if(!$langPk){
     		$current_language = $data['lang_code'];
-    		$old_languages	= PaycartFactory::getConfig()->get('localization_supported_language');
+    		$old_languages	= PaycartFactory::getPCSupportedLanguageCode();
     		$languagesToBeAdded = array_diff($old_languages, array($current_language));
     		foreach ($languagesToBeAdded as $newLang){
 				if(!$this->copyDefaultData($current_language, $newLang)){

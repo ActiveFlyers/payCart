@@ -85,8 +85,8 @@ class PaycartAdminViewConfig extends PaycartAdminBaseViewConfig
 				
 			case 'init' :
 			default		:
-				$this->assign('default_language', PaycartFactory::getConfig()->get('localization_default_language'));
-				$this->assign('supported_language', PaycartFactory::getConfig()->get('localization_supported_language'));
+				$this->assign('default_language', PaycartFactory::getPCDefaultLanguageCode());
+				$this->assign('supported_language', PaycartFactory::getPCSupportedLanguageCode());
 				$this->assign('languages', Rb_HelperJoomla::getLanguages());
 				$this->assign('form', $form);
 				$this->setTpl('supportedlanguage_init');

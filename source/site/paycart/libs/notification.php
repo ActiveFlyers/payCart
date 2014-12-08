@@ -91,13 +91,13 @@ class PaycartNotification extends PaycartLib
         	
         	// set cart's language on model
         	if($lang_code){
-        		$model->language_code = $lang_code;
+        		$model->lang_code = $lang_code;
         	}
         	
             $records = $model->loadRecords(Array('event_name' => strtolower($event_name),'published'=>1));
             
             // reset the language set
-            $model->language_code = null;
+            $model->lang_code = null;
             
             if (empty($records)) {
                 return false;

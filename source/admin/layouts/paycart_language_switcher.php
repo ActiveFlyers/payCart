@@ -11,7 +11,7 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 $current_language = PaycartFactory::getPCCurrentLanguageCode();
-$supported_language = PaycartFactory::getConfig()->get('localization_supported_language');
+$supported_language = PaycartFactory::getPCSupportedLanguageCode();
 $languages = Rb_HelperJoomla::getLanguages();
 ?>
 <div class="row-fluid">

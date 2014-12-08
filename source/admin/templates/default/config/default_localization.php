@@ -36,8 +36,9 @@ echo $this->loadTemplate('edit_ng');
 				<div class="control-group">
 					<div class="control-label"><?php echo $field->label; ?> </div>
 					<div class="controls">
-						<span id="pc-confic-localization-default-language"> <?php echo PaycartHtmlLanguageflag::getFlag($field->value, true); ?></span>
-						<a href="#pc-config-localization-defaultlang-modal" data-toggle="modal" onClick="return paycart.admin.config.changeDefaultLanguage.init();"><i class="fa fa-edit fa-2x"></i></a>
+						<div id="pc-confic-localization-default-language"> <?php echo PaycartHtmlLanguageflag::getFlag($field->value, true); ?></div>
+						<br/>
+						<div><a href="#pc-config-localization-defaultlang-modal" data-toggle="modal" onClick="return paycart.admin.config.changeDefaultLanguage.init();"><i class="fa fa-edit"></i> <?php echo JText::_('COM_PAYCART_ADMIN_CHANGE');?></a></div>
 						<div id="pc-config-localization-defaultlang-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:800px; margin-left:-400px;" data-backdrop="static" data-keyboard="false">
 							&nbsp;
 						</div>
@@ -54,7 +55,8 @@ echo $this->loadTemplate('edit_ng');
 								<div><?php echo PaycartHtmlLanguageflag::getFlag($language, true);?></div>
 							<?php endforeach; ?>
 						</div>
-						<a href="#pc-config-localization-supportedlang-modal" data-toggle="modal" onClick="return paycart.admin.config.updateSupportedLanguage.init();"><i class="fa fa-edit fa-2x"></i></a>
+						<br/>						
+						<div><a href="#pc-config-localization-supportedlang-modal" data-toggle="modal" onClick="return paycart.admin.config.updateSupportedLanguage.init();"><i class="fa fa-edit"></i> <?php echo JText::_('COM_PAYCART_ADMIN_CHANGE');?></a></div>
 						<div id="pc-config-localization-supportedlang-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:800px; margin-left:-400px;" data-backdrop="static" data-keyboard="false">
 							&nbsp;
 						</div>

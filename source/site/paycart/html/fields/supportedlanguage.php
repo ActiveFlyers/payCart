@@ -26,7 +26,7 @@ class PaycartFormFieldSupportedLanguage extends JFormFieldList
 		// Initialize variables.
 		$options = array();		
 
-		$supported_language = PaycartFactory::getConfig()->get('localization_supported_language');
+		$supported_language = PaycartFactory::getPCSupportedLanguageCode();
 		$languages = Rb_HelperJoomla::getLanguages();
 		
 		foreach ($supported_language as $language){
