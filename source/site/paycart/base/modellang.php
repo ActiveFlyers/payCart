@@ -101,7 +101,7 @@ class PaycartModelLang extends PaycartModel
     		$old_languages	= PaycartFactory::getPCSupportedLanguageCode();
     		$languagesToBeAdded = array_diff($old_languages, array($current_language));
     		foreach ($languagesToBeAdded as $newLang){
-				if(!$this->copyDefaultData($current_language, $newLang)){
+				if(!$this->copyDefaultLanguageData($current_language, $newLang)){
 					//@PCTODO : What to do if any error occurs
 				}
 			}

@@ -53,11 +53,7 @@ class PaycartCart extends PaycartLib
     protected $is_delivered;        // All shipment 
     
     protected $note;
-
-    protected $is_delivered;        // All shipment
-
     protected $lang_code = '';
-
         
     // Related Table Fields: Array of cart-particulars
 	protected $_cartparticulars;
