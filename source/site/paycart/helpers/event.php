@@ -203,4 +203,18 @@ class PaycartHelperEvent extends PaycartHelper
             	$instance->sendNotification($shipment);
            	}
          }
+         
+         /**
+          * 
+          * onPaycartProductAfterSave event
+          * @param $previousObject : either null or object of PaycartProduct
+          * @param $newObject : object of PaycartProduct
+          */
+         public function onPaycartProductAfterSave($previousObject, PaycartProduct $newObject)
+         {
+         	//do it only if admin side
+         	if(PaycartFactory::getApplication()->isAdmin()){
+         		PaycartFactory::getHelper('productindex')->doIndexing($previousObject, $newObject);
+         	}
+         }
 }

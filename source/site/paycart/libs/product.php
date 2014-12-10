@@ -216,6 +216,11 @@ class PaycartProduct extends PaycartLib
 		return $this->stockout_limit;
 	}
 	
+	public function getSKU()
+	{
+		return $this->sku;	
+	}
+	
 	/**
 	 * We required media/image processing after Product save
 	 * 
@@ -237,14 +242,8 @@ class PaycartProduct extends PaycartLib
 		//if variation_of parameter is still 0 then resave plan again 
 		// because every base plan should be a variation of itself
 		if(!$this->variation_of){
-			//to reflect the automatic changes in object, it is required (like ordering)
-//			$this->reload();
-			
 			$this->variation_of = $id;
 			parent::_save($previousObject);
-			
-			//to reflect variation_of property, it is required
-//			$this->reload();
 		}
 		
 		// Process If images exist
@@ -279,7 +278,12 @@ class PaycartProduct extends PaycartLib
 		
 		// Process Attribute Value
 		$this->_saveAttributeValue($previousObject);
-
+		
+		//trigger product after save event
+		/*  @var $event_helper PaycartHelperEvent   */
+        $eventHelper = PaycartFactory::getHelper('event');
+        $eventHelper->onPaycartProductAfterSave($previousObject, $this);
+         
 		// few class property might be changed by model validation
 		// so we need to reflect these kind of changes (by model validation) to lib object
 		// Also set attributes value on product
@@ -447,7 +451,7 @@ class PaycartProduct extends PaycartLib
 		return PaycartFactory::getModel('productattributevalue')->deleteMany($condition);
 	}
 	
-	public function getAttributeValues($productAttributeId = null)
+	public function getAttributes($productAttributeId = null)
 	{
 		if(!empty($productAttributeId) && isset($this->_attributeValues[$productAttributeId])){
 			$attributeValue = $this->_attributeValues[$productAttributeId];
@@ -591,7 +595,7 @@ class PaycartProduct extends PaycartLib
 	public function getProductCategory($requireInstance = false)
 	{
 		if($requireInstance){
-			return PaycartCategory::getInstance($this->productcategory_id);
+			return PaycartProductcategory::getInstance($this->productcategory_id);
 		}
 		
 		return $this->productcategory_id;

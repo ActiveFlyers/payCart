@@ -192,4 +192,14 @@ class PaycartProductAttribute extends PaycartLib
 	{
 		return PaycartAttribute::getInstance($this->type)->getScript();
 	}
+	
+	function getFilterHtml(Array $selectedValue = array(), Array $options = array())
+	{
+		return PaycartAttribute::getInstance($this->type)->getFilterHtml($this,$selectedValue,$options);
+	}
+	
+	function getSearchableDataOfOption($optionId)
+	{
+		return PaycartAttribute::getInstance($this->type)->getSearchableDataOfOption($this->getId(), $optionId);
+	}
 }

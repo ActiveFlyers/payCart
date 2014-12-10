@@ -39,7 +39,7 @@
 		<field 
 			name="searchable" 
 			type="hidden"
-			default="0"			
+			default="1"			
 			label="COM_PAYCART_ADMIN_SEARCHABLE" 
 			class="btn-group">
 			<option value='1'>JYES</option>
