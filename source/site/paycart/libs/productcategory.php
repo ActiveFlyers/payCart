@@ -37,6 +37,9 @@ class PaycartProductcategory extends PaycartLib
 	protected $metadata_title		= '';
 	protected $metadata_keywords	= '';
 	protected $metadata_description	= '';
+	protected $level				= 1;
+	protected $lft					= 0;
+	protected $rgt					= 0;
 
 	public function reset() 
 	{		
@@ -55,6 +58,9 @@ class PaycartProductcategory extends PaycartLib
 		$this->metadata_title		= '';
 		$this->metadata_keywords	= '';
 		$this->metadata_description	= '';
+		$this->level				= 1;
+		$this->lft					= 0;
+		$this->rgt					= 0;
 		
 		return $this;
 	}
@@ -200,5 +206,20 @@ class PaycartProductcategory extends PaycartLib
 	public function getMetadataKeywords()
 	{
 		return $this->metadata_keywords;
+	}
+	
+	public function getLevel()
+	{
+		return $this->level;
+	}
+	
+	public function getLft()
+	{
+		return $this->lft;
+	}
+	
+	public function getRgt()
+	{
+		return $this->rgt;
 	}
 }

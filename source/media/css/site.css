@@ -149,7 +149,7 @@ Products Display
 }
 
 .pc-product-content{
-	
+	position:relative;
 }
 
 .pc-product-content img{
@@ -229,12 +229,8 @@ Products Display
     position:absolute;
 }
 
-.pc-product-content{
-	position:relative;
-}	
-
-.pc-product-image,
-.pc-product-image:hover{
+.pc-clickable,
+.pc-clickable:hover{
 	color: inherit;
 	text-decoration: none;
 }

@@ -82,7 +82,7 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		
 		// set attribute values
-		$newProduct->set('_attributeValues', $product->getAttributeValues());
+		$newProduct->set('_attributeValues', $product->getAttributes());
 		
 		// fetch all the language records and save one by one
 		$records   = PaycartFactory::getModel('product')->loadLanguageRecords(array('product_id' => $product->getId()));
@@ -153,7 +153,7 @@ class PaycartHelperProduct extends PaycartHelper
 		//for base attribute
 		$productAttributeValue = PaycartFactory::getModel('productattributevalue')->loadProductAttributeValue($baseAttrId, $productIds);
 		$attributes[$baseAttrId]['options'] 	  = array_keys($productAttributeValue);
-		$attributes[$baseAttrId]['selectedvalue'] = $product->getAttributeValues($baseAttrId);
+		$attributes[$baseAttrId]['selectedvalue'] = $product->getAttributes($baseAttrId);
 		
 		unset($records[$baseAttrId]);
 		
@@ -164,13 +164,13 @@ class PaycartHelperProduct extends PaycartHelper
 			// base attribute value = current product's value for base filter 
 		 	$condition = 'product_id IN(select product_id from #__paycart_productattribute_value 
 		 				  where productattribute_id = '.$baseAttrId.'
-		 				  and productattribute_value = '.$product->getAttributeValues($baseAttrId).'  
+		 				  and productattribute_value = '.$product->getAttributes($baseAttrId).'  
 		 				  and product_id IN('.implode(',', $productIds).'))';		
 		 	
 		 	$productAttributeValue = PaycartFactory::getModel('productattributevalue')->loadProductAttributeValue($key, $productIds, $condition);
 		 	
 		 	$attributes[$key]['options'] 	   = array_keys($productAttributeValue);
-		 	$attributes[$key]['selectedvalue'] = $product->getAttributeValues($key);
+		 	$attributes[$key]['selectedvalue'] = $product->getAttributes($key);
 		}
 		
 		return $attributes;

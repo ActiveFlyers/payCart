@@ -70,7 +70,7 @@ class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
 		
 		$positionedAttributes = $product->getPositionedAttributes();		
 		// prepare addedAttributes
-		$productAttributes = $product->getAttributeValues();
+		$productAttributes = $product->getAttributes();
 		$addedAttributes = array();
 		foreach($positionedAttributes as $position => $positionAttributes){
 			$addedAttributes[$position] = array(); 

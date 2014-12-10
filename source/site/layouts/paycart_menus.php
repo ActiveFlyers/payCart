@@ -50,6 +50,10 @@ $return_link	= 	base64_encode($link);
             <li class="visible-phone" data-toggle="collapse" data-target=".nav-collapse">
                 <a href="#"><i class="fa fa-bars"></i></a>
             </li>
+			<li>
+				<input type="text" class="input-medium search-query" placeholder="Search here and press enter"
+				       onKeydown="Javascript: if (event.keyCode==13) paycart.fireSearch(this.value);" name="q"/>
+			</li>	
 			
 			<!-- Product Category link on desktop, tab etc -->
              <li class="dropdown hidden-phone">
@@ -264,7 +268,13 @@ $return_link	= 	base64_encode($link);
     			// on Document ready 
     			$(document).ready(function(){
     				pc_menu.update.do();
-    			})
+    			});
+
+    			paycart.fireSearch = function(value){
+        			<?php $url = PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'); ?>
+    				rb.url.redirect(rb.url.route('<?php echo $url;?>'+'?q='+value)); 
+    				return false;
+    			};    			
 
         	})(paycart.jQuery);
         

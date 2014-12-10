@@ -28,7 +28,7 @@ echo $this->loadTemplate('js');
  * 
  */
 
-$attributes = $product->getAttributeValues();
+$attributes = $product->getAttributes();
 $postionedAttributes = (array)$product->getPositionedAttributes();
 ?>
 <script>

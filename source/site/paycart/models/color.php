@@ -29,7 +29,7 @@ class PaycartModelColor extends PaycartModelLang
 	 *
 	 * @return array of resultant rows 
 	 */
-	function loadOptions($productattribute_id, $languageCode, Array $optionIds = array())
+	function loadOptions($productattribute_id, $languageCode = '', Array $optionIds = array())
 	{
 		$query = new Rb_Query();
 		
@@ -37,10 +37,13 @@ class PaycartModelColor extends PaycartModelLang
 			$query->where('ac.color_id IN('.implode(',', $optionIds).')');
 		}
 		
+		if(!empty($languageCode)){
+			$query->where('acl.lang_code = "'.$languageCode.'"');
+		}
+		
 		return $query->select('*')
 		 		     ->from('#__paycart_color as ac')
 		 		     ->join('INNER', '#__paycart_color_lang as acl ON ac.color_id = acl.color_id')
-		 		     ->where('acl.lang_code = "'.$languageCode.'"')
 		 		     ->where('ac.productattribute_id = '.intval($productattribute_id))
 		 		     ->dbLoadQuery()
 		 		     ->loadAssocList('color_id');
