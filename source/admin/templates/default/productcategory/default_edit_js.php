@@ -28,8 +28,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<?php endif;?>
 
 			// Don't allow to set itself as parent category
-			$("#paycart_form_parent_id option[value=<?php echo $productCategory->getId()?>]").remove();
-			$('#paycart_form_parent_id').trigger("liszt:updated");
+			$("#paycart_productcategory_form_parent_id option[value=<?php echo $productCategory->getId()?>]").remove();
+			$('#paycart_productcategory_form_parent_id').trigger("liszt:updated");
 		});
 	})(paycart.jQuery);	
 </script>

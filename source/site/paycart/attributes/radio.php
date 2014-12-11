@@ -31,7 +31,7 @@ class PaycartAttributeRadio extends PaycartAttribute
 		if( !empty($options)){
 			foreach($options as $option){
 				$checked = ($option['productattribute_option_id'] == $selectedValue) ? "checked='checked'":'';
-				$html    .= "<label class='radio'><input type='radio' name='paycart_form[attributes][".$attribute->getId()."]' value='".$option['productattribute_option_id'] ."'".$checked.">".$option['title']."</label>";
+				$html    .= "<label class='radio'><input type='radio' name='paycart_product_form[attributes][".$attribute->getId()."]' value='".$option['productattribute_option_id'] ."'".$checked.">".$option['title']."</label>";
 			}
 		}
 				

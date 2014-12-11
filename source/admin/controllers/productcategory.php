@@ -52,7 +52,7 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 	public function _save(array $data, $itemId=null, $type=null)
 	{
 		//Get All files from paycart form
-		$data['_uploaded_files'] = $this->input->files->get('paycart_form', false);	
+		$data['_uploaded_files'] = $this->input->files->get($this->getControlNamePrefix(), false);	
 		
 		return parent::_save($data, $itemId, $type);
 	}	

@@ -155,7 +155,7 @@ paycart.admin.shippingrule = {};
 							<div class="controls">
 								<span class="input-prepend">
 									<span class="add-on"><?php echo PaycartFactory::getConfig()->get('catalogue_weight_unit')?></span>
-									<input type="text" class="input-block-level" name="paycart_form[packaging_weight]" value="<?php echo $formatter->weight($rule->getPackagingWeight());?>">			
+									<input type="text" class="input-block-level" name="paycart_shippingrule_form[packaging_weight]" value="<?php echo $formatter->weight($rule->getPackagingWeight());?>">			
 								</span>
 							</div>								
 						</div>

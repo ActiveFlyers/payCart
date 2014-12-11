@@ -26,7 +26,7 @@ class PaycartAdminControllerProduct extends PaycartController
 	public function _save(array $data, $itemId=null, $type=null)
 	{
 		//Get All files from paycart form
-		$data['_uploaded_files'] = $this->input->files->get('paycart_form', false);
+		$data['_uploaded_files'] = $this->input->files->get($this->getControlNamePrefix(), false);
 		
 		//manage media files related to attribute
 		if(isset($data['_uploaded_files']['attributes'])){			

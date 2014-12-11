@@ -35,7 +35,7 @@ class PaycartAttributeColor extends PaycartAttribute
 		}
 		
 		if( !empty($colors)){
-			$html .= "<select id='attribute".$id."' name='paycart_form[attributes][".$id."]'>";
+			$html .= "<select id='attribute".$id."' name='paycart_product_form[attributes][".$id."]'>";
 			
 			foreach($colors as $color){
 				$selected = ($color['color_id'] == $selectedValue) ? "selected='selected'":'';
@@ -104,19 +104,19 @@ class PaycartAttributeColor extends PaycartAttribute
 				<fieldset class="form">
 				 <div class="control-group">
 					 <div class='controls'>
-					 		<input type='text' name='options[<?php echo $counter?>][hash_code]' id='hash_code_<?php echo $counter?>'  class='wheel-color' placeholder='#rrggbb' data-control="wheel"
+					 		<input type='text' name='paycart_productattribute_form[options][<?php echo $counter?>][hash_code]' id='paycart_productattribute_form_options_hash_code_<?php echo $counter?>'  class='wheel-color' placeholder='#rrggbb' data-control="wheel"
 					      	value='<?php echo (isset($options[$counter]['hash_code'])?$options[$counter]['hash_code']:'')?>'/>
-					      	<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_TITLE"); ?>"/>
+					      	<input type='text' name='paycart_productattribute_form[options][<?php echo $counter?>][title]' id='paycart_productattribute_form_options_title_<?php echo $counter?>' value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_TITLE"); ?>"/>
 					      	<?php echo $flag;?>
 							<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">
 								<i class="fa fa-trash"></i>
 							</button>
 					 </div>
 				 </div>				 
-				 <input type='hidden' name='options[<?php echo $counter?>][color_id]' id='productattribute_option_id_<?php echo $counter?>'  
+				 <input type='hidden' name='paycart_productattribute_form[options][<?php echo $counter?>][color_id]' id='paycart_productattribute_form_productattribute_option_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['color_id'])?$options[$counter]['color_id']:0) ?>' />
 						  
-				 <input type='hidden' name='options[<?php echo $counter?>][color_lang_id]' id='color_lang_id_<?php echo $counter?>'  
+				 <input type='hidden' name='paycart_productattribute_form[options][<?php echo $counter?>][color_lang_id]' id='paycart_productattribute_form_color_lang_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['color_lang_id'])?$options[$counter]['color_lang_id']:0) ?>' />
 				</fieldset>
 				<hr />				 

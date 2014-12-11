@@ -76,7 +76,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							<div><?php echo JText::_('COM_PAYCART_ADMIN_PAYMENT_ACCEPTED_BY_ANY_MEAN_DESCRIPTION'); ?></div>
 							<div class="control-group">
 								<div class="control-label">
-									<label for="paycart_form_cart_notes" id="paycart_form_cart_notes-lbl">
+									<label for="pc-cart-action-note" id="pc-cart-action-note-lbl">
 										<strong><?php echo JText::_('COM_PAYCART_NOTES'); ?></strong>
 										<span class="star">&nbsp;*</span>
 									</label>
@@ -116,7 +116,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							<br>
 							<div class="control-group" data-ng-show=" 'pay_by_transaction_id' == selected ">
 								<div class="control-label">
-									<label for="paycart_form_cart_notes" id="paycart_form_cart_notes-lbl">
+									<label for="pc-cart-action-gateway-txnid" id="pc-cart-action-gateway-txnid-lbl">
 										<strong><?php echo JText::_('COM_PAYCART_GATEWAYTRANSACTION_ID'); ?></strong>
 										<span class="star">&nbsp;*</span>
 									</label>

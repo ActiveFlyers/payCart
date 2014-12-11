@@ -17,8 +17,8 @@ defined('_JEXEC') or die( 'Restricted access' );
 	 */
 	paycart.admin.paymentgateway = {};			
 	paycart.admin.paymentgateway.getProcessorConfigHtml = function(){
-	        var data = {'processor_type' 	:	$('#paycart_form_processor_type').val(),
-	                    'processor_id'		:	$('#paycart_form_paymentgateway_id').val()
+	        var data = {'processor_type' 	:	$('#paycart_paymentgateway_form_processor_type').val(),
+	                    'processor_id'		:	$('#paycart_paymentgateway_form_paymentgateway_id').val()
 	                    };
 	        var url	= 'index.php?option=com_paycart&view=paymentgateway&task=getConfigHtml';	
 	        paycart.ajax.go(url, data);

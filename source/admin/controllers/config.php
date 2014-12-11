@@ -20,7 +20,7 @@ class PaycartAdminControllerConfig extends PaycartController
 {
 	function save()
 	{
-		$post = $this->input->post->get('paycart_form', array(), 'array');
+		$post = $this->input->post->get($this->getControlNamePrefix(), array(), 'array');
 		
 		if(!empty($post['localization_origin_address'])){
 			$post['localization_origin_address']['address'] = trim($post['localization_origin_address']['address']);
@@ -29,7 +29,7 @@ class PaycartAdminControllerConfig extends PaycartController
 		}
 		
 		//Get All files from paycart form
-		$image = $this->input->files->get('paycart_form', false);	
+		$image = $this->input->files->get($this->getControlNamePrefix(), false);	
 		
 		//save logo image
 		if(!empty($image['company_logo']['tmp_name'])){

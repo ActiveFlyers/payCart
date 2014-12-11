@@ -69,7 +69,7 @@ class PaycartController extends Rb_Controller
 		
 		//#2 : If lang_code is empty then get it from post data
 		if(empty($lang_code)){
-			$post = $this->input->post->get($this->_component->getNameSmall().'_form', array(), 'array');
+			$post = $this->input->post->get($this->getControlNamePrefix(), array(), 'array');
 			if(isset($post['lang_code']) && !empty($post['lang_code'])){
 				$lang_code = $post['lang_code'];
 			}			
@@ -104,5 +104,10 @@ class PaycartController extends Rb_Controller
 		
 		// set $done to true, so that it won't be processed more than one time
 		$done = true;
+	}
+	
+	public function getControlNamePrefix()
+	{
+		return $this->_component->getNameSmall().'_'.$this->getName().'_form';
 	}
 }

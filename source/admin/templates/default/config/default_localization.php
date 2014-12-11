@@ -183,7 +183,7 @@ echo $this->loadTemplate('edit_ng');
 			    			</div>
 						<?php endif;?>	    			
 						<div class="row-fluid">								
-							<input type="file" name="paycart_form[company_logo]">
+							<input type="file" name="paycart_config_form[company_logo]">
 						</div>	
 					</div>
 				</div>
@@ -204,7 +204,7 @@ echo $this->loadTemplate('edit_ng');
 	<div class="span9">
 		<?php 
 			  $display_data = $origin_address; 
-			  $display_data->prefix = 'paycart_form[localization_origin_address]';
+			  $display_data->prefix = 'paycart_config_form[localization_origin_address]';
 		?>
 		<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_edit', $display_data);?>
 	</div>			

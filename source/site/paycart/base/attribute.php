@@ -154,7 +154,7 @@ class PaycartAttribute
 				 <div class="control-group">
 					 <div class='controls'>
 					 		<?php echo $flag;?>
-					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' 
+					 		<input type='text' name='paycart_productattribute_form[options][<?php echo $counter?>][title]' id='paycart_productattribute_form_title_<?php echo $counter?>' 
 					      	value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_OPTION") ?>"/>
 					      	<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">
 								<i class="fa fa-trash"></i>
@@ -162,13 +162,13 @@ class PaycartAttribute
 					</div>
 				</div>
 				 
-				<input type='hidden' name='options[<?php echo $counter?>][option_ordering]' id='option_ordering_<?php echo $counter?>'  
+				<input type='hidden' name='paycart_productattribute_form[options][<?php echo $counter?>][option_ordering]' id='paycart_productattribute_form_option_ordering_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['option_ordering'])?$options[$counter]['option_ordering']:$counter) ?>' />
 						  
-				<input type='hidden' name='options[<?php echo $counter?>][productattribute_option_id]' id='productattribute_option_id_<?php echo $counter?>'  
+				<input type='hidden' name='paycart_productattribute_form[options][<?php echo $counter?>][productattribute_option_id]' id='paycart_productattribute_form_productattribute_option_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['productattribute_option_id'])?$options[$counter]['productattribute_option_id']:0) ?>' />
 	
-				<input type='hidden' name='options[<?php echo $counter?>][productattribute_option_lang_id]' id='productattribute_option_lang_id_<?php echo $counter?>'  						  
+				<input type='hidden' name='paycart_productattribute_form[options][<?php echo $counter?>][productattribute_option_lang_id]' id='paycart_productattribute_form_productattribute_option_lang_id_<?php echo $counter?>'  						  
 						  value='<?php echo (isset($options[$counter]['productattribute_option_lang_id'])?$options[$counter]['productattribute_option_lang_id']:0) ?>' />
 				 
 			</div>

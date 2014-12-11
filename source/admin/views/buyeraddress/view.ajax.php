@@ -36,7 +36,7 @@ class PaycartAdminViewBuyeraddress extends PaycartAdminBaseViewBuyeraddress
 		// prepare display data
 		$display_data = new stdClass();
 		
-		$display_data->prefix 			=	'paycart_form';
+		$display_data->prefix 			=	'paycart_buyeraddress_form';
 		
 		$display_data->buyeraddress_id 	=	$buyer_address_id;
 		$display_data->buyer_id		 	=	$buyer_id;

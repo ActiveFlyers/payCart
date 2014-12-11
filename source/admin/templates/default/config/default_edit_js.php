@@ -24,7 +24,7 @@ paycart.admin.config = {};
 	};
 	
 	paycart.admin.config.changeDefaultLanguage.confirmed = function(){
-		var language = $('#paycart_form_localization_default_language').val();
+		var language = $('#paycart_config_form_localization_default_language').val();
 		if(language.length <= 0){
 			return false;
 		}
@@ -54,7 +54,7 @@ paycart.admin.config = {};
 	};
 	
 	paycart.admin.config.updateSupportedLanguage.confirmed = function(){
-		var languages = $('#paycart_form_localization_supported_language').val();
+		var languages = $('#paycart_config_form_localization_supported_language').val();
 		if(languages.length <= 0){
 			languages = [];
 		}

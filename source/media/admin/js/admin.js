@@ -118,7 +118,7 @@ paycart.admin.product =
 		deleteImage : function(imageId)
 		{
 			var link  = 'index.php?option=com_paycart&task=deleteImage&view=product';
-			var productId = $('#paycart_form_product_id').val();
+			var productId = $('#paycart_product_form_product_id').val();
 			var data  = {'image_id': imageId, 'product_id':productId};
 			paycart.ajax.go(link,data);
 		}
@@ -167,77 +167,6 @@ paycart.admin.attribute = {
 	};
 
 
-
-// @PCTODO : Move it proper location so we can utilize it for front end
-paycart.admin.buyer =
-{
-	shipping_address : 
-	{
-		update	:	function(shipping_address_id, buyer_id)
-		{
-			var json_object		= {};
-			var paycart_form 	= {};
-			
-			// get all paycart_form data
-			paycart_form['shipping_address_id'] 	= shipping_address_id;
-			paycart_form['buyer_id']				= buyer_id ;
-		
-			// prepare paycart_form data
-			json_object['paycart_form'] = paycart_form;
-
-			var link  = 'index.php?option=com_paycart&view=buyer&task=save';
-
-			paycart.ajax.go(link, json_object);
-		},
-		
-		//callback function on shipping address successfully update
-		success : function()
-		{
-			alert('Successfully update!!');
-		},
-		
-		//callback function on shipping address updation fail
-		error : function()
-		{
-			alert('Oop... :( updation fail!!');
-		}
-	},
-
-	billing_address : 
-	{
-		update	:	function(billing_address_id, buyer_id)
-		{
-			var json_object		= {};
-			var paycart_form 	= {};
-
-			// get all paycart_form data
-			paycart_form['billing_address_id'] 	= billing_address_id;
-			paycart_form['buyer_id']			= buyer_id ;
-		
-			// prepare paycart_form data
-			json_object['paycart_form'] = paycart_form;
-			
-			var link  = 'index.php?option=com_paycart&view=buyer&task=save';
-	
-			paycart.ajax.go(link, json_object);
-		}, 
-		
-		//callback function on billing address successfully update
-		success : function()
-		{
-			alert('Successfully update!!');
-		},
-		
-		//callback function on billing address updation fail
-		error : function()
-		{
-			alert('Oop... :( updation fail!!');
-		}
-	}
-	
-};
-
-
 paycart.admin.buyeraddress =
 {
 	//open modal window to create new buyer-address
@@ -253,10 +182,7 @@ paycart.admin.buyeraddress =
 		go : function()
 		{
 			//Validation Checking
-			if($("#paycart_buyeraddress_form").find("input,textarea,select").not('.no-validate').jqBootstrapValidation("hasErrors")){
-				// Our validation work on submit call therefore first we will ensure that form is not properly fill 
-				// then we will call submit method. So proper msg display and focus on required element. 
-				$("#paycart_buyeraddress_form").submit();
+			if(!paycart.formvalidator.isValid('#paycart_buyeraddress_form')){
 				return false;
 			}
 			

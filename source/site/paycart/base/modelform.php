@@ -22,4 +22,9 @@ class PaycartModelform extends Rb_Modelform
 	public	$_component			= PAYCART_COMPONENT_NAME;	
 	protected $_forms_path 		= PAYCART_PATH_CORE_FORMS;
 	protected $_fields_path 	= PAYCART_PATH_CORE_FIELDS;
+	
+	public function getControlNamePrefix()
+	{
+		return $this->_component->getNameSmall().'_'.$this->getName().'_form';
+	}
 }

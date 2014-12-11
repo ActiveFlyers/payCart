@@ -165,7 +165,7 @@ defined('_JEXEC') or die( 'Restricted access' );
                });
                
                // default element bind
-               paycart.token.set_cursor_position($('#paycart_form_to'));
+               paycart.token.set_cursor_position($('#paycart_notification_form_to'));
                 
 	})(paycart.jQuery);
 	

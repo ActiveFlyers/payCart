@@ -140,7 +140,7 @@ echo $this->loadTemplate('edit_ng');
     			</div>
 				<?php endif;?>	    			
 				<div class="row-fluid">								
-					<input type="file" name="paycart_form[cover_media]" multiple="true">
+					<input type="file" name="paycart_productcategory_form[cover_media]">
 				</div>				
 			</fieldset>
 		</div>					

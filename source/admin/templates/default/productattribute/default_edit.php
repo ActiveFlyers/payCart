@@ -20,13 +20,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		{
 			$(document).ready(function()
 			{
-				paycart.form.validation.init('#paycart_productattribute_form');
+				paycart.formvalidator.initialize('#paycart_productattribute_form');
 				paycart.admin.attribute.addColorScript();
 			});
 			
-			$(document).on('change','#paycart_form_attribute_type',function()
+			$(document).on('change','#paycart_productattribute_form_attribute_type',function()
 			{
-				var attributeId = $('#paycart_form_productattribute_id').val();
+				var attributeId = $('#paycart_productattribute_form_productattribute_id').val();
 				paycart.admin.attribute.getTypeConfig($(this).val(), attributeId);
 			});
 

@@ -90,7 +90,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 			$http({
 		        method  : 'POST',
 		        url     : 'index.php?option=com_paycart&view=media&task=save&format=json&lang_code='+pc_current_language,
-		        data    : paycart.jQuery.param({'paycart_form' : $scope.activeImage}),  // pass in data as strings
+		        data    : paycart.jQuery.param({'paycart_media_form' : $scope.activeImage}),  // pass in data as strings
 		        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 		    })
 		    .success(function(data) {										         

@@ -183,7 +183,7 @@ echo $this->loadTemplate('edit_css');
 						<?php if(!empty($images)):?>
 							<div>								
 								<div class="row-fluid">
-									<input type="file" class="validate-image" name="paycart_form[images][]" multiple="true" id="paycart_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
+									<input type="file" class="validate-image" name="paycart_product_form[images][]" multiple="true" id="paycart_product_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
 								</div>								
 							</div>
 						<?php endif;?>
@@ -192,7 +192,7 @@ echo $this->loadTemplate('edit_css');
 						<fieldset class="form">
 							<div class="row-fluid">
 								<?php if(empty($images)):?>
-									<input type="file" class="validate-image" name="paycart_form[images][]" multiple="true" id="paycart_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
+									<input type="file" class="validate-image" name="paycart_product_form[images][]" multiple="true" id="paycart_product_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
 									
 								<?php else :?>								
 									<script>
@@ -252,7 +252,7 @@ echo $this->loadTemplate('edit_css');
 								<?php endif;?>
 							</div>
 							<br>
-							<div class="pc-error" for="paycart_form__uploaded_files_images"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INVALID_IMAGE');?></div>
+							<div class="pc-error" for="paycart_product_form__uploaded_files_images"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INVALID_IMAGE');?></div>
 							
 						</fieldset>
 					</div>					

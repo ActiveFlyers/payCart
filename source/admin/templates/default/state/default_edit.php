@@ -20,7 +20,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 {
 	$(document).ready(function()
 	{
-		paycart.form.validation.init('#paycart_state_form');
+		paycart.formvalidator.initialize('#paycart_state_form');
 		
 		//load required script for radio buttons
 		paycart.radio.init(); 
