@@ -198,7 +198,7 @@
 ================================================*/
 
 
-.pc-error{	
+.rb-error.show, .pc-error{	
 	display: none;
 	width: 100%;
 	min-height: 28px;
@@ -217,6 +217,6 @@
 	margin-top: -9px;
 }
 
-.pc-error.show{
+.rb-error.show, .pc-error.show{
 	display:block;
 }

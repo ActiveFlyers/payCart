@@ -615,7 +615,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							return false;
 						}
 
-						// clean page if any error available 
+						// After ajax call,  clean page if any error available 
 						paycart.cart.order.errorHandler(true, [{for : 'header'}]);
 						
 						var request = [];
@@ -639,6 +639,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			
 					    	// Payment-form action setup
 					    	$('#payment-form-html').prop('action', response['post_url']); 
+
+					    	// reinitialize validation if exist
+					    	paycart.formvalidator.initialize('form.pc-form-validate');
+					    	
 							return true;
 						}
 
@@ -657,8 +661,16 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						request['data'] = { 'task' : 'order'};
 						request['success_callback']	= paycart.cart.order.response;
 
+						// client side validation
+						if( !paycart.formvalidator.isValid('form.pc-form-validate')) {
+							return false;
+						}
+	
 						// before ajax call,  clean page if any error available 
 						paycart.cart.order.errorHandler(true, [{for : 'header'}]);
+						
+						// before process order, make sure paynow button is disabled and disabled to  payment-gateways selection 
+						$('#paycart-invoice-paynow, #pc-checkout-payment-gateway ').prop('disabled','disabled');
 						  
 						paycart.cart.request(request);
 		
@@ -682,6 +694,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				//Handle  seraver validation fail/ or any other kind of issues
 				paycart.cart.order.errorHandler(false, response.errors);				
 
+				// before process order, make sure paynow button is disabled and disabled to  payment-gateways selection 
+				$('#paycart-invoice-paynow, #pc-checkout-payment-gateway ').prop('disabled','');
+				
 				//console.log ({"Error on fetching JSON data :  " :response} );
 				
 				return false;
