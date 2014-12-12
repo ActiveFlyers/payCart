@@ -58,7 +58,7 @@ class PaycartModelProduct extends PaycartModelLang
 			  
 	}
 	
-	public function loadLanguageRecords($filter = array())
+	public function loadLanguageRecords($filter = array(), $indexBy = null)
 	{
 		$query = new Rb_Query();
 		$query->select('*')				
@@ -66,7 +66,11 @@ class PaycartModelProduct extends PaycartModelLang
 				
 		$this->_buildWhereClause($query, $filter);
 		
-		return $query->dbLoadQuery()->loadObjectList($this->getLanguageTable()->getKeyName());		
+		if($indexBy === null){
+			$indexBy = $this->getLanguageTable()->getKeyName();
+		}
+		
+		return $query->dbLoadQuery()->loadObjectList($indexBy);
 	}
 	
 	/**
