@@ -145,8 +145,7 @@ echo $this->loadTemplate('edit_ng');
 
 											if (count(array_filter($billingAddress))) :
 												$billingAddress = (object) $billingAddress;
-												$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
-										  		echo $layout->render($billingAddress);
+												echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $billingAddress, PAYCART_LAYOUTS_PATH);
 										  	else : 
 										  		echo JText::_('COM_PAYCART_BUYERADDRESS_NOT_EXIT');
 										  endif;
@@ -163,8 +162,8 @@ echo $this->loadTemplate('edit_ng');
 									
 											if (count(array_filter($shippingAddress))) :
 												$billingAddress = (object) $shippingAddress;
-												$layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
-										  		echo $layout->render($shippingAddress);
+												echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $shippingAddress, PAYCART_LAYOUTS_PATH);
+										  		
 										  	else : 
 										  		echo JText::_('COM_PAYCART_BUYERADDRESS_NOT_EXIT');
 										  endif;

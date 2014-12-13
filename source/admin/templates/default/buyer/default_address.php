@@ -57,8 +57,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				<?php	
 					$attrId = PaycartBuyeraddress::getInstance($address_id); 
 				    $address = (object)$attrId->toArray() ;
-				    $layout = new JLayoutFile('paycart_buyeraddress_display', PAYCART_LAYOUTS_PATH);
-					echo $layout->render($address);
+				    echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $address, PAYCART_LAYOUTS_PATH);
 				?>				
 			</div>
 			
