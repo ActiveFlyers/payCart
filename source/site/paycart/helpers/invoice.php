@@ -224,6 +224,20 @@ class PaycartHelperInvoice
 	
 	/**
 	 * 
+	 * Get Transaction records
+	 * @param Integer $invoiceId
+	 * 
+	 * @return Array(Object(COLUMN_NAME->COLUMN_VALUE))
+	 */
+	public function getTransactionData($invoiceId)
+	{
+		$records = Rb_EcommerceAPI::transaction_get_records(Array('invoice_id' => $invoiceId ));
+		
+		return $records;
+	}
+	
+	/**
+	 * 
 	 * Delete existing invoice
 	 * @param Integer $invoiceid :which will delete
 	 *  
