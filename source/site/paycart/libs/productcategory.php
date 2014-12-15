@@ -27,6 +27,7 @@ class PaycartProductcategory extends PaycartLib
 	protected $cover_media	 		= 0; 	
 	protected $created_date  		= '';	
 	protected $modified_date 		= '';
+	protected $params				= '';
 	
 	// language table
 	protected $productcategory_lang_id	= 0;
@@ -40,6 +41,8 @@ class PaycartProductcategory extends PaycartLib
 	protected $level				= 1;
 	protected $lft					= 0;
 	protected $rgt					= 0;
+	
+	static $isTreeCreationRunning   = false;
 
 	public function reset() 
 	{		
@@ -61,6 +64,7 @@ class PaycartProductcategory extends PaycartLib
 		$this->level				= 1;
 		$this->lft					= 0;
 		$this->rgt					= 0;
+		$this->params				= new Rb_Registry();
 		
 		return $this;
 	}
@@ -131,7 +135,15 @@ class PaycartProductcategory extends PaycartLib
 			$this->cover_media = $media->getId();
 		}
 				
-		return parent::save();
+		parent::save();
+		
+		//after save create/update category tree
+		if(!self::$isTreeCreationRunning){
+			self::$isTreeCreationRunning = true;
+			PaycartFactory::getHelper('productcategory')->generateCategoryTree();
+		}
+		
+		return $this;
 	}
 	
 	/**
@@ -165,6 +177,9 @@ class PaycartProductcategory extends PaycartLib
 		if(!$this->deleteImage()){
 			return false;
 		}
+		
+		//after delete update category tree
+		PaycartFactory::getHelper('productcategory')->generateCategoryTree();
 		
 		return true;
 	}
@@ -221,5 +236,16 @@ class PaycartProductcategory extends PaycartLib
 	public function getRgt()
 	{
 		return $this->rgt;
+	}
+	
+	public function getTree()
+	{
+		return $this->params->get('tree',array());
+	}
+	
+	public function setTree(Array $tree)
+	{
+		$this->params->set('tree',$tree);
+		return $this;
 	}
 }

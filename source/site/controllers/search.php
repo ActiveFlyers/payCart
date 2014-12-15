@@ -29,16 +29,15 @@ class PaycartSiteControllerSearch extends PaycartController
 	public function filter()
 	{
 		$searchWord   			= $this->input->get('q',null,'STRING');
-		$start					= $this->input->get('start',0);
+		$start					= $this->input->get('pagination_start',0);
 		$filters	   			= $this->input->get('filters','', 'ARRAY');
-		$limit					= 5; //PCFIXME: load from configuration
 		
 		$appliedCoreFilters     = isset($filters['core'])?$filters['core']:array();
-		$appliedCustomFilters   = isset($filters['custom'])?$filters['custom']:array();
+		$appliedAttrFilters     = isset($filters['attribute'])?$filters['attribute']:array();
 		$appliedSorting         = isset($filters['sort'])?$filters['sort']:'0';
 		$filterHelper  		    = PaycartFactory::getHelper('filter');
 		$formatter				= PaycartFactory::getHelper('format');
-		$filterHelper->start	= $start;
+		$filterHelper->pagination_start	= $start;
 		
 		/* 
 		 * set whether filters are also applied or only searching is there
@@ -56,28 +55,31 @@ class PaycartSiteControllerSearch extends PaycartController
 		 */
 		if($searchWord){ 
 			//case of searching
-			$availableCoreFilters   = $filterHelper->getAllCoreFiltersBySearchWord($searchWord);			
-			$availableCustomFilters = $filterHelper->getAllCustomFiltersBySearchWord($searchWord);
+			$availableCoreOptions      = $filterHelper->getAllCoreOptionsBySearchWord($searchWord);			
+			$availableAttributeOptions = $filterHelper->getAllAttributeOptionsBySearchWord($searchWord);
 		}else{
 			//case of browsing
-			$availableCoreFilters   = $filterHelper->getAllCoreFiltersByCategory($appliedCoreFilters['category']); 
-			$availableCustomFilters = $filterHelper->getAllCustomFiltersByCategory($appliedCoreFilters['category']);
+			$availableCoreOptions      = $filterHelper->getAllCoreOptionsByCategory($appliedCoreFilters['category']); 
+			$availableAttributeOptions = $filterHelper->getAllAttributeOptionsByCategory($appliedCoreFilters['category']);
 		}
 		
 		// get products and total count
-		list($result,$count) = $filterHelper->findProducts($appliedCoreFilters, $appliedCustomFilters, $searchWord, $appliedSorting);
+		list($result,$count) = $filterHelper->findProducts($appliedCoreFilters, $appliedAttrFilters, $searchWord, $appliedSorting);
 		
 		// build filter html and detail about each option from custom attributes
 		// detail will be used in showing applied filters
-		list($customFiltersHtml, $appliedAttrDetail) = $this->_buildCustomFilters($availableCustomFilters,$appliedCustomFilters,$isFiltersApplied);
+		list($attrFiltersHtml, $appliedAttrDetail) = $this->_buildAttributeFilters($availableAttributeOptions,$appliedAttrFilters,$isFiltersApplied);
 		
 		$allAvailableCategories = PaycartFactory::getModel('productcategory')->loadRecords();
-		$tree = $this->_buildCategoryTree($allAvailableCategories);
+		
+		// we will always display all the categories that is matching searchword+selected categoryId
+		// other filters will not be considered 
+		$tree = $this->_buildCategoryTree($allAvailableCategories,$availableCoreOptions['categories']);
 		
 		
 		$filters         = new stdClass();
 		$filters->core   = new stdClass();
-		$filters->custom = new stdClass();
+		$filters->attribute = new stdClass();
 		
 		//core filter data related to product table itself 
 		$filters->core->selectedCategoryId 	  = (isset($appliedCoreFilters['category']) && !empty($appliedCoreFilters['category']))
@@ -86,14 +88,14 @@ class PaycartSiteControllerSearch extends PaycartController
 		$filters->core->categories 		      = $allAvailableCategories;
 		$filters->core->categoryTree		  = $tree;		
 		
-		$filters->core->minPriceRange         = floatval($availableCoreFilters['price']['min']);
-		$filters->core->maxPriceRange   	  = floatval($availableCoreFilters['price']['max']);
+		$filters->core->minPriceRange         = floatval($availableCoreOptions['price']['min']);
+		$filters->core->maxPriceRange   	  = floatval($availableCoreOptions['price']['max']);
 		$filters->core->appliedPriceRange	  = (isset($appliedCoreFilters['price']) && !empty($appliedCoreFilters['price']))
 												? array($appliedCoreFilters['price'] => $formatter->priceRange($appliedCoreFilters['price']))
 												: array();
-												
-		$filters->core->minWeightRange	      = floatval($availableCoreFilters['weight']['min']);
-		$filters->core->maxWeightRange        = floatval($availableCoreFilters['weight']['max']);
+		
+		$filters->core->minWeightRange	      = floatval($availableCoreOptions['weight']['min']);
+		$filters->core->maxWeightRange        = floatval($availableCoreOptions['weight']['max']);
 		$filters->core->appliedWeightRange	  = (isset($appliedCoreFilters['weight']) && !empty($appliedCoreFilters['weight']))
 												? array($appliedCoreFilters['weight'] => $formatter->weightRange($appliedCoreFilters['weight']))
 												: array();	
@@ -103,9 +105,9 @@ class PaycartSiteControllerSearch extends PaycartController
 												: array();	
 													
 		//custom filters related to attributes
-		$filters->custom->filterHtml     	  = $customFiltersHtml;		
-		$filters->custom->appliedAttr  		  = !empty($appliedAttrDetail)?$appliedCustomFilters:array();
-		$filters->custom->appliedAttrDetail   = $appliedAttrDetail;
+		$filters->attribute->filterHtml     	  = $attrFiltersHtml;		
+		$filters->attribute->appliedAttr  		  = !empty($appliedAttrDetail)?$appliedAttrFilters:array();
+		$filters->attribute->appliedAttrDetail   = $appliedAttrDetail;
 		
 		//other common data
 		$filters->searchWord				  = $searchWord;
@@ -118,7 +120,7 @@ class PaycartSiteControllerSearch extends PaycartController
 		$view->assign('appliedSort',$appliedSorting);
 		$view->assign('sortingOptions',paycart::getSortingOptions());
 		$view->assign('filters',$filters);
-		$view->assign('start',$start+$limit);
+		$view->assign('start',$start+$filterHelper->pagination_limit);
 		
 		$this->setTemplate('result');
 		
@@ -131,24 +133,23 @@ class PaycartSiteControllerSearch extends PaycartController
 	function loadMore()
 	{
 		$searchWord   			= $this->input->get('q',null,'STRING');
-		$start					= $this->input->get('start',0);
+		$start					= $this->input->get('pagination_start',0);
 		$filters	   		    = $this->input->get('filters','', 'ARRAY');
 		$appliedCoreFilters     = isset($filters['core'])?$filters['core']:array();
-		$appliedCustomFilters   = isset($filters['custom'])?$filters['custom']:array();
+		$appliedAttrFilters     = isset($filters['attribute'])?$filters['attribute']:array();
 		$appliedSorting         = isset($filters['sort'])?$filters['sort']:'0';
 		$filterHelper  		    = PaycartFactory::getHelper('filter');
-		$limit					= 5; //PCFIXME: load from configuration
-		$filterHelper->start	= $start;
+		$filterHelper->pagination_start	= $start;
 		
 		// get products and total count
-		list($searchResult,$count) = $filterHelper->findProducts($appliedCoreFilters, $appliedCustomFilters, $searchWord, $appliedSorting);
+		list($searchResult,$count) = $filterHelper->findProducts($appliedCoreFilters, $appliedAttrFilters, $searchWord, $appliedSorting);
 		
 		if(!empty($searchResult)){
 			$products = $this->_buildProductsData($searchResult);
 			
 			$data = new stdclass();
 			$data->products = $products;
-			$data->start = $start = $start+$limit;
+			$data->pagination_start = $start = $start+$filterHelper->pagination_limit;
 			
 			$ajax 	  = PaycartFactory::getAjaxResponse();
 			
@@ -158,7 +159,7 @@ class PaycartSiteControllerSearch extends PaycartController
 			}
 			
 			$response = Array();
-			$response['start']   = $start;
+			$response['pagination_start']   = $start;
 			$response['html']  	 = JLayoutHelper::render('paycart_product_list', $data); 
 			$callback 			 = 'paycart.product.loadMore.success';
 			
@@ -170,50 +171,53 @@ class PaycartSiteControllerSearch extends PaycartController
 	}
 	
 	/**
-	 * build html of available custom attributes 
+	 * build html of available attributes 
 	 * 
-	 * @param array $availableCustomOptions
-	 * @param array $appliedCustomOptions
+	 * @param array $availableAttrOptions
+	 * @param array $appliedAttrOptions
 	 * @param boolean $isFiltersApplied
 	 */
-	function _buildCustomFilters($availableCustomOptions,$appliedCustomOptions, $isFiltersApplied)
+	function _buildAttributeFilters($availableAttrOptions,$appliedAttrOptions, $isFiltersApplied)
 	{
-		$newCustomFilters  = array();
-		$appliedCustomData = array();
-		$customFiltersHtml = array();
+		$newAttrFilters    = array();
+		$appliedAttrData   = array();
+		$attrFiltersHtml   = array();
 		$attrOptions       = array();
 		
-		//filter custom attribute option according to the applied filters
-		foreach ($availableCustomOptions as $data){
+		//filter attribute option according to the applied filters
+		foreach ($availableAttrOptions as $data){
+			//if filtering is applied, then for each attribute we need to load filter options that will enabled
 			if($isFiltersApplied && !isset($attrOptions[$data->productattribute_id])){
-				$attrOptions[$data->productattribute_id] = PaycartFactory::getHelper('filter')->getApplicableCustomFilters($data->productattribute_id);	
+				$attrOptions[$data->productattribute_id] = PaycartFactory::getHelper('filter')->getApplicableAttributeOptions($data->productattribute_id);	
 
 				foreach ($attrOptions[$data->productattribute_id] as $optionData){
-					$newCustomFilters[$optionData->productattribute_id][$optionData->productattribute_value]['productCount'] = $optionData->productCount;
-					$newCustomFilters[$optionData->productattribute_id][$optionData->productattribute_value]['disabled'] = false;
+					$newAttrFilters[$optionData->productattribute_id][$optionData->productattribute_value]['productCount'] = $optionData->productCount;
+					$newAttrFilters[$optionData->productattribute_id][$optionData->productattribute_value]['disabled'] = false;
 				}
 			}
 			
-			if(!isset($newCustomFilters[$data->productattribute_id][$data->productattribute_value])){
-				$newCustomFilters[$data->productattribute_id][$data->productattribute_value]['productCount'] = ($isFiltersApplied)?0:$data->productCount;
-				$newCustomFilters[$data->productattribute_id][$data->productattribute_value]['disabled'] = ($isFiltersApplied)?true:false; 
+			//Do not update values if record has already been processed
+			//In case of filtering, add only disabled options. Rest options have already been add by above code 
+			if(!isset($newAttrFilters[$data->productattribute_id][$data->productattribute_value])){
+				$newAttrFilters[$data->productattribute_id][$data->productattribute_value]['productCount'] = ($isFiltersApplied)?0:$data->productCount;
+				$newAttrFilters[$data->productattribute_id][$data->productattribute_value]['disabled'] = ($isFiltersApplied)?true:false; 
 			}
 		}
 		
-		foreach($newCustomFilters as $id=>$options){
+		foreach($newAttrFilters as $id=>$options){
 //			//if only one option is there then no need to add it to filter
 //			if(count($options) <=1 ){
 //				continue;
 //			}
 			$instance = PaycartProductAttribute::getInstance($id);
-			$customFiltersHtml[$id]['name'] = $instance->getTitle();
-			$customFiltersHtml[$id]['html'] = $instance->getFilterHtml(isset($appliedCustomOptions[$id])?$appliedCustomOptions[$id]:array(), $options);
+			$attrFiltersHtml[$id]['name'] = $instance->getTitle();
+			$attrFiltersHtml[$id]['html'] = $instance->getFilterHtml(isset($appliedAttrOptions[$id])?$appliedAttrOptions[$id]:array(), $options);
 			
 			//get options of the current attribute, will be used while showing applied filters
-			$appliedCustomData[$id] = $instance->getOptions();
+			$appliedAttrData[$id] = $instance->getOptions();
 		}
 		
-		return array($customFiltersHtml, $appliedCustomData);
+		return array($attrFiltersHtml, $appliedAttrData);
 	}
 	
 	/**
@@ -239,23 +243,17 @@ class PaycartSiteControllerSearch extends PaycartController
 	 * return a category tree of applicable categories
 	 * @param $categories : array of all the avaiable categories in system
 	 */
-	protected function _buildCategoryTree($categories)
+	protected function _buildCategoryTree($categories, $applicableCategories)
 	{
-		$applicableCategories = PaycartFactory::getHelper('filter')->getApplicableCategories();
-			
+		if(empty($applicableCategories)){
+			return array();
+		}
+
 		$tree = array();
 		
-		//create individual tree of each node
+		//collect individual tree of each node
 		foreach ($applicableCategories as $categoryId => $data){
-			$temp = $categoryId;
-			$tree[$categoryId][] = $temp;
-			
-			while($temp != Paycart::PRODUCTCATEGORY_ROOT_ID){
-				$tree[$categoryId][] = $categories[$temp]->parent_id;
-				$temp = $categories[$temp]->parent_id;
-			}
-			
-			$tree[$categoryId] = array_reverse($tree[$categoryId]);
+			$tree[$categoryId] = PaycartProductcategory::getInstance($categoryId)->getTree();
 		}
 		
 		//arranage all the parent and its children

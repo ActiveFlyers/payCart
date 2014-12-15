@@ -253,7 +253,7 @@ class PaycartAttribute
 				$selected = "checked='checked'";
 			}
 			$disabled = ($option['disabled'])?'readonly':'';
-			$html  .= '<input onchange="paycart.product.filterResult(this);" name="filters[custom]['.$attribute->getId().']['.$optionId.']" 
+			$html  .= '<input data-pc-result="filter" name="filters[attribute]['.$attribute->getId().']['.$optionId.']" 
 			           value="'.$optionId.'" '.$selected.' type="checkbox" data-attribute-id="'.$attribute->getId().'" ' .$disabled. '> '
 			           .$options[$optionId]['title'].' ('.$option['productCount'].') <br/>' ;
 		}

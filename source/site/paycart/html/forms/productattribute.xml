@@ -38,7 +38,7 @@
 			
 		<field 
 			name="searchable" 
-			type="hidden"
+			type="radio"
 			default="1"			
 			label="COM_PAYCART_ADMIN_SEARCHABLE" 
 			class="btn-group">

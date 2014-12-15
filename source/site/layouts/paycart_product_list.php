@@ -35,7 +35,7 @@ if(!defined( '_JEXEC' )){
 <?php foreach($displayData->products as $product) : ?>
 	<?php $inStock   = $product->inStock;?>  
 	<?php $class     = !$inStock?'pc-product-stockout':''?>  
-	<div class="pc-product-outer pc-next-<?php echo $displayData->start?>">
+	<div class="pc-product-outer pc-next-<?php echo $displayData->pagination_start?>">
 		<div class='pc-product thumbnail'>
 			<?php $media = $product->media;?>      
 			<?php $url   = PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$product->product_id);?>

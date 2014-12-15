@@ -262,7 +262,7 @@ class PaycartAttributeColor extends PaycartAttribute
 				$selected = "checked='checked'";
 			}
 			$disabled = ($color['disabled'])?'readonly':'';
-			$html  .= '<input onchange="paycart.product.filterResult(this);" name="filters[custom]['.$attribute->getId().']['.$colorId.']" 
+			$html  .= '<input data-pc-result="filter" name="filters[attribute]['.$attribute->getId().']['.$colorId.']" 
 					   value="'.$colorId.'" '.$selected.' type="checkbox" data-attribute-id="'.$attribute->getId().'"' .$disabled. '> '.
 			           $colors[$colorId]['title'].' ('.$color['productCount'].') <br/>' ;
 		}

@@ -19,8 +19,15 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartHelperFilter extends JObject
 {  
 	public $_tempFilterQuery = array();
-	public $limit = 5; 
-	public $start = 0;
+	public $pagination_limit;
+	public $pagination_start = 0 ;
+	
+	function __construct()
+	{
+		//set pagination limit from joomla's list limit
+		$this->pagination_limit = PaycartFactory::getConfig()->get('list_limit');
+		parent::__construct();
+	}
 	
 	//PCFIXME:: create a new file jFilter and move this function there
 	public static function attributecode($value)
@@ -31,10 +38,20 @@ class PaycartHelperFilter extends JObject
 		return str_replace('-', '_', $value); 
 	}
 
-	function findProducts(Array $coreFilters = array(),Array $customFilters = array(), $searchWord = '', $sort = '')
+	/**
+	 * 
+	 * Calculate productIds that matches the the given parameters/filters 
+	 * @param array $coreFilters : Applied core conditions
+	 * @param array $attributeFilters : Applied custom attribute conditions
+	 * @param string $searchWord : Keyword that is to be matched for result products
+	 * @param string $sort : result products will be sorted according to it 
+	 * 
+	 * @return list : array of productIds and total number of matching records
+	 */
+	function findProducts(Array $coreFilters = array(),Array $attributeFilters = array(), $searchWord = '', $sort = '')
 	{
 		//if all filters are blank then do nothing
-		if(empty($coreFilters) && empty($customFilters) && empty($searchWord)){
+		if(empty($coreFilters) && empty($attributeFilters) && empty($searchWord)){
 			return array();
 		}
 		
@@ -50,8 +67,8 @@ class PaycartHelperFilter extends JObject
 		
 		//custom attributes
 		$conditionCustom = array();		
-		if(!empty($customFilters)){
-			foreach($customFilters as $attrId=>$selectedValues){
+		if(!empty($attributeFilters)){
+			foreach($attributeFilters as $attrId=>$selectedValues){
 				$tempFilterQuery['attribute'][$attrId] = 'SELECT product_id FROM `#__paycart_productattribute_value`
 					                      		  WHERE `productattribute_id` = '.$attrId.' AND 
 					                      		 `productattribute_value` IN ('.implode(',', $selectedValues).') ';
@@ -60,20 +77,20 @@ class PaycartHelperFilter extends JObject
 			if(!empty($conditionCustom)){
 				
 				$query->innerJoin( '( SELECT `product_id` FROM ( '. implode(' UNION ALL ', $conditionCustom) .' ) 
-				                      tpl GROUP BY `product_id` HAVING count(*) = '.count($customFilters).' ) AS av on av.product_id = pp.product_id');	
+				                      tpl GROUP BY `product_id` HAVING count("`product_id`") = '.count($attributeFilters).' ) AS av on av.product_id = pp.product_id');	
 			}
 		}
 		
 		$query->select('pp.`product_id`')
 			  ->from('`#__paycart_product` AS pp')
-			  ->limit($this->limit, $this->start);			  
+			  ->limit($this->pagination_limit, $this->pagination_start);			  
 			  
 		//core filters
 		if(isset($coreFilters['category']) && !empty($coreFilters['category'])){
 			$category = PaycartProductcategory::getInstance($coreFilters['category'][0]);
-			$tempFilterQuery['category'] = '(SELECT productcategory_id FROM `#__paycart_productcategory` 
-											WHERE lft >='.$category->getLft().' AND rgt <= '.$category->getRgt().') AS pc 
-							    			ON pp.productcategory_id = pc.productcategory_id';
+			$tempFilterQuery['category'] = '`#__paycart_productcategory` AS pc 
+											ON lft >='.$category->getLft().' AND rgt <= '.$category->getRgt().'
+							    			AND pp.productcategory_id = pc.productcategory_id';
 			$query->innerJoin($tempFilterQuery['category']);
 		}
 		
@@ -89,7 +106,7 @@ class PaycartHelperFilter extends JObject
 			$query->where($tempFilterQuery['weight']);
 		}
 	    
-		//before setting stock related condition, save query that will be utilized in creating core and custom filters
+		//before setting stock related condition, save query that will be utilized in creating core and attribute filters
 	    $this->_tempFilterQuery = $tempFilterQuery;
 	    
 	    if(isset($coreFilters['in_stock']) && !empty($coreFilters['in_stock'])){
@@ -108,6 +125,12 @@ class PaycartHelperFilter extends JObject
 		return array($records,$count);
 	}
 	
+	/**
+	 * 
+	 * Add order by in the given query
+	 * @param $query
+	 * @param $sort
+	 */
 	function addSorting($query,$sort)
 	{
 		switch ($sort)
@@ -128,7 +151,13 @@ class PaycartHelperFilter extends JObject
 		return $query;
 	}
 	
-	public function getAllCustomFiltersBySearchword($searchWord)
+	/**
+	 * Get attribute options of the result products that matches $searchWord
+	 * @param string $searchWord
+	 * 
+	 * @return array of objects having : (attr_id, attr_value, number of product having attr_id, value combination)
+	 */
+	public function getAllAttributeOptionsBySearchword($searchWord)
 	{
 		$query = new Rb_Query();
 		$model = PaycartFactory::getModel('productindex');
@@ -141,7 +170,13 @@ class PaycartHelperFilter extends JObject
 					 ->loadObjectList();
 	}
 	
-	public function getAllCoreFiltersBySearchword($searchWord)
+	/**
+	 * Get core options (i.e. category, price and weight range) of the result products that matches $searchWord
+	 * @param string $searchWord
+	 * 
+	 * @return array containing category, min and max value of price & weight
+	 */
+	public function getAllCoreOptionsBySearchword($searchWord)
 	{
 		$where = PaycartFactory::getModel('productindex')->buildWhereCondition($searchWord);
 		$coreFilters = array();
@@ -155,9 +190,6 @@ class PaycartHelperFilter extends JObject
 										   ->order('pc.lft ASC')
 										   ->dbLoadQuery()
 										   ->loadObjectList('productcategory_id');	
-										   
-		
-		//PCTODO: Discuss - Whether to create separate function to load range data or not
 												   
 		//load price and weight range
 		$query   = new Rb_Query();
@@ -178,9 +210,14 @@ class PaycartHelperFilter extends JObject
 		return $coreFilters;
 	}
 	
-	public function getAllCustomFiltersByCategory($categoryId)
+	/**
+	 * Get attribute options of the result products that matches $categoryId
+	 * @param int $categoryId
+	 * 
+	 * @return array of objects having : (attr_id, attr_value, number of product having attr_id-value combination)
+	 */
+	public function getAllAttributeOptionsByCategory($categoryId)
 	{
-		
 		$category = PaycartProductcategory::getInstance($categoryId);
 		$query    = new Rb_Query();
 		
@@ -193,7 +230,13 @@ class PaycartHelperFilter extends JObject
 					 ->loadObjectList();
 	}
 	
-	public function getAllCoreFiltersByCategory($categoryid)
+	/**
+	 * Get core options (i.e. category, price and weight range) of the result products that matches $categoryid
+	 * @param int $categoryid
+	 * 
+	 * @return array containing category, min and max value of price & weight
+	 */
+	public function getAllCoreOptionsByCategory($categoryid)
 	{		
 		$category   = PaycartProductcategory::getInstance($categoryid);		
 		$innerQuery = '`#__paycart_productcategory` AS pc ON lft >='.$category->getLft().' AND rgt <= '.$category->getRgt().' AND p.productcategory_id = pc.productcategory_id ';
@@ -225,7 +268,14 @@ class PaycartHelperFilter extends JObject
 		return $coreFilters;
 	}
 	
-	public function getApplicableCustomFilters($attributeId)
+	/**
+	 * load applicable options' values of the given attributeId
+	 * It will return filtered option according to the full filter query but ignore condition of its own
+	 * Because we need to ignore filter query of it's own attributeId, otherwise no option will be there
+	 * 
+	 * @param int $attributeId
+	 */
+	public function getApplicableAttributeOptions($attributeId)
 	{   
 		if(empty($this->_tempFilterQuery)){
 			return array();
@@ -240,20 +290,6 @@ class PaycartHelperFilter extends JObject
 					 ->group('`productattribute_id`,`productattribute_value`')
 					 ->dbLoadQuery()
 					 ->loadObjectList();
-	}
-	
-	public function getApplicableCategories()
-	{
-		if(empty($this->_tempFilterQuery)){
-			return array();
-		}
-		
-		$query = new Rb_Query();
-		return $query->select("p.`productcategory_id`")
-  				     ->from('`#__paycart_product` as p')
-  				     ->innerJoin('('.$this->_buildOptionsFilterQuery(array('price','weight','attribute')).') AS s ON s.product_id = p.product_id ')
-  				     ->dbLoadQuery()
-  				     ->loadObjectList('productcategory_id');
 	}
 	
 	function _buildOptionsFilterQuery($ignore = array())

@@ -36,7 +36,7 @@ $weightUnit 		= $displayData->weightUnit;
 
 		$(".pc-range-slider").on('slideStop', function (ev) {
 			var link = 'index.php?option=com_paycart&view=search&task=filter';
-			$('input[name="start"]').attr('value',0);
+			$('input[name="pagination_start"]').attr('value',0);
 			paycart.ajax.go(link, $('.pc-form-product-filter').serialize());
 			return false;
 		});

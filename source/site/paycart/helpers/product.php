@@ -246,7 +246,7 @@ class PaycartHelperProduct extends PaycartHelper
 		$product = PaycartProduct::getInstance($productId);
 		
 		if($product instanceof PaycartProduct){
-			return ($product->getQuantity() > $product->getStockoutLimit())?true:false;
+			return ($product->getQuantity() > 0)?true:false;
 		}
 		
 		return false;

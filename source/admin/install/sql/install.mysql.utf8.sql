@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
   `created_date` datetime NOT NULL,
   `modified_date` datetime NOT NULL,
   `ordering` int(11) NOT NULL,
+  `params` text COMMENT 'Include extra stuff like, tree.',
   PRIMARY KEY (`productcategory_id`),
   KEY `idx_left_right` (`lft`,`rgt`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

@@ -18,8 +18,8 @@ if(!defined( '_JEXEC' )){
  * List of Populated Variables
  * $displayData : object of stdclass containing data to show applied filters
  */
-$appliedAttr        = $displayData->custom->appliedAttr;
-$attributeOptions   = $displayData->custom->appliedAttrDetail;
+$appliedAttr        = $displayData->attribute->appliedAttr;
+$attributeOptions   = $displayData->attribute->appliedAttrDetail;
 $appliedPriceRange  = $displayData->core->appliedPriceRange;
 $appliedWeightRange = $displayData->core->appliedWeightRange;
 $appliedInStock     = $displayData->core->appliedInStock;
@@ -29,8 +29,8 @@ $appliedInStock     = $displayData->core->appliedInStock;
 <?php foreach ($appliedAttr as $id=>$data):?>
 	<?php if(!empty($data)):?>
 		<?php foreach ($data as $key=>$value):?>
-			<span style="background-color:#f5f5f5; padding:1%;" onClick="paycart.product.filter.remove(this)" data-pc-filter-applied-ref="filters[custom][<?php echo $id?>][<?php echo $value?>]">
-				<?php echo $attributeOptions[$id][$value]->title ;?><span class="muted">&nbsp;&nbsp;X</span>
+			<span class="label pc-cursor-pointer" data-pc-filter="remove" data-pc-filter-applied-ref="filters[attribute][<?php echo $id?>][<?php echo $value?>]">
+				<?php echo $attributeOptions[$id][$value]->title ;?>&nbsp;&nbsp;<i class="fa fa-times"></i>
 			</span>&nbsp;
 		<?php endforeach;?>
 	<?php endif; ?>
@@ -40,8 +40,8 @@ $appliedInStock     = $displayData->core->appliedInStock;
 <?php if(!empty($appliedPriceRange)):?>
     <?php $key   = key($appliedPriceRange);?>
     <?php $value = $appliedPriceRange[$key];?>
-	<span style="background-color:#f5f5f5; padding:1%;" onClick="paycart.product.filter.remove(this)" data-pc-filter-applied-ref="filters[core][price]">
-		<?php echo $value;?><span class="muted">&nbsp;&nbsp;X</span>
+	<span class="label pc-cursor-pointer" data-pc-filter="remove" data-pc-filter-applied-ref="filters[core][price]">
+		<?php echo $value;?>&nbsp;&nbsp;<i class="fa fa-times"></i>
 	</span>&nbsp;
 <?php endif;?>
 
@@ -49,8 +49,8 @@ $appliedInStock     = $displayData->core->appliedInStock;
 <?php if(!empty($appliedWeightRange)):?>
 	<?php $key   = key($appliedWeightRange);?>
     <?php $value = $appliedWeightRange[$key];?>
-	<span style="background-color:#f5f5f5; padding:1%;" onClick="paycart.product.filter.remove(this)" data-pc-filter-applied-ref="filters[core][weight]">
-		<?php echo $value;?><span class="muted">&nbsp;&nbsp;X</span>
+	<span class="label pc-cursor-pointer" data-pc-filter="remove" data-pc-filter-applied-ref="filters[core][weight]">
+		<?php echo $value;?>&nbsp;&nbsp;<i class="fa fa-times"></i>
 	</span>&nbsp;
 <?php endif;?>
 
@@ -58,8 +58,8 @@ $appliedInStock     = $displayData->core->appliedInStock;
 <?php if(!empty($appliedInStock)) :?>
 	<?php $key   = key($appliedInStock);?>
     <?php $value = $appliedInStock[$key];?>
-	<span style="background-color:#f5f5f5; padding:1%;" onClick="paycart.product.filter.remove(this)" data-pc-filter-applied-ref="filters[core][<?php echo $key?>]">
-		<?php echo $value;?><span class="muted">&nbsp;&nbsp;X</span>
+	<span class="label pc-cursor-pointer" data-pc-filter="remove" data-pc-filter-applied-ref="filters[core][<?php echo $key?>]">
+		<?php echo $value;?>&nbsp;&nbsp;<i class="fa fa-times"></i>
 	</span>&nbsp;
 <?php endif;?>
 <?php 

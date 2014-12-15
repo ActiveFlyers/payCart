@@ -88,7 +88,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		
 		<div class="control-group">
 			<div class="control-label">
-				<?php //echo $form->getLabel('searchable'); ?>
+				<?php echo $form->getLabel('searchable'); ?>
 			</div>
 			<div class="controls">
 				<?php echo $form->getInput('searchable'); ?>

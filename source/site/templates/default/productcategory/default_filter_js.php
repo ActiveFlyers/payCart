@@ -25,12 +25,32 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		paycart.ajax.go(link , {'filters':$.parseJSON(filters)} );
 		return false;
 	};
+
+	paycart.product.filter.bindActions = function(){
+		paycart.product.arrange('add');
+		
+		$('[data-pc-result="filter"]').on('change',function(){
+			paycart.product.filter.getResult();
+		});
+
+		$('[data-pc-loadMore="click"]').on('click', function(){
+			paycart.product.loadMore();
+		});
+
+		$('[data-pc-category="click"]').on('click', function(){
+			paycart.category.redirect($(this).data('pc-categorylink'),$(this).data('pc-categoryid'));
+		});
+
+		$('[data-pc-filter="remove"]').on('click', function(){			
+			paycart.product.filter.remove(this);
+		});		
+	};
 	
-	paycart.product.filterResult = function(){
+	paycart.product.filter.getResult = function(){
 		//set the sorting option to hidden input so that it get post with form
 		var source = $('[data-pc-filter="sort-source"]').val();
 		$('[data-pc-filter="sort-destination"]').val(source);
-		$('input[name="start"]').attr('value',0);
+		$('input[name="pagination_start"]').attr('value',0);
 		
 		var link = 'index.php?option=com_paycart&view=search&task=filter';
 		paycart.ajax.go(link, $('.pc-form-product-filter').serialize());
@@ -41,7 +61,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 	paycart.product.filter.remove = function(elem){
 		var name = $(elem).data('pc-filter-applied-ref');
 
-		$('input[name="start"]').attr('value',0);
+		$('input[name="pagination_start"]').attr('value',0);
 		$('[name="'+name+'"]').attr('value','');
 		$('[name="'+name+'"]').prop('checked',false);
 
@@ -60,7 +80,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		var response = $.parseJSON(data);
 		
 		$(".pc-products-wrapper").append(response.html);
-		$('input[name="start"]').val(response.start);
+		$('input[name="pagination_start"]').val(response.pagination_start);
 		
 		paycart.product.arrange('update');
 
@@ -78,7 +98,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		if(mode=="add"){
 			paycart.helper.do_grid_layout('#pc-products[data-columns]','.pc-product-outer', '.pc-product', sizeclass);
 		}else{
-			var start = $('input[name="start"]').val();
+			var start = $('input[name="pagination_start"]').val();
 			paycart.helper.update_grid_layout('#pc-products[data-columns]','.pc-product-outer', '.pc-product-outer.pc-next-'+start, sizeclass);
 		}
 	};

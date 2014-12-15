@@ -15,9 +15,9 @@ if(!defined( '_JEXEC' )){
 }
 
 //load assests that are required before loading related templates
-Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/slider.css');
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/bootstrap-slider.js');
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/salvattore.js');
+Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/slider.css');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/bootstrap-slider.js');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');
 
 echo $this->loadTemplate('filter_js');
 ?>
@@ -57,7 +57,7 @@ echo $this->loadTemplate('filter_js');
 	};
 	
 	$(document).ready(function(){
-		paycart.product.filter.init('<?php echo isset($searchWord)?$searchWord:'';?>','<?php echo (isset($filters) && !empty($filters))?json_encode($filters):'';?>');
+		paycart.product.filter.init('<?php echo isset($searchWord)?urlencode($searchWord):'';?>','<?php echo (isset($filters) && !empty($filters))?json_encode($filters):'';?>');
 	});
 })(paycart.jQuery);
 </script>
@@ -73,3 +73,4 @@ echo $this->loadTemplate('filter_js');
 <div class="modal-backdrop pc-product-filter-loader hide" id="pc-filter-loader">
     <i class="fa fa-spinner fa-3x fa-spin"></i>
 </div>
+<?php 

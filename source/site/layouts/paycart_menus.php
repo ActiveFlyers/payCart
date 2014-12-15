@@ -51,8 +51,9 @@ $return_link	= 	base64_encode($link);
                 <a href="#"><i class="fa fa-bars"></i></a>
             </li>
 			<li>
-				<input type="text" class="input-medium search-query" placeholder="Search here and press enter"
-				       onKeydown="Javascript: if (event.keyCode==13) paycart.fireSearch(this.value);" name="q"/>
+				<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
+					<input type="text" class="input-medium search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH_PLACE_HOLDER")?>" name="q"/>
+				</form>
 			</li>	
 			
 			<!-- Product Category link on desktop, tab etc -->
@@ -269,13 +270,7 @@ $return_link	= 	base64_encode($link);
     			$(document).ready(function(){
     				pc_menu.update.do();
     			});
-
-    			paycart.fireSearch = function(value){
-        			<?php $url = PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'); ?>
-    				rb.url.redirect(rb.url.route('<?php echo $url;?>'+'?q='+value)); 
-    				return false;
-    			};    			
-
+    			
         	})(paycart.jQuery);
         
         </script>

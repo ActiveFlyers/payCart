@@ -14,7 +14,7 @@ if(!defined( '_JEXEC' )){
 }
 
 //load required javascripts
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/salvattore.js');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');
 echo $this->loadTemplate('js');
 
 ?>

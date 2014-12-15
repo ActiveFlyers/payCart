@@ -50,14 +50,15 @@ class PaycartSiteViewProductcategory extends PaycartSiteBaseViewProductcategory
 		// 1. If products are not there in the current category
 		// 2. If root category is selected and searching is not being taking place 
 		//    then show productcategory layout  
-		if(count($products) == 0 ||($categoryId == Paycart::PRODUCTCATEGORY_ROOT_ID && empty($searchWord))){	
+		if((count($products) == 0 ||($categoryId == Paycart::PRODUCTCATEGORY_ROOT_ID)) && empty($searchWord)){	
 			$this->assign('products',$products);
 			$this->assign('categories',$this->getModel()->loadRecords($categoryFilters));
 			return true;
 		}
 
-		// Display filters if any product exist in the selected category, if no category selected 
-		if( count($products) > 0){			
+		// Display filters if any product exist in the selected category, if no category selected and 
+		// if searching is there 
+		if( count($products) > 0 || !empty($searchWord)){			
 			$filters = $this->input->get('filters',array(),'ARRAY');
 			//if no filter applied yet and no search applied,then send current category as a filter to load result
 			if(empty($filters)){

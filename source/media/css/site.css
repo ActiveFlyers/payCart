@@ -246,3 +246,7 @@ Products Display
 .pc-product-attribute-header{
 	background-color : #F5F5F5;
 }
+
+.pc-cursor-pointer{
+	cursor : pointer;
+}
