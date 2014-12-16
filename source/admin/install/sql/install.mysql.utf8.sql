@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
   `created_date` datetime NOT NULL,
   `modified_date` datetime NOT NULL,
   `ordering` int(11) NOT NULL,
+  `params` text COMMENT 'Include extra stuff like, tree.',
   PRIMARY KEY (`productcategory_id`),
   KEY `idx_left_right` (`lft`,`rgt`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -727,6 +728,18 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shipment_x_product` (
   KEY `idx_cart_id` (`product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='mapping product and shipments' AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_product_index`
+--
+CREATE TABLE IF NOT EXISTS `#__paycart_product_index` (
+  `product_id` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `modified_date` datetime NOT NULL,
+  PRIMARY KEY (`product_id`),
+  FULLTEXT KEY `idx_content` (`content`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 -- ------------------- DEFAULT VALUES ---------------------

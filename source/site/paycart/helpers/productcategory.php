@@ -36,4 +36,27 @@ class PaycartHelperProductCategory extends PaycartHelper
 		 
 		return $result;
 	}
+	
+	/**
+     * generate category tree 
+     * i.e. sequence of categories coming while traversing for a category from root
+     */
+	public function generateCategoryTree()
+	{
+		$categories = PaycartFactory::getModel('productcategory')->loadRecords();
+		
+		foreach ($categories as $data){
+			$categoryId = $data->productcategory_id;
+			$temp       = $categoryId;
+			$tree[$categoryId][] = $temp;
+			
+			while($temp != Paycart::PRODUCTCATEGORY_ROOT_ID){
+				$tree[$categoryId][] = $categories[$temp]->parent_id;
+				$temp = $categories[$temp]->parent_id;
+			}
+			
+			$instance = PaycartProductcategory::getInstance($categoryId,$data);
+			$instance->setTree(array_reverse($tree[$categoryId]))->save();
+		}
+	}
 }

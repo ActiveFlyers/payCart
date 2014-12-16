@@ -100,7 +100,7 @@ class PaycartHelperCart extends PaycartHelper
 		//if the given quantity is greater than the avaiable quantity of product 
 		// PCFIXME #123: then through a message to user showing the maximum quantity he can order for this item 
 		$product = PaycartProduct::getInstance($productId);
-		$allowedQuantity = ($product->getQuantity()-$product->getStockoutLimit()); 
+		$allowedQuantity = $product->getQuantity(); 
 		if($quantity > $allowedQuantity){
 			return array(false,$prevQuantity,$productId,$allowedQuantity);
 		}

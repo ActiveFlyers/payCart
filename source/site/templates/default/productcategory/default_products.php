@@ -25,7 +25,7 @@ if(!defined( '_JEXEC' )){
 						<?php $media = $instance->getCoverMedia();?>      
 						<?php $url   = PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$p->product_id);?>           
 						
-						<a class="pc-product-image" href="<?php echo $url;?>">
+						<a class="pc-clickable" href="<?php echo $url;?>">
 							<div class="pc-product-content">
 								<?php if(!empty($class)):?>
 									<strong><span class="<?php echo $class;?> text-center"><?php echo strtoupper(JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK"));?></span></strong>

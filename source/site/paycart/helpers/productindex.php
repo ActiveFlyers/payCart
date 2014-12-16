@@ -14,24 +14,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 /**
  * 
  * PaycartHelper ProductIndex
- * @author manish
+ * @author manish, rimjhim jain
  *
  */
 class PaycartHelperProductIndex
 {
-	
-	protected $badchars = Array(
-								'#',			//  # causes problems. 
-								'>', '<', 		//	<> get stripped anyway later on
-								'\\'			//  slashes cause errors
-								);
-								
-	protected $keyword	= Array( 
-								'word'		=> '',		// Keyword search perform on this word				
-								'phrase'	=> 'any'	// Match case : Either any or exact			
-								);
-
-								
 	public function __construct()
 	{
 		// get indexer model
@@ -40,172 +27,86 @@ class PaycartHelperProductIndex
 	}							
 	
 	/**
-	 * 
-	 * Method invoke to insert and update operation perform on PaycartIndexer table
-	 * @param $previousObject, Attribute Lib object
-	 * @param $currentObject, Attribute Lib object
+	 * Do index the required data of product
+	 * @param $previousObject
+	 * @param $product : object of PaycartProduct
 	 */
-	public function indexing($previousObject, $currentObject) 
+	public function doIndexing($previousObject, PaycartProduct $product) 
 	{
-		// get all attributes which are filterable and searchable
-		$attributes = PaycartFactory::getModel('productattribute')
-						->loadrecords(Array('searchable' => Array(Array('=', 1, 'OR')), 'filterable' => Array(Array('=', 1, 'OR'))));
+		$content = array();
+		$field	 = new stdclass();
+		$productId = $product->getId();
 		
-		// return true if non-searchable and non-filterable attribute
-		if (!$attributes) {
-			return true;
-		}
+		//Step-1 : Prepare core data for indexing of all the languages
+		$content[] = $product->getSku();
 		
-		$attributeValue = $currentObject->get('_attributeValue');
-		
-		// collect filter stuff
-		$fields	 = new stdClass();
-		
-		// Collect indexer stuff
-		$fields->content = '';
-		
-		foreach ($attributes as $attributeId=>$attribute) {
-			// if attribute not available on Product
-			if(!isset($attributeValue[$attributeId])) {
-				continue;
-			}
-			
-			$data	= $attributeValue[$attributeId]->toDatabase();
-			
-			// if attribute is filterable
-			if ($attribute->filterable) {
-				$column 	= Paycart::PRODUCT_FILTER_FIELD_PREFIX.$attributeId;
-				$data		= $attributeValue[$attributeId]->toDatabase();
-			
-				// set field value
-				$fields->$column = $data['value'];
-			}
-			
-			//if attribute is searchable
-			if ($attribute->searchable) {
-				// set content column value / indexed data
-				$fields->content .= $data['value']. ' ';
+		$query 	  = new Rb_Query();
+		$result   = $query->select('title, alias, description')
+						  ->from('#__paycart_product_lang')
+						  ->where('product_id = '.$productId)
+						  ->dbLoadQuery()
+						  ->loadObjectList();
+						
+		foreach ($result as $langCode => $data){
+			$content[] = $data->title;
+			$content[] = $data->alias;
+			if(!empty($data->description)){
+				$content[] = $data->description; 	
 			}
 		}
 
-		// trim start and last space
-		$fields->content= trim($fields->content);
+		//Step-2 : Also index category title from which the product belongs
+		$catId = $product->getProductCategory();
 		
-		// set primary key value
-		$fields->product_id = $currentObject->getId();
-		
-		// check reocrd already exist or not
-		$record = $this->model->loadRecords(Array('product_id' => $fields->product_id ));
-		
-		// Check index already exist or insert new
-		$indexerId = null;
-		$new	= true;
-		if (!empty($record)) {
-			list($indexerId) = array_keys($record);
-			$new = false;
+		$query            = new Rb_Query();
+		$categoryLangData = $query->select('title')
+							  ->from('#__paycart_productcategory_lang')
+							  ->where('productcategory_id = '.$catId)
+							  ->dbLoadQuery()
+							  ->loadColumn();
+		foreach ($categoryLangData as $categoryTitle){
+			$content[] = $categoryTitle;
 		}
 		
-		// save indexed values
-		return $this->model->save($fields, $indexerId, $new);
+		//Step-3 : Prepare attribute data for indexing
+		// get all attributes which are searchable
+		$searchableAttributes = PaycartFactory::getModel('productattribute')
+										      ->loadrecords(Array('searchable' => Array(Array('=', 1))),array(),false,'productattribute_id');
+
+		//prepare attribute data only if any of the attribute is searchable											      
+		if ($searchableAttributes) {
+			$attributes  = $product->getAttributes();
+			$optionsLang = array();
+			foreach ($attributes as $attribute_id => $data){
+				if(in_array($attribute_id, $searchableAttributes)){
+					$attribute   = PaycartProductAttribute::getInstance($attribute_id, $searchableAttributes[$attribute_id]);
+					$optionsLang = $attribute->getSearchableDataOfOption($data);
+				}
+			}
+			
+			foreach ($optionsLang as $option){
+				$content[] = $option['title'];
+			} 
+		}	
+
+		//Step-4 : Separate data through space and sanitize content before saving
+		$indexData       = implode(" ", $content);
+		$field->content	 = $this->sanitizeContent($indexData);
+		
+		// Step-5 : Save data
+		if(!isset($previousObject)){
+			$field->product_id = $productId;
+			return $this->model->save($field,null,true);
+		}
+		return $this->model->save($field,$productId);
 	}
 	
 	/**
-	 * 
-	 * Method invoke to check column exist or not
-	 * @param String $column : Column name
-	 * 
-	 * @return (bool)type, True If column exist other-wise false
+	 * allow alphabets, numbers and spaces
+	 * @param string $content
 	 */
-	public function checkColumn($column)
+	function sanitizeContent($content)
 	{
-		$table 	= PaycartFactory::getTable('productindex');
-		$fields = $table->getFields();
-		return (bool)array_key_exists($column, $fields);
-	}	
-	
-	/**
-	 * 
-	 * Method invoke to add/remove (Alter) operation perform on PaycartIndeaxer table
-	 * @param $previousObject, Attribute Lib object
-	 * @param $currentObject, Attribute Lib object
-	 */
-	public function alterColumn($previousObject, $currentObject) 
-	{
-		// look like atribute_1, attribute_4 etc
-		$column	= Paycart::PRODUCT_FILTER_FIELD_PREFIX.$currentObject->getId();
-		
-		//  Case 1:: if {$previousObject}attribute filterable AND {$currentObject}attribute non-filterable 
-		//	then remove column
-		if ( $previousObject && (bool)$previousObject->get('filterable') && false == (bool)$currentObject->get('filterable')) {
-			$this->removeColumn($column);
-			return true;
-		}
-		
-		//  Case 2:: if ( {$previousObject}attribute not exits OR non-filterable ) AND {$currentObject}attribute filterable 
-		//	then create column for it.
-		//  Case 3:: if {$previousObject}attribute filterable AND {$currentObject}attribute also filterable 
-		// 	then check column exist (then return) else create column
-		if ( (bool)$currentObject->get('filterable') && !$this->checkColumn($column)) {
-			$definition = $this->getColumnDefinition($currentObject->get('type'));
-			$this->createColumn(Array($column =>$definition) );
-			return true;
-		}
-		
-		return true;
+		return preg_replace('/[^\p{L}\p{N}\|\s]+/u','',strip_tags($content));
 	}
-	
-	/**
-	 * 
-	 * Invoke to remove column from PayCart filter table
-	 * @param String $column, Column name
-	 * 
-	 * @return (bool) true if successfully deleted
-	 */
-	public function removeColumn($column)
-	{
-		if($this->checkColumn($column)) {
-			$this->model->dropColumn($column);
-		}
-		
-		return true;	
-	}
-	
-	/**
-	 * 
-	 * Invoke to create column in PayCart filter table
-	 * @param String $column, Column name
-	 * 
-	 * @return (bool) true if successfully Created
-	 */
-	public function createColumn(Array $column)
-	{
-		$this->model->addColumn($column);
-		return true;
-	}
-	
-	/**
-	 * 
-	 * Invoke to get column definition according to attribute type
-	 * @param string $type, Attrinute type
-	 * 
-	 * @return string type, Column definition
-	 */
-	public function getColumnDefinition($type)
-	{
-		switch ($type)
-		{
-			case 'date':
-				$definition = ' DATETIME ';
-				break;
-			case 'text':
-				$definition = ' VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci ';
-				break;
-			case 'textarea':
-			case 'list':
-			default:
-				$definition = ' VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci ';
-		}
-		return $definition;
-	}
-	
 }

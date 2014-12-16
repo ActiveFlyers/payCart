@@ -19,6 +19,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartAttribute
 {
 	static $instance = array();
+	
+	static $options  = array();
 
 	public function getEditHtml($attribute,$selectedValue ='', Array $options = array())
 	{
@@ -42,7 +44,11 @@ class PaycartAttribute
 	
 	function getOptions($attribute)
 	{
-		return PaycartFactory::getInstance('productattributeoption', 'model')->loadOptions($attribute->getId(), $attribute->getLanguageCode());
+		if(isset(self::$options[$attribute->getId()])){
+			return self::$options[$attribute->getId()];
+		}
+		
+		return self::$options[$attribute->getId()] = PaycartFactory::getInstance('productattributeoption', 'model')->loadOptions($attribute->getId(), $attribute->getLanguageCode());
 	}
 	
 	/**
@@ -53,8 +59,7 @@ class PaycartAttribute
 		$options = (isset($data['_options'])) ? $data['_options']: array();
 		
 		if(empty($options) && $attribute->getId()){
-			$options = PaycartFactory::getModel('productattributeoption')
-					                           ->loadOptions($attribute->getId(), $attribute->getLanguageCode());
+			$options = $this->getOptions($attribute);
 		}
 		
 		$result = array();
@@ -214,22 +219,52 @@ class PaycartAttribute
 	 */
 	function getSelectorHtml($attribute,  $selectedOption = '', Array $options = array())
 	{
-		$options  = PaycartFactory::getModel('productattributeoption')->loadOptions($attribute->getId(), $attribute->getLanguageCode(),$options);
-		if(empty($options)){
+		$records  = $this->getOptions($attribute);
+		if(empty($records)){
 			return '';
 		}	
 		
 		$html = '<select id="pc-attr-'.$attribute->getId().'" name="attributes['.$attribute->getId().']" onchange="paycart.product.selector.onChange(this)">';
 		
-		foreach ($options as $option){
+		foreach ($options as $optionId){
 			$selected = '';
-			if(!empty($selectedOption) && $selectedOption == $option['productattribute_option_id']){
+			if(!empty($selectedOption) && $selectedOption == $optionId){
 				$selected = "selected='selected'";
 			}
-			$html  .= '<option value="'.$option['productattribute_option_id'].'" '.$selected.' >'.$option['title'].'</option>' ;
+			$html  .= '<option value="'.$optionId.'" '.$selected.' >'.$records[$optionId]['title'].'</option>' ;
 		}
 		
 		$html .= '</select>';
 		return $html;
+	}
+	
+	function getFilterHtml($attribute, Array $selectedOptions = array(), Array $input = array())
+	{		
+		$options  = $this->getOptions($attribute);
+		if(empty($options)){
+			return '';
+		}	
+		
+		$html = '';
+		
+		foreach ($input as $optionId=>$option){
+			$selected = '';
+			if(!empty($selectedOptions) && in_array($optionId, $selectedOptions)){
+				$selected = "checked='checked'";
+			}
+			$disabled = ($option['disabled'])?'readonly':'';
+			$html  .= '<input data-pc-result="filter" name="filters[attribute]['.$attribute->getId().']['.$optionId.']" 
+			           value="'.$optionId.'" '.$selected.' type="checkbox" data-attribute-id="'.$attribute->getId().'" ' .$disabled. '> '
+			           .$options[$optionId]['title'].' ('.$option['productCount'].') <br/>' ;
+		}
+		
+		$html .= '</select>';
+		return $html;
+	}
+	
+	function getSearchableDataOfOption($attributeId, $optionId)
+	{
+		//Can't use getOptions function, becoz here we need option data of all the languages
+		return PaycartFactory::getModel('productattributeoption')->loadOptions($attributeId,'',array($optionId));
 	}
 }

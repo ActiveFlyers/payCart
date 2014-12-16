@@ -45,7 +45,7 @@ class PaycartAdminControllerConfig extends PaycartController
 			$post['company_logo'] = $media->getId();
 		}
 		
-		$this->getModel()->save($post);
+		PaycartFactory::saveConfig($post);
 		
 		return true;
 	}

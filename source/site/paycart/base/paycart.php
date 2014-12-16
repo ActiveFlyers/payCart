@@ -136,4 +136,17 @@ class Paycart
 				Paycart::STATUS_CART_CANCELLED => 'COM_PAYCART_CART_STATUS_CANCELLED',
 			 );
 	}
+	
+	/**
+	 * Return All available Sorting Options
+	 */
+	public static function getSortingOptions()
+	{
+		return Array( 	'0'            => JText::_('COM_PAYCART_SORT_SELECT'),
+//						'hit' 		   => JText::_('COM_PAYCART_SORT_POPULARITY'),
+						'created_date' => JText::_('COM_PAYCART_SORT_NEW'),
+ 						'price_low'    => JText::_('COM_PAYCART_SORT_PRICE_LOW'),
+						'price_high'   => JText::_('COM_PAYCART_SORT_PRICE_HIGH'),
+						);
+	}
 }

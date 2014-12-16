@@ -60,7 +60,7 @@ $currencyId = $cart->getCurrency();
 			<div class="pull-right pc-grid-8">
 				 <h4 class="text-info pc-break-word"><?php echo PaycartHtml::link('index.php?option=com_paycart&view=product&task=display&product_id='.$product->getId(), $product->getTitle()); ?></h4>
 				 <p class="pc-item-attribute">
-				 	 <?php foreach ($product->getAttributeValues() as $attributeId => $optionId):?>
+				 	 <?php foreach ($product->getAttributes() as $attributeId => $optionId):?>
 	                     <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
 					 	<span><?php echo $instance->getTitle();?></span> &nbsp;<span><?php $options = $instance->getOptions(); echo $options[$optionId]->title;?></span><br /> 	
 					<?php endforeach;?>

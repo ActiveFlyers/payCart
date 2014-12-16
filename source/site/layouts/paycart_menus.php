@@ -50,6 +50,11 @@ $return_link	= 	base64_encode($link);
             <li class="visible-phone" data-toggle="collapse" data-target=".nav-collapse">
                 <a href="#"><i class="fa fa-bars"></i></a>
             </li>
+			<li>
+				<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
+					<input type="text" class="input-medium search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH_PLACE_HOLDER")?>" name="q"/>
+				</form>
+			</li>	
 			
 			<!-- Product Category link on desktop, tab etc -->
              <li class="dropdown hidden-phone">
@@ -264,8 +269,8 @@ $return_link	= 	base64_encode($link);
     			// on Document ready 
     			$(document).ready(function(){
     				pc_menu.update.do();
-    			})
-
+    			});
+    			
         	})(paycart.jQuery);
         
         </script>

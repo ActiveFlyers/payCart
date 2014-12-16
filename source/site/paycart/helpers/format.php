@@ -84,7 +84,7 @@ class PaycartHelperFormat extends JObject
 	
 	/**
 	 * 
-	 * format weigth as per the configuration 
+	 * format weight as per the configuration 
 	 * @param $value : value (in kg) to be formatted according to the configuration setting 
 	 */
 	function weight($value, $defaultUnit = paycart::WEIGHT_UNIT_GRAM)
@@ -217,12 +217,33 @@ class PaycartHelperFormat extends JObject
             return static::$_state_data[$state_id]->title;             
         }
         
-	public static function attributecode($value)
-	{		
-		// this function is called from filter, so need to be static
-		$value = JApplicationHelper::stringURLSafe($value);
-		$value = strtoupper($value);
-		return str_replace('-', '_', $value); 
+    /**
+     * convert the given price range into a display format
+     * @param $value : comma separated range
+     */
+	public function priceRange($value, $separator = ' - ')
+	{
+		$range = explode(',', $value);
+		      
+		$range[0] = $this->amount($range[0]);
+		$range[1] = $this->amount($range[1]);
+		
+		return implode($separator,$range);
 	}
+
+	/**
+     * convert the given weight range into a display format
+     * @param $value : comma separated range
+     */
+	public function weightRange($value, $separator = ' - ')
+    {
+       $weightUnitConfig = PaycartFactory::getConfig()->get('catalogue_weight_unit');
+       $range = explode(',', $value);
+		      
+	   $range[0] = $range[0].' '.$weightUnitConfig;
+	   $range[1] = $range[1].' '.$weightUnitConfig;
+	
+	   return implode($separator,$range);
+    }
         
 }

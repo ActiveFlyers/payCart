@@ -30,7 +30,8 @@ class PaycartSiteViewProductcategory extends PaycartSiteBaseViewProductcategory
 	 */
 	public function display($tpl = NULL)
 	{			
-		$categoryId	     = $this->input->get('productcategory_id', Paycart::PRODUCTCATEGORY_ROOT_ID); 
+		$categoryId	     = $this->input->get('productcategory_id', Paycart::PRODUCTCATEGORY_ROOT_ID);
+		$searchWord		 = $this->input->get('q',null,'STRING'); 
 		$categoryFilters = array();
 		$productFilters	 = array();
 		
@@ -44,8 +45,30 @@ class PaycartSiteViewProductcategory extends PaycartSiteBaseViewProductcategory
 		$metaKeywords    = $category->getMetadataKeywords();
 		
 		Rb_HelperJoomla::addDocumentMetadata($metaTitle,$metaKeywords,$metaDescription);
-		$this->assign('products', PaycartFactory::getModel('product')->loadRecords($productFilters));	
-		$this->assign('categories',$this->getModel()->loadRecords($categoryFilters));
+		$products = PaycartFactory::getModel('product')->loadRecords($productFilters);
+	
+		// 1. If products are not there in the current category
+		// 2. If root category is selected and searching is not being taking place 
+		//    then show productcategory layout  
+		if((count($products) == 0 ||($categoryId == Paycart::PRODUCTCATEGORY_ROOT_ID)) && empty($searchWord)){	
+			$this->assign('products',$products);
+			$this->assign('categories',$this->getModel()->loadRecords($categoryFilters));
+			return true;
+		}
+
+		// Display filters if any product exist in the selected category, if no category selected and 
+		// if searching is there 
+		if( count($products) > 0 || !empty($searchWord)){			
+			$filters = $this->input->get('filters',array(),'ARRAY');
+			//if no filter applied yet and no search applied,then send current category as a filter to load result
+			if(empty($filters)){
+				$filters = array('core' => array('category' => $categoryId ));
+			}
+			$this->assign('filters',$filters);
+		}
+		
+		$this->assign('searchWord',$searchWord);
+		$this->setTpl('filter');
 		return true;
 	}
 }
