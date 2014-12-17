@@ -17,6 +17,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <div class='pc-checkout-wrapper clearfix '>	
 	
 	<span for="pc-checkout-payment-error" class="pc-error" id="pc-checkout-payment-error"></span>
+	<span for="pc-checkout-payment-processing-error" class="pc-error" id="pc-checkout-payment-processing-error"></span>
 
 	<div class="pc-checkout-payment" id="accordion-parent" >
 		<div class="row-fluid ">

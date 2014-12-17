@@ -317,26 +317,51 @@ class PaycartHelperInvoice
 		// request function suffix
 		$requestName = 'payment';
 		
-		while (true) {
-			// Payment Start : request for payment    
-			$paymentResponseData 	= Rb_EcommerceApi::invoice_request($requestName, $invoiceId, $paymentData);
-			
-			// Process Payement : After request need to Process payament data 
-			$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $paymentResponseData);
-
-			PaycartFactory::getHelper('log')->add($processResponseData);
-			
-			// if you still need to process like fist you need to create user profile at payment-gatway then process for payment
-			if($processResponseData->get('next_request', false) == false){
-				break;
+		$response = new stdClass();
+		$response->is_error = false;
+		$response->error_message = false;
+		
+		try {
+			while (true) {
+				
+				$paymentResponseData = '';
+				
+				// Payment Start : request for payment    
+				$paymentResponseData 	= Rb_EcommerceApi::invoice_request($requestName, $invoiceId, $paymentData);
+				
+				// Process Payement : After request need to Process payament data 
+				$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $paymentResponseData);
+	
+				PaycartFactory::getHelper('log')->add($processResponseData);
+				
+				// if you still need to process like fist you need to create user profile at payment-gatway then process for payment
+				if($processResponseData->get('next_request', false) == false){
+					break;
+				}
+	
+				// our default moto is get payment, next_request_name will set by payment-processor
+				$requestName = $processResponseData->get('next_request_name', 'payment');
 			}
-
-			// our default moto is get payment, next_request_name will set by payment-processor
-			$requestName = $processResponseData->get('next_request_name', 'payment');
+		} catch (Exception $e) {
+			$response->is_error = true;
+			$response->error_message = $e->get('message');
 		}
 		
+		$reponse_status = $processResponseData->get('payment_status', Rb_EcommerceResponse::FAIL);
+		
+		// if dont have any error/exception then check transaction status
+		if ( !($response->is_error) &&
+			  ( self::STATUS_TRANSACTION_PAYMENT_FAIL == $reponse_status ||
+				self::STATUS_TRANSACTION_SUBSCR_FAIL == $reponse_status ||
+				self::STATUS_TRANSACTION_FAIL == $reponse_status
+			  )
+			) {
+				$response->is_error = true;
+				$response->error_message = $processResponseData->get('message');
+			}
+		
+		
 		//Create new response and set required cart's stuff. 
-		$response = new stdClass();
 		$response->processorResponse = $processResponseData;
 
 		return $response;
@@ -381,6 +406,20 @@ class PaycartHelperInvoice
 	public function getNotificationInvoiceId($responseData) 
 	{
 		$invoiceId	= Rb_EcommerceAPI::invoice_get_from_response($responseData->data['processor'], $responseData);
+		
+		return $invoiceId;
+	}	
+	
+	/**
+	 * 
+	 * Get invoice id from invoice number
+	 * @param numeric $invoice_number :
+	 * 
+	 * @return integer invoice-id
+	 */
+	public function getInvoiceId($invoice_number) 
+	{
+		$invoiceId	= Rb_EcommerceAPI::invoice_get_id_from_number($invoice_number);
 		
 		return $invoiceId;
 	}	

@@ -93,6 +93,7 @@ class PaycartSiteViewcart extends PaycartSiteBaseViewcart
 		$this->setTpl('complete');
 		$this->assign('message', $message);
 		$this->assign('transaction_detail', $transaction_detail);
+		$this->assign('cart_id', $cart_id);
 		
 		return true;
 	}
@@ -110,6 +111,7 @@ class PaycartSiteViewcart extends PaycartSiteBaseViewcart
 	public function checkout()
 	{
 		$this->assign('is_platform_mobile', PaycartFactory::getApplication()->client->mobile);
+		$this->assign('cart', isset($this->cart) ? $this->cart : '');
 		return true;
 	}
 }

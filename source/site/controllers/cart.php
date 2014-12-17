@@ -48,6 +48,8 @@ class PaycartSiteControllerCart extends PaycartController
 	{
 		parent::__construct($options);
 		
+		$this->registerTask( 'cancel', 		'cancel');
+		
 		$this->setCurrentLanguage();
 		$this->helper			=	PaycartFactory::getHelper('checkout');
 		$this->cart				=	PaycartFactory::getHelper('cart')->getCurrentCart();
@@ -477,38 +479,65 @@ class PaycartSiteControllerCart extends PaycartController
 
 	/**	
 	 * JSON Task. 
-	 * @return : return Payment form html
+	 * 	- Payment Processing
+	 * 	- Return Payment form html 
+	 *  
+	 * @return : return Payment form html or Payment Processing 
 	 */
 	public function paymentForm() 
 	{
+		$errors 		= 	array();
 		$payment_data	=	$this->input->post->get('payment_data', array(), 'array');		
-		if(!empty($payment_data)){
+		
+		// Payment Processing Job
+		if(!empty($payment_data)){ 
 			$cart_id		=	$this->input->get('cart_id', 0);
 			$cart_instance	=	PaycartCart::getInstance($cart_id);
-	
-			$cart_instance->requestPayment($payment_data);
-	
-			$this->setRedirect(Rb_Route::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$cart_id));
-	
-			return false;
-		}
-		
-		// if payment form is not posted  then return payment form html		
-		$gateway_id	= $this->input->get('paymentgateway_id', 0 );
-		$errors = array();		
-		if ( empty($gateway_id) ) {		
-			$error = new stdClass();
-			$error->message 		= JText::_('Processor-Required');
-			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
-			$error->for				= 'payment-gateway';
-			$errors[] = $error;	
-		}
-		else{
-			$this->cart->updatePaymentProcessor($gateway_id)->save();
-			$this->getView()->set('cart', 		$this->cart);
+			
+			// payment  fetching
+			$response = $cart_instance->requestPayment($payment_data);
+			
+			if (!$response->is_error) { 
+				//successfull process
+				$this->getView()->set('redirect_url', Rb_Route::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$cart_id));	
+			} else { // error in processing
+				
+				$error = new stdClass();
+				$error->message 		= $response->error_message;
+				$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+				$error->for				= 'payment_header';
+				
+				//Unlock current cart
+				$cart_instance->markUnLock()->save();
+				
+				// create new invoice 
+				try{			
+					$cart_instance->confirm()->calculate()->save();
+				}catch (Exception $ex) {
+					$error->message 		= $error->message. '<br />'.$ex->getMessage();
+				}
+				$errors[] = $error;
+				
+				$this->cart = $cart_instance->getClone();
+			}
+		} else { // gateway html fetching jobProcess Job
+
+			// if payment form is not posted  then return payment form html		
+			$gateway_id	= $this->input->get('paymentgateway_id', 0 );
+			if ( empty($gateway_id) ) {		
+				$error = new stdClass();
+				$error->message 		= JText::_('Processor-Required');
+				$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+				$error->for				= 'header';
+				$errors[] = $error;	
+			}
+			else {
+				$this->cart->updatePaymentProcessor($gateway_id)->save();
+			}
 		}
 		
 		$this->getView()->set('errors', $errors);
+		$this->getView()->set('cart', 	$this->cart);
 		return true;
 	}
 	
@@ -550,17 +579,51 @@ class PaycartSiteControllerCart extends PaycartController
 	 * Enter description here ...
 	 */
 	function complete()
-	{
-		$cart_id = $this->get('cart_id', 0);
-		
+	{		
 		return true;
 	}
 	
-	
 	function cancel()
-	{
-		echo "Payment cancelllllllllllllllllll";
-		exit;
+	{	
+		// Get cart id from response
+		
+		$invoice_number = $this->input->get('invoice_number', '');
+		/* @var $invoice_helper_instance PaycartHelperInvoice */
+		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+		
+		if ($invoice_number) { // get invoice id by invoice number
+			$invoice_id = $invoice_helper_instance->getInvoiceId($invoice_number);
+		} else { //get invoice-id from response
+			$get 				= $this->input->get->getArray();	
+			$post 				= $this->input->post->getArray();	
+			
+			$response_data 		= array_merge($get, $post);
+			
+			$response 			= new stdClass();
+			$response->data 	= $response_data;
+			$response->__post	= $post;
+			$response->__get	= $get;
+	
+			//file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response_data,true), FILE_APPEND);
+			
+			if (defined('JDEBUG') && JDEBUG) {
+				// dump data
+				file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response_data,true), FILE_APPEND);
+			}
+			
+			$invoice_id = $invoice_helper_instance->getNotificationInvoiceId($response);
+		}
+		
+		
+		if (!$invoice_id) { //cart is exist into session or not
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
+			return false;
+		}
+			
+		$cart_records	= 	PaycartFactory::getModel('cart')->loadRecords(Array('invoice_id' => $invoice_id));
+		$cart_record 	=	array_pop($cart_records);
+		
+		return $this->_unlock($cart_record->cart_id);
 	}
 	
 	public function notify()
@@ -582,7 +645,7 @@ class PaycartSiteControllerCart extends PaycartController
 			file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response_data,true), FILE_APPEND);
 		}
 		
-		if(!isset($response_data['processor'])){
+		if (!isset($response_data['processor'])){
 			// @PCFIXME:: dump data and notify to admin	
 		}
 		
@@ -600,7 +663,8 @@ class PaycartSiteControllerCart extends PaycartController
 
 		} catch (Exception $ex) {
 			//@PCTODO :: dump exception into log file
-			$ex->getMessage();
+			echo $ex->getMessage();
+			exit;
 		}
 		echo "Success!!";
 		exit;				
@@ -759,7 +823,52 @@ class PaycartSiteControllerCart extends PaycartController
 	 *  Json function invoke to retrive data
 	 * ============================================================================================
 	 */
-	
 	public function getProductCount() 
 	{}
+	
+	/**
+	 * 
+	 * Unlock current cart
+	 * 
+	 */
+	function unlock()
+	{
+		// Validate Task 
+		if (! JSession::checkToken('get') ) {
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
+			return false;
+		}
+		
+		return $this->_unlock($this->input->get('cart_id', 0));
+	}
+	
+	protected function _unlock($cart_id)
+	{
+		if (!$cart_id ) { // if cart id is not exist
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_CART_NOT_EXIST'), 'error');
+			return false;
+		}
+		
+		/* @var $cart_helper PaycartHelperCart */
+		$cart_helper = PaycartFactory::getHelper('cart');
+		if(!$cart_helper->isSessionCart($cart_id)) { //cart is exist into session or not
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
+			return false;
+		}
+		
+		$cart_instance = PaycartCart::getInstance($cart_id);
+		if ($cart_instance->isPaid()) { // if cart already paid
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_CART_ALREADY_PAID'), 'error');
+			return false;
+		}
+		
+		//Unlock current cart
+		$cart_instance->markUnLock()->save();
+		
+		// we are assuming that cart is already exist in session.
+		$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'));
+		
+		return false;
+	}
+	
 }

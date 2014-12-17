@@ -636,9 +636,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						if(response.isValid){
 							// Payment-form setup into payment div
 					    	$('.payment-form-html').html(response['html']);
-			
-					    	// Payment-form action setup
-					    	$('#payment-form-html').prop('action', response['post_url']); 
+
+					    	$('#payment-form-html').prop('action', '');
+
+					    	if (response['post_url']) {
+						    	// Payment-form action setup
+						    	$('#payment-form-html').prop('action', response['post_url']);
+					    	} 
 
 					    	// reinitialize validation if exist
 					    	paycart.formvalidator.initialize('form.pc-form-validate');
@@ -678,14 +682,21 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 	   /**
-		*	Invoke to chanke response and initiate Payment 
+		*	Invoke to chack response and initiate Payment 
 		*/
 		paycart.cart.order.response = 
 			function(response){
 
 				if(response.isValid) {
-					// Submit Form to initiate payment
-				    $('#payment-form-html').submit();
+					var action_url = $('#payment-form-html').prop('action');
+
+					// form will be post to payment gateway site
+					if (action_url) {
+						// Submit Form to initiate payment
+					    $('#payment-form-html').submit();
+					}else {	// need manual process by paycart system
+						paycart.cart.paymentInitiate()
+					}
 
 				    // always return false 
 				    return false;
@@ -694,11 +705,56 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				//Handle  seraver validation fail/ or any other kind of issues
 				paycart.cart.order.errorHandler(false, response.errors);				
 
-				// before process order, make sure paynow button is disabled and disabled to  payment-gateways selection 
+				// Enable to  payment-gateways selection 
 				$('#paycart-invoice-paynow, #pc-checkout-payment-gateway ').prop('disabled','');
 				
 				//console.log ({"Error on fetching JSON data :  " :response} );
 				
+				return false;
+			};
+
+		/**
+		 *	Invoke to initiate payment 
+		 *   - will invoke only when paycart fetching payment. Otherwise buyer will redirect to payment-gateway site.
+		 *  	 
+		 */
+		paycart.cart.paymentInitiate = 
+			function() {
+
+				var request = [];
+				request['success_callback']	= paycart.cart.paymentInitiate.response;
+				// get all form data for post	
+				request['data'] = $("#payment-form-html").serializeArray();
+				// Override task value to ajax task
+				request['data'].push({'name':'task','value':'paymentform'},
+									 {'name':'cart_id','value':'<?php echo $cart->getId(); ?>'}
+									);
+				//paycart.ajax.go(link, postData);
+				paycart.cart.request(request);
+				return false;
+
+		}
+
+	   /**
+		*	Invoke to handle payment response 
+		*/
+	  paycart.cart.paymentInitiate.response =
+			 function(response) {
+
+				if(response.isValid) { 
+					// redirect to complete url
+					paycart.url.redirect(response.redirect_url);
+				    // always return false 
+				    return false;
+				}
+				//Handle server validation fail/ or any other kind of issues
+				paycart.cart.order.errorHandler(false, response.errors);				
+				// Enable to  payment-gateways selection 
+				$('#paycart-invoice-paynow, #pc-checkout-payment-gateway ').prop('disabled',''); 
+				//console.log ({"Error on fetching JSON data :  " :response} );
+				
+				// processor will be update
+				paycart.cart.getPaymentForm($('#pc-checkout-payment-gateway').val());
 				return false;
 			};
 
@@ -710,8 +766,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 */
 		paycart.cart.order.errorHandler = function(isValid, error_objects) 
 			{
-				var error_mapper = {'header' : "#pc-checkout-payment-error"	};
-
+				var error_mapper = { 	
+										'header' : "#pc-checkout-payment-error",
+										'payment_header'  : "#pc-checkout-payment-processing-error"
+									};
 				for (var index in error_objects) {
 					paycart.formvalidator
 								.handleResponse(

@@ -26,12 +26,12 @@ $formatter = PaycartFactory::getHelper('format');
  	
  	<?php if ( !empty($transaction_detail) ) :?>
  	<div class="row-fluid ">
- 		<h2 class="muted"><?php echo JText::_('COM_PAYCART_TRANSACTION_DETIALS');?></h2>
+ 		<h2 class="muted"><?php echo JText::_('COM_PAYCART_CART_TRANSACTION_DETIALS');?></h2>
 	 	<table class="table table-striped">
 			<thead>
 			<!-- TABLE HEADER START -->
 				<tr>
-					<th><?php echo JText::_('COM_PAYCART_GATEWAY_TRANSACTION_ID'); ?></th>
+					<th><?php echo JText::_('COM_PAYCART_CART_GATEWAY_TRANSACTION_ID'); ?></th>
 					<th><?php echo JText::_('COM_PAYCART_MESSAGE'); ?></th>
 					<th><?php echo JText::_('COM_PAYCART_CREATED_DATE'); ?></th>			
 				</tr>
@@ -61,6 +61,10 @@ $formatter = PaycartFactory::getHelper('format');
 				</tr>
 			</tfoot>
 		</table>
+		
+		<div class='span12'>
+			<a class="btn btn-large btn-primary" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=unlock&cart_id='.$cart_id.'&'. JSession::getFormToken() .'=1');?>"> &nbsp; <?php echo JText::_("COM_PAYCART_CART_UNLOCK");?></a>
+		</div>
 	</div>
 	<?php endif;?>
 </div>

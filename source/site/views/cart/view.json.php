@@ -26,7 +26,7 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	public function paymentForm()
 	{
 		$this->json = new stdClass();
-				
+		// if getting any error
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
 			$this->json->isValid  = false;
@@ -34,13 +34,18 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 			return true;
 		}
 		
-		$response_object	=	PaycartFactory::getHelper('invoice')->getBuildForm($this->cart);
+		// if payment processed
+		$redirect_url  = $this->get('redirect_url', false);
+		if ( $redirect_url) {
+			$this->json->isValid  = true;
+			$this->json->redirect_url = $redirect_url;
+			return true;
+		}
 		
+		// fetch gateway html
+		$response_object	=	PaycartFactory::getHelper('invoice')->getBuildForm($this->cart);
 		$this->assign('response_object', $response_object); 
 		
-		if ( empty($response_object->post_url )) {
-			$response_object->post_url = 'index.php?option=com_paycart&view=cart&task=paymentForm&cart_id='.$this->cart->getId(); 
-		}
 				
 		$html =  $this->loadTemplate('payment_form');
 		
@@ -53,6 +58,8 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	
 	function order()
 	{
+		$this->json = new stdClass();
+		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
 			$this->json->isValid = false;

@@ -299,6 +299,29 @@ class PaycartCart extends PaycartLib
 	
 	/**
 	 * 
+	 * Invoke to get Transaction data
+	 * 
+	 * @return Array
+	 */
+	public function getTransactionData() 
+	{
+		$invoice_id = $this->getInvoiceId();
+		
+		// if invoice is not available
+		if(!$invoice_id) {
+			return Array();
+		}
+		
+		/* @var $invoice_helper_instance PaycartHelperInvoice */
+		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+		
+		$transaction_data = $invoice_helper_instance->getTransactionData($invoice_id);
+		
+		return $transaction_data;
+	}
+	
+	/**
+	 * 
 	 * Return buyeraddress-Lib instance Or buyeraddress-Id
 	 * @param Boolean $instance_required : true, if you need buyeraddress-lib instance. default buyeraddress-Id 
 	 * 
@@ -431,6 +454,49 @@ class PaycartCart extends PaycartLib
 				
 		return $this;
 	}
+	
+	/**
+	 * 
+	 * Unlock cart
+	 * 				 ) 
+	 * @since 1.0
+	 * @author mManishTrivedi, Gaurav Jain
+	 * 
+	 * @return PaycartCart instance
+	 */
+	public function markUnLock()
+	{
+		$cart_id = $this->getId();
+		 
+		// first delete depended data
+		
+		// 1#.  Delete Usage
+		$usage_model = PaycartFactory::getModel('usage')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 2#.  Delete Particulars
+		$particular_model = PaycartFactory::getModel('cartparticular')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 3#.	Delete Invoice if exist
+		$invoice_id = $this->getInvoiceId();
+		
+		if ( $invoice_id) {
+			/* @var $invoice_helper_instance PaycartHelperInvoice */
+			$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+			
+			if ( !$invoice_helper_instance->deleteInvoice($invoice_id) ) {
+				return false;
+			}
+		}
+		
+		// 4#. Reset locked field from cart
+		$this->is_locked 	= 0;
+		$this->locked_date	= Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->invoice_id 	= 0;
+						
+		return $this;
+	}
+	
+	
 	
 	    /**
          * Invoke to approve cart
@@ -1300,7 +1366,7 @@ class PaycartCart extends PaycartLib
 		$invoice_beforeProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
 
 		// Process Payment data . 
-		$invoice_helper_instance->processPayment($invoice_id, $payment_data);
+		$response = $invoice_helper_instance->processPayment($invoice_id, $payment_data);
 
 		//after process invoice
 		$invoice_afterProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
@@ -1308,7 +1374,7 @@ class PaycartCart extends PaycartLib
 		// After Payment cart status must be changed
 		$this->processCart($invoice_beforeProecess, $invoice_afterProecess);	
 		
-		return $this;
+		return $response;
 	}
 	
 	/**
