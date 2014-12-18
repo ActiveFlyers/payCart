@@ -29,14 +29,14 @@ defined('_JEXEC') or die;
 		<div class='control-group'>
 			
 			<div class='control-label'>
-				<label aria-invalid='false' id='paycart_form_coupon-lbl' for='paycart_form_coupon' class='control-label'>
+				<label aria-invalid='false' id='paycart_discountrule_form_coupon-lbl' for='paycart_discountrule_form_coupon' class='control-label'>
 				<?php echo JText::_('COM_PAYCART_ADMIN_DISCOUNTRULE_COUPON'); ?>
 				<span class="star">*</span>
 				</label>
 			</div>
 			
 			<div class='controls'>
-				<input name='paycart_form[coupon]' id='paycart_form_coupon' required="" value="<?php echo @$coupon_code;?>"  type='text' />
+				<input name='paycart_discountrule_form[coupon]' id='paycart_discountrule_form_coupon' required="" value="<?php echo @$coupon_code;?>"  type='text' />
 			</div>
 											
 		</div>

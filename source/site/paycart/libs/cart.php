@@ -575,13 +575,35 @@ class PaycartCart extends PaycartLib
 		// @PCTODO :: its far better if we will add {code => discount-rule-id} 
 		// so we can utlize discount-rule-id on getDiscountRule method (in Query performance) 
 		  
-		// product is not already added, set it with quantity 0
+		// code is not already added
 		if(!in_array($code, $promotions)){
 			$promotions[] = $code;
 		}
 			
-		// set the new products
+		// set promotion
 		$this->params->set('promotions', $promotions);
+				
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * Remove specific promotion code from cart
+	 * @param $code
+	 * 
+	 * @return PaycartCart
+	 */
+	public function removePromotionCode($code)
+	{
+		$promotions = $this->params->get('promotions', array());
+		
+		$key = array_search($code, $promotions);
+		// if key exist the unset it and set into cart 
+		if ($key !== false ) {
+			unset($promotions[$key]);
+			// reset promotion code
+			$this->params->set('promotions', $promotions);
+		}
 				
 		return $this;
 	}

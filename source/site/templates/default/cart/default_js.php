@@ -517,7 +517,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						$('#pc-checkout-remove-error-'+productId).text(message);						
 					};
 
-		// update product-quantity into cart
+		// Apply promotion code on cart
 		paycart.cart.onApplyPromotionCode = function(){
 						var request = [];
 						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=applyPromotion';
@@ -533,15 +533,45 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							paycart.cart.confirm.get();
 							return true;
 						}
-						
-						var message = '';
-						for(var index in response.errors){
-							if(response.errors.hasOwnProperty(index) == false){
-								continue;
-							}
-							message += "\n" + response.errors[index].message;
+
+						//error handling
+						for(var index in response.errors) {
+							paycart.formvalidator
+							.handleResponse(
+								false, 
+								$(response.errors[index].for), 
+								response.errors[index].message_type, 
+								response.errors[index].message);
 						}
-						$('#pc-checkout-promotioncode-error').text(message);						
+				
+					};
+					
+		// remove promotion code from cart
+		paycart.cart.onRemovePromotionCode = function(promotion_code){
+						var request = [];
+						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=removePromotion';
+						request['data']	= {'promotion_code' : promotion_code};
+						request['success_callback']	= paycart.cart.onRemovePromotionCode.response;
+						paycart.cart.request(request);
+						
+						return false;
+					};
+					
+		paycart.cart.onRemovePromotionCode.response = function(response){				
+						if(response.isValid){
+							paycart.cart.confirm.get();
+							return true;
+						}
+
+						//error handling
+						for(var index in response.errors) {
+							paycart.formvalidator
+							.handleResponse(
+								false, 
+								$(response.errors[index].for), 
+								response.errors[index].message_type, 
+								response.errors[index].message);
+						}
 					};
 
 		paycart.cart.confirm.error = function(errors){

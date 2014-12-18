@@ -349,11 +349,26 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<!-- Cart Discount		 -->
 			 <div class="row-fluid">
 			 	<p><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_LABEL')?></p>
-			 	<div class="input-append" >
+			 	<?php  
+			 	 // Already applied discount
+			 	 if (!empty($applied_promotion_code)) :
+			 	 		foreach ($applied_promotion_code as $code) : ?>
+			 	 		<div class="input-prepend input-append" >
+				 	  	   <span class="  add-on text-success "><i class="fa fa-check "></i></span>
+						  <input class="span6" type="text" value='<?php echo $code;?>'  readonly="readonly">
+						  <button class="btn" type="button" onclick="paycart.cart.onRemovePromotionCode('<?php echo $code;?>')">
+						  <span class="  text-error  "><i class="fa fa-remove "></i></span>
+						  <?php echo JText::_('COM_PAYCART_PROMOTION_CODE_REMOVE')?></button>
+						</div>
+			 	<?php 	endforeach;
+			 	?>
+			 	<?php else :?>
+	 	 		<div class="input-append" >
 				  <input class="span9" id="paycart-promotion-code-input-id" type="text">
 				  <button class="btn" type="button" onclick="paycart.cart.onApplyPromotionCode()"><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_APPLY')?></button>
 				</div>
-				<span class="text-error" id="pc-checkout-promotioncode-error"></span>
+				<?php endif;?>
+				<span class=" pc-error " id="pc-checkout-promotioncode-error" for="pc-checkout-promotioncode-error"></span>
 			 </div>
 			 
 			 <!-- Process ne		 -->

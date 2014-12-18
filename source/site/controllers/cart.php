@@ -773,14 +773,41 @@ class PaycartSiteControllerCart extends PaycartController
 			
 		try {
 			if (!empty($promotion_code)) {
-				PaycartFactory::getHelper('cart')->applyPromotion($promotion_code);
+				
+				$cart_helper = PaycartFactory::getHelper('cart');
+				
+				// apply promotion
+				$cart_helper->applyPromotion($promotion_code);
+				
+				//fetch promotion particular ids
+				$promotion_particular_ids = Array();
+				
+				// hierarchy required !!
+				foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_PROMOTION) as  $key => $particular) {
+					foreach ($particular->getUsage() as $usage) {
+						$promotion_particular_ids[] = $usage->rule_id;
+					}
+				}
+				
+				//validate promotion code applied or not
+				$applied_promotion_code = $cart_helper->getAppliedPromotionCode($promotion_particular_ids, Array($promotion_code));
+
+				// not applicable promotion code
+				if ( empty($applied_promotion_code) ) {
+					//remove from cart param
+					$this->cart->removePromotionCode($promotion_code)->save();
+					throw new Exception(JText::_('COM_PAYCART_CART_PROMOTION_CODE_MOT_APPLICABLE'));
+				}
+				
+			}else{ // if promotion code empty
+				throw new Exception(JText::_('COM_PAYCART_CART_PROMOTION_CODE_EMPTY'));
 			}
 			
 		} catch (Exception $ex) {
 			$error 	=  array();			
 			$error['message_type']   	= Paycart::MESSAGE_TYPE_ERROR;
-			$error['for']				= '';				
-			$error['message']   		= $e->getMessage();
+			$error['for']				= '#pc-checkout-promotioncode-error';				
+			$error['message']   		= $ex->getMessage();
 			$errors[] = $error;
 		}
 	
@@ -788,6 +815,35 @@ class PaycartSiteControllerCart extends PaycartController
 		$view->assign('errors', $errors);
 		return true;	
 	}
+	
+	/**
+	 * remove promotion code from current cart
+	 * JSON Task
+	 */
+	public function removePromotion()
+	{
+		// get promotion code
+		$promotion_code = $this->input->get('promotion_code', null, 'ALNUM');
+		$errors 	=  array();
+			
+		try {
+			if (!empty($promotion_code)) {
+				PaycartFactory::getHelper('cart')->removePromotion($promotion_code);
+			}
+			
+		} catch (Exception $ex) {
+			$error 	=  array();			
+			$error['message_type']   	= Paycart::MESSAGE_TYPE_ERROR;
+			$error['for']				= '#pc-checkout-promotioncode-error';				
+			$error['message']   		= $ex->getMessage();
+			$errors[] = $error;
+		}
+	
+		$view = $this->getView();
+		$view->assign('errors', $errors);
+		return true;	
+	}
+	
 	
 	/**
 	 * Do calculation again, when shipping method is changed by user

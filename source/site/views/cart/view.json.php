@@ -152,6 +152,21 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		return true;		
 	}
 	
+	public function removePromotion()
+	{
+		$response = new stdClass();
+		$response->isValid = true;
+		
+		$errors = $this->get('errors', array());
+		if(!empty($errors)){
+			$response->isValid  = false;
+			$response->errors = $errors;
+		}
+		
+		$this->assign('json', $response);
+		return true;		
+	}
+	
 	function changeShippingMethod()
 	{
 		$response = new stdClass();

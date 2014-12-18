@@ -202,6 +202,14 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 			$promotion_usage[$particular->getParticularId()] = $particular->getUsage();
 		}
 		
+		//fetch promotion particular ids
+		$promotion_particular_ids = Array();
+		foreach ($promotion_usage as $usage_records) {
+			foreach ($usage_records as $usage) {
+				$promotion_particular_ids[] = $usage->rule_id;
+			}
+		}
+		
 		$duties_particular	=	Array();
 		$duties_total		=	0;
 		$duties_usage		= Array();
@@ -211,6 +219,11 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 			$duties_total  	    += $particular->getTotal(true);
 			$duties_usage[$particular->getParticularId()] = $particular->getUsage();
 		}
+		
+		// applied promotion code
+		$promotions = $this->cart->getParam('promotions', Array());
+		
+		$applied_promotion_code = PaycartFactory::getHelper('cart')->getAppliedPromotionCode($promotion_particular_ids, $promotions);	
 		
 		// set all particular details
 		$this->assign('product_total',			$product_total);
@@ -231,6 +244,9 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 		
 		$this->assign('shipping_options', $this->_getShippingOptions());
 		$this->assign('default_shipping', $default_shipping);
+		
+		// applied promotion code
+		$this->assign('applied_promotion_code', $applied_promotion_code);
 		
 		$this->setTpl('confirm');		
 		return true;
