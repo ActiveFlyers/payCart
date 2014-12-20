@@ -110,4 +110,32 @@ class PaycartController extends Rb_Controller
 	{
 		return $this->_component->getNameSmall().'_'.$this->getName().'_form';
 	}
+	
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_AbstractController::getView()
+	 */
+	public function getView($name='', $format='', $prefix = '', $config = array())
+	{
+		if(empty($name)){
+			$name 	= $this->getName();
+		}
+		
+		if(empty($prefix)){
+			$prefix = $this->getPrefix();
+		}
+		
+		if (!$format) {
+			$format = RB_REQUEST_DOCUMENT_FORMAT;
+		}
+		
+		$view = $format.'View';
+		
+		//get Instance from Factory
+		$view = Rb_Factory::getInstance($name, $view, $prefix);	
+
+		return $view;
+	}
+	
 }

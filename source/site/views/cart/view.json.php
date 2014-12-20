@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  */
 require_once dirname(__FILE__).'/view.php';
 
-class PaycartSiteViewCart extends PaycartSiteBaseViewCart
+class PaycartSiteJsonViewCart extends PaycartSiteBaseViewCart
 {
 	/**
 	 * Get HTML from Payment Gateway

@@ -15,7 +15,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 
 require_once dirname(__FILE__).'/view.php'; 
-class PaycartAdminViewProductAttribute extends PaycartAdminBaseViewProductAttribute
+class PaycartAdminJsonViewProductAttribute extends PaycartAdminBaseViewProductAttribute
 {	
 	public function getEditHtml()
 	{

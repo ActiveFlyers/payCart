@@ -16,7 +16,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @since 1.0.0
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewDiscountrule extends PaycartAdminBaseViewDiscountrule
+class PaycartAdminAjaxViewDiscountrule extends PaycartAdminBaseViewDiscountrule
 {
 	public function getProcessorConfig()
 	{

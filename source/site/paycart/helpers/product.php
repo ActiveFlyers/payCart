@@ -82,7 +82,7 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		
 		// set attribute values
-		$newProduct->set('_attributeValues', $product->getAttributeValues());
+		$newProduct->set('_attributeValues', $product->getAttributes());
 
 		// save the records first, it will copy the same data in all the language
 		$newProduct->save();

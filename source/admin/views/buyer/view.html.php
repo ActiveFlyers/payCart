@@ -15,7 +15,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * Buyer Html View
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
+class PaycartAdminHtmlViewBuyer extends PaycartAdminBaseViewBuyer
 {	
 	protected function _adminEditToolbar()
 	{

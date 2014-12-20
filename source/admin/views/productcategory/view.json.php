@@ -19,7 +19,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 require_once dirname(__FILE__).'/view.php';
 
-class PaycartAdminViewProductCategory extends PaycartAdminBaseViewProductCategory
+class PaycartAdminJsonViewProductCategory extends PaycartAdminBaseViewProductCategory
 {	
 	public function deleteImage()
 	{		

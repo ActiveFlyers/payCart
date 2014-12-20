@@ -13,7 +13,7 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 
 require_once dirname(__FILE__).'/view.php';
 
-class PaycartSiteViewCart extends PaycartSiteBaseViewCart
+class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 {
 	public function display($tpl = NULL)
 	{	

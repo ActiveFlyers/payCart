@@ -18,7 +18,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author Gaurav Jain
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
+class PaycartAdminAjaxViewGroup extends PaycartAdminBaseViewGroup
 {	
 	public function addRule()
 	{

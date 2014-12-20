@@ -19,7 +19,7 @@ if(!defined( '_JEXEC' )){
  */
 require_once dirname(__FILE__).'/view.php';
 
-class PaycartSiteViewProductcategory extends PaycartSiteBaseViewProductcategory
+class PaycartSiteHtmlViewProductcategory extends PaycartSiteBaseViewProductcategory
 {	
 	protected $auto_generate_metadata = false;
 	

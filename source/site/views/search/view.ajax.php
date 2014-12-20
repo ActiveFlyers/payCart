@@ -19,7 +19,7 @@ if(!defined( '_JEXEC' )){
  */
 require_once dirname(__FILE__).'/view.php';
 
-class PaycartSiteViewSearch extends PaycartSiteBaseViewSearch
+class PaycartSiteAjaxViewSearch extends PaycartSiteBaseViewSearch
 {	
 	protected function _basicFormSetup($task)
 	{
