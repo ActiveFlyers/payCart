@@ -16,6 +16,9 @@
 			
 <!--		<echo msg="Get Build number: Get global number of commit"/>-->
 <!--			<phingcall target="get_build_number" />-->
+
+    	<echo msg="Preparation :: - define all class path." />
+			<phingcall target="prepare_build" />
 			
     	<echo msg="Deleteing: Packeage and tmp directory "/>
     		<delete dir="${dir.packages}" includeemptydirs="true" />
@@ -106,6 +109,37 @@
 <!--		<property name="jsdirs" value="site/media/js, site/xiframework/media/js/, site/templates/default/_media/js/,admin/templates/default/_media/js/" />-->
 <!--		<foreach list="${jsdirs}" param="jsdir" target="minifyjs" />-->
 
+	</target>
+	
+	
+	<!-- ============================================  -->
+	<!-- Target: Invoke to prepare_build               -->
+	<!-- 	- Class name and class path prepared	   -->
+	<!-- 	- Copied into paycart folder               -->
+	<!-- ============================================  -->
+    <target name="prepare_build">
+    	
+    	<!-- Create file -->
+		<property name="filetree.target" value="${dir.root}/scripts/_filelist.php" />
+		<echo file="${filetree.target}" append="false" msg="${msg.leftanglebracket}?php ${line.separator} $files = array() ; ${line.separator}" />
+
+		<!-- Iterate files and create array of file-path 	-->
+		<foreach param="filename" absparam="absfilename" target="generatefiletree">
+		  <fileset dir="${dir.src}/">
+		    <include name="**/*.php"/>
+		  </fileset>
+		</foreach>
+
+		<!-- Create Array of class with thier path  -->
+		<exec command="php getclassesinfile.php" dir="${dir.root}/scripts" checkreturn="true" passthru="true"/>
+		
+		<!-- Delete filetree file		-->
+		<delete file="${dir.root}/scripts/_filelist.php" />
+    	
+	</target>
+	
+	<target name="generatefiletree">
+		<echo file="${filetree.target}" append="true" msg="$files[]='${filename}'; ${line.separator}" />
 	</target>
 	
 </project>

@@ -49,3 +49,6 @@ redirect.url	  = index.php?option=com_paycart
 
 ## Other settings
 releasebuild	= false
+
+## Require in  
+msg.leftanglebracket=<
