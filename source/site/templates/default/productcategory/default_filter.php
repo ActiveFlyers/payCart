@@ -21,40 +21,8 @@ Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');
 
 echo $this->loadTemplate('filter_js');
 ?>
-
-<style>
-	.paycart .pc-product-filter-loader{
-		background-color: rgba(255, 255, 255, 0.9);
-	
-	}
-	.paycart .pc-product-filter-loader i.fa-spinner{
-		position: fixed;
-		top: 50%;
-		left: 50%;
-	}
-</style>
-
 <script type="text/javascript">
 (function($){	
-	 // Loader 
-	$( document ).ajaxStart(function() {
-		paycart.ajax.loader.show();
-		}).ajaxStop(function() {
-			paycart.ajax.loader.hide();
-		});
-	
-	paycart.ajax.loader = 
-	{
-		show : function() 
-		{
-			$('#pc-filter-loader').show();
-		},
-
-		hide : function()
-		{
-			$('#pc-filter-loader').hide();
-		}
-	};
 	
 	$(document).ready(function(){
 		paycart.product.filter.init('<?php echo isset($searchWord)?urlencode($searchWord):'';?>','<?php echo (isset($filters) && !empty($filters))?json_encode($filters):'';?>');
@@ -70,7 +38,4 @@ echo $this->loadTemplate('filter_js');
 	 	 
 </div>
 
-<div class="modal-backdrop pc-product-filter-loader hide" id="pc-filter-loader">
-    <i class="fa fa-spinner fa-3x fa-spin"></i>
-</div>
-<?php 
+ <?php echo  Rb_HelperTemplate::renderLayout('paycart_spinner'); 

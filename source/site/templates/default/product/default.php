@@ -30,6 +30,9 @@ echo $this->loadTemplate('js');
 
 $attributes = $product->getAttributes();
 $postionedAttributes = (array)$product->getPositionedAttributes();
+
+ echo  Rb_HelperTemplate::renderLayout('paycart_spinner'); 
+
 ?>
 <script>
 paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');

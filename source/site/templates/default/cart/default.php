@@ -23,6 +23,7 @@ echo $this->loadTemplate('js');
  */
 ?>
 
+<?php echo  Rb_HelperTemplate::renderLayout('paycart_spinner'); ?>	
 <form>
 <div class='pc-cart-wrapper clearfix'>
 	 <div class="pc-cart-products row-fluid">

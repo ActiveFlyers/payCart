@@ -32,7 +32,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	    	    {
     	    		var link  = 'index.php?option=com_paycart&task=updateQuantity&view=cart';
     	    		var quantity = $('.pc-cart-quantity-'+productId).val();
-    	    		var data  = {'product_id': productId, 'quantity': quantity};
+    	    		var data  = {'product_id': productId, 'quantity': quantity, 'spinner_selector' : '#paycart-ajax-spinner'};
     	    		paycart.ajax.go(link,data);
     	    	},
 
@@ -49,7 +49,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
     	        remove : function(productId)
     	        {
     	      		var link  = 'index.php?option=com_paycart&task=removeProduct&view=cart';
-    	      	    var data  = {'product_id': productId};
+    	      	    var data  = {'product_id': productId, 'spinner_selector' : 	'#paycart-ajax-spinner'};
     	      	    paycart.ajax.go(link,data);
     	      	}
 	       };

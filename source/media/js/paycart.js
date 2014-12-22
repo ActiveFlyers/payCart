@@ -92,6 +92,17 @@ if (typeof(paycart.element)=='undefined'){
 		
 		request['url'] = request['url']+'&format=json';
 		
+		// display spinner 
+		var spinner_selector = false;
+		// before ajax start, check any spinner selector availble or not if yes then on it
+		if ( typeof request['spinner_selector'] != "undefined" &&  $(request['spinner_selector']).length > 0 ) {
+			spinner_selector = request['spinner_selector'];
+			// remove from data otherwise it will be post
+			delete  request['spinner_selector'];
+			//show spinner
+			$(spinner_selector).show();
+		}	
+		
 		$.ajax({
 
 			url		: request['url'] ,
@@ -111,6 +122,11 @@ if (typeof(paycart.element)=='undefined'){
 		    success : function( response ) {
 
 						//console.log ("Success:  " + response );
+			    			
+			    		// stop spinner
+						if ( spinner_selector ) {
+							$(spinner_selector).hide();
+						}
 
 						//clear data (remove warnings and error)
 						response = paycart.ajax.junkFilter(response);									
@@ -139,6 +155,11 @@ if (typeof(paycart.element)=='undefined'){
 				    },
 
 				error : function( response ) {
+				    	
+				    	// stop spinner
+						if ( spinner_selector ) {
+							$(spinner_selector).hide();
+						}
 
 				    	console.log ({"Error on fetching JSON data :  " :response} );
 
@@ -175,7 +196,11 @@ if (typeof(paycart.element)=='undefined'){
 		{
 			var link = rb_vars.url.root +'index.php?option=com_paycart&view=state&task=getoptions';
 
-			paycart.ajax.go( link, {'country_id' : $(country_selector).val(), 'state_selector' : state_selector, 'default_state' : default_selected_state });
+			paycart.ajax.go( link, 
+							{ 	'country_id' : $(country_selector).val(), 'state_selector' : state_selector, 
+								'default_state' : default_selected_state,  'spinner_selector' :'#paycart-ajax-spinner'  
+							}
+					);
 		}
 	};
 	

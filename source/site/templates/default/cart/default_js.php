@@ -20,37 +20,14 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 
 	(function($) {
-
-	 	
-
-		 // Loader 
-			$( document ).ajaxStart(function() {
-				paycart.ajax.loader.show();
-				}).ajaxStop(function() {
-					paycart.ajax.loader.hide();
-				});
-			
-			paycart.ajax.loader = 
-			{
-				show : function() 
-				{
-					$('#pc-checkout-loader').show();
-				},
-
-				hide : function()
-				{
-					$('#pc-checkout-loader').hide();
-				}
-			
-			};
-
 			
 		paycart.cart = {};
 	    paycart.cart.product = {};
 			
 	    paycart.cart.product.get = function (){					
-			var link = 'index.php?option=com_paycart&view=cart';		
-			paycart.ajax.go(link);		
+			var link = 'index.php?option=com_paycart&view=cart', data = [];		
+			data['spinner_selector'] = 	'#paycart-ajax-spinner';
+			paycart.ajax.go(link, data);	
 			return false;
 		};
 		
@@ -61,7 +38,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	    	    		request['url'] 	= 'index.php?option=com_paycart&view=cart&task=updateProductQuantity';
 						request['data']	= {'product_id' : productId, 'quantity' : quantity};
 						request['success_callback']	= paycart.cart.product.response;
-						paycart.cart.request(request);
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						paycart.request(request);
 						
 						return false;
 	    	    	};
@@ -94,7 +72,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				   		request['url'] 	= 'index.php?option=com_paycart&view=cart&task=removeproduct';
 						request['data']	= {'product_id' : productId};
 						request['success_callback']	= paycart.cart.product.remove.response;
-						paycart.cart.request(request);
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						paycart.request(request);
 						
 						return false;
 	    	      	};
@@ -120,70 +99,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						$('.pc-cart-remove-error-'+productId).text(message);						
 					};  	
 
-		//@PCTODO:: Ues paycart.request. Availanle into Paycart.js
-		paycart.cart.request = function(request){
-						var url = ( typeof request['url'] == "undefined"  ) 
-			    					? 'index.php?option=com_paycart&view=cart'
-									: request['url'];
-		
-						// json formate nd call back
-						url = url+'&format=json';
-						
-						$.ajax({
-						    url		: ( typeof request['url'] == "undefined"  ) 
-							    		? 'index.php?option=com_paycart&view=cart&format=json'
-			    						: request['url']+'&format=json',
-			    						
-						    cache	: ( typeof request['cache'] == "undefined" ) 
-				    					? false
-										: request['cache'],
-										
-							data	: ( typeof request['data'] == "undefined" ) 
-							    		? {}
-										: request['data'],
-							type 	: ( typeof request['type'] == "undefined" ) 
-				    					? 'POST'
-										: request['type'],
-						    success : function( response ) {
-		
-										//console.log ("Success:  " + response );
-		
-										//clear data (remove warnings and error)
-										response = rb.ajax.junkFilter(response);									
-				
-										// Any callback available
-								    	if( typeof response['callback'] != "undefined"  && response['callback'] ) {
-									    	//@PCTODO:: cross check function existing into paycart namespace  
-								    		var callback = new Function(response['callback']);
-								    		callback(response);
-											return true;
-										}
-		
-								    	// Any callback available
-								    	if( typeof request['success_callback'] != "undefined"  && request['success_callback'] ) { 
-								    		var callback = request['success_callback'];
-								    		callback(response);
-								    		return true;
-										}
-
-								    	if( typeof response['isValid'] != "undefined" && response['isValid'] == false) { 
-											console.log ( {" response contain error :  " : response } );
-								    		return false;
-										}
-										
-										return true;
-								    },
-		
-								error : function( response ) {
-		
-								    	console.log ({"Error on fetching JSON data :  " :response} );
-		
-								    	return response;
-								    }
-						  });
-					};
-
-
 	   /**
 		*-----------------------------------------------------------
 		* Checkout > Login Screen
@@ -202,8 +117,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		*/
 		paycart.cart.login = {};
 		paycart.cart.login.get = function (){					
-						var link = 'index.php?option=com_paycart&view=cart&task=login';		
-						paycart.ajax.go(link);		
+						var link = 'index.php?option=com_paycart&view=cart&task=login', data= [];	
+						data['spinner_selector'] = 	'#paycart-ajax-spinner';
+						paycart.ajax.go(link, data);		
 						return false;
 					};
 				
@@ -229,6 +145,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							// get all form data for post	
 							var postData 	= $("#pc-checkout-form").serializeArray();
 							var link  		= 'index.php?option=com_paycart&view=cart&task=login';
+							postData.spinner_selector = '#paycart-ajax-spinner';
 							paycart.ajax.go(link, postData);
 						}
 						return false;					
@@ -302,8 +219,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 		paycart.cart.address.get = function (){					
-						var link = 'index.php?option=com_paycart&view=cart&task=address';		
-						paycart.ajax.go(link);		
+						var link = 'index.php?option=com_paycart&view=cart&task=address', data = [];		
+						data['spinner_selector'] = 	'#paycart-ajax-spinner';
+						paycart.ajax.go(link, data);	
 						return false;
 					};
 			
@@ -334,8 +252,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 											'selector_index'	: selector_index
 										  };
 						  request['success_callback']	=	paycart.cart.address.setAddress;
-						  
-						paycart.cart.request(request);
+						  request['spinner_selector'] = '#paycart-ajax-spinner';
+						  request['url'] 	= 'index.php?option=com_paycart&view=cart';
+						  paycart.request(request);
 					};
 
 		/**
@@ -409,6 +328,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							// get all form data for post	
 							var postData 	= $("#pc-checkout-form").serializeArray();
 							var link  		= 'index.php?option=com_paycart&view=cart&task=address';
+							postData.spinner_selector = '#paycart-ajax-spinner';
 							paycart.ajax.go(link, postData);
 						}
 		
@@ -429,8 +349,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		*/
 		paycart.cart.confirm = {};					
 		paycart.cart.confirm.get = function (){					
-						var link = 'index.php?option=com_paycart&view=cart&task=confirm';		
-						paycart.ajax.go(link);		
+						var link = 'index.php?option=com_paycart&view=cart&task=confirm', data = [];	
+						data['spinner_selector'] = 	'#paycart-ajax-spinner';
+						paycart.ajax.go(link, data);		
 						return false;
 					};
 			
@@ -440,6 +361,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							// get all form data for post	
 							var postData 	= $("#pc-checkout-form").serializeArray();
 							var link  		= 'index.php?option=com_paycart&view=cart&task=confirm';
+							postData.spinner_selector = '#paycart-ajax-spinner';
 							paycart.ajax.go(link, postData);
 						}
 		
@@ -458,7 +380,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=updateProductQuantity';
 						request['data']	= {'product_id' : product_id, 'quantity' : product_quantity};
 						request['success_callback']	= paycart.cart.confirm.onChangeProductQuantity.response;
-						paycart.cart.request(request);
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						paycart.request(request);
 						
 						return false;				
 					};
@@ -491,7 +414,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=removeproduct';
 						request['data']	= {'product_id' : product_id};
 						request['success_callback']	= paycart.cart.confirm.onRemoveProduct.response;
-						paycart.cart.request(request);
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						paycart.request(request);
 						
 						return false;
 					};
@@ -523,7 +447,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=applyPromotion';
 						request['data']	= {'promotion_code' : $('#paycart-promotion-code-input-id').val()};
 						request['success_callback']	= paycart.cart.onApplyPromotionCode.response;
-						paycart.cart.request(request);
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						paycart.request(request);
 						
 						return false;
 					};
@@ -552,7 +477,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=removePromotion';
 						request['data']	= {'promotion_code' : promotion_code};
 						request['success_callback']	= paycart.cart.onRemovePromotionCode.response;
-						paycart.cart.request(request);
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						paycart.request(request);
 						
 						return false;
 					};
@@ -587,7 +513,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=changeShippingMethod';
 						request['data']	= {'shipping' : shippingMethod};
 						request['success_callback']	= paycart.cart.confirm.onChangeShipping.response;
-						paycart.cart.request(request);
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						paycart.request(request);
 						
 						return false;
 					};
@@ -656,8 +583,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 										  };
 						  
 						request['success_callback']	= paycart.cart.getPaymentForm.response;
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=updateProductQuantity';
 						  
-						paycart.cart.request(request);
+						paycart.request(request);
 						
 					 	return true;
 					};
@@ -705,8 +634,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						
 						// before process order, make sure paynow button is disabled and disabled to  payment-gateways selection 
 						$('#paycart-invoice-paynow, #pc-checkout-payment-gateway ').prop('disabled','disabled');
+
+						request['spinner_selector'] = '#paycart-ajax-spinner';
+						request['url'] 	= 'index.php?option=com_paycart&view=cart';
 						  
-						paycart.cart.request(request);
+						paycart.request(request);
 		
 						return false;
 					};
@@ -759,8 +691,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				request['data'].push({'name':'task','value':'paymentform'},
 									 {'name':'cart_id','value':'<?php echo $cart->getId(); ?>'}
 									);
-				//paycart.ajax.go(link, postData);
-				paycart.cart.request(request);
+				request['spinner_selector'] = '#paycart-ajax-spinner';
+				request['url'] 	= 'index.php?option=com_paycart&view=cart';
+				paycart.request(request);
 				return false;
 
 		}

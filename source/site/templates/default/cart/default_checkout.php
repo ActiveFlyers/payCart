@@ -22,16 +22,6 @@ if (!$is_platform_mobile) {
 <!-- @PCTODO :: move style to proper location -->
 <style>
 	
-	.paycart .pc-checkout-loader{
-		background-color: rgba(255, 255, 255, 0.9);
-	
-	}
-	.paycart .pc-checkout-loader i.fa-spinner{
-		position: fixed;
-		top: 50%;
-		left: 50%;
-	}
-	
 	.paycart .position-relative 
 	{
 		position: relative;
@@ -50,7 +40,8 @@ if (!$is_platform_mobile) {
 </style>
 
 
-<div class='pc-checkout-wrapper clearfix position-relative'>	
+<div class='pc-checkout-wrapper clearfix position-relative'>
+
 	<div>
 	<!--	Checkout flow state	-->
 		<div class="pc-checkout-state row-fluid clearfix">
@@ -70,10 +61,9 @@ if (!$is_platform_mobile) {
 			
 		</div>
 	</div>	
-	
-	<div class="modal-backdrop pc-checkout-loader hide" id="pc-checkout-loader">
-    	<i class="fa fa-spinner fa-3x fa-spin"></i>
-	</div>			
+
+<?php echo  Rb_HelperTemplate::renderLayout('paycart_spinner'); ?>	
+			
 </div>
 
 <script>

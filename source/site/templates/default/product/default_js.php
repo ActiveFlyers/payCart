@@ -56,7 +56,7 @@ if(!defined( '_JEXEC' )){
 	paycart.product.addtocart = function(productId) { 
 		paycart.ajax.go(
 							'index.php?option=com_paycart&view=cart&task=addProduct&product_id='+productId,
-							{},
+							{'spinner_selector' : '#paycart-ajax-spinner'},
 							function(){
 								paycart.event.cart.updateproduct();
 								paycart.product.changeButtonText();								
