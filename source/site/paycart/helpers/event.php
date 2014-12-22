@@ -204,17 +204,15 @@ class PaycartHelperEvent extends PaycartHelper
            	}
          }
          
-         /**
-          * 
-          * onPaycartProductAfterSave event
-          * @param $previousObject : either null or object of PaycartProduct
-          * @param $newObject : object of PaycartProduct
-          */
-         public function onPaycartProductAfterSave($previousObject, PaycartProduct $newObject)
+		 /**
+          * onPaycartCron event
+		  * Actions to be performed on cron will be done from here and trigger an event as well
+		  */
+         public function onPaycartCron()
          {
-         	//do it only if admin side
-         	if(PaycartFactory::getApplication()->isAdmin()){
-         		PaycartFactory::getHelper('productindex')->doIndexing($previousObject, $newObject);
-         	}
+         	PaycartFactory::getHelper('productindex')->SyncIndexing(PaycartFactory::getConfig()->get('product_index_limit'));
+         	 
+         	$args = array();
+         	return Rb_HelperPlugin::trigger('onPaycartCron', $args , self::$default_plugin_type);
          }
 }

@@ -38,6 +38,7 @@ class PaycartProduct extends PaycartLib
 	protected $weight_unit	 	= '';
 	protected $dimension_unit	= '';
 	protected $stockout_limit	= 0;
+	protected $hits				= 0;
 	protected $config			= '';
 	
 	//Extra fields (not related to columm) 
@@ -83,6 +84,7 @@ class PaycartProduct extends PaycartLib
 		$this->weight_unit	 	= '';
 		$this->dimension_unit	= '';
 		$this->stockout_limit	= null;
+		$this->hits				= 0;
 		$this->config			= new Rb_Registry();
 		$this->created_date  	= Rb_Date::getInstance();	
 		$this->modified_date 	= Rb_Date::getInstance(); 
@@ -279,11 +281,9 @@ class PaycartProduct extends PaycartLib
 		// Process Attribute Value
 		$this->_saveAttributeValue($previousObject);
 		
-		//trigger product after save event
-		/*  @var $event_helper PaycartHelperEvent   */
-        $eventHelper = PaycartFactory::getHelper('event');
-        $eventHelper->onPaycartProductAfterSave($previousObject, $this);
-         
+		//do index the product data for keyword search
+		PaycartFactory::getHelper('productindex')->doIndexing($previousObject, $this);
+
 		// few class property might be changed by model validation
 		// so we need to reflect these kind of changes (by model validation) to lib object
 		// Also set attributes value on product
@@ -435,6 +435,9 @@ class PaycartProduct extends PaycartLib
 		if(!PaycartFactory::getHelper('product')->updateVariationOf($this->getVariants())){
 			return false;
 		}
+		
+		//delete index data
+		PaycartFactory::getModel('productindex')->delete($this->getId());
 		
 		return true;
 	}

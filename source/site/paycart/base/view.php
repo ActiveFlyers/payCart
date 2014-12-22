@@ -68,4 +68,24 @@ class PaycartView extends PaycartViewbase
 		
 		return PaycartFactory::getHelper($name);
 	}
+
+	/**
+	 * Overriding it to run cron on paycart pages only
+	 * @see plugins/system/rbsl/rb/rb/view/Rb_ViewAjax::render()
+	 */
+	public function render($output, $options)
+	{
+		/*
+		 * cron will be triggered only on paycart pages
+		 */	
+		//only add if required, then add call back
+		if(PaycartFactory::getConfig()->get('cron_run_automatic') == 1 && 
+		   PaycartFactory::getDocument()->getType() == 'html' && 
+		   PaycartHelperCron::checkRequired()== true){
+			// Add a cron call back	
+			$output .= '<img src="'.PaycartHelperCron::getURL().'" style="display:none"/>';
+		}
+		
+		parent::render($output, $options);
+	}
 }

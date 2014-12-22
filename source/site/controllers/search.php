@@ -210,11 +210,14 @@ class PaycartSiteControllerSearch extends PaycartController
 //				continue;
 //			}
 			$instance = PaycartProductAttribute::getInstance($id);
-			$attrFiltersHtml[$id]['name'] = $instance->getTitle();
-			$attrFiltersHtml[$id]['html'] = $instance->getFilterHtml(isset($appliedAttrOptions[$id])?$appliedAttrOptions[$id]:array(), $options);
-			
-			//get options of the current attribute, will be used while showing applied filters
-			$appliedAttrData[$id] = $instance->getOptions();
+			//check whether the attribute is filterable or not
+			if($instance->isFilterable()){
+				$attrFiltersHtml[$id]['name'] = $instance->getTitle();
+				$attrFiltersHtml[$id]['html'] = $instance->getFilterHtml(isset($appliedAttrOptions[$id])?$appliedAttrOptions[$id]:array(), $options);
+				
+				//get options of the current attribute, will be used while showing applied filters
+				$appliedAttrData[$id] = $instance->getOptions();
+			}
 		}
 		
 		return array($attrFiltersHtml, $appliedAttrData);

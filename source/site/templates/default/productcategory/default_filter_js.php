@@ -43,7 +43,25 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 
 		$('[data-pc-filter="remove"]').on('click', function(){			
 			paycart.product.filter.remove(this);
-		});		
+		});	
+
+		//slider related script
+		$(".pc-range-slider").slider({});
+
+		$(".pc-range-slider").on('slideStop', function (ev) {
+			$('input[name="'+this.name+'"]').attr('value',ev.value);
+			var link = 'index.php?option=com_paycart&view=search&task=filter';
+			$('input[name="pagination_start"]').attr('value',0);
+			paycart.ajax.go(link, $('.pc-form-product-filter').serialize());
+			return false;
+		});
+
+		//scroll to first element
+		var elem  = $('#pc-product-search-content');
+		paycart.jQuery('html, body').animate({
+			   scrollTop: elem.offset().top
+			  }, 100);
+		return true;
 	};
 	
 	paycart.product.filter.getResult = function(){
@@ -83,12 +101,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		$('input[name="pagination_start"]').val(response.pagination_start);
 		
 		paycart.product.arrange('update');
-
-		//scroll to first element
-//		var elem  = $('.pc-product-outer.page'+response.start+':first');
-//		paycart.jQuery('html, body').animate({
-//			   scrollTop: elem.offset().top
-//			  }, 500);
 	};	
 
 	paycart.product.arrange = function(mode){

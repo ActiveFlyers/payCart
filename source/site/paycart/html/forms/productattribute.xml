@@ -28,8 +28,8 @@
 			
 		<field 
 			name="filterable" 
-			type="hidden"
-			default="0"
+			type="radio"
+			default="1"
 			label="COM_PAYCART_ADMIN_FILTERABLE" 
 			class="btn-group">
 			<option value='1'>JYES</option>

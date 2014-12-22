@@ -93,12 +93,39 @@ class PaycartHelperProductIndex
 		$indexData       = implode(" ", $content);
 		$field->content	 = $this->sanitizeContent($indexData);
 		
-		// Step-5 : Save data
-		if(!isset($previousObject)){
-			$field->product_id = $productId;
-			return $this->model->save($field,null,true);
+		//Step-5 : Delete existing record
+		$this->model->delete($productId);		
+		
+		// Step-6 : Save data
+		$field->product_id = $productId;
+		return $this->model->save($field,null,true);
+	}
+	
+	/**
+	 * Synchronize index data of products according to their modified date
+	 */
+	public function syncIndexing($limit)
+	{
+		$query = new Rb_Query();
+		
+		$products = $query->select('product_id')
+						  ->from('#__paycart_product_index')
+						  ->order('modified_date ASC')
+						  ->limit('0,'.$limit)
+						  ->dbLoadQuery()
+						  ->loadObjectList(); 
+						  
+		foreach ($products as $data){
+			try{
+				$product = PaycartProduct::getInstance($data->product_id);
+				if($product instanceof PaycartProduct){
+					$this->doIndexing($product, $product);
+				}
+			}
+			catch(Exception $ex){
+				continue;
+			}
 		}
-		return $this->model->save($field,$productId);
 	}
 	
 	/**
@@ -107,6 +134,6 @@ class PaycartHelperProductIndex
 	 */
 	function sanitizeContent($content)
 	{
-		return preg_replace('/[^\p{L}\p{N}\|\s]+/u','',strip_tags($content));
+		return preg_replace('/[^\p{L}\p{N}\p{M}\|\s]+/u','',strip_tags($content));
 	}
 }

@@ -58,6 +58,20 @@ class PaycartModelProduct extends PaycartModelLang
 			  
 	}
 	
+	/**
+	 * update hits value of the given product id
+	 */
+	public function updateHits($productId)
+	{
+		$query = new Rb_Query();
+		
+		return $query->update($this->getTable()->get('_tbl'))
+					 ->set('hits = hits+1')
+					 ->where('product_id = '.$productId)
+					 ->dbLoadQuery()
+					 ->query();
+	}
+	
 	public function loadLanguageRecords($filter = array(), $indexBy = null)
 	{
 		$query = new Rb_Query();

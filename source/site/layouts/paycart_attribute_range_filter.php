@@ -28,21 +28,6 @@ $maxWeightRange 	= $displayData->core->maxWeightRange;
 $currency   		= $displayData->currency;
 $weightUnit 		= $displayData->weightUnit;
 ?>
-
-<script type="text/javascript">
-(function($){
-	$(document).ready(function(){
-		$(".pc-range-slider").slider({});
-
-		$(".pc-range-slider").on('slideStop', function (ev) {
-			var link = 'index.php?option=com_paycart&view=search&task=filter';
-			$('input[name="pagination_start"]').attr('value',0);
-			paycart.ajax.go(link, $('.pc-form-product-filter').serialize());
-			return false;
-		});
-	});
-})(paycart.jQuery);
-</script>
 	
 <?php if($minPriceRange != $maxPriceRange):?>
 	<?php $sliderValue = (!empty($appliedPriceRange))?key($appliedPriceRange):$minPriceRange.','.$maxPriceRange;?>

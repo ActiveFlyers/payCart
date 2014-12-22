@@ -165,6 +165,26 @@
 			   default=""
 			   />
 		
+		<field name="cron_run_automatic"
+		       type="radio"
+		       label="COM_PAYCART_ADMIN_CONFIG_CRON_AUTOMATIC_RUN"
+		       default="1"
+		       class="btn-group">
+		       <option value="1">JYES</option>
+		       <option value="0">JNO</option>
+		</field>
+		
+		<field name="cron_frequency"
+		       type="radio"
+		       label="COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY"
+		       default="1800"
+		       class="btn-group">
+		       <option value="300">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_LOWEST</option>
+		       <option value="900">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_LOW</option>
+		       <option value="1800">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_NORMAL</option>
+		       <option value="3600">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_HIGHEST</option>     
+		</field>
+		
 	</fieldset>
 	
 </form>

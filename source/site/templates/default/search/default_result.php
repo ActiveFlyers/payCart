@@ -51,36 +51,58 @@ $records = (array)$products;
 		<!-- =============================================
        		      3.1 Left section : Product filters 
              ============================================= -->
-		<div class="span4 pc-product-filter">
-			<form class="pc-form-product-filter" method="post">
-				<?php if(!empty($records)): ?>
+        <?php 
+		 	ob_start();
+		?>
+		 	<!-- category filters -->
+			<?php echo JLayoutHelper::render('paycart_attribute_category_filter',$filters);?>	
+			<hr>
+			
+			<!-- custom attribute filterHtml -->
+			<?php foreach ($filters->attribute->filterHtml as $id=>$filter):?>
+				<h4><?php echo $filter['name']; ?></h4>
+				<?php echo $filter['html'];?>
+				<hr>
+			<?php endforeach;?>
+			
+			<!-- range filters -->
+			<?php echo JLayoutHelper::render('paycart_attribute_range_filter',$filters);?>
+			
+			<!-- exclude out-of-stock -->
+			<h4><?php echo JText::_("COM_PAYCART_AVAILABILITY")?></h4>
+			<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
+			       <?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/> 
+			<?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?>
+		
+			<input type="hidden" name="filters[sort]" data-pc-filter="sort-destination" value="<?php echo $appliedSort;?>" />
+			<input type="hidden" name="q" value="<?php echo $filters->searchWord?>"/>
+			<input type="hidden" name="pagination_start" value="<?php echo $start;?>"/>
+		 <?php 
+			 $filterHtml = ob_get_contents();
+			 ob_get_clean();
+		 ?>
+             
+		<div class="span4 pc-product-filter navbar">
+			<ul class="nav"> 				
+				<li class="visible-phone"> 
+				  	<a href="javascript:void(0);" data-toggle="collapse" data-target=".nav-collapse">
+						<i class="fa fa-bars"></i> Filters
+				 	</a>
+				</li>
+			</ul>
+		
+			<div class="nav-collapse collapse pc-filters visible-phone">
+				<form class="pc-form-product-filter navbar-form" method="post">
+					<?php echo $filterHtml?>
+				</form>
+			</div>
+		
+			<div class="hidden-phone">
+				<form class="pc-form-product-filter navbar-form" method="post">
 					<h2><?php echo JText::_("COM_PAYCART_FILTER_RESULT")?></h2>
-					
-					<!-- category filters -->
-					<?php echo JLayoutHelper::render('paycart_attribute_category_filter',$filters);?>	
-					<hr>
-					
-					<!-- custom attribute filterHtml -->
-					<?php foreach ($filters->attribute->filterHtml as $id=>$filter):?>
-						<h4><?php echo $filter['name']; ?></h4>
-						<?php echo $filter['html'];?>
-						<hr>
-					<?php endforeach;?>
-					
-					<!-- range filters -->
-					<?php echo JLayoutHelper::render('paycart_attribute_range_filter',$filters);?>
-					
-					<!-- exclude out-of-stock -->
-					<h4><?php echo JText::_("COM_PAYCART_AVAILABILITY")?></h4>
-					<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
-					       <?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/> 
-					<?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?>
-				
-					<input type="hidden" name="filters[sort]" data-pc-filter="sort-destination" value="<?php echo $appliedSort;?>" />
-					<input type="hidden" name="q" value="<?php echo $filters->searchWord?>"/>
-					<input type="hidden" name="pagination_start" value="<?php echo $start;?>"/>
-				<?php endif;?>
-			</form>
+					<?php echo $filterHtml?>
+				</form>
+			</div>
 		</div>
 		
 		<!-- =====================================================

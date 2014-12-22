@@ -54,6 +54,28 @@ class PaycartModelProductIndex extends PaycartModel
 		
 		return $whereCondition;
 	}
+	
+	/**
+	 * Delete the record with the given id
+     *
+     * Overridden this function bcoz the parent function is tried to load the record
+     * and if record doesn't exist then error will occur 
+     *
+	 * @see plugins/system/rbsl/rb/rb/Rb_Model::delete()
+	 */
+	function delete($productId = null)
+	{
+		if(!$productId){
+			return true;
+		}
+		
+		$query 	  = new Rb_Query();
+		return  $query->delete()
+					  ->from('#__paycart_product_index')
+					  ->where('product_id = '.$productId)
+					  ->dbLoadQuery()
+					  ->execute();
+	}
 }
 
 /**

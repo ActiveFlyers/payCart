@@ -9,6 +9,14 @@ if(defined('_JEXEC')===false) die();
 
 class Com_paycartInstallerScript
 {
+	/**
+	 * System invokes this event just before install/update/uninstall method
+	 * Enter description here ...
+	 * @param string $type is the type of change {install, update or discover_install}
+	 * @param Object $parent, is the class which is calling this method
+	 
+	 * @return void
+	 */
 	public function preflight( $type, $parent ) 
 	{
 		$data = "<html>\n<body bgcolor=\"#FFFFFF\">\n</body>\n</html>";
@@ -31,6 +39,10 @@ class Com_paycartInstallerScript
 		}
 	}
 
+	/**
+	 * System invoke this function on installation, 
+	 * here we can do additional work that is required with installation
+	 */
 	public function install($parent)
 	{		
 		$lang = JFactory::getLanguage()->getTag();
@@ -41,6 +53,10 @@ class Com_paycartInstallerScript
 		return true;
 	}
 
+	/**
+	 * System invoke this function on uninstallation, 
+	 * here we can do additional work that is required with uninstallation
+	 */
 	function uninstall($parent)
 	{
 		return true;

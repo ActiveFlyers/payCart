@@ -22,7 +22,7 @@ class PaycartProductAttribute extends PaycartLib
 	protected $productattribute_id	 =	0; 
 	protected $type 		 =	'';
 	protected $code	 		 =	'';
-	protected $filterable	 = 	0;
+	protected $filterable	 = 	1;
 	protected $searchable	 =	1;
 	protected $published	 =	1;
 	protected $config		 =  null;
@@ -41,7 +41,7 @@ class PaycartProductAttribute extends PaycartLib
 		$this->productattribute_id	 =	0; 
 		$this->type 		 =	'';
 		$this->css_class	 =	'';
-		$this->filterable	 = 	0;
+		$this->filterable	 = 	1;
 		$this->searchable	 =	1;
 		$this->published 	 =	1;
 		$this->ordering		 =	0;
@@ -168,6 +168,11 @@ class PaycartProductAttribute extends PaycartLib
 	{
 		return $this->lang_code;
 	}
+	
+	public function isFilterable()
+	{
+		return $this->filterable;
+	} 
 	
 	function getConfigHtml($selectedValue = '', Array $options = array())
 	{

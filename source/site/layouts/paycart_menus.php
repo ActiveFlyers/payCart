@@ -48,13 +48,8 @@ $return_link	= 	base64_encode($link);
         <ul class="nav">
             
             <li class="visible-phone" data-toggle="collapse" data-target=".nav-collapse">
-                <a href="#"><i class="fa fa-bars"></i></a>
+                <a href="javascript:void()"><i class="fa fa-bars"></i></a>
             </li>
-			<li>
-				<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
-					<input type="text" class="input-medium search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH_PLACE_HOLDER")?>" name="q"/>
-				</form>
-			</li>	
 			
 			<!-- Product Category link on desktop, tab etc -->
              <li class="dropdown hidden-phone">
@@ -74,10 +69,16 @@ $return_link	= 	base64_encode($link);
                 </ul>
             </li>
             
+            <li>
+				<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
+					<input type="text" class="navbar-search input-large search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH")?>" name="q"/>
+				</form>
+			</li>	
+            
            </ul>
            
            <ul class="nav pull-right">
-           
+           <!--
             <li class="hidden-phone pc-menu-popover"
             	data-content="Coming Soon!!"  
             	data-placement="bottom"
@@ -110,6 +111,7 @@ $return_link	= 	base64_encode($link);
 	            	<span class="hidden-phone"> <?php echo JText::_('COM_PAYCART_TRACK_ORDER'); ?></span>
             	</a>
            </li>
+		   -->
            
             <li><a href='<?php echo JRoute::_('index.php?option=com_paycart&view=cart&task=display');?>'>
                 <i class="fa fa-shopping-cart"></i>

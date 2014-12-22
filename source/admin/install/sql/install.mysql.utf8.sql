@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `featured` tinyint(1) NOT NULL DEFAULT '0',
   `cover_media` varchar(250) DEFAULT NULL,
   `stockout_limit`int NOT NULL COMMENT 'out-of-stock limit of Product',
+  `hits` int(11) NOT NULL DEFAULT '0' COMMENT 'maintain hit count of products',
   `weight` decimal(12,4) DEFAULT '0.0000',
   `weight_unit` varchar(50) DEFAULT NULL,
   `height` decimal(12,4) DEFAULT '0.0000',
@@ -785,13 +786,16 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('catalogue_weight_unit', 'gm'),
 ('company_address', ''),
 ('company_name', ''),
+('cron_frequency','1800'),
+('cron_run_automatic','1'),
 ('invoice_serial_prefix', 'paycart'),
 ('localization_currency', 'USD'),
 ('localization_currency_format', 'symbol'),
 ('localization_currency_position', 'before'),
 ('localization_date_format', 'Y-m-d'),
 ('localization_decimal_separator', '.'),
-('localization_fraction_digit_count', '2');
+('localization_fraction_digit_count', '2'),
+('product_index_limit','20');
 
 INSERT IGNORE INTO `#__paycart_productcategory_lang` (`productcategory_lang_id`, `productcategory_id`, `title`, `alias`, `lang_code`, `description`, `metadata_title`, `metadata_keywords`, `metadata_description`) VALUES
 (1, 1, 'root', 'root', 'en-GB', NULL, NULL, NULL, NULL);
