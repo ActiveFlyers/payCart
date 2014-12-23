@@ -290,14 +290,23 @@ class PaycartHelperInvoice
 	 * @param Integer $processorId : _PROCESSOR_ID_
 	 * 
 	 */
-	public function getBuildForm(PaycartCart $cart, $build_data = Array('build_type' => 'html'))
+	public function getBuildForm(PaycartCart $cart, $build_data = Array())
 	{
+		$invoice_data = $cart->getInvoiceData();
+		
+		$host_string 	= str_replace(JUri::root(true), "", JUri::root());
+		$url_string 	= "index.php?option=com_paycart&view=cart&processor={$invoice_data['processor_type']}";
+		
+		$build_data['build_type'] = 'html';
+		$build_data['notify_url'] = JUri::root().$url_string.'&task=notify';
+		$build_data['cancel_url'] = $host_string.PaycartRoute::_($url_string.'&task=cancel');
+		$build_data['return_url'] = $host_string.PaycartRoute::_($url_string.'&task=complete');
+		
 		$processResponseData = Rb_EcommerceApi::invoice_request('build', $cart->getInvoiceId(), $build_data);
 		
 		//Create new response and set required cart's stuff. 
 		$response = new stdClass();
 		$response->post_url	=	$processResponseData->data->post_url;
-		//@PCTODO :: if html is not available then process form (XML data)
 		$response->html		=	$processResponseData->data->form;
 		$response->processorResponse = $processResponseData;
 
