@@ -29,7 +29,7 @@ class PaycartSiteControllerProduct extends PaycartController
 		$record = PaycartFactory::getModel('product')->loadRecords(array('product_id' => $productId , 'published' => 1));
 		
 		if(isset($record[$productId]) && !empty($record[$productId])){
-			PaycartFactory::getHelper('product')->updateHits($productId);
+			PaycartFactory::getModel('product')->updateHits($productId);
 			return parent::display();
 		}
 		

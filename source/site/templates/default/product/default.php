@@ -15,8 +15,8 @@ if(!defined( '_JEXEC' )){
 }?>
 
 <?php 
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/owl.carousel.min.js');
-Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/owl.carousel.css');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.min.js');
+Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
 
 echo $this->loadTemplate('js');
 

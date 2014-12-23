@@ -137,12 +137,37 @@ class PaycartProductcategory extends PaycartLib
 				
 		parent::save();
 		
-		//after save create/update category tree
+		/*
+         * after save create/update category tree
+         * $isTreeCreationRunning is common for all the category, so here we used static variable
+         */
 		if(!self::$isTreeCreationRunning){
 			self::$isTreeCreationRunning = true;
 			PaycartFactory::getHelper('productcategory')->generateCategoryTree();
 		}
 		
+		return $this;
+	}
+	
+	/**
+	 * Bind/populate model data on lib object if required
+	 * @return PaycartProduct
+	 */
+	protected function _bindAfterSave()
+	{
+		$data = PaycartFactory::getModel('productcategory')->loadRecords(array('productcategory_id' => $this->getId()));
+		
+		//populate only required data
+		if(!empty($data)){
+			$data = array_shift($data);
+			$this->lft   = $data->lft;
+			$this->rgt   = $data->rgt;
+			$this->level = $data->level;
+			$this->productcategory_lang_id = $data->productcategory_lang_id;
+			$this->cover_media     = $data->cover_media;
+			$this->ordering		   = $data->ordering;
+		}
+
 		return $this;
 	}
 	
@@ -168,8 +193,15 @@ class PaycartProductcategory extends PaycartLib
 	
 	protected function _delete()
 	{
+		$isChildrenDeleted =  true;
+
+		//delete child categories from lang table
+		if($this->lft != $this->rgt){
+			$isChildrenDeleted = $this->getModel()->deleteChildrenLangRecords($this->lft, $this->rgt);
+		}
+		
 		//Delete category
-		if(!$this->getModel()->delete($this->getId())) {
+		if($isChildrenDeleted && !$this->getModel()->delete($this->getId())) {
 			return false;
 		}
 		
@@ -178,8 +210,14 @@ class PaycartProductcategory extends PaycartLib
 			return false;
 		}
 		
-		//after delete update category tree
-		PaycartFactory::getHelper('productcategory')->generateCategoryTree();
+		/*
+         * after delete update category tree
+         * $isTreeCreationRunning is common for all the category, so here we used static variable
+         */
+		if(!self::$isTreeCreationRunning){
+			self::$isTreeCreationRunning = true;
+			PaycartFactory::getHelper('productcategory')->generateCategoryTree();
+		}
 		
 		return true;
 	}

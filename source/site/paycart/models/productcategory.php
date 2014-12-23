@@ -75,6 +75,23 @@ class PaycartModelProductcategory extends PaycartModelLang
 		$this->setError($table->getError());
 		return false;
 	}
+	
+	/**
+	 * Delete child categories from language table between lft ang rgt value
+     * 
+	 * @param $lft : lft value of parent category
+	 * @param $rgt : rgt value of parent category
+	 */
+	function deleteChildrenLangRecords($lft, $rgt)
+	{
+		$query = new Rb_Query();
+		
+		return $query->delete()
+					 ->from('#__paycart_productcategory_lang')
+					 ->where('productcategory_id IN ( SELECT `productcategory_id` from #__paycart_productcategory where `lft` > '.$lft.' AND `rgt` < '.$rgt.')')
+					 ->dbLoadQuery()
+					 ->execute();
+	}
 }
 
 class PaycartModelformProductCategory extends PaycartModelform { }
