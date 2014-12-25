@@ -294,13 +294,12 @@ class PaycartHelperInvoice
 	{
 		$invoice_data = $cart->getInvoiceData();
 		
-		$host_string 	= str_replace(JUri::root(true), "", JUri::root());
-		$url_string 	= "index.php?option=com_paycart&view=cart&processor={$invoice_data['processor_type']}";
+		$url_string 	= JUri::root()."index.php?option=com_paycart&view=cart&processor={$invoice_data['processor_type']}";
 		
 		$build_data['build_type'] = 'html';
-		$build_data['notify_url'] = JUri::root().$url_string.'&task=notify';
-		$build_data['cancel_url'] = $host_string.PaycartRoute::_($url_string.'&task=cancel');
-		$build_data['return_url'] = $host_string.PaycartRoute::_($url_string.'&task=complete');
+		$build_data['notify_url'] = $url_string.'&task=notify';
+		$build_data['cancel_url'] = $url_string.'&task=cancel';
+		$build_data['return_url'] = $url_string.'&task=complete';
 		
 		$processResponseData = Rb_EcommerceApi::invoice_request('build', $cart->getInvoiceId(), $build_data);
 		
