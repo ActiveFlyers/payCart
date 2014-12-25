@@ -30,7 +30,7 @@ $records = (array)$products;
      ================================================================== -->
 	<div class="row-fluid">
 		<div class="pull-left">
-			<h3><?php echo $filters->searchWord?> : <?php echo $count;?> <?php echo ($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM");?></h3>
+			<h3><?php echo !empty($filters->searchWord)?$filters->searchWord:JText::_('COM_PAYCART_TOTAL')?> : <?php echo $count;?> <?php echo ($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM");?></h3>
 		</div>
 		<div class="pull-right">
 			<?php echo PaycartHtml::_('select.genericlist',$sortingOptions, 'filter_sort', 'data-pc-result="filter" data-pc-filter="sort-source"','','',$appliedSort);?>
@@ -55,28 +55,30 @@ $records = (array)$products;
 		 	ob_start();
 		?>
 		 	<!-- category filters -->
-			<?php echo JLayoutHelper::render('paycart_attribute_category_filter',$filters);?>	
-			<hr>
-			
-			<!-- custom attribute filterHtml -->
-			<?php foreach ($filters->attribute->filterHtml as $id=>$filter):?>
-				<h4><?php echo $filter['name']; ?></h4>
-				<?php echo $filter['html'];?>
+			<?php echo JLayoutHelper::render('paycart_attribute_category_filter',$filters);?>
+			<?php if(!empty($records)):?>	
 				<hr>
-			<?php endforeach;?>
+				
+				<!-- custom attribute filterHtml -->
+				<?php foreach ($filters->attribute->filterHtml as $id=>$filter):?>
+					<h4><?php echo $filter['name']; ?></h4>
+					<?php echo $filter['html'];?>
+					<hr>
+				<?php endforeach;?>
+				
+				<!-- range filters -->
+				<?php echo JLayoutHelper::render('paycart_attribute_range_filter',$filters);?>
+				
+				<!-- exclude out-of-stock -->
+				<h4><?php echo JText::_("COM_PAYCART_AVAILABILITY")?></h4>
+				<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
+				       <?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/> 
+				<?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?>
 			
-			<!-- range filters -->
-			<?php echo JLayoutHelper::render('paycart_attribute_range_filter',$filters);?>
-			
-			<!-- exclude out-of-stock -->
-			<h4><?php echo JText::_("COM_PAYCART_AVAILABILITY")?></h4>
-			<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
-			       <?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/> 
-			<?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?>
-		
-			<input type="hidden" name="filters[sort]" data-pc-filter="sort-destination" value="<?php echo $appliedSort;?>" />
-			<input type="hidden" name="q" value="<?php echo $filters->searchWord?>"/>
-			<input type="hidden" name="pagination_start" value="<?php echo $start;?>"/>
+				<input type="hidden" name="filters[sort]" data-pc-filter="sort-destination" value="<?php echo $appliedSort;?>" />
+				<input type="hidden" name="q" value="<?php echo $filters->searchWord?>"/>
+				<input type="hidden" name="pagination_start" value="<?php echo $start;?>"/>
+			<?php endif;?>
 		 <?php 
 			 $filterHtml = ob_get_contents();
 			 ob_get_clean();

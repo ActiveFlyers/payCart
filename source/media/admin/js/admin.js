@@ -126,7 +126,7 @@ paycart.admin.product =
 
 paycart.admin.attribute = {
 		removeOption : function(type,counter){	
-	        var optionId = $('#productattribute_option_id_'+counter).val();
+	        var optionId = $('#paycart_productattribute_form_productattribute_option_id_'+counter).val();
 			var url = 'index.php?option=com_paycart&view=productattribute&task=removeOption&attributeType='+type+'&counter='+counter+'&optionId='+optionId+'&lang_code='+pc_current_language;
 			paycart.ajax.go(url);
 		},

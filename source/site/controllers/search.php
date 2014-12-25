@@ -48,7 +48,10 @@ class PaycartSiteControllerSearch extends PaycartController
 		if(!empty($filters)){
 			$isFiltersApplied = true;
 		}
-				
+
+		// get products and total count
+		list($result,$count) = $filterHelper->findProducts($appliedCoreFilters, $appliedAttrFilters, $searchWord, $appliedSorting);		
+		
 		/*
 		 * First always load all filter options with only search word/categoryId
 		 * It will be used to find out which options should be disabled, while filtering products 
@@ -62,9 +65,6 @@ class PaycartSiteControllerSearch extends PaycartController
 			$availableCoreOptions      = $filterHelper->getAllCoreOptionsByCategory($appliedCoreFilters['category']); 
 			$availableAttributeOptions = $filterHelper->getAllAttributeOptionsByCategory($appliedCoreFilters['category']);
 		}
-		
-		// get products and total count
-		list($result,$count) = $filterHelper->findProducts($appliedCoreFilters, $appliedAttrFilters, $searchWord, $appliedSorting);
 		
 		// build filter html and detail about each option from custom attributes
 		// detail will be used in showing applied filters
@@ -295,6 +295,6 @@ class PaycartSiteControllerSearch extends PaycartController
         }
         
         //we got tree structrue on root category
-        return $parent[Paycart::PRODUCTCATEGORY_ROOT_ID];
+        return empty($parent)?array():$parent[Paycart::PRODUCTCATEGORY_ROOT_ID];
 	}
 }

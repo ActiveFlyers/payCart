@@ -109,7 +109,7 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 		$counter   = $this->input->get('counter');
 		$optionId  = $this->input->get('optionId',0);
 		
-		if(PaycartAttribute::getInstance($type)->deleteOptions($attribute, $optionId)){
+		if(PaycartAttribute::getInstance($type)->deleteOptions(null,$optionId)){
 			$ajaxResponse = PaycartFactory::getAjaxResponse();
 			$ajaxResponse->addScriptCall('paycart.jQuery("#option_row_'.$counter.'").remove');
 		}	

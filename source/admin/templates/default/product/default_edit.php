@@ -132,7 +132,7 @@ echo $this->loadTemplate('edit_css');
 						<fieldset class="form">
 							<div class="row-fluid">
 								<div class="span6">
-									<?php $currency = $global_config->get('currency', '$'); ?>
+									<?php $currency = $formatter->currency($global_config->get('localization_currency')); ?>
 									<?php $field = $form->getField('price') ?>
 									<div class="control-group">
 										<div class="control-label label-left"><?php echo $field->label; ?>&nbsp; ( <?php echo $currency;?> )</div>										

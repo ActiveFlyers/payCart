@@ -22,12 +22,6 @@ class PaycartAdminControllerConfig extends PaycartController
 	{
 		$post = $this->input->post->get($this->getControlNamePrefix(), array(), 'array');
 		
-		if(!empty($post['localization_origin_address'])){
-			$post['localization_origin_address']['address'] = trim($post['localization_origin_address']['address']);
-			$originAddress = json_encode($post['localization_origin_address']); //@PCTODO : should not use json_encode
-			$post['localization_origin_address'] = $originAddress;
-		}
-		
 		//Get All files from paycart form
 		$image = $this->input->files->get($this->getControlNamePrefix(), false);	
 		
