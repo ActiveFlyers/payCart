@@ -443,9 +443,26 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 		// Apply promotion code on cart
 		paycart.cart.onApplyPromotionCode = function(){
-						var request = [];
+						var promotion_code = $('#paycart-promotion-code-input-id').val(),
+							request = [];
+
+						// client validation when promotion code empty
+						if (!promotion_code) {
+							paycart.formvalidator.
+									handleResponse(false, 
+										$('#pc-checkout-promotioncode-error'), 
+										'error', 
+										'<?php echo JText::_('COM_PAYCART_CART_PROMOTION_CODE_EMPTY'); ?>'
+									);
+							
+							return false
+						}
+
+						paycart.formvalidator.handleResponse(true, 
+								$('#pc-checkout-promotioncode-error'),'','');
+						
 						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=applyPromotion';
-						request['data']	= {'promotion_code' : $('#paycart-promotion-code-input-id').val()};
+						request['data']	= {'promotion_code' : promotion_code};
 						request['success_callback']	= paycart.cart.onApplyPromotionCode.response;
 						request['spinner_selector'] = '#paycart-ajax-spinner';
 						paycart.request(request);
