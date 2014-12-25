@@ -6,6 +6,7 @@
 	<!-- ============================================  -->
 	<target name="copy_to_repo" description="copy target" depends="pre_config">
 		<phingcall target="copy_package" />
+		<phingcall target="copy_app" />
 		<phingcall target="copy_plugins" />
 		<phingcall target="copy_modules" />
 		<phingcall target="copy_testcases" />
@@ -73,9 +74,9 @@
 	</target>
 	
 	<!-- ============================================  -->
-	<!-- Target: Copy Plugins, App, Processor          -->
+	<!-- Target: Copy App/ Processor          -->
 	<!-- ============================================  -->
-	<target name="copy_plugins">
+	<target name="copy_app">
 		<if>
 		    <available file='${source}/plugins/paycart' type='dir' />
 		    <then>
@@ -86,6 +87,26 @@
 				</copy>
 		    </then>
 	  	</if>	
+	</target>
+	
+	
+	<!-- ============================================  -->
+	<!-- Target: Copy Plugin				           -->
+	<!-- ============================================  -->
+	<target name="copy_plugins">
+	
+		<!-- Copy system plugin	-->
+		<if>
+		    <available file='${source}/plugins/system/paycart' type='dir' />
+		    <then>
+		    	<copy todir="${target}/source/admin/install/extensions/plg_system_paycart">
+			    	<fileset dir="${source}/plugins/system/paycart">
+			    		<include name="**/*.*" />
+			    	</fileset>
+		    	</copy>
+		    </then>
+	  	</if>	
+	  	
 	</target>
 	
 	

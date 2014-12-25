@@ -118,6 +118,7 @@
   'paycarthelpergroup' => 'site/paycart/helpers/group.php',
   'paycarthelperimage' => 'site/paycart/helpers/image.php',
   'paycarthelperinvoice' => 'site/paycart/helpers/invoice.php',
+  'paycarthelperjevent' => 'site/paycart/helpers/jevent.php',
   'paycarthelperlog' => 'site/paycart/helpers/log.php',
   'paycarthelpermedia' => 'site/paycart/helpers/media.php',
   'paycarthelperprocessor' => 'site/paycart/helpers/processor.php',

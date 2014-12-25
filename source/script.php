@@ -50,6 +50,13 @@ class Com_paycartInstallerScript
 		$db = JFactory::getDBO();
 		$db->setQuery($sql);
 		$db->query();
+		
+		$this->installExtensions();
+
+		$extensions 	= array();
+		$extensions[] 	= array('type'=>'system', 'name'=>'paycart');
+
+		$this->changeExtensionState($extensions);
 		return true;
 	}
 
@@ -59,6 +66,18 @@ class Com_paycartInstallerScript
 	 */
 	function uninstall($parent)
 	{
+		$db = JFactory::getDBO();
+		$query = "SELECT * FROM `#__extensions` WHERE `type`='plugin' AND `element`='paycart' AND `folder`='system'";
+		$db->setQuery($query);
+		$result = $db->loadObjectList('element');
+		
+		if(isset($result['paycart']))
+		{
+			$state=0;
+			$extensions[] 	= array('type'=>'system', 'name'=>'paycart');
+			$this->changeExtensionState($extensions, $state);
+		}
+		
 		return true;
 	}
 	
@@ -83,6 +102,78 @@ class Com_paycartInstallerScript
 		// Create default Front end menus
 		require_once JPATH_ADMINISTRATOR.'/components/com_paycart/install/script/menu.php';
 		PaycartInstallScriptMenu::createMenus();
-		;
+	}
+	
+	/**
+	 * Install the extensions located at the given path
+	 * 
+	 * @param $actionPath : Path from which to install extensions
+	 * @param $delFolder : decide whether to delete the given folder ($actionPath) after installation or not
+	 */
+	function installExtensions($actionPath=null,$delFolder=true)
+	{
+		//if no path defined, use default path
+		if($actionPath==null)
+			$actionPath = dirname(__FILE__).'/admin/install/extensions';
+
+		//get instance of installer
+		$installer =  new JInstaller();
+
+		$extensions	= JFolder::folders($actionPath);
+
+		//no extension to install
+		if(empty($extensions))
+			return true;
+
+		//install all extensions
+		foreach ($extensions as $extension)
+		{
+			$msg = " ". $extension . ' : Installed Successfully ';
+
+			// Install the packages
+			if($installer->install("{$actionPath}/{$extension}")==false){
+				$msg = " ". $extension . ' : Installation Failed. Please try to reinstall. [Supportive plugin/module for paycart]';
+			}
+
+			//enque the message
+			JFactory::getApplication()->enqueueMessage($msg);
+		}
+
+		if($delFolder){
+			$delPath = JPATH_ADMINISTRATOR.'/components/com_paycart/install/extensions';
+			JFolder::delete($delPath);
+		}
+
+		return true;
+	}
+
+	/**
+	 * 
+	 * Change state of given extensions
+	 * 
+	 * @param $extensions : array containing type and name of the extensions
+	 * @param $state : state to change for the given extensions
+	 */
+	function changeExtensionState($extensions = array(), $state = 1)
+	{
+		if(empty($extensions)){
+			return true;
+		}
+
+		$db		= JFactory::getDBO();
+		$query		= 'UPDATE '. $db->quoteName( '#__extensions' )
+				. ' SET   '. $db->quoteName('enabled').'='.$db->Quote($state);
+
+		$subQuery = array();
+		foreach($extensions as $extension => $value){
+			$subQuery[] = '('.$db->quoteName('element').'='.$db->Quote($value['name'])
+				    . ' AND ' . $db->quoteName('folder').'='.$db->Quote($value['type'])
+			            .'  AND `type`="plugin"  )   ';
+		}
+
+		$query .= 'WHERE '.implode(' OR ', $subQuery);
+
+		$db->setQuery($query);
+		return $db->query();
 	}
 }
