@@ -725,6 +725,12 @@ class PaycartCart extends PaycartLib
 		 */ 
 		$args 			= Array();
 		$args['cart']	= $this;
+		
+		/*  @var $event_helper PaycartHelperEvent   */
+        $event_helper = PaycartFactory::getHelper('event');
+        
+        //trigger :: onPaycartCartBeforeCalculate
+        $event_helper->onPaycartCartBeforeCalculate($args);
 
 		// At that Moment cart have only {product} particulars. 
 		Rb_HelperPlugin::trigger('onPaycartCartBeforeCalculate', $args);
@@ -782,8 +788,9 @@ class PaycartCart extends PaycartLib
 		 * @NOTE :: Clone {$this}, If required
 		 */ 
 		$args['cart']	=	$this;
-		Rb_HelperPlugin::trigger('onPaycartCartAfterCalculate', $args);
-		
+		//trigger :: onPaycartCartBeforeCalculate
+        $event_helper->onPaycartCartAfterCalculate($args);
+        
 		return $this;
 	}
 	

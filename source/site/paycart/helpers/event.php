@@ -26,11 +26,13 @@ class PaycartHelperEvent extends PaycartHelper
 	 * #######################################################################
 	 *
      *  Listed all available triggers on cart
-     *      1#. onPaycartCart Drafted 
-     *      2#. onPaycartCart Locked
-     *      3#. onPaycartCart Approved
-     *      4#. onPaycartCart Paid
-     *      5#. onPaycartCart Delivered
+     *      1#. onPaycart-Cart-After-Drafted 
+     *      2#. onPaycart-Cart-After-Locked
+     *      3#. onPaycart-Cart-After-Approved
+     *      4#. onPaycart-Cart-After-Paid
+     *      5#. onPaycartCart-After-Delivered
+     *      6#. onPaycart-Cart-Before-Calculate
+     *      7#. onPaycart-Cart-After-Calculate
 	 * #######################################################################
 	 */
         
@@ -145,6 +147,45 @@ class PaycartHelperEvent extends PaycartHelper
             	$instance->sendNotification($cart);
            	}
         }
+        
+		/**
+         * 
+         * Trigger before cart calculation begin
+         * @param $params
+         * 
+         * @return trigger output
+         */
+        public function onPaycartCartBeforeCalculate(Array $params) 
+        {
+        	$event_name =   'onPaycartCartBeforeCalculate';
+            
+            // trigger
+            return Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+        }
+        
+        /**
+         * 
+         * Trigger After cart calculation begin
+         * @param $params
+         * 
+         * @return trigger output
+         */
+		public function onPaycartCartAfterCalculate(Array $params) 
+        {
+        	$event_name =   'onPaycartCartAfterCalculate';
+            
+            // trigger
+            return Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+        }
+        
+    /**
+	 * #######################################################################
+	 *
+     *  Listed all available triggers on Shipment
+     *      1#. onPaycart-Shipment-After-Dispatched
+     *      2#. onPaycart-Shipment-After-Delivered
+	 * #######################################################################
+	 */
 
 		/**
          *
@@ -203,6 +244,15 @@ class PaycartHelperEvent extends PaycartHelper
             	$instance->sendNotification($shipment);
            	}
          }
+         
+                 
+    /**
+	 * #######################################################################
+	 *
+     *  Listed all available Paycart System triggers
+     *      1#. onPaycart-Cron
+	 * #######################################################################
+	 */
          
 		 /**
           * onPaycartCron event
