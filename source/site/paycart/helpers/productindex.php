@@ -78,7 +78,7 @@ class PaycartHelperProductIndex
 			$attributes  = $product->getAttributes();
 			$optionsLang = array();
 			foreach ($attributes as $attribute_id => $data){
-				if(in_array($attribute_id, $searchableAttributes)){
+				if(array_key_exists($attribute_id, $searchableAttributes)){
 					$attribute   = PaycartProductAttribute::getInstance($attribute_id, $searchableAttributes[$attribute_id]);
 					$optionsLang = $attribute->getSearchableDataOfOption($data);
 				}

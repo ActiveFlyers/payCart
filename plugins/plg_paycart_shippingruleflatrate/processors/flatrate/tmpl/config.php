@@ -28,10 +28,10 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 		var lastMaxValue = $('.pc-shipping-flatrate-range tr:nth-last-child(2) td:nth-child(2) input').val();
 			
 		var html 	 = '<tr class="pc-shipping-flaterate-range-'+nextCounter+'">'+
-					   '<td><input class="input-small" type="text" name="paycart_form[processor_config][range]['+nextCounter+'][min]" value="'+lastMaxValue+'"/>&nbsp;</td>'+
-				       '<td><input class="input-small" type="text" name="paycart_form[processor_config][range]['+nextCounter+'][max]" value=""/>&nbsp;</td>'+
+					   '<td><input class="input-small" type="text" name="<?php echo $namePrefix?>[processor_config][range]['+nextCounter+'][min]" value="'+lastMaxValue+'"/>&nbsp;</td>'+
+				       '<td><input class="input-small" type="text" name="<?php echo $namePrefix?>[processor_config][range]['+nextCounter+'][max]" value=""/>&nbsp;</td>'+
 				       '<td><span class="input-prepend">'+
-					   '<span class="add-on">'+currency+'</span><input type="text" class="input-small" name="paycart_form[processor_config][range]['+nextCounter+'][price]" value=""/>'+
+					   '<span class="add-on">'+currency+'</span><input type="text" class="input-small" name="<?php echo $namePrefix?>[processor_config][range]['+nextCounter+'][price]" value=""/>'+
 					   '</span></td>'+
 					   '<td><a href="javascript:void(0)"><i class="fa fa-trash-o" onClick="paycart.shipping.flatrate.deleteRange('+nextCounter+')"></i></a></td>'+
 					   '</tr>';
@@ -55,7 +55,7 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 		}
 	}
 	
-	var val = $( "input:radio[name='paycart_form[processor_config][billing]']:checked" ).val();
+	var val = $( "input:radio[name='<?php echo $namePrefix?>[processor_config][billing]']:checked" ).val();
 	paycart.shipping.flatrate.changeBilling(val);
 })(paycart.jQuery);
 </script>
@@ -70,16 +70,16 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 			<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_FLATRATE_BILLING_BASED_ON');?>
 		</label>
 		<div class="controls">
-			<fieldset class="radio btn-group" id="paycart_form_billing">
-				<input onClick="paycart.shipping.flatrate.changeBilling(this.value)" type="radio" id="paycart_form_billing_price" 
-					   name="paycart_form[processor_config][billing]" value="<?php echo PaycartShippingruleProcessorFlatRate::PRICE;?>" 
+			<fieldset class="radio btn-group" id="<?php echo $namePrefix?>_billing">
+				<input onClick="paycart.shipping.flatrate.changeBilling(this.value)" type="radio" id="<?php echo $namePrefix?>_billing_price" 
+					   name="<?php echo $namePrefix?>[processor_config][billing]" value="<?php echo PaycartShippingruleProcessorFlatRate::PRICE;?>" 
 							<?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::PRICE ? 'checked="checked"' : '';?>>
-				<label for="paycart_form_billing_price" class="btn <?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::PRICE ? 'active btn-success' : '';?>"><?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_PRICE");?></label>
+				<label for="<?php echo $namePrefix?>_billing_price" class="btn <?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::PRICE ? 'active btn-success' : '';?>"><?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_PRICE");?></label>
 				
-				<input onClick="paycart.shipping.flatrate.changeBilling(this.value)" type="radio" id="paycart_form_billing_weight" 
-				       name="paycart_form[processor_config][billing]" value="<?php echo PaycartShippingruleProcessorFlatRate::WEIGHT;?>" 
+				<input onClick="paycart.shipping.flatrate.changeBilling(this.value)" type="radio" id="<?php echo $namePrefix?>_billing_weight" 
+				       name="<?php echo $namePrefix?>[processor_config][billing]" value="<?php echo PaycartShippingruleProcessorFlatRate::WEIGHT;?>" 
 							<?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::WEIGHT ? 'checked="checked"' : '';?>>
-				<label for="paycart_form_billing_weight" class="btn <?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::WEIGHT ? 'active btn-success' : '';?>"><?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_WEIGHT");?></label>
+				<label for="<?php echo $namePrefix?>_billing_weight" class="btn <?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::WEIGHT ? 'active btn-success' : '';?>"><?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_WEIGHT");?></label>
 			</fieldset>
 		</div>
 	</div>
@@ -110,12 +110,12 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 				</thead>
 				<?php if(empty($config->range)):?>
 					<tr class="pc-shipping-flaterate-range-0">
-						<td><input class="input-small" type="text" name="paycart_form[processor_config][range][0][min]" value="0"/></td>
-						<td><input class="input-small" type="text" name="paycart_form[processor_config][range][0][max]" value=""/></td>
+						<td><input class="input-small" type="text" name="<?php echo $namePrefix?>[processor_config][range][0][min]" value="0"/></td>
+						<td><input class="input-small" type="text" name="<?php echo $namePrefix?>[processor_config][range][0][max]" value=""/></td>
 						<td>
 							<span class="input-prepend">
 								<span class="add-on"><?php echo $currency;?></span>
-								<input type="text" class="input-small" name="paycart_form[processor_config][range][0][price]" value=""/>
+								<input type="text" class="input-small" name="<?php echo $namePrefix?>[processor_config][range][0][price]" value=""/>
 							</span>
 						</td>
 					</tr>
@@ -124,12 +124,12 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 					<?php $firstKey = key($config->range);?>
 					<?php foreach ($config->range as $key => $value):?>
 						<tr class="pc-shipping-flaterate-range-<?php echo $key?>">
-							<td><input class="input-small" type="text" name="paycart_form[processor_config][range][<?php echo $key?>][min]" value="<?php echo $value->min;?>"/></td>
-							<td><input class="input-small" type="text" name="paycart_form[processor_config][range][<?php echo $key?>][max]" value="<?php echo $value->max;?>"/></td>
+							<td><input class="input-small" type="text" name="<?php echo $namePrefix?>[processor_config][range][<?php echo $key?>][min]" value="<?php echo $value->min;?>"/></td>
+							<td><input class="input-small" type="text" name="<?php echo $namePrefix?>[processor_config][range][<?php echo $key?>][max]" value="<?php echo $value->max;?>"/></td>
 							<td>
 								<span class="input-prepend">
 									<span class="add-on"><?php echo $currency;?></span>
-									<input type="text" class="input-small" name="paycart_form[processor_config][range][<?php echo $key?>][price]" value="<?php echo $value->price;?>"/>
+									<input type="text" class="input-small" name="<?php echo $namePrefix?>[processor_config][range][<?php echo $key?>][price]" value="<?php echo $value->price;?>"/>
 								</span>
 							</td>
 							<?php if($key != $firstKey):?>
@@ -156,7 +156,7 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 				<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_FLATRATE_OUT_OF_RANGE');?>
 			</label>
 			<div class="controls">
-				<select name="paycart_form[processor_config][out_of_range]">
+				<select name="<?php echo $namePrefix?>[processor_config][out_of_range]">
 					<option value="<?php echo PaycartShippingruleProcessorFlatRate::HIGHEST_RANGE_PRICE;?>" <?php echo isset($config->out_of_range) && $config->out_of_range == PaycartShippingruleProcessorFlatRate::HIGHEST_RANGE_PRICE ? 'selected="selected"' : '';?>>
 						<?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_HIGHEST_RANGE_PRICE");?>
 					</option>

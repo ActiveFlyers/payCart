@@ -29,7 +29,7 @@ class PaycartAdminAjaxViewGroup extends PaycartAdminBaseViewGroup
 			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_ERROR_INVALID_ARGUMENT'), 1);  //@PCTODO : Decide Error Code
 		}
 		
-		$namePrefix = $this->_component->getNameSmall().'_form[params]['.$counter.']';
+		$namePrefix = $this->_component->getNameSmall().'_'.$this->getName().'_form[params]['.$counter.']';
 		
 		// get instance of rule
 		$groupRule = PaycartFactory::getGrouprule($ruleType, $ruleClass, array());
