@@ -22,7 +22,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 	paycart.product.filter.init = function(searchWord,filters){
 		var link = 'index.php?option=com_paycart&view=search&task=filter&q='+searchWord;
 		//parseJSON is used because filters are being passed as json string, so need to convert it object
-		paycart.ajax.go(link , {'filters':$.parseJSON(filters)} );
+		paycart.ajax.go(link , {'filters':$.parseJSON(filters), 'spinner_selector' : '#paycart-ajax-spinner'} );
 		return false;
 	};
 
@@ -52,7 +52,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 			$('input[name="'+this.name+'"]').attr('value',ev.value);
 			var link = 'index.php?option=com_paycart&view=search&task=filter';
 			$('input[name="pagination_start"]').attr('value',0);
-			paycart.ajax.go(link, $('.pc-form-product-filter').serialize());
+			var postData 	= $('.pc-form-product-filter').serializeArray();
+			postData.spinner_selector = '#paycart-ajax-spinner';
+			paycart.ajax.go(link, postData);
 			return false;
 		});
 
@@ -71,7 +73,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		$('input[name="pagination_start"]').attr('value',0);
 		
 		var link = 'index.php?option=com_paycart&view=search&task=filter';
-		paycart.ajax.go(link, $('.pc-form-product-filter').serialize());
+		var postData 	= $('.pc-form-product-filter').serializeArray();
+		postData.spinner_selector = '#paycart-ajax-spinner';
+		paycart.ajax.go(link, postData);
 		return false;
 	};
 
@@ -84,13 +88,17 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		$('[name="'+name+'"]').prop('checked',false);
 
 		var link = 'index.php?option=com_paycart&view=search&task=filter';
-		paycart.ajax.go(link, $('.pc-form-product-filter').serialize());
+		var postData 	= $('.pc-form-product-filter').serializeArray();
+		postData.spinner_selector = '#paycart-ajax-spinner';
+		paycart.ajax.go(link, postData);
 		return false;
 	};
 
 	paycart.product.loadMore = function(){
 		var link = 'index.php?option=com_paycart&view=search&task=loadMore';
-		paycart.ajax.go(link, $('.pc-form-product-filter').serialize());
+		var postData 	= $('.pc-form-product-filter').serializeArray();
+		postData.spinner_selector = '#paycart-ajax-spinner';
+		paycart.ajax.go(link, postData);
 		return false;
 	};
 

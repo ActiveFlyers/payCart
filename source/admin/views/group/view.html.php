@@ -68,7 +68,7 @@ class PaycartAdminHtmlViewGroup extends PaycartAdminBaseViewGroup
 			$params 	= $item->getParams();			
 			  
 			foreach($params as $rule){
-				$namePrefix = $this->_component->getNameSmall().'_form[params]['.$ruleCounter.']';
+				$namePrefix = $this->_component->getNameSmall().'_'.$this->getName().'_form[params]['.$ruleCounter.']';
 				
 				// get instance of rule
 				$groupRule = PaycartFactory::getGrouprule($type, $rule->ruleClass, (array)$rule);

@@ -38,7 +38,7 @@ abstract class PaycartShippingruleProcessor
 	 */
 	public $processor_config = null;
 	
-	public function getConfigHtml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
+	public function getConfigHtml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response, $namePrefix)
 	{
 		$config 	= $this->getConfig();
 		$location	= $this->getLocation();

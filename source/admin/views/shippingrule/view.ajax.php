@@ -27,7 +27,7 @@ class PaycartAdminAjaxViewShippingRule extends PaycartAdminBaseViewShippingRule
 		$data['processor_classname']	=  $this->input->get('processor_classname', '');
 		
 		$rule = PaycartShippingrule::getInstance($rule_id)->bind($data);
-		$html = $rule->getProcessorConfigHtml();
+		$html = $rule->getProcessorConfigHtml($this->_component->getNameSmall().'_'.$this->getName().'_form');
 		$this->assign('processor_config_html', $html);
 		$this->setTpl('processor_config');
 		$this->_renderOptions = array('domObject'=>'pc-shippingrule-processorconfig','domProperty'=>'innerHTML');

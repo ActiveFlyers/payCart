@@ -27,7 +27,7 @@ $config->machinable = isset($config->machinable)?$config->machinable:1;
 					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_USER_ID');?>
 				</label>
 				<div class="controls">
-					<input type="text" name="paycart_form[processor_config][user_id]" id="pc-processor-usps-userid" value="<?php echo isset($config->user_id)?$config->user_id:''?>">
+					<input type="text" name="<?php echo $namePrefix?>[processor_config][user_id]" id="pc-processor-usps-userid" value="<?php echo isset($config->user_id)?$config->user_id:''?>">
 				</div>	
 			</div>
 		
@@ -36,7 +36,7 @@ $config->machinable = isset($config->machinable)?$config->machinable:1;
 					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_CALCULATION_MODE');?>
 				</label>
 				<div class="controls">
-					<?php echo PaycartHtml::_('select.genericlist',$calculationMode,'paycart_form[processor_config][calculation_mode]','','value','title',$config->calculation_mode,'pc-processor-usps-calculation-mode')?>
+					<?php echo PaycartHtml::_('select.genericlist',$calculationMode,$namePrefix.'[processor_config][calculation_mode]','','value','title',$config->calculation_mode,'pc-processor-usps-calculation-mode')?>
 				</div>	
 			</div>
 			
@@ -45,7 +45,7 @@ $config->machinable = isset($config->machinable)?$config->machinable:1;
 					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE');?>
 				</label>
 				<div class="controls">
-					<?php echo PaycartHtml::_('select.genericlist',$serviceCode,'paycart_form[processor_config][service_code]','','value','title',$config->service_code,'pc-processor-usps-service-code')?>
+					<?php echo PaycartHtml::_('select.genericlist',$serviceCode,$namePrefix.'[processor_config][service_code]','','value','title',$config->service_code,'pc-processor-usps-service-code')?>
 				</div>	
 			</div>
 			
@@ -54,7 +54,7 @@ $config->machinable = isset($config->machinable)?$config->machinable:1;
 					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_PACKAGING_TYPE');?>
 				</label>
 				<div class="controls">
-					<?php echo PaycartHtml::_('select.genericlist',$packagingType,'paycart_form[processor_config][packaging_type]','','value','title',$config->packaging_type,'pc-processor-usps-packaging-type')?>
+					<?php echo PaycartHtml::_('select.genericlist',$packagingType,$namePrefix.'[processor_config][packaging_type]','','value','title',$config->packaging_type,'pc-processor-usps-packaging-type')?>
 				</div>	
 			</div>
 			
@@ -63,7 +63,7 @@ $config->machinable = isset($config->machinable)?$config->machinable:1;
 					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_PACKAGING_SIZE');?>
 				</label>
 				<div class="controls">
-					<?php echo PaycartHtml::_('select.genericlist',$packagingSize,'paycart_form[processor_config][packaging_size]','','value','title',$config->packaging_size, 'pc-processor-usps-packaging-size')?>
+					<?php echo PaycartHtml::_('select.genericlist',$packagingSize,$namePrefix.'[processor_config][packaging_size]','','value','title',$config->packaging_size, 'pc-processor-usps-packaging-size')?>
 				</div>	
 			</div>
 			
@@ -74,14 +74,14 @@ $config->machinable = isset($config->machinable)?$config->machinable:1;
 				<div class="controls">
 					<fieldset class="radio btn-group">
 						<input type="radio" id="pc-processor-usps-machinable-yes" 
-							   name="paycart_form[processor_config][machinable]" value="1" 
+							   name="<?php echo $namePrefix?>[processor_config][machinable]" value="1" 
 									<?php echo $config->machinable == 1 ? 'checked="checked"' : '';?>>
-						<label for="paycart_form_machinable" class="btn <?php echo $config->machinable == 1 ? 'active btn-success' : '';?>"><?php echo JText::_("JYES");?></label>
+						<label for="<?php echo $namePrefix?>_machinable" class="btn <?php echo $config->machinable == 1 ? 'active btn-success' : '';?>"><?php echo JText::_("JYES");?></label>
 						
 						<input type="radio" id="pc-processor-usps-machinable-no" 
-							   name="paycart_form[processor_config][machinable]" value="0" 
+							   name="<?php echo $namePrefix?>[processor_config][machinable]" value="0" 
 									<?php echo $config->machinable == 0 ? 'checked="checked"' : '';?>>
-						<label for="paycart_form_machinable" class="btn <?php echo $config->machinable == 0 ? 'active btn-danger' : '';?>"><?php echo JText::_("JNO");?></label>
+						<label for="<?php echo $namePrefix?>_machinable" class="btn <?php echo $config->machinable == 0 ? 'active btn-danger' : '';?>"><?php echo JText::_("JNO");?></label>
 					</fieldset>
 				</div>	
 			</div>

@@ -205,10 +205,10 @@ class PaycartShippingrule extends PaycartLib
 		return $this->title;
 	}
 	
-	public function getProcessorConfigHtml()
+	public function getProcessorConfigHtml($namePrefix)
 	{
 		$response = $this->getResponseObject();
-		$this->getProcessor()->getConfigHtml(new PaycartShippingruleRequest, $response);
+		$this->getProcessor()->getConfigHtml(new PaycartShippingruleRequest, $response, $namePrefix);
 		return $response->configHtml;
 	}
 	
