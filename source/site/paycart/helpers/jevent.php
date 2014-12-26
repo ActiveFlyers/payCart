@@ -90,4 +90,29 @@ class PaycartHelperJevent extends JEvent
 		// include paycart
 		require_once $fileName;		
 	}
+	
+	/**
+	 * 
+	 * Paycart System trigger
+	 * 		- cron img append here
+	 * @param unknown_type $view_object
+	 * @param unknown_type $tsak_name
+	 * @param unknown_type $view_name
+	 * @param unknown_type $output_string
+	 */
+	public function onPaycartViewAfterRender($view_object, $tsak_name, $view_name, $output_string)
+	{
+		//self::loadPaycart();
+		/*
+		 * cron will be triggered only on paycart pages
+		 */	
+		//only add if required, then add call back
+		if(PaycartFactory::getConfig()->get('cron_run_automatic') == 1 && 
+		   PaycartFactory::getDocument()->getType() == 'html' && 
+		   PaycartHelperCron::checkRequired()== true){
+			// Add a cron call back	
+			$output_string .= '<img src="'.PaycartHelperCron::getURL().'" style="display:none"/>';
+		}
+		;
+	}
 }

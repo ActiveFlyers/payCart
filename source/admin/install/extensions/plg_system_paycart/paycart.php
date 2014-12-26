@@ -26,5 +26,8 @@ $dispatcher = JDispatcher::getInstance();
 // register User events
 $dispatcher->register('onUserLogin', 'PaycartHelperJevent');
 
+// register PaycartSystem  events
+$dispatcher->register('onPaycartViewAfterRender', 'PaycartHelperJevent');
+
 class plgSystemPaycart extends JPlugin
 {}
