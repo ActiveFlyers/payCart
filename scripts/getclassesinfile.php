@@ -27,6 +27,12 @@ require_once dirname(__DIR__).'/scripts/_filelist.php';
 
 $classes = array();
 foreach($files as $file){
+	//@TODO:: should be move into phing script
+	//exclude files from admin/install/extension folder
+	if ( 0 === strpos( $file, 'admin/install/extensions') ) {
+		continue;
+	}
+
 	$cs = file_get_php_classes(dirname(__DIR__).'/source/'.$file);
 	foreach($cs as $c){
 		$classes[strtolower($c)] = $file;
