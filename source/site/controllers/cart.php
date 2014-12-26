@@ -422,33 +422,47 @@ class PaycartSiteControllerCart extends PaycartController
 			$this->execute('login');			
 			return false;
 		}
-		
+
+		$errors = array();
 		$form_data = $this->input->get('paycart_cart_confirm',Array(), 'ARRAY');
 
 		if(!empty($form_data)){
-			$errors = array();
+			try {
+				//when cart total is 0 then no need to create invoice just paid it
+				if (0 == $this->cart->getTotal()) {
+					//if invoice exist then delete it
+					$invoice_id = $this->cart->getInvoiceId();
+					if ($invoice_id) {
+						/* @var $invoice_helper_instance PaycartHelperInvoice */
+						$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+						if ( !$invoice_helper_instance->deleteInvoice($invoice_id) ) {
+							throw new RuntimeException('fail to invoice deletion');
+						}
+					}
+					// store all params data, then paid nd save 
+					$this->cart->order()->markPaid()->save();
+					$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$this->cart->getId()));
+					return false;
+				} else {
 			
-			try{			
-				$this->cart->confirm();
-			}catch (Exception $ex) {
-				$error = new stdClass();
-				$error->message 		= $ex->getMessage();
-				$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
-				$error->for				= 'header';
-				$errors[] = $error;
-				return false;
+					$this->cart->confirm();
+					//calculation on cart then save it 
+					$this->cart->calculate();
+					//Cart should be save after processing
+					$this->cart->save();
+					$this->execute('gatewayselection');
+				}	
+			} catch (Exception $ex) {
+					$error = new stdClass();
+					$error->message 		= $ex->getMessage();
+					$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+					$error->for				= 'header';
+					$errors[] = $error;
 			}
-			
-			//calculation on cart then save it 
-			$this->cart->calculate();
-			
-			//Cart should be save after processing
-			$this->cart->save();
-			
-			$this->execute('gatewayselection');
 		}
 		
-		$this->getView()->set('cart', $this->cart);
+		$this->getView()->set('errors', $errors);
+		$this->getView()->set('cart', 	$this->cart);
 		return true;
 	}	
 	
@@ -499,7 +513,7 @@ class PaycartSiteControllerCart extends PaycartController
 			
 			if (!$response->is_error) { 
 				//successfull process
-				$this->getView()->set('redirect_url', Rb_Route::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$cart_id));	
+				$this->getView()->set('redirect_url', PaycartRoute::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$cart_id));	
 			} else { // error in processing
 				
 				$error = new stdClass();
