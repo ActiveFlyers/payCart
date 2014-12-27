@@ -164,9 +164,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						if(is_guest){
 							$('[data-pc-emailcheckout="show"]').show();
 							$('[data-pc-emailcheckout="hide"]').hide();
+							$('[data-pc-selector="paycart_cart_login_email"]').addClass('validate-email');							
+							paycart.formvalidator.initialize('form.pc-form-validate');
 						}else{
 							$('[data-pc-emailcheckout="show"]').hide();
 							$('[data-pc-emailcheckout="hide"]').show();
+							$('[data-pc-selector="paycart_cart_login_email"]').removeClass('validate-email');
+							paycart.formvalidator.initialize('form.pc-form-validate');
 						}
 					};
 

@@ -34,10 +34,12 @@ if(!defined( '_JEXEC' )){
 		
 		<div class="control-group">	
 			<div class="control-label">
-	 			<label id="paycart_cart_login_email-lbl" for="paycart_cart_login_email" class="required" aria-invalid="false"><?php echo JText::_('COM_PAYCART_EMAIL');?></label>
+	 			<label id="paycart_cart_login_email-lbl" for="paycart_cart_login_email" class="required" aria-invalid="false">
+	 				<span data-pc-emailcheckout="hide"><?php echo JText::_('JGLOBAL_USERNAME').' / ';?></span> <?php echo JText::_('JGLOBAL_EMAIL');?>
+	 			</label>
 	 		</div>
 	 		<div class="controls">
-				<input type="email" name="paycart_cart_login[email]" id="paycart_cart_login_email" class="input-block-level validate-email" required="" value = "<?php echo @$buyer->email; ?>"/>
+				<input type="email" name="paycart_cart_login[email]" id="paycart_cart_login_email" class="input-block-level validate-email" required="" value = "<?php echo @$buyer->email; ?>" data-pc-selector="paycart_cart_login_email"/>
 				<span class="pc-error" for="paycart_cart_login_email"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_INVALID_EMAIL_ADDRESS');?></span>
 			</div>
 		 </div>

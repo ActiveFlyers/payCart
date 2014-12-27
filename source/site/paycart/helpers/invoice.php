@@ -474,4 +474,16 @@ class PaycartHelperInvoice
 		return $response;
 		
 	}
+	
+	public function getStatusList()
+	{
+		return array(
+            self::STATUS_INVOICE_NONE		=> JText::_('COM_PAYCART_INVOICE_STATUS_NONE'),
+			self::STATUS_INVOICE_DUE 		=> JText::_('COM_PAYCART_INVOICE_STATUS_DUE'),
+			self::STATUS_INVOICE_PAID		=> JText::_('COM_PAYCART_INVOICE_STATUS_PAID'),
+			self::STATUS_INVOICE_REFUNDED	=> JText::_('COM_PAYCART_INVOICE_STATUS_REFUNDED'),
+			self::STATUS_INVOICE_INPROCESS	=> JText::_('COM_PAYCART_INVOICE_STATUS_INPROCESS'),
+			self::STATUS_INVOICE_EXPIRED	=> JText::_('COM_PAYCART_INVOICE_STATUS_EXPIRED')		
+		);
+	}
 }

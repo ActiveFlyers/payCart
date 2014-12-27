@@ -30,7 +30,7 @@ static $id_suffix = 0;
 $id_suffix++;
 
 ?>
-
+<span class="pc-error" id="paycart-buyer-address-error" for="paycart-buyer-address-error"><?php echo JText::_('COM_PAYCART_ACCOUNT_ADDRESS_NOT_ADDED');?></span>
 <fieldset>
 
 <!--	Buyeraddress id	-->
@@ -81,9 +81,7 @@ $id_suffix++;
 	  <div class="controls">                     
 	    <textarea 	name="<?php echo $prefix; ?>[address]" 
 					id="address_<?php echo $id_suffix; ?>"
-					required="true">
-	    	<?php echo @$displayData->address; ?>
-	    </textarea>
+					required="true"><?php echo @$displayData->address; ?></textarea>
 	  </div>
 	</div>
 	
@@ -95,7 +93,7 @@ $id_suffix++;
 	  </label>
 	  <div class="controls">
 	  		<?php
-	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', @$displayData->country_id, "country_id_$id_suffix"); 
+	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', @$displayData->country_id, "country_id_$id_suffix", array('required' => 'true')); 
 	  		?>
 	   
 	  </div>
@@ -111,7 +109,7 @@ $id_suffix++;
 	  </label>
 	  <div class="controls">
 		  	<?php 
-		  		echo PaycartHtmlState::getList($prefix.'[state_id]',@$displayData->state_id,  "state_id_$id_suffix", array(),  @$displayData->country_id);
+		  		echo PaycartHtmlState::getList($prefix.'[state_id]',@$displayData->state_id,  "state_id_$id_suffix", array('required' => 'true'),  @$displayData->country_id);
 		  	?>
 		   	    
 		    <script>
@@ -141,7 +139,7 @@ $id_suffix++;
 	    <input 	name="<?php echo $prefix; ?>[city]" 
 				id="city_<?php echo $id_suffix; ?>" 
 				value="<?php echo @$displayData->city; ?>"
-	    	    type="text">
+	    	    type="text" required="true">
 	  </div>
 	</div>
 
@@ -154,22 +152,8 @@ $id_suffix++;
 		    <input 	name="<?php echo $prefix; ?>[zipcode]" 
 					id="zipcode_<?php echo $id_suffix; ?>" 
 					value="<?php echo @$displayData->zipcode; ?>"
-					type="text">
+					type="text" required="true">
 	  
-	  </div>
-	</div>
-
-<!--	Buyeraddress Vatnumber	-->
-	<div class="control-group">
-	  <label class="control-label" for="textinput">
-	  		<?php echo JText::_('COM_PAYCART_VATNUMBER');?>
-	  </label>
-	  <div class="controls">
-		    <input 	name="<?php echo $prefix; ?>[vat_number]" 
-					id="vat_number_<?php echo $id_suffix; ?>" 
-					value="<?php echo @$displayData->vat_number; ?>" 
-		    		type="text">
-	    
 	  </div>
 	</div>
 		

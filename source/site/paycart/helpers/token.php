@@ -62,11 +62,10 @@ class PaycartHelperToken extends PaycartHelper
 		    		unset($event_specific_tokens['shipment']);
                 break;
             
-            case 'onpaycartshipmentafterdispatched':
-                break;
-            
+            case 'onpaycartshipmentafterdispatched':         
             case 'onpaycartshipmentafterdelivered':
-                break;
+            case 'onpaycartorderurlrequest' :    
+            	break;
         }
         
         return $event_specific_tokens;
@@ -98,7 +97,7 @@ class PaycartHelperToken extends PaycartHelper
         // cart specific
         static::$_tokens['cart']  =
                 Array(  'cart_total', 'cart_product_count', 'cart_created_date',
-                        'cart_paid_date',  
+                        'cart_paid_date', 'order_url', 'order_id'  
 //                        'cart_link', 
                     );
         
@@ -291,7 +290,8 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['cart_created_date']       =   $this->_formatter->date($cart->getCreatedDate());
         // @PCTOD :: date formating here
         $tokens['cart_paid_date']          =   $this->_formatter->date($cart->getPaidDate());
-        //$tokens['cart_link']               =   $cart->getLink();
+        $tokens['order_url']               =   $cart->getOrderUrl(true);
+        $tokens['order_id']            	   =   $cart->getId();
         
         return $tokens;
     }

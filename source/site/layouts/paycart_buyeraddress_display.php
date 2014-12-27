@@ -39,9 +39,9 @@ if(!isset($displayData->country_name) && isset($displayData->country_id)){
 <address>
   <strong><?php echo@$displayData->to;  ?></strong><br>
   <?php echo @$displayData->address;  ?><br>
-  <?php echo @$displayData->city;  ?>, <?php echo @$displayData->state_name;  ?><br>
-  <?php echo @$displayData->country_name;  ?> <?php echo @$displayData->zipcode;  ?><br>
-  <abbr title="Phone"><i class="fa fa-phone"></i></abbr> <?php echo @$displayData->phone;  ?><br>
+  <?php echo @$displayData->city;  ?> - <?php echo @$displayData->zipcode;  ?><br>
+  <?php echo @$displayData->state_name;  ?> <?php echo @$displayData->country_name;  ?><br>
+  <?php echo JText::_('COM_PAYCART_CONTACT');?> : <?php echo @$displayData->phone;  ?><br>
 </address>
 
 

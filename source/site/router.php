@@ -72,7 +72,10 @@ class PaycartRouter extends Rb_Router
 							//Cart {view}/{task}
 		        			'cart/display'	=>	Array(),
 		        			'cart/checkout'	=>	Array(),
-		        			'cart/buy'		=>	Array('product_id')
+		        			'cart/buy'		=>	Array('product_id'),
+		        		
+		        			'account/display'	=>	Array(),
+		        			'account/order'	=>	Array('order_id')
 		        		);
 	
 

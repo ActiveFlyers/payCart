@@ -29,7 +29,8 @@ class PaycartCart extends PaycartLib
 	protected $billing_address_id;				// for invoicing
 	protected $shipping_address_id;	
 	protected $invoice_id;
-
+	protected $secure_key;
+	
 	protected $locked_date;					// Checkout/refund  Request date (Request for Payment)
     protected $approved_date;               // Approved date
     protected $paid_date;					// Payment Completion date
@@ -109,6 +110,7 @@ class PaycartCart extends PaycartLib
 		$this->is_locked		= 0;
         $this->is_approved		= 0;
         $this->is_delivered		= 0;
+        $this->secure_key 		= '';
 
 		$this->locked_date		= Rb_Date::getInstance('0000-00-00 00:00:00');
 		$this->paid_date		= Rb_Date::getInstance('0000-00-00 00:00:00');
@@ -1117,6 +1119,12 @@ class PaycartCart extends PaycartLib
          */
         protected function _save($previousObject) 
         {
+        	// generate secure key on first time save
+        	if(!$this->getId()){
+        		$now = new Rb_Date();
+        		$this->secure_key =  md5($now->toUnix().'.'.$this->ip_address);
+        	}
+        	
             // save to data to table
             $id =  parent::_save($previousObject);
             
@@ -1502,4 +1510,17 @@ class PaycartCart extends PaycartLib
 
         return $this;
 	}	
+	
+	public function getOrderUrl($external = false)
+	{
+		if($external){
+			return JUri::root().'index.php?option=com_paycart&view=account&task=order&order_id='.$this->getId().'&key='.$this->secure_key;
+		}
+		return JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$this->getId().'&key='.$this->secure_key);
+	}
+	
+	public function getSecureKey()
+	{
+		return $this->secure_key;
+	}
 }

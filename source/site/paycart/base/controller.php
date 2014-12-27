@@ -111,7 +111,6 @@ class PaycartController extends Rb_Controller
 		return $this->_component->getNameSmall().'_'.$this->getName().'_form';
 	}
 	
-	
 	/**
 	 * (non-PHPdoc)
 	 * @see plugins/system/rbsl/rb/rb/Rb_AbstractController::getView()
@@ -136,6 +135,62 @@ class PaycartController extends Rb_Controller
 		$view = Rb_Factory::getInstance($name, $view, $prefix);	
 
 		return $view;
+	}	
+
+	/**
+	 * Login user by their username and pwd
+	 * @param array $form_data = Array('email' => _EMAIL_ID_, 'password'=> _PASSWORD_ )
+	 * 
+	 * @since 	1.0
+	 * @author 	Manish
+	 * 
+	 * @return user_id if buyer successfully login otherwise false
+	 */
+	protected function _dologin(Array $form_data, &$errors = array())
+	{
+		if(isset($form_data['email'])){
+			$input_username = $form_data['email'];
+		}
+		elseif(isset($form_data['username'])){
+			$input_username = $form_data['username'];
+		}
+		else{
+			$input_username = '';
+		}
+		
+		// get user
+		$user = PaycartFactory::getHelper('buyer')->getUser( $input_username, 'email');
+		if(!$user){
+			$user = PaycartFactory::getHelper('buyer')->getUser( $input_username, 'username');
+		}
+		
+		if (!$user) {
+			$error = new stdClass();
+			$error->message 		= JText::_('COM_PAYCART_BUYER_IS_NOT_EXIT');
+			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+			$error->for				= 'email';
+			$errors[] = $error;
+			return false;			
+		}
+		
+		// prepare credential data
+		$credentials				=	Array();
+		$credentials['username']	=	$user->username;
+		$credentials['password']	=	$form_data['password'];
+		
+		$options				=	Array();
+		$options['remember']	=	@$form_data['remember'];
+		
+		if (! PaycartFactory::getApplication()->login($credentials, $options))
+		{			
+			$error = new stdClass();
+			$error->message 		= JText::_('COM_PAYCART_BUYER_FAIL_TO_LOGIN');
+			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
+			$error->for				= 'header';
+			$errors[] = $error;
+			return false;	
+		}
+		
+		return true; 
 	}
-	
 }

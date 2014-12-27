@@ -142,14 +142,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						 				<b><?php echo JText::_('COM_PAYCART_PRICE')?> - <?php echo $formatter->amount($shipping_total);?></b><br/>
 					 				   	   <?php $estimatedDate = null;?>
 										   <?php foreach ($shipping_options[$default_shipping]['details'] as $shippingrule_id => $details):?>
-										   			<?php $date = $formatter->date($details['delivery_date']);?>
+										   			<?php $date = new Rb_Date($details['delivery_date']);?>
 										   			<?php if(empty($estimatedDate)):?>
 									   					<?php $estimatedDate = $date;?>
 									   					<?php continue?>
 									   				<?php endif;?>
-								   					<?php $estimatedDate = ($estimatedDate < $date)?$date:$estimatedDate; ?>
+									   													   				
+								   					<?php $estimatedDate = ($estimatedDate->toUnix() < $date->toUnix())?$date:$estimatedDate; ?>
 										   <?php endforeach;?>								   
-										   <?php echo JText::_("COM_PAYCART_SHIPPING_ESTIMATED_DELIVERY_DATE").' : '.$estimatedDate;?> <br />
+										   <?php echo JText::_("COM_PAYCART_SHIPPING_ESTIMATED_DELIVERY_DATE").' : '.$formatter->date($estimatedDate);?> <br />
 										   <?php if(count($shipping_options[$default_shipping]['details']) > 1):?>
 													<span class='text-error'><?php echo JText::_("COM_PAYCART_SHIPPING_ORDER_MAY_BE_IN_MULTIPLE_PACKAGES");?></span>
 										   <?php endif;?>			 				
@@ -163,103 +164,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 	</div>
 		 	
 			<!-- Product Summary		 	-->
-		 	<div class="row-fluid">
-		 		<div class="accordion-group">
-		 			<div class="accordion-heading">
-		 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-products-summary">
-	 						<?php echo JText::_('COM_PAYCART_CART_PRODUCT_SUMMARY'); ?>
-	 					</a>
-	 				</div>
-	 		
-			 		<div id="pc-confirm-products-summary" class="accordion-body in collapse"">
-			 			<div class="accordion-inner">
-			 			<?php 
-			 				foreach ($product_particular as $particular) :
-			 				?>
-			 				<div class="row-fluid">
-								
-								<!-- Product Image			 				-->
-			 					<div class="span3">
-			 					 	<img class="img-polaroid " 
-			 					 		 src="<?php echo @$product_media[$particular->particular_id]['thumbnail'];?>" 
-			 					 		/>
-			 					</div>
-			 					
-			 					<!-- Product Details			 				-->
-				 				<div class="span5">
-				 						<div>
-				 							<a class="pc-break-word" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$particular->particular_id);?>" >
-				 								<?php echo $particular->title; ?>
-				 							</a>
-				 						</div>
-				 						
-				 						<div>
-				 							<?php echo JText::_('COM_PAYCART_UNIT_PRICE').':'.$formatter->amount($particular->unit_price, true, $currency_id);  ?>
-				 						</div>
-				 						
-				 						<?php if ($particular->tax) : 
-				 								echo '<div>+'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
-				 							 endif;  
-				 						?>
-				 						<?php if ($particular->discount) : 
-				 								echo '<div>-'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount(-($particular->discount), true, $currency_id).'</div>';
-				 							 endif;  
-				 						?>
-				 				</div>
-				 				
-				 				<!-- Product Price and quantity			 				-->
-				 				<div class="span4">
-				 					
-				 					<div>
-					 					<?php echo JText::_('COM_PAYCART_QUANTITY'); ?> : 
-					 					<input 
-					 							type="text"   
-					 							class="input-mini" 
-					 							id='pc-checkout-quantity-<?php echo $particular->particular_id; ?>'
-					 							value="<?php echo $particular->quantity; ?>"
-					 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" 	
-					 						/>
-					 						<a 	href="javascript:void(0);" 
-					 							onClick="paycart.cart.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"
-					 							>
-					 								<i class="fa fa-refresh"></i>
-					 						</a>					 											 										 					
-					 				</div>					 				
-					 				
-					 				<span class="text-error" id="pc-checkout-quantity-error-<?php echo $particular->particular_id;?>"></span>
-					 				 
-					 				<div>
-					 					<h4><?php echo JText::_('COM_PAYCART_PRICE'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></h4>
-					 				</div>
-													 				
-				 				</div>
-
-				 			</div>
-
-				 			<div class="row-fluid">
-				 				
-				 				<div class="pull-right">
-				 					<a 	class="muted" href="javascript:void(0)" 
-										onClick="paycart.cart.confirm.onRemoveProduct(<?php echo $particular->particular_id;?>)"><i class="fa fa-trash-o fa-lg">&nbsp;</i>
-									</a>
-								</div>
-								
-				 			</div>
-
-				 			<hr />
-			 			<?php 
-			 				endforeach;
-			 			?>
-			 				<div class="row-fluid">
-				 				<span class="pull-right"><?php echo JText::_("COM_PAYCART_CART_PRODUCT_TOTAL") ?> : <?php echo $formatter->amount($product_total, true, $currency_id); ?> </span>
-				 			</div>
-				 			
-			 			</div>
-			 		</div>
-	 			</div>
-		 	</div>
-		 	
-	 	
+		 	<?php echo $this->loadTemplate('confirm_product_summary')?>	 	
 	 		
 	 	</div>
 	 	

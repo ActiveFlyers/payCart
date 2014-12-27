@@ -30,6 +30,13 @@ class PaycartAdminJsonViewCart extends PaycartAdminBaseViewCart
 		
 		$data   = $this->input->get('shipmentDetails',array(),'ARRAY');
 		
+		if(!isset($data['est_delivery_date'])){
+			$shippingRule = PaycartShippingrule::getInstance($data['shippingrule_id']);
+			$date          = new Rb_Date();
+			$date->add(new DateInterval('P'.$shippingRule->getDeliveryMaxDays().'D'));
+			$data['est_delivery_date'] = $date->toSql(); 
+		}
+		
 		//save shipment
 		$result = PaycartShipment::getInstance(0,$data)->save();
 		

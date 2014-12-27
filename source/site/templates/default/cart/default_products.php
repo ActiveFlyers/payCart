@@ -59,21 +59,30 @@ $currencyId = $cart->getCurrency();
 			
 			<div class="pull-right pc-grid-8">
 				 <h4 class="text-info pc-break-word"><?php echo PaycartHtml::link('index.php?option=com_paycart&view=product&task=display&product_id='.$product->getId(), $product->getTitle()); ?></h4>
-				 <p class="pc-item-attribute">
-				 	 <?php foreach ($product->getAttributes() as $attributeId => $optionId):?>
-	                     <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
-					 	<span><?php echo $instance->getTitle();?></span> &nbsp;<span><?php $options = $instance->getOptions(); echo $options[$optionId]->title;?></span><br /> 	
-					<?php endforeach;?>
-						<span><?php echo JText::_("COM_PAYCART_UNIT_PRICE")?> :</span>
-						
-						<span><?php echo $formatter->amount($item->getUnitPrice(),true,$currencyId); ?></span><br />
+				 <p class="pc-item-attribute">				 	
+					<?php $postionedAttributes = (array)$product->getPositionedAttributes();?>
+					<?php $attributes = $product->getAttributes();?>
+					 <div class="pc-product-overview">
+			 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>			 			
+			 				<?php foreach($postionedAttributes['product-overview'] as $attributeId) : ?>
+			 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
+			 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+						 			<span><?php echo $instance->getTitle();?></span>&nbsp;:&nbsp;<span><?php $options = $instance->getOptions(); echo $options[$attributes[$attributeId]]->title;?></span><br />
+								<?php endif?>
+			 				<?php endforeach;?>
+			 			<?php endif;?>
+			 		</div>
+			 	
+					<span><?php echo JText::_("COM_PAYCART_UNIT_PRICE")?> :</span>
+					
+					<span><?php echo $formatter->amount($item->getUnitPrice(),true,$currencyId); ?></span><br />
+
 					<?php if($item->getDiscount() != 0):?>
-				 		<span>- <?php echo JText::_("COM_PAYCART_DISCOUNT")?> </span><span> : <?php echo $formatter->amount(-($item->getDiscount()),true,$currencyId);?></span><br />
-				 	<?php endif;?> 
-				 	<?php if($item->getTax() > 0):?>
-				 		<span>+ <?php echo JText::_("COM_PAYCART_TAX")?></span><span> : <?php echo $formatter->amount($item->getTax(),true,$currencyId);?></span><br />
-					 <?php endif;?>
-				 	
+			 			<span>- <?php echo JText::_("COM_PAYCART_DISCOUNT")?> </span><span> : <?php echo $formatter->amount(-($item->getDiscount()),true,$currencyId);?></span><br />
+			 		<?php endif;?> 
+			 		<?php if($item->getTax() > 0):?>
+			 			<span>+ <?php echo JText::_("COM_PAYCART_TAX")?></span><span> : <?php echo $formatter->amount($item->getTax(),true,$currencyId);?></span><br />
+				 	<?php endif;?>				 	
 				 </p>
 				 
 				<div class="clearfix">

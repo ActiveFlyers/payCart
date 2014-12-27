@@ -130,6 +130,16 @@ PaycartHtml::_('behavior.formvalidation');
 						
 						<div class="control-group">
 							<label title="" class="hasTooltip control-label">
+								<?php echo JText::_('COM_PAYCART_ADMIN_EST_DELIVERY_DATE');?>
+							</label>
+							<div class="controls">
+								{{ shipments[value].est_delivery_date }}									
+								<input type="hidden" class="input-mini" data-ng-model="shipments[value].est_delivery_date">								
+							</div>
+						</div>
+						
+						<div class="control-group">
+							<label title="" class="hasTooltip control-label">
 								<?php echo JText::_('COM_PAYCART_ADMIN_SHIPMENT_PRODUCT_QUANTITY');?>
 							</label>
 							<div class="controls">

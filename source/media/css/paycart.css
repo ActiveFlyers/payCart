@@ -220,3 +220,15 @@
 .rb-error.show, .pc-error.show{
 	display:block;
 }
+
+.paycart *{
+	box-sizing: border-box;
+}
+
+.pc-uppercase{
+	text-transform: uppercase;
+}
+
+.pc-lowercase{
+	text-transform: lowercase;
+}

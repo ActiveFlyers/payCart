@@ -75,20 +75,34 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 			$ajax->sendResponse();
 		}
 		
-		$this->_setupCartVars();
-		
 		//contain all buyer address 
 		$buyer_addresses	=	Array();
 		
 		//no need to get address on guest-checkout
 		if(!$this->cart->isGuestcheckout()) {
 			// if user is login then get buyer address
-			$buyer_addresses		= PaycartFactory::getModel('buyeraddress')->loadRecords(Array('buyer_id' => $this->cart->getBuyer()));
+			$buyer_addresses		= PaycartFactory::getModel('buyeraddress')->loadRecords(Array('buyer_id' => $this->cart->getBuyer(), 'is_removed' => false));
 		}
 		
 		// address on cart
 		$shipping_address_id	= $this->cart->getShippingAddress();
 		$billing_address_id		= $this->cart->getBillingAddress();
+		
+		// set default address id if exists
+		$default_address_id = $this->cart->getBuyer(true)->getDefaultAddress();
+		if($default_address_id && isset($buyer_addresses[$default_address_id])){
+			if(empty($billing_address_id)){
+				$billing_address_id = $default_address_id;
+				$this->cart->setParam('billing_address', PaycartBuyeraddress::getInstance($default_address_id)->toArray());				
+			}
+			
+			if(empty($shipping_address_id)){
+				$shipping_address_id = $default_address_id;
+				$this->cart->setParam('shipping_address', PaycartBuyeraddress::getInstance($default_address_id)->toArray());
+			}
+		}
+		
+		$this->_setupCartVars();
 		
 		$this->assign('shipping_address_id',	$shipping_address_id);
 		$this->assign('billing_address_id',		$billing_address_id);

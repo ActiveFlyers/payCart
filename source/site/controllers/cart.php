@@ -142,25 +142,24 @@ class PaycartSiteControllerCart extends PaycartController
 		$form_data = $this->input->get('paycart_cart_login',Array(), 'ARRAY');
 
 		if(!empty($form_data)){
-			$errors = array();			 
-			// validate email address
-			if (!JMailHelper::isEmailAddress($form_data['email'])) {
-				$error = new stdClass();
-				$error->message 		= JText::_('COM_PAYCART_INVALID_BUYER_EMAIL_ID');
-				$error->message_type	= Paycart::MESSAGE_TYPE_WARNING;
-				$error->for				= 'email';
-				$errors[] = $error;				
-			}		
-			
-			if(empty($errors)){			
-				if ($form_data['emailcheckout'] ) {
-					// email checkout
+			$errors = array();			
+			if ($form_data['emailcheckout'] ) {
+				// validate email address
+				if (!JMailHelper::isEmailAddress($form_data['email'])) {
+					$error = new stdClass();
+					$error->message 		= JText::_('COM_PAYCART_INVALID_BUYER_EMAIL_ID');
+					$error->message_type	= Paycart::MESSAGE_TYPE_WARNING;
+					$error->for				= 'email';
+					$errors[] = $error;				
+				}		
+				else{	// email checkout
 					$this->_loginWithEmail($form_data, $errors);
-				} else {
-					//checkout by login
-					$this->_login($form_data, $errors);
 				}
-			}
+			} 
+			else {
+				//checkout by login
+				$this->_login($form_data, $errors);
+			}			
 			
 			// if errors
 			if ( !empty($errors )) {
@@ -199,35 +198,9 @@ class PaycartSiteControllerCart extends PaycartController
 	 */
 	private function _login(Array $form_data, &$errors = array())
 	{
-		// get username
-		$username = PaycartFactory::getHelper('buyer')->getUsername( $form_data['email']);
-		
-		if (!$username) {
-			$error = new stdClass();
-			$error->message 		= JText::_('COM_PAYCART_BUYER_IS_NOT_EXIT');
-			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
-			$error->for				= 'email';
-			$errors[] = $error;
-			return false;			
+		if(!parent::_dologin($form_data, $errors)){
+			return false;
 		}
-		
-		// prepare credential data
-		$credentials				=	Array();
-		$credentials['username']	=	$username;
-		$credentials['password']	=	$form_data['password'];
-		
-		$options				=	Array();
-		$options['remember']	=	@$form_data['remember'];
-		
-		if (! PaycartFactory::getApplication()->login($credentials, $options))
-		{			
-			$error = new stdClass();
-			$error->message 		= JText::_('COM_PAYCART_BUYER_FAIL_TO_LOGIN');
-			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
-			$error->for				= 'header';
-			$errors[] = $error;
-			return false;	
-		} 
 		
 		$loggedin_user =  PaycartFactory::getUser();
 		

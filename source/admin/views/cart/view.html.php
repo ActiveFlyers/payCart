@@ -61,7 +61,7 @@ class PaycartAdminHtmlViewCart extends PaycartAdminBaseViewCart
 		$this->assign('shipping_particular',	$shipping_particular);
 		$this->assign('promotion_particular',	$promotion_particular);
 		$this->assign('duties_particular',		$duties_particular);
-		$this->assign('shipments', $shipments);
+		$this->assign('shipments', array_values($shipments));
 		$this->assign('usage',$usage);
 		$this->assign('form', $cart->getModelform()->getForm($cart));
 		$this->assign('cart',$cart);

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<view title="Cart" >
+		<message><![CDATA[COM_PROFILE_MENU_ACCOUNT]]></message>
+		
+		<options var="task">
+			<option value="display"   	name="COM_PAYCART_MENU_ACCOUNT_DISPLAY_TITLE" msg="COM_PAYCART_MENU_ACCOUNT_DISPLAY_MESSAGE"/>
+ 			<option value="order"   	name="COM_PAYCART_MENU_ACCOUNT_ORDER_TITLE" msg="COM_PAYCART_MENU_ACCOUNT_ORDER_MESSAGE"/>
+ 		</options>
+	</view>
+		
+</metadata>

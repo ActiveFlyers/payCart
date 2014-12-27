@@ -229,13 +229,12 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cartparticular` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_buyer` (
-  `buyer_id` int(11) NOT NULL AUTO_INCREMENT,
+ `buyer_id` int(11) NOT NULL AUTO_INCREMENT,
   `is_registered_by_guestcheckout` tinyint(4) NOT NULL DEFAULT '0',
-  `billing_address_id` int(11) DEFAULT NULL,
-  `shipping_address_id` int(11) DEFAULT NULL,
+  `default_address_id` int(11) DEFAULT NULL,
+  `default_phone` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`buyer_id`),
-  KEY `idx_billing_address_id` (`billing_address_id`),
-  KEY `idx_shipping_address_id` (`shipping_address_id`)
+  KEY `idx_default_address_id` (`default_address_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -257,9 +256,11 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `zipcode` varchar(10) NOT NULL DEFAULT '',
   `vat_number` varchar(100) NOT NULL,
   `phone` varchar(32) NOT NULL,
+  `is_removed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`buyeraddress_id`),
   KEY `idx_md5` (`md5`),
-  KEY `idx_buyer_id` (`buyer_id`)
+  KEY `idx_buyer_id` (`buyer_id`),
+  KEY `idx_is_removed` (`is_removed`),
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -711,6 +712,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shipment` (
   `created_date` datetime NOT NULL,
   `delivered_date` datetime NOT NULL,
   `dispatched_date` datetime NOT NULL,
+  `est_delivery_date` datetime NOT NULL,
   PRIMARY KEY (`shipment_id`),
   KEY `idx_shippingrule_id` (`shippingrule_id`),
   KEY `idx_cart_id` (`cart_id`)
@@ -756,7 +758,8 @@ INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `e
 (3, 1, 'onpaycartcartafterpaid', '[[buyer_email]]', '', '', '{}'),
 (4, 1, 'onpaycartcartafterdelivered', '[[billing_to]]', '', '', '{}'),
 (5, 1, 'onpaycartshipmentafterdispatched', '[[buyer_email]]', '', '', '{}'),
-(6, 1, 'onpaycartshipmentafterdelivered', '[[buyer_email]]', '', '', '');
+(6, 1, 'onpaycartshipmentafterdelivered', '[[buyer_email]]', '', '', '{}'),
+(7, 1, 'onorderurlrequest', '[[buyer_email]]', '', '', '{}');
 
 
 --
@@ -769,7 +772,9 @@ INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `noti
 (3, 3, 'en-GB', 'Order successfully Paid', 'Your payment is successfully received by [[store_name]]\r\n\r\n[[products_detail]]'),
 (4, 4, 'en-GB', 'Order Successfully Delivered ', 'Your order is successfully delivered on your shipping address.\r\n\r\n[[shipping_to]],\r\n[[shipping_address]] , \r\n[[shipping_city]] , [[shipping_state]]\r\n[[shipping_country]] [[shipping_zip_code]]\r\n\r\n'),
 (5, 5, 'en-GB', '', ''),
-(6, 6, 'en-GB', '', '');
+(6, 6, 'en-GB', '', ''),
+(7, 7, 'en-GB', 'Order Details Request of your order (id : [[order_id]])', 'Hello [[buyer_name]], \r\n\r\nYou have requested for the order detail url of your order [[order_id]]. This email contains the order detail url from which you can track your order. \r\n\r\n[[order_url]]\r\n\r\nPlease save or bookmark this url for further tracking. Still you can request this url again anytime at our website.');
+
 
 
 --
