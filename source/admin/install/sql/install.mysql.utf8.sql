@@ -260,7 +260,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   PRIMARY KEY (`buyeraddress_id`),
   KEY `idx_md5` (`md5`),
   KEY `idx_buyer_id` (`buyer_id`),
-  KEY `idx_is_removed` (`is_removed`),
+  KEY `idx_is_removed` (`is_removed`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 

@@ -68,7 +68,44 @@ class PaycartInstallScriptMenu
 								 					  )
 								 			//## End cart Menu
 			 							)
-			 					  )
+			 					  ),
+							'my_account' => array(
+			 					  				'title' 	=> 'My Account',
+			 					  				'alias' 	=> 'my-account',
+			 					  				'access' 	=> 1,
+			 					  				'level'		=> 1,
+			 					  				'link'		=> 'index.php?option=com_paycart&view=account&task=display',
+			 					  				'children'	=> array(
+			 					  								'my_orders' =>	array(
+							 					  									'title' 	=> 'My Orders',
+												 					  				'alias' 	=> 'my-orders',
+												 					  				'access' 	=> 1,
+												 					  				'level'		=> 2,
+												 					  				'link'		=> 'index.php?option=com_paycart&view=account&task=order'
+							 					  									),
+							 					  				'manage_address' =>	array(
+							 					  									'title' 	=> 'Manage Address',
+												 					  				'alias' 	=> 'manage-address',
+												 					  				'access' 	=> 1,
+												 					  				'level'		=> 2,
+												 					  				'link'		=> 'index.php?option=com_paycart&view=account&task=address'
+							 					  									),
+							 					  				'account_settings' =>	array(
+							 					  									'title' 	=> 'Settings',
+												 					  				'alias' 	=> 'settings',
+												 					  				'access' 	=> 1,
+												 					  				'level'		=> 2,
+												 					  				'link'		=> 'index.php?option=com_paycart&view=account&task=setting'
+							 					  									),
+																'account_login' =>	array(
+							 					  									'title' 	=> 'Login',
+												 					  				'alias' 	=> 'login',
+												 					  				'access' 	=> 1,
+												 					  				'level'		=> 2,
+												 					  				'link'		=> 'index.php?option=com_paycart&view=account&task=login'
+							 					  									)
+			 					  								)
+			 					  )		 					  
 							);
 							
 	const 	MENUTYPE 					= 	'paycart';
