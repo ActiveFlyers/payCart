@@ -41,8 +41,7 @@ class PaycartAdminHtmlViewBuyer extends PaycartAdminBaseViewBuyer
 		$addresses = PaycartFactory::getModel('buyeraddress')->loadRecords($filter);
 		
 		$this->assign('form',  $buyer->getModelform()->getForm($buyer));
-		$this->assign('billing_address_id',		$buyer->getBillingAddress());
-		$this->assign('shipping_address_id',	$buyer->getShippingAddress());
+		$this->assign('default_address_id',		$buyer->getDefaultAddress());
 		$this->assign('addresses', $addresses);
 		
 		return parent::edit($tpl);

@@ -15,7 +15,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
 	
 <!-- Html begin	-->
-	<div class="" >
+<div class="" >
+	
+<div class="row-fluid">
+	<a href="#" class="btn btn-success add-new-address pull-right" onClick="paycart.admin.buyeraddress.window(<?php echo "'$record_id'";  ?>,0);">
+			<i class="icon-plus-sign icon-white"></i>&nbsp;
+			<?php echo Rb_Text::_('COM_PAYCART_BUYERADDRESS_ADD_NEW');?>
+	</a>	
+</div>
+	
 <?php
 	if (empty($addresses)):
 	?>	
@@ -31,23 +39,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			</div>
 		</div>
 	</div>
-
-	<div class="row-fluid">	
-		<div class="center">
-			<a href="#" class="btn btn-success add-new-address" onClick="paycart.admin.buyeraddress.window(<?php echo "'$record_id'";  ?>,0);">
-				<i class="icon-plus-sign icon-white"></i>&nbsp;
-				<?php echo Rb_Text::_('COM_PAYCART_BUYERADDRESS_ADD_NEW');?>
-			</a>
-		</div>
-	</div>
 <?php else : ?>
 	
-	<div class="row-fluid">
-		<a href="#" class="btn btn-success add-new-address pull-right" onClick="paycart.admin.buyeraddress.window(<?php echo "'$record_id'";  ?>,0);">
-				<i class="icon-plus-sign icon-white"></i>&nbsp;
-				<?php echo Rb_Text::_('COM_PAYCART_BUYERADDRESS_ADD_NEW');?>
-		</a>	
-	</div>
 	
 	<?php foreach ($addresses as $address_id => $address_details) : ?>
 			<div class="span4">
