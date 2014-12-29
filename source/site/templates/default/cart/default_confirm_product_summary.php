@@ -25,7 +25,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
  			<?php foreach ($product_particular as $particular) :?>
  				<div class="row-fluid">					
 					<!-- Product Image			 				-->
- 					<div class="pc-grid-3"><img class="img-polaroid" src="<?php echo @$product_media[$particular->particular_id]['thumbnail'];?>" /></div>
+ 					<div class="pc-grid-3"><img class="img-polaroid pc-border-box" src="<?php echo @$product_media[$particular->particular_id]['thumbnail'];?>" /></div>
  					
  					<!-- Product Details			 				-->
 	 				<div class="pc-grid-9">

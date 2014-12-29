@@ -163,7 +163,7 @@ echo $this->loadTemplate('js');
 		  											<div class="muted">
 		  												<ul class="inline">
 			  												<?php $postionedAttributes = (array)$product->getPositionedAttributes();?>
-															<?php $attributes = $product->getAttributeValues();?>								 
+															<?php $attributes = $product->getAttributes();?>								 
 												 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>			 			
 												 				<?php foreach($postionedAttributes['product-overview'] as $attributeId) : ?>
 												 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>

@@ -148,10 +148,10 @@ class PaycartController extends Rb_Controller
 	 */
 	protected function _dologin(Array $form_data, &$errors = array())
 	{
-		if(isset($form_data['email'])){
+		if(isset($form_data['email']) && !empty($form_data['email'])){
 			$input_username = $form_data['email'];
 		}
-		elseif(isset($form_data['username'])){
+		elseif(isset($form_data['username']) && !empty($form_data['username'])){
 			$input_username = $form_data['username'];
 		}
 		else{
@@ -168,7 +168,7 @@ class PaycartController extends Rb_Controller
 			$error = new stdClass();
 			$error->message 		= JText::_('COM_PAYCART_BUYER_IS_NOT_EXIT');
 			$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
-			$error->for				= 'email';
+			$error->for				= 'header';
 			$errors[] = $error;
 			return false;			
 		}

@@ -152,7 +152,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 					};
 
 		paycart.cart.login.error = function(errors){
-						var error_mapper = {'email' : '#paycart_cart_login_email', 'password': '#paycart_cart_login_password', 'header' : '#paycart_cart_login'};
+						var error_mapper = {'email' : '#paycart_cart_login_email', 'username' : '#paycart_cart_login_username', 'password': '#paycart_cart_login_password', 'header' : '#paycart_cart_login'};
 						
 						for (var index in errors){
 							paycart.formvalidator.handleResponse(false, $(error_mapper[errors[index].for]), errors[index].message_type, errors[index].message);
@@ -162,15 +162,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		paycart.cart.login.setEmailCheckout = function(is_guest){
 						//default is guest mode
 						if(is_guest){
-							$('[data-pc-emailcheckout="show"]').show();
-							$('[data-pc-emailcheckout="hide"]').hide();
-							$('[data-pc-selector="paycart_cart_login_email"]').addClass('validate-email');							
+							$('[data-pc-selector="pc-emailcheckout"]').show();
+							$('[data-pc-selector="pc-logincheckout"]').hide();
+														
 							paycart.formvalidator.initialize('form.pc-form-validate');
 						}else{
-							$('[data-pc-emailcheckout="show"]').hide();
-							$('[data-pc-emailcheckout="hide"]').show();
-							$('[data-pc-selector="paycart_cart_login_email"]').removeClass('validate-email');
-							paycart.formvalidator.initialize('form.pc-form-validate');
+							$('[data-pc-selector="pc-emailcheckout"]').hide();
+							$('[data-pc-selector="pc-logincheckout"]').show();
 						}
 					};
 

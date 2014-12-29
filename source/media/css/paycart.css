@@ -221,7 +221,7 @@
 	display:block;
 }
 
-.paycart *{
+.pc-border-box{
 	box-sizing: border-box;
 }
 
