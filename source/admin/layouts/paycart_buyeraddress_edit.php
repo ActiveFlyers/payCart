@@ -80,9 +80,7 @@ $id_suffix++;
 		  <div class="controls">                     
 		    <textarea 	name="<?php echo $prefix; ?>[address]" 
 						id="address_<?php echo $id_suffix; ?>"
-						required="true">
-		    	<?php echo @$displayData->address; ?>
-		    </textarea>
+						required="true"><?php echo @$displayData->address; ?></textarea>
 		  </div>
 		</div>		
 		<!-- Buyeraddress country-->
