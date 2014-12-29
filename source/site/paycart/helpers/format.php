@@ -76,7 +76,8 @@ class PaycartHelperFormat extends JObject
 		}
 		
 		if($format == 'symbol'){
-			return $record->symbol;
+			// IF Symbol is not there then return its ISO CODE
+			return !empty($record->symbol) ? $record->symbol : $record->currency_id ;
 		}
 		
 		return '';

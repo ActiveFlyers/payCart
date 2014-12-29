@@ -31,7 +31,7 @@ $id_suffix++;
 ?>
 
 <div class="row-fluid">
-	<div class="form-horizontal">
+	<div class="span6">
 		<!--	Buyeraddress id	-->
 		<div class="">
 		<!--	Buyeraddress Country : value		-->
@@ -71,7 +71,9 @@ $id_suffix++;
 			/>
 		  </div>
 		</div>
-				
+	</div>
+			
+	<div class="span6">			
 		<!-- Buyer Address -->
 		<div class="control-group">
 		  <label class="control-label" for="address">
@@ -82,7 +84,13 @@ $id_suffix++;
 						id="address_<?php echo $id_suffix; ?>"
 						required="true"><?php echo @$displayData->address; ?></textarea>
 		  </div>
-		</div>		
+		</div>
+	</div>
+</div>
+			
+
+<div class="row-fluid">
+	<div class="span6">			
 		<!-- Buyeraddress country-->
 		<div class="control-group">
 		  <label class="control-label" for="textinput">
@@ -95,7 +103,10 @@ $id_suffix++;
 		   
 		  </div>
 		</div>
-		
+	</div>
+			
+	<div class="span6">	
+		<!--	Buyeraddress State	-->
 		<div class="control-group">
 		  
 		  <label class="control-label" for="textinput">
@@ -123,7 +134,13 @@ $id_suffix++;
 			   </script>
 		  </div>
 		</div>
-		
+	</div>
+</div>
+
+
+<div class="row-fluid">
+	<div class="span6">		
+		<!--	Buyeraddress City	-->
 		<div class="control-group">
 		  <label class="control-label" for="textinput">
 		  		<?php echo JText::_('COM_PAYCART_CITY');?>
@@ -135,7 +152,10 @@ $id_suffix++;
 		    	    type="text">
 		  </div>
 		</div>
+	</div>
 			
+	<div class="span6">	
+		<!--	Buyeraddress Zipcode	-->
 		<div class="control-group">
 		  <label class="control-label" for="Zipcode">
 		  		<?php echo JText::_('COM_PAYCART_ZIPCODE');?>
@@ -148,7 +168,13 @@ $id_suffix++;
 		  
 		  </div>
 		</div>
+	</div>
+</div>
 	
+
+<div class="row-fluid">
+	<div class="span6">
+		<!--	Buyeraddress Vatnumber	-->
 		<div class="control-group">
 		  <label class="control-label" for="textinput">
 		  		<?php echo JText::_('COM_PAYCART_VATNUMBER');?>
@@ -161,7 +187,9 @@ $id_suffix++;
 		    
 		  </div>
 		</div>
-	
+	</div>
+			
+	<div class="span6">	
 		<!--	Buyeraddress Phone	-->
 		<div class="control-group">
 		  <label class="control-label" for="textinput">
