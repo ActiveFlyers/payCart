@@ -34,7 +34,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 							value="<?php echo $code;?>" 
 							<?php echo in_array($code, $supported_language) ? 'selected="selected" ' : '';?>
 							<?php echo $code === $default_language ? 'disabled=""' : '';?>>
-							<?php echo $language->name;?>
+							<?php echo empty($language->name) ? $language->element : $language->name;?>
 						</option>
 					<?php endforeach;?>
 				</select>
