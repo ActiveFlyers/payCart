@@ -157,7 +157,7 @@ echo $this->loadTemplate('edit_css');
 										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 									</div>
 								</div>
-								<div class="span6">
+								<!--<div class="span6">
 									<?php $field = $form->getField('stockout_limit') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
@@ -165,7 +165,7 @@ echo $this->loadTemplate('edit_css');
 										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 									</div>
 								</div>
-							</div>
+							--></div>
 						</fieldset>
 					</div>					
 				</div>

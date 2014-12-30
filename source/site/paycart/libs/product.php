@@ -83,7 +83,7 @@ class PaycartProduct extends PaycartLib
 		$this->width		 	= 0.00;
 		$this->weight_unit	 	= '';
 		$this->dimension_unit	= '';
-		$this->stockout_limit	= null;
+		$this->stockout_limit	= 0;
 		$this->hits				= 0;
 		$this->config			= new Rb_Registry();
 		$this->created_date  	= Rb_Date::getInstance();	
