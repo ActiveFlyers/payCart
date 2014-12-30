@@ -41,7 +41,7 @@ class PaycartModelProductIndex extends PaycartModel
 		$words     = explode(' ', $keyword);
 		foreach ($words as $word){
 			$condition[] = "content LIKE '% ".$word." %'";
-			if($check && strlen($word) < $minWordLength){
+			if($check && JString::strlen($word) < $minWordLength){
 				$check = false;
 			}
 		}
