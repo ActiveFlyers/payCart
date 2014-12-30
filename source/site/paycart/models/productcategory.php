@@ -129,7 +129,11 @@ class PaycartTableProductcategorylang extends PaycartTable
 	public static function getNewAlias($alias, $parent_id, $id = 0, $style = 'dash')
 	{		
 		$alias  = JApplicationHelper::stringURLSafe($alias);//Sluggify the input string
-	
+		if (trim(str_replace('-', '', $alias)) == '')
+		{
+			$alias = JFactory::getDate()->format('Y-m-d-H-i-s');
+		}
+		
 		//@PCTODO:: move to helper
 		// if Value already have '-'(dash) with numeric-data then remove numeric-data 
 		$string = $alias;
