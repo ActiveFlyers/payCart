@@ -285,7 +285,7 @@ class PaycartRouter extends Rb_Router
     	$product_alias = $segments[0];
 		
     	
-		$lang_code = Rb_Factory::getLanguage()->getTag();
+		$lang_code = $this->_getPaycartCurrentLanguage();
 		
 		$query = "
 					SELECT `product_id` 
@@ -318,7 +318,7 @@ class PaycartRouter extends Rb_Router
 	public function product_IDtoRoute($product_id)
 	{
 	    	
-		$lang_code = Rb_Factory::getLanguage()->getTag();
+		$lang_code = $this->_getPaycartCurrentLanguage();
 	
 		$query = "
 					SELECT `alias` 
@@ -330,5 +330,11 @@ class PaycartRouter extends Rb_Router
 		$db = Rb_Factory::getDbo();
 
 		return $db->setQuery($query)->loadResult();
+	}
+	
+	protected function _getPaycartCurrentLanguage()
+	{
+		require_once JPATH_SITE.'/components/com_paycart/paycart/functions.php';
+		return paycart_getCurrentLanguage();
 	}
 }
