@@ -81,7 +81,8 @@ paycart.admin.discountrule = {};
 						<?php $field = $form->getField('title') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls"><?php echo $field->input; ?></div>	
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>							
 						</div>
 						<?php $field = $form->getField('description') ?>
 						<div class="control-group">
@@ -125,7 +126,10 @@ paycart.admin.discountrule = {};
 						<?php $field = $form->getField('amount') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+							</div>								
 						</div>
 					</div>
 					<div class="span6">
@@ -159,14 +163,20 @@ paycart.admin.discountrule = {};
 						<?php $field = $form->getField('usage_limit') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+							</div>								
 						</div>
 					</div>
 					<div class="span6">
 						<?php $field = $form->getField('buyer_usage_limit') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+							</div>								
 						</div>
 					</div>
 				</div>	
@@ -198,7 +208,10 @@ paycart.admin.discountrule = {};
 						<?php $field = $form->getField('sequence') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+							</div>								
 						</div>
 					</div>
 					

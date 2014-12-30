@@ -123,7 +123,10 @@ paycart.admin.taxrule = {};
 					<div><?php echo Jtext::_('COM_PAYCART_ADMIN_TAXRULE_APPLY');?></div>
 					<?php $field = $form->getField('amount') ?>
 					<div class="control-group">						
-						<div class="controls"><?php echo $field->input; ?></div>								
+						<div class="controls">
+							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+						</div>								
 					</div>
 				</div>
 				<br/>		

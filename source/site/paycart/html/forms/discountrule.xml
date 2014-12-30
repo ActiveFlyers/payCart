@@ -35,9 +35,9 @@
 		
 		<field
 			name="amount"
-			type="paycart.amount"
+			type="text"
 			labelclass="control-label"
-			class="input-block-level"			
+			class="input-large validate-numeric"			
 			label="COM_PAYCART_ADMIN_AMOUNT"/>
 		
 		<field
@@ -93,14 +93,14 @@
 			name="buyer_usage_limit"
 			type="text"
 			labelclass="control-label"
-			class="validate-number"			
+			class="validate-numeric"			
 			label="COM_PAYCART_ADMIN_DISCOUNTRULE_BUYER_USAGE_LIMIT" />
 				
 		<field
 			name="usage_limit"
 			type="text"
 			labelclass="control-label"
-			class="validate-number"			
+			class="validate-numeric"			
 			label="COM_PAYCART_ADMIN_DISCOUNTRULE_USAGE_LIMIT" />
 			
 		<field
@@ -127,7 +127,7 @@
 			name="sequence"
 			type="text"
 			labelclass="control-label"
-			class="validate-number"			
+			class="validate-numeric"			
 			label="COM_PAYCART_ADMIN_SEQUENCE" />
 			
 		<field

@@ -37,6 +37,7 @@ defined('_JEXEC') or die;
 			
 			<div class='controls'>
 				<input name='paycart_discountrule_form[coupon]' id='paycart_discountrule_form_coupon' required="" value="<?php echo @$coupon_code;?>"  type='text' />
+				<div class="pc-error" for="paycart_discountrule_form_coupon"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 			</div>
 											
 		</div>

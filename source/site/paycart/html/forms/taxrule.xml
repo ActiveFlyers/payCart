@@ -35,10 +35,10 @@
 		
 		<field
 			name="amount"
-			type="paycart.amount"
+			type="text"
 			required="true"
 			labelclass="control-label"
-			class="input-block-level"/>
+			class="input-large validate-numeric"/>
 		
 		<field
 			name="apply_on"
