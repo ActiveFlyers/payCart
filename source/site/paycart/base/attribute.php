@@ -252,7 +252,7 @@ class PaycartAttribute
 			if(!empty($selectedOptions) && in_array($optionId, $selectedOptions)){
 				$selected = "checked='checked'";
 			}
-			$disabled = ($option['disabled'])?'readonly':'';
+			$disabled = ($option['disabled'])?'disabled':'';
 			$html  .= '<input data-pc-result="filter" name="filters[attribute]['.$attribute->getId().']['.$optionId.']" 
 			           value="'.$optionId.'" '.$selected.' type="checkbox" data-attribute-id="'.$attribute->getId().'" ' .$disabled. '> '
 			           .$options[$optionId]['title'].' ('.$option['productCount'].') <br/>' ;

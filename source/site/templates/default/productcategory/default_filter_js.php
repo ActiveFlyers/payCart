@@ -50,12 +50,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 
 		$(".pc-range-slider").on('slideStop', function (ev) {
 			$('input[name="'+this.name+'"]').attr('value',ev.value);
-			var link = 'index.php?option=com_paycart&view=search&task=filter';
 			$('input[name="pagination_start"]').attr('value',0);
-			var postData 	= $('.pc-form-product-filter').serializeArray();
-			postData.spinner_selector = '#paycart-ajax-spinner';
-			paycart.ajax.go(link, postData);
-			return false;
+
+			paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=filter');
 		});
 		
 		//remove the unwanted (duplicate) form
@@ -82,12 +79,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		var source = $('[data-pc-filter="sort-source"]').val();
 		$('[data-pc-filter="sort-destination"]').val(source);
 		$('input[name="pagination_start"]').attr('value',0);
-		
-		var link = 'index.php?option=com_paycart&view=search&task=filter';
-		var postData 	= $('.pc-form-product-filter').serializeArray();
-		postData.spinner_selector = '#paycart-ajax-spinner';
-		paycart.ajax.go(link, postData);
-		return false;
+
+		paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=filter');
 	};
 
 	//each elem have data attribute pc-filter-applied-ref
@@ -98,19 +91,31 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		$('[name="'+name+'"]').attr('value','');
 		$('[name="'+name+'"]').prop('checked',false);
 
-		var link = 'index.php?option=com_paycart&view=search&task=filter';
+		paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=filter');
+	};
+
+	paycart.product.filter.submit = function(link){
+		var disabledElem = $('[data-pc-result="filter"]:disabled:checked');
+
+		//remove disabled + checked property so that disabled values can be posted
+		$.each(disabledElem, function(k,v) {
+			$('[name="'+v.name+'"]').removeAttr('disabled');
+		});
+		
 		var postData 	= $('.pc-form-product-filter').serializeArray();
+
+		//again make modified elements disabled 
+		$.each(disabledElem, function(k,v) {
+			$('[name="'+v.name+'"]').attr('disabled',true);
+		});
+		
 		postData.spinner_selector = '#paycart-ajax-spinner';
 		paycart.ajax.go(link, postData);
 		return false;
 	};
 
 	paycart.product.loadMore = function(){
-		var link = 'index.php?option=com_paycart&view=search&task=loadMore';
-		var postData 	= $('.pc-form-product-filter').serializeArray();
-		postData.spinner_selector = '#paycart-ajax-spinner';
-		paycart.ajax.go(link, postData);
-		return false;
+		paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=loadMore');
 	};
 
 	paycart.product.loadMore.success = function(data){
