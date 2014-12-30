@@ -50,7 +50,9 @@ class PaycartModelLang extends PaycartModel
     	parent::_buildQueryJoins($query);
     	
     	if(empty($this->lang_code)){
-    		$this->lang_code = PaycartFactory::getPCCurrentLanguageCode();
+			$currentLanguage = PaycartFactory::getPCCurrentLanguageCode();
+			//if current language is empty then use default language code
+    		$this->lang_code = empty($currentLanguage)?PaycartFactory::getPCDefaultLanguageCode():$currentLanguage;
     	}
     	
     	$key = $this->getTable()->getKeyName();
