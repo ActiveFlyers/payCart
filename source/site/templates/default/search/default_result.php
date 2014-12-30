@@ -56,7 +56,7 @@ $records = (array)$products;
 		?>
 		 	<!-- category filters -->
 			<?php echo JLayoutHelper::render('paycart_attribute_category_filter',$filters);?>
-			<?php if(!empty($records)):?>	
+			<?php if($showFilters):?>	
 				<hr>
 				
 				<!-- custom attribute filterHtml -->
@@ -88,20 +88,20 @@ $records = (array)$products;
 			<ul class="nav"> 				
 				<li class="visible-phone"> 
 				  	<a href="javascript:void(0);" data-toggle="collapse" data-target=".nav-collapse">
-						<i class="fa fa-bars"></i> Filters
+						<i class="fa fa-bars"></i> <?php echo JText::_("COM_PAYCART_FILTER_BY")?>
 				 	</a>
 				</li>
 			</ul>
-		
-			<div class="nav-collapse collapse pc-filters visible-phone">
-				<form class="pc-form-product-filter navbar-form" method="post">
+	
+			<div class="nav-collapse collapse visible-phone">
+				<form class="pc-form-product-filter navbar-form" data-pc-filter-form="mobile" method="post">
 					<?php echo $filterHtml?>
 				</form>
 			</div>
 		
 			<div class="hidden-phone">
-				<form class="pc-form-product-filter navbar-form" method="post">
-					<h2><?php echo JText::_("COM_PAYCART_FILTER_RESULT")?></h2>
+				<form class="pc-form-product-filter" data-pc-filter-form="desktop" method="post">
+					<h2><?php echo JText::_("COM_PAYCART_FILTER_BY")?></h2>
 					<?php echo $filterHtml?>
 				</form>
 			</div>

@@ -57,6 +57,17 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 			paycart.ajax.go(link, postData);
 			return false;
 		});
+		
+		//remove the unwanted (duplicate) form
+		//otherwise it creates issue when deselecting any checkbox of filter attributes
+		wrapper_width = $('pc-product-search-content').width();
+		screen_width  = $(window).width();
+		if(screen_width < 768 && wrapper_width < 720){
+			$('[data-pc-filter-form="desktop"]').remove();
+		}
+		else if(screen_width >= 768 || wrapper_width >= 720){
+			$('[data-pc-filter-form="mobile"]').remove();
+		}
 
 		//scroll to first element
 		var elem  = $('#pc-product-search-content');

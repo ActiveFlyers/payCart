@@ -30,11 +30,11 @@ class PaycartSiteControllerSearch extends PaycartController
 	{
 		$searchWord   			= $this->input->get('q',null,'STRING');
 		$start					= $this->input->get('pagination_start',0);
-		$filters	   			= $this->input->get('filters','', 'ARRAY');
+		$postFilters   			= $this->input->get('filters',array(), 'ARRAY');
 		
-		$appliedCoreFilters     = isset($filters['core'])?$filters['core']:array();
-		$appliedAttrFilters     = isset($filters['attribute'])?$filters['attribute']:array();
-		$appliedSorting         = isset($filters['sort'])?$filters['sort']:'0';
+		$appliedCoreFilters     = isset($postFilters['core'])?$postFilters['core']:array();
+		$appliedAttrFilters     = isset($postFilters['attribute'])?$postFilters['attribute']:array();
+		$appliedSorting         = isset($postFilters['sort'])?$postFilters['sort']:'0';
 		$filterHelper  		    = PaycartFactory::getHelper('filter');
 		$formatter				= PaycartFactory::getHelper('format');
 		$filterHelper->pagination_start	= $start;
@@ -45,7 +45,7 @@ class PaycartSiteControllerSearch extends PaycartController
 		 * applied filter condition or only through search word
 		 */
 		$isFiltersApplied = false;
-		if(!empty($filters)){
+		if(!empty($postFilters)){
 			$isFiltersApplied = true;
 		}
 
@@ -121,6 +121,7 @@ class PaycartSiteControllerSearch extends PaycartController
 		$view->assign('sortingOptions',paycart::getSortingOptions());
 		$view->assign('filters',$filters);
 		$view->assign('start',$start+$filterHelper->pagination_limit);
+		$view->assign('showFilters',(!empty($result) || !empty($postFilters))?true:false);
 		
 		$this->setTemplate('result');
 		
@@ -205,10 +206,10 @@ class PaycartSiteControllerSearch extends PaycartController
 		}
 		
 		foreach($newAttrFilters as $id=>$options){
-//			//if only one option is there then no need to add it to filter
-//			if(count($options) <=1 ){
-//				continue;
-//			}
+			//if only one option is there then no need to add it to filter
+			if(count($options) <=1 ){
+				continue;
+			}
 			$instance = PaycartProductAttribute::getInstance($id);
 			//check whether the attribute is filterable or not
 			if($instance->isFilterable()){
