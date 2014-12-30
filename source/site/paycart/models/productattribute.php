@@ -69,7 +69,7 @@ class PaycartModelProductAttributeOption extends PaycartModelLang
 	 *
 	 * @return array of resultant rows
 	 */
-	function loadOptions($attributeId, $languageCode = '', Array $optionIds = array())
+	function loadOptions($attributeId, $languageCode = '', Array $optionIds = array(), $indexBy = 'productattribute_option_id')
 	{
 		$query = new Rb_Query();
 		
@@ -87,7 +87,7 @@ class PaycartModelProductAttributeOption extends PaycartModelLang
 		 		     ->where('ao.productattribute_id = '.$attributeId)
 		 		     ->order('ao.option_ordering')
 		 		     ->dbLoadQuery()
-		 		     ->loadAssocList('productattribute_option_id');
+		 		     ->loadAssocList($indexBy);
 	}
 	
 	/**

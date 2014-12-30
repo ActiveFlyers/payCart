@@ -274,6 +274,6 @@ class PaycartAttributeColor extends PaycartAttribute
 	function getSearchableDataOfOption($attributeId, $optionId)
 	{
 		//Can't use getOptions function, becoz here we need option data of all the languages
-		return PaycartFactory::getModel('color')->loadOptions($attributeId,'',array($optionId));
+		return PaycartFactory::getModel('color')->loadOptions($attributeId,'',array($optionId),'');
 	}
 }

@@ -79,18 +79,22 @@ class PaycartHelperProductIndex
 			$optionsLang = array();
 			foreach ($attributes as $attribute_id => $data){
 				if(array_key_exists($attribute_id, $searchableAttributes)){
-					$attribute   = PaycartProductAttribute::getInstance($attribute_id, $searchableAttributes[$attribute_id]);
-					$optionsLang = $attribute->getSearchableDataOfOption($data);
+					$attribute     = PaycartProductAttribute::getInstance($attribute_id, $searchableAttributes[$attribute_id]);
+					$optionsLang[] = $attribute->getSearchableDataOfOption($data);
 				}
 			}
 			
 			foreach ($optionsLang as $option){
-				$content[] = $option['title'];
+				foreach ($option as $langData){
+					$content[] = $langData['title'];
+				}
 			} 
 		}	
 
 		//Step-4 : Separate data through space and sanitize content before saving
-		$indexData       = implode(" ", $content);
+		// adding space before and after index data otherwise word won't be work with like query 
+		// as we add spaces before and after the search word 
+		$indexData       = ' '.implode(" ", $content).' ';
 		$field->content	 = $this->sanitizeContent($indexData);
 		
 		//Step-5 : Delete existing record
@@ -134,6 +138,9 @@ class PaycartHelperProductIndex
 	 */
 	function sanitizeContent($content)
 	{
+   		// add space just before the starting of html tag, 
+  		// otherwise no space will be there in between the content written within tags without space
+		$content = str_replace('<',' <',$content);
 		return preg_replace('/[^\p{L}\p{N}\p{M}\|\s]+/u','',strip_tags($content));
 	}
 }
