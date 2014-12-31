@@ -116,7 +116,7 @@ class PaycartHelperProductIndex
 		$products = $query->select('product_id')
 						  ->from('#__paycart_product_index')
 						  ->order('modified_date ASC')
-						  ->limit('0,'.$limit)
+						  ->limit($limit)
 						  ->dbLoadQuery()
 						  ->loadObjectList(); 
 						  

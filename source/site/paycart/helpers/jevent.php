@@ -100,7 +100,7 @@ class PaycartHelperJevent extends JEvent
 	 * @param unknown_type $view_name
 	 * @param unknown_type $output_string
 	 */
-	public function onPaycartViewAfterRender($view_object, $tsak_name, $view_name, $output_string)
+	public function onPaycartViewAfterRender($view_object, $task_name, $view_name, &$output_string)
 	{
 		//self::loadPaycart();
 		/*
