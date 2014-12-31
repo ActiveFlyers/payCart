@@ -69,9 +69,6 @@ if(!defined( '_JEXEC' )){
 	<button type="button" onClick="paycart.cart.login.do();" class="pc-whitespace btn btn-block btn-large btn-primary">
 			<?php echo JText::_('COM_PAYCART_CONTINUE');?> <i class="fa fa-angle-double-right"></i> 
 	</button>
-	 	
-	<p class="small muted text-center" data-pc-emailcheckout="show"><?php echo JText::_('COM_PAYCART_CART_GUEST_CHECKOUT_OPT_FOR_REGISTERING_ACCOUNT_AFTER_PURCHASE');?></p>
-	
 	
 	<input	type="hidden"	name='step_name' value='login' />
  </div>	 
