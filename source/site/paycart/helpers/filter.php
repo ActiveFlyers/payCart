@@ -136,7 +136,7 @@ class PaycartHelperFilter extends JObject
 	{
 		switch ($sort)
 		{
-			case 'hit'   		: $query->order('pp.`hit` DESC');
+			case 'hits'   		: $query->order('pp.`hits` DESC');
 						 		  break;
 
 			case 'created_date' : $query->order('pp.`created_date` DESC');
