@@ -25,9 +25,10 @@ if (typeof(paycart.element)=='undefined'){
 // START : 	
 // Scoping code for easy and non-conflicting access to $.
 // Should be first line, write code below this line.
-
-	// Assuption :: we will auto initialize validation when form have 'pc-form-validate' class
-	paycart.formvalidator.initialize('form.pc-form-validate');
+	$(document).ready(function(){
+		// Assuption :: we will auto initialize validation when form have 'pc-form-validate' class
+		paycart.formvalidator.initialize('form.pc-form-validate');
+	});
 
 /*--------------------------------------------------------------
   URL related to works

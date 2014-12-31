@@ -59,7 +59,7 @@ $id_suffix++;
 			
 		<!-- Buyer To -->
 		<div class="control-group">
-		  <label class="control-label" for="to">
+		  <label class="control-label" for="to_<?php echo $id_suffix; ?>">
 		  		<?php echo JText::_('COM_PAYCART_TO');?>
 		  </label>
 		  <div class="controls">
@@ -69,6 +69,7 @@ $id_suffix++;
 					value="<?php echo @$displayData->to; ?>"
 					type="text" required="true"
 			/>
+			<div class="pc-error" for="to_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>			
 		  </div>
 		</div>
 	</div>
@@ -76,13 +77,12 @@ $id_suffix++;
 	<div class="span6">			
 		<!-- Buyer Address -->
 		<div class="control-group">
-		  <label class="control-label" for="address">
+		  <label class="control-label" for="address_<?php echo $id_suffix; ?>">
 		  	<?php echo JText::_('COM_PAYCART_ADDRESS');?>
 		  </label>
 		  <div class="controls">                     
 		    <textarea 	name="<?php echo $prefix; ?>[address]" 
-						id="address_<?php echo $id_suffix; ?>"
-						required="true"><?php echo @$displayData->address; ?></textarea>
+						id="address_<?php echo $id_suffix; ?>"><?php echo @$displayData->address; ?></textarea>
 		  </div>
 		</div>
 	</div>
@@ -93,7 +93,7 @@ $id_suffix++;
 	<div class="span6">			
 		<!-- Buyeraddress country-->
 		<div class="control-group">
-		  <label class="control-label" for="textinput">
+		  <label class="control-label" for="country_id_<?php echo $id_suffix; ?>">
 		  		<?php echo JText::_('COM_PAYCART_COUNTRY');?>
 		  </label>
 		  <div class="controls">
@@ -109,7 +109,7 @@ $id_suffix++;
 		<!--	Buyeraddress State	-->
 		<div class="control-group">
 		  
-		  <label class="control-label" for="textinput">
+		  <label class="control-label" for="state_id_<?php echo $id_suffix; ?>">
 		  		<?php echo JText::_('COM_PAYCART_STATE');?>
 		  </label>
 		  <div class="controls">
@@ -142,14 +142,15 @@ $id_suffix++;
 	<div class="span6">		
 		<!--	Buyeraddress City	-->
 		<div class="control-group">
-		  <label class="control-label" for="textinput">
+		  <label class="control-label" for="city_<?php echo $id_suffix; ?>">
 		  		<?php echo JText::_('COM_PAYCART_CITY');?>
 		  </label>
 		  <div class="controls">
 		    <input 	name="<?php echo $prefix; ?>[city]" 
 					id="city_<?php echo $id_suffix; ?>" 
 					value="<?php echo @$displayData->city; ?>"
-		    	    type="text">
+		    	    type="text" required="true">
+		    <div class="pc-error" for="city_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 		  </div>
 		</div>
 	</div>
@@ -157,15 +158,15 @@ $id_suffix++;
 	<div class="span6">	
 		<!--	Buyeraddress Zipcode	-->
 		<div class="control-group">
-		  <label class="control-label" for="Zipcode">
+		  <label class="control-label" for="zipcode_<?php echo $id_suffix; ?>">
 		  		<?php echo JText::_('COM_PAYCART_ZIPCODE');?>
 		  </label>
 		  <div class="controls">
 			    <input 	name="<?php echo $prefix; ?>[zipcode]" 
 						id="zipcode_<?php echo $id_suffix; ?>" 
 						value="<?php echo @$displayData->zipcode; ?>"
-						type="text">
-		  
+						type="text" required="true">
+				<div class="pc-error" for="zipcode_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>		  
 		  </div>
 		</div>
 	</div>
@@ -176,7 +177,7 @@ $id_suffix++;
 	<div class="span6">
 		<!--	Buyeraddress Vatnumber	-->
 		<div class="control-group">
-		  <label class="control-label" for="textinput">
+		  <label class="control-label" for="vat_number_<?php echo $id_suffix; ?>">
 		  		<?php echo JText::_('COM_PAYCART_VATNUMBER');?>
 		  </label>
 		  <div class="controls">
@@ -192,14 +193,14 @@ $id_suffix++;
 	<div class="span6">	
 		<!--	Buyeraddress Phone	-->
 		<div class="control-group">
-		  <label class="control-label" for="textinput">
+		  <label class="control-label" for="phone_<?php echo $id_suffix; ?>">
 		  		<?php echo JText::_('COM_PAYCART_PHONE');?>
 		  </label>
 		  <div class="controls">
 			    <input	name="<?php echo $prefix; ?>[phone]" 
 						id="phone_<?php echo $id_suffix; ?>" 
 						value="<?php echo @$displayData->phone; ?>" 
-			    		type="text" required="true">
+			    		type="text">
 		  </div>
 		</div>
 	</div>

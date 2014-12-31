@@ -76,6 +76,10 @@ paycart.admin.config = {};
 		$('#pc-confic-localization-supported-language').html(language);
 		return true;
 	}
+
+	$('a[href="#paycartAdminConfigTabsLocalization"]').on('shown', function (e) {
+		paycart.formvalidator.initialize('.pc-form-validate');
+	});
 	
 })(paycart.jQuery);
 </script>
