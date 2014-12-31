@@ -41,7 +41,7 @@ class PaycartHelperProductIndex
 		$content[] = $product->getSku();
 		
 		$query 	  = new Rb_Query();
-		$result   = $query->select('title, alias, description')
+		$result   = $query->select('*')
 						  ->from('#__paycart_product_lang')
 						  ->where('product_id = '.$productId)
 						  ->dbLoadQuery()
@@ -50,9 +50,10 @@ class PaycartHelperProductIndex
 		foreach ($result as $langCode => $data){
 			$content[] = $data->title;
 			$content[] = $data->alias;
-			if(!empty($data->description)){
-				$content[] = $data->description; 	
-			}
+			$content[] = $data->description; 
+			$content[] = $data->metadata_title;
+			$content[] = $data->metadata_keywords;
+			$content[] = $data->metadata_description;
 		}
 
 		//Step-2 : Also index category title from which the product belongs
