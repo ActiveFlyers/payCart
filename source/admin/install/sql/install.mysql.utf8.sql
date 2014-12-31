@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
 CREATE TABLE IF NOT EXISTS `#__paycart_productcategory_lang` (
   `productcategory_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `productcategory_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
+  `title` varchar(100) NOT NULL,
   `alias` varchar(100) NOT NULL,
   `lang_code` char(7) NOT NULL,
   `description` text,

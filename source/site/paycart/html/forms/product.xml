@@ -134,7 +134,8 @@
 					type="text"
 					class="input-block-level"
 					label="COM_PAYCART_ADMIN_TITLE"
-					required="true"/>
+					required="true"
+					maxlength="100"/>
 					
 			<field 	name="alias" 
 					type="text"
@@ -142,7 +143,8 @@
 					filter="JApplicationHelper::stringURLSafe"
 					class="input-block-level"
 					label="COM_PAYCART_ADMIN_ALIAS"
-					description="JFIELD_ALIAS_DESC"/>			
+					description="JFIELD_ALIAS_DESC"
+					maxlength="100"/>			
 			
 			<field 	name="description" 
 					type="editor"						
@@ -152,17 +154,20 @@
 			<field	name="metadata_title" 
 					type="text"
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_METADATA_TITLE"/>
+					label="COM_PAYCART_ADMIN_METADATA_TITLE"
+					maxlength="255"/>
 			
 			<field 	name="metadata_description" 
 					type="text"
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_METADATA_DESCRIPTION"/>
+					label="COM_PAYCART_ADMIN_METADATA_DESCRIPTION"
+					maxlength="255"/>
 			
 			<field	name="metadata_keywords" 
 					type="text" 
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_METADATA_KEYWORD"/>
+					label="COM_PAYCART_ADMIN_METADATA_KEYWORD"
+					maxlength="255"/>
 		</fieldset>	
 		
 		<fields name="_uploaded_files">
