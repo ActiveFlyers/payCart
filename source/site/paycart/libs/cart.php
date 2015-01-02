@@ -994,11 +994,11 @@ class PaycartCart extends PaycartLib
 		$buyer_helper = PaycartFactory::getHelper('buyer');
 		
 		//check user already exist or not
-		$username	= $buyer_helper->getUser($buyer->email, 'email');
+		$user	= $buyer_helper->getUser($buyer->email, 'email');
 		
-		if($username) {
+		if($user) {
 			//user already exist
-			$user_id = JUserHelper::getUserId($username);
+			$user_id = JUserHelper::getUserId($user->username);
 		} else {
 			// Create new account
 			$user_id = $buyer_helper->createAccount($buyer->email);
