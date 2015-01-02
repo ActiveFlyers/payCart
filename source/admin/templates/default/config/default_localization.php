@@ -206,6 +206,6 @@ echo $this->loadTemplate('edit_ng');
 			  $display_data = (object)$origin_address; 
 			  $display_data->prefix = 'paycart_config_form[localization_origin_address]';
 		?>
-		<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_edit', $display_data);?>
+		<?php echo Rb_HelperTemplate::renderLayout('paycart_config_address_edit', $display_data);?>
 	</div>			
 </div>

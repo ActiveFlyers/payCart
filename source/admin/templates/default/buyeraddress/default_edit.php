@@ -46,7 +46,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		{
 			$(document).ready(function($) 
 					{
-						paycart.formvalidator.initialize('#paycart_buyeraddress_form');		
+						paycart.formvalidator.initialize('#paycart_buyeraddress_form');
+						$('#paycart_buyeraddress_form select').chosen();		
 					});
 		})(paycart.jQuery)
 </script>
