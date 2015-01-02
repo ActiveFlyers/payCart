@@ -215,7 +215,7 @@ echo $this->loadTemplate('js');
 														<?php if(isset($shipments[$shipment['shipment_id']])) :?>
 		  													<?php echo $formatter->date(new Rb_Date($shipments[$shipment['shipment_id']]->est_delivery_date));?>
 		  												<?php else:?>
-		  													<?php echo $formatter->date($estimatedDeliveryDate);?>
+//		  													<?php echo $estimatedDeliveryDate ? $formatter->date($estimatedDeliveryDate) : JText::_('COM_PAYCART_SOON') ;?>
 		  												<?php endif;?>
 		  												</span></p>
 		  											 <?php endif;?>
