@@ -55,7 +55,7 @@ echo $this->loadTemplate('edit_css');
 	}
 ?>
 		
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data" >
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data" novalidate>
 	<div class="row-fluid">
 		<div class="<?php echo count($variants)? 'span10' : 'span12'; ?>">
 			<?php echo PaycartHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>

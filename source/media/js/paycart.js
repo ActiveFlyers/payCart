@@ -28,6 +28,7 @@ if (typeof(paycart.element)=='undefined'){
 	$(document).ready(function(){
 		// Assuption :: we will auto initialize validation when form have 'pc-form-validate' class
 		paycart.formvalidator.initialize('form.pc-form-validate');
+		setTimeout(paycart.loadTab, 100);
 	});
 
 /*--------------------------------------------------------------
@@ -225,7 +226,7 @@ if (typeof(paycart.element)=='undefined'){
 // Maintain Tab State
 (function($){
 	
-    var loadTab = function() {
+    paycart.loadTab = function() {
 
         $('.paycart a[data-toggle="tab"]').on('click', function(e) {
             // Store the selected tab href in localstorage
@@ -263,5 +264,5 @@ if (typeof(paycart.element)=='undefined'){
             }
         }});
     };
-    setTimeout(loadTab, 500);
+    
 })(paycart.jQuery);
