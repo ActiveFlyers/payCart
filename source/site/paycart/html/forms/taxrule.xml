@@ -49,7 +49,8 @@
 			name="processor_classname"
 			type="paycart.processor"
 			labelclass="control-label"
-			processor_type="taxrule">
+			processor_type="taxrule"
+			class="validate-hidden required">
 			<option value="">COM_PAYCART_ADMIN_SELECT</option>
 		</field>
 			

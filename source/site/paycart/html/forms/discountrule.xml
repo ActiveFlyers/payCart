@@ -51,7 +51,8 @@
 			type="paycart.processor"
 			labelclass="control-label"
 			processor_type="discountrule"		
-			label="COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME">
+			label="COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME"
+			class="validate-hidden required">
 			<option value="">COM_PAYCART_ADMIN_SELECT</option>
 		</field>
 			

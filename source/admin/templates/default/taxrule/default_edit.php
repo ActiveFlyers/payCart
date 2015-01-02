@@ -139,11 +139,16 @@ paycart.admin.taxrule = {};
 				</div>				
 				<br/>
 				<div class="row-fluid">					
-					<div><?php echo Jtext::_('COM_PAYCART_ADMIN_TAXRULE_BY');?></div>
+					<?php $field = $form->getField('processor_classname') ?>
+					<div class="control-label">
+						<label class="control-label required" for="<?php echo $field->id;?>">
+							<?php echo Jtext::_('COM_PAYCART_ADMIN_TAXRULE_BY');?>
+						</label>
+					</div>
 					<div class="control-group">
 						<div class="controls" data-pc-taxrule="processor">
-							<?php $field = $form->getField('processor_classname') ?>
 							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 						</div>	
 					</div>
 					

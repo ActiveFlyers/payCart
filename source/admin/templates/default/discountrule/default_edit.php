@@ -231,11 +231,16 @@ paycart.admin.discountrule = {};
 				</div>	
 				
 				<div class="row-fluid">
-					<div><?php echo Jtext::_('COM_PAYCART_ADMIN_DISCOUNTRULE_BY');?></div>
 					<div class="control-group">
+						<?php $field = $form->getField('processor_classname') ?>
+						<div class="control-label">
+							<label class="control-label required" for="<?php echo $field->id;?>">
+								<?php echo Jtext::_('COM_PAYCART_ADMIN_DISCOUNTRULE_BY');?>
+							</label>
+						</div>
 						<div class="controls" data-pc-discountrule="processor">
-							<?php $field = $form->getField('processor_classname') ?>
 							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 						</div>	
 					</div>
 					

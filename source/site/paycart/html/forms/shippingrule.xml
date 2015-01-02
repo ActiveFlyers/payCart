@@ -26,7 +26,8 @@
 			type="paycart.processor"
 			labelclass="control-label"
 			processor_type="shippingrule"		
-			label="COM_PAYCART_ADMIN_SHIPPINGRULE_PROCESSOR_CLASSNAME">
+			label="COM_PAYCART_ADMIN_SHIPPINGRULE_PROCESSOR_CLASSNAME"
+			class="validate-hidden required">
 			<option value="">COM_PAYCART_ADMIN_SELECT</option>
 		</field>
 		

@@ -81,7 +81,10 @@ paycart.admin.shippingrule = {};
 						<?php $field = $form->getField('title') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+							</div>								
 						</div>
 						<?php $field = $form->getField('description') ?>
 						<div class="control-group">
@@ -125,6 +128,7 @@ paycart.admin.shippingrule = {};
 							<div class="control-label"><?php echo $field->label; ?> </div>
 							<div class="controls" data-pc-shippingrule="processor">
 								<?php echo $field->input; ?>
+								<div class="pc-error clearfix" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 							</div>	
 						</div>
 						
