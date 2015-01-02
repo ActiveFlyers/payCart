@@ -26,10 +26,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		<?php foreach ($buyer_addresses as $buyeaddress_id => $buyeraddress_details):?>
 			<?php $selected = ($billing_address_id == $buyeraddress_details->buyeraddress_id) ? 'selected' : ''; ?>
 			<option value='<?php echo $buyeraddress_details->buyeraddress_id?>'	<?php echo $selected; ?>>
-				<?php echo $buyeraddress_details->address; ?>
-				<?php echo "{$buyeraddress_details->city}-{$buyeraddress_details->zipcode}"; ?>
-				<?php echo "{$buyeraddress_details->state_id}"; ?>
-				<?php echo "{$buyeraddress_details->country_id}"; ?>
+				<?php echo $buyeraddress_details->address.","; ?>
+				<?php echo "{$buyeraddress_details->city}-{$buyeraddress_details->zipcode},"; ?>
+				<?php echo "{$formatter->state($buyeraddress_details->state_id)},"; ?>
+				<?php echo "{$formatter->country($buyeraddress_details->country_id)},"; ?>
 				<?php echo "{$buyeraddress_details->phone}"; ?>
 			</option>
 		<?php endforeach;?>
