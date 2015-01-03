@@ -157,8 +157,11 @@ class PaycartSiteControllerCart extends PaycartController
 				}
 			} 
 			else {
+				$data = array();
+				$data['username'] = isset($form_data['username']) ? $form_data['username'] : '';
+				$data['password'] = isset($form_data['password']) ? $form_data['password'] : '';
 				//checkout by login
-				$this->_login($form_data, $errors);
+				$this->_login($data, $errors);
 			}			
 			
 			// if errors
