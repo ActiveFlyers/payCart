@@ -603,7 +603,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						  
 						request['success_callback']	= paycart.cart.getPaymentForm.response;
 						request['spinner_selector'] = '#paycart-ajax-spinner';
-						request['url'] 	= 'index.php?option=com_paycart&view=cart&task=updateProductQuantity';
+						request['url'] 	= 'index.php?option=com_paycart&view=cart';
 						  
 						paycart.request(request);
 						

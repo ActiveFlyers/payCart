@@ -107,7 +107,7 @@ if (typeof(paycart.element)=='undefined'){
 		
 		$.ajax({
 
-			url		: request['url'] ,
+			url		: paycart.url.route(request['url']) ,
 						
 		    cache	: ( typeof request['cache'] == "undefined" ) 
     					? false
