@@ -112,3 +112,4 @@ echo $this->loadTemplate('js');
 		</div>
 	</div>
 </div>
+<?php echo  Rb_HelperTemplate::renderLayout('paycart_spinner');

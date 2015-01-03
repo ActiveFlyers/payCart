@@ -97,6 +97,7 @@ if(!defined( '_JEXEC' )){
 		if(paycart.formvalidator.isValid('#pc-account-guest-form')){
 			// get all form data for post	
 			var postData 	= $("#pc-account-guest-form").serializeArray();
+			postData['spinner_selector'] = '#paycart-ajax-spinner';
 			var link  		= 'index.php?option=com_paycart&view=account&task=guest';
 			paycart.ajax.go(link, postData);
 		}
@@ -106,7 +107,7 @@ if(!defined( '_JEXEC' )){
 	paycart.account.guest.response = function(response){
 		if(response.isValid){
 			$('[data-ppc-selector="pc-account-guest-form-header"]').html(response.message).removeClass('hide');
-			setTimeout(function(){ $('[data-ppc-selector="pc-account-guest-form-header"]').html('').addClass('hide'); }, 3000);	
+			setTimeout(function(){ $('[data-ppc-selector="pc-account-guest-form-header"]').html('').addClass('hide'); }, 7000);	
 			$('#paycart_account_guestform_email').val('');
 			$('#paycart_account_guestform_order_id').val('');
 			return true;
