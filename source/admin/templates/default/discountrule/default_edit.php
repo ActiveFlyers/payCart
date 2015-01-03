@@ -16,6 +16,7 @@ paycart.admin.discountrule = {};
 	paycart.admin.discountrule.getProcessorConfig = function(){
 		var processor_classname = $('[data-pc-discountrule="processor"] select').val();
 		if(processor_classname.length > 0){
+			paycart.formvalidator.isValid('form.pc-form-validate');
 			var url  = 'index.php?option=com_paycart&view=discountrule&task=getProcessorConfig&processor_classname='+processor_classname+'&discountrule_id='+<?php echo $form->getValue('discountrule_id');?>;
 			paycart.ajax.go(url);
 		}

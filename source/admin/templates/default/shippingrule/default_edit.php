@@ -17,6 +17,7 @@ paycart.admin.shippingrule = {};
 	paycart.admin.shippingrule.getProcessorConfig = function(){
 		var processor_classname = $('[data-pc-shippingrule="processor"] select').val();
 		if(processor_classname.length > 0){
+			paycart.formvalidator.isValid('form.pc-form-validate');
 			var url  = 'index.php?option=com_paycart&view=shippingrule&task=getProcessorConfig&processor_classname='+processor_classname+'&shippingrule_id='+<?php echo $form->getValue('shippingrule_id');?>;
 			paycart.ajax.go(url);
 		}
