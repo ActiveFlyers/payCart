@@ -69,11 +69,11 @@ class PaycartAdminJsonViewProductAttribute extends PaycartAdminBaseViewProductAt
 	{		
 		if($this->get('success', false)){			
 			$response = array('success' => true);
-			$response['message'] = JText::_('COM_PAYCART_ADMIN_PRODUCTATTRIBUTE_DELETE_SUCCESS');
+			$response['message'] = JText::_('COM_PAYCART_ADMIN_ATTRIBUTE_DELETE_SUCCESS');
 		}
 		else{
 			$response = array('success' => false);				
-			$response['message'] = JText::_('COM_PAYCART_ADMIN_PRODUCTATTRIBUTE_DELETE_ERROR');
+			$response['message'] = JText::_('COM_PAYCART_ADMIN_ATTRIBUTE_DELETE_ERROR');
 		}
 		$this->assign('json', $response);
 		
