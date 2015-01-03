@@ -19,7 +19,8 @@ class PaycartHtmlLanguageflag
 		$html = JHtml::_('image', 'mod_languages/' . strtolower(str_ireplace('-', '_', $lang_code)) . '.gif',$languages[$lang_code]->name, array('title' => $languages[$lang_code]->name), true);
 
 		if($withLabel){
-			return $html.' '.$languages[$lang_code]->name;
+			$name = empty($languages[$lang_code]->name) ? $languages[$lang_code]->element : $languages[$lang_code]->name;
+			return $html.' '.$name;
 		}
 		
 		return $html;

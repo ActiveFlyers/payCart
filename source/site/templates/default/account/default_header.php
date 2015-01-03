@@ -35,7 +35,7 @@ if(!defined( '_JEXEC' )){
 					<input type="submit" value="Log out" class="hide" id="logout-dashboard" name="Submit">
 					<input type="hidden" value="com_users" name="option">
 					<input type="hidden" value="user.logout" name="task">
-					<input type="hidden" value="<?php echo base64_encode(JRoute::_('index.php?opyion=com_paycart&view=account&task=login'));?>" name="return">
+					<input type="hidden" value="<?php echo base64_encode(JRoute::_('index.php?option=com_paycart&view=account&task=login'));?>" name="return">
 					<?php echo JHtml::_('form.token'); ?>
 				</div>
 			</form>
