@@ -21,9 +21,11 @@ echo $this->loadTemplate('js');
 	<div class="span10">
 		<!--  LANGUAGE SWITCHER --> 
 		<?php		
+		if(PAYCART_MULTILINGUAL){
 			$displayData = new stdClass();
 			$displayData->uri  = $uri;
-			echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);		
+			echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+		}		
 		?>
 		
 		<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">		
