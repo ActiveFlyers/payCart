@@ -13,6 +13,8 @@ defined('_JEXEC') or die( 'Restricted access' );
 $currency = PaycartFactory::getHelper('format')->currency(PaycartFactory::getConfig()->get('localization_currency'));
 $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 
+//set default value
+$config->billing = isset($config->billing)?$config->billing:PaycartShippingruleProcessorFlatRate::PRICE;
 ?>
 
 <script type="text/javascript">
@@ -87,13 +89,13 @@ $weightUnit = PaycartFactory::getConfig()->get('catalogue_weight_unit');
 			<fieldset class="radio btn-group" id="<?php echo $namePrefix?>_billing">
 				<input onClick="paycart.shipping.flatrate.changeBilling(this.value)" type="radio" id="<?php echo $namePrefix?>_billing_price" 
 					   name="<?php echo $namePrefix?>[processor_config][billing]" value="<?php echo PaycartShippingruleProcessorFlatRate::PRICE;?>" 
-							<?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::PRICE ? 'checked="checked"' : '';?>>
-				<label for="<?php echo $namePrefix?>_billing_price" class="btn <?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::PRICE ? 'active btn-success' : '';?>"><?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_PRICE");?></label>
+							<?php echo $config->billing == PaycartShippingruleProcessorFlatRate::PRICE ? 'checked="checked"' : '';?>>
+				<label for="<?php echo $namePrefix?>_billing_price" class="btn <?php echo $config->billing == PaycartShippingruleProcessorFlatRate::PRICE ? 'active btn-success' : '';?>"><?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_PRICE");?></label>
 				
 				<input onClick="paycart.shipping.flatrate.changeBilling(this.value)" type="radio" id="<?php echo $namePrefix?>_billing_weight" 
 				       name="<?php echo $namePrefix?>[processor_config][billing]" value="<?php echo PaycartShippingruleProcessorFlatRate::WEIGHT;?>" 
-							<?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::WEIGHT ? 'checked="checked"' : '';?>>
-				<label for="<?php echo $namePrefix?>_billing_weight" class="btn <?php echo isset($config->billing) && $config->billing == PaycartShippingruleProcessorFlatRate::WEIGHT ? 'active btn-success' : '';?>"><?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_WEIGHT");?></label>
+							<?php echo $config->billing == PaycartShippingruleProcessorFlatRate::WEIGHT ? 'checked="checked"' : '';?>>
+				<label for="<?php echo $namePrefix?>_billing_weight" class="btn <?php echo $config->billing == PaycartShippingruleProcessorFlatRate::WEIGHT ? 'active btn-success' : '';?>"><?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_FLATRATE_WEIGHT");?></label>
 			</fieldset>
 		</div>
 	</div>
