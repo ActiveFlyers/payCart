@@ -117,12 +117,17 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 			$('#paycart_shipping_country_id').on('change',  function(event, data) {
 				var default_selected_state = 0;
+				var success_callback = null;
 
 				if (typeof data !== 'undefined' && typeof data.state_id !== 'undefined') {
 					default_selected_state =  data.state_id;
 				}
 
-				paycart.address.state.onCountryChange('#paycart_shipping_country_id', '#paycart_shipping_state_id', default_selected_state);
+				if(typeof data !== 'undefined' && typeof data.success_callback !== 'undefined'){
+					success_callback = data.success_callback;
+				}
+
+				paycart.address.state.onCountryChange('#paycart_shipping_country_id', '#paycart_shipping_state_id', default_selected_state,success_callback);
 			});
 			
 

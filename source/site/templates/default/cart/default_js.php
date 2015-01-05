@@ -186,7 +186,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		*/
 
 		paycart.cart.address = {};
-		paycart.cart.address.copy = function(from, to){
+		paycart.cart.address.copy = function(from, to, success_callback){
 						var regExp 			=	/\[(\w*)\]$/, 
 							from_name 		=	'paycart_cart_address['+from +']',
 							to_name 		=	'paycart_cart_address['+to +']',
@@ -215,7 +215,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						data['selector_index']	=	to ;
 						data['buyeraddress']	=	byeraddress ;
 						
-						paycart.cart.address.setAddress(data);
+						paycart.cart.address.setAddress(data, success_callback);
 										
 						//console.log('copy '+from+' to '+to);
 					};
@@ -262,7 +262,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		/**
 		 * Invoke to fill address values into selected address {either billing or shipping}
 		 */
-		paycart.cart.address.setAddress = function(data){
+		paycart.cart.address.setAddress = function(data, callback){
 						// paycart_cart_address[billing] or paycart_cart_address[shipping] 
 						var selecor_name = 'paycart_cart_address['+data['selector_index'] +']', 
 							state_value	= 0 ;
@@ -285,7 +285,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						}
 		
 						// special treatment for country and state value
-						$('[name="'+selecor_name+'[country_id]"]').trigger('change', {'state_id' : state_value});
+						var post = {'state_id' : state_value, 'success_callback' : (typeof callback !== 'undefined')?callback:null};
+
+						$('[name="'+selecor_name+'[country_id]"]').trigger('change', post);
 						
 					};
 			
@@ -315,10 +317,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		paycart.cart.address.onContinue	= function(){
 						//Before Submit Copy billing to shipping address
 						if ( $('#billing_to_shipping').prop('checked') == true ) { 
-							paycart.cart.address.copy('billing', 'shipping');
+							paycart.cart.address.copy('billing', 'shipping',paycart.cart.address.do);
 						}
-		
-						paycart.cart.address.do();
 					};
 
 		/**
