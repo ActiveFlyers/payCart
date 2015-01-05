@@ -41,7 +41,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 							</th>
 						    				
 							<th ><?php echo PaycartHtml::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
-							<th ><?php echo PaycartHtml::_('grid.sort', "COM_PAYCART_ADMIN_TYPE", 'type', $filter_order_Dir, $filter_order);?></th>
+							<th ><?php echo PaycartHtml::_('grid.sort', "COM_PAYCART_ADMIN_TYPE", 'processor_type', $filter_order_Dir, $filter_order);?></th>
 							<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
 							
 						</tr>

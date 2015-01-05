@@ -35,7 +35,7 @@ echo $this->loadTemplate('js');
                 	<tr>
                 		<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /></th>
                 		<th><?php echo PaycartHtml::_('grid.sort', 'COM_PAYCART_ADMIN_ID', 'notification_id', $filter_order_Dir, $filter_order);?></th>
-                		<th><?php echo PaycartHtml::_('grid.sort', 'COM_PAYCART_ADMIN_TITLE', 'title', $filter_order_Dir, $filter_order);?></th>
+                		<th><?php echo PaycartHtml::_('grid.sort', 'COM_PAYCART_ADMIN_TITLE', 'event_name', $filter_order_Dir, $filter_order);?></th>
                 		<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_STATUS", 'published', $filter_order_Dir, $filter_order);?></th>
                 		<th><?php echo JText::_('COM_PAYCART_ADMIN_DESCRIPTION'); ?></th>
 					</tr>

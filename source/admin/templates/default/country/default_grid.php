@@ -38,7 +38,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /></th>
 				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
 				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_COUNTRY_ISOCODE_3", 'country_id', $filter_order_Dir, $filter_order);?></th>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_COUNTRY_ISOCODE_2", 'isocode', $filter_order_Dir, $filter_order);?></th>
+				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_COUNTRY_ISOCODE_2", 'isocode2', $filter_order_Dir, $filter_order);?></th>
 				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
 				
 			</tr>
