@@ -38,8 +38,8 @@ if(!defined( '_JEXEC' )){
 	};
 
 	paycart.account.address.remove = function(id){
-		var link  = 'index.php?option=com_paycart&view=account&task=removeAddress&address_id='+id+'&format=json';
-		request = [];
+		var link  = 'index.php?option=com_paycart&view=account&task=removeAddress&address_id='+id;
+		var request = [];
 		request['url'] 	= link;
 		request['data']	= {};
 		request['success_callback']	= paycart.account.address.remove.response;

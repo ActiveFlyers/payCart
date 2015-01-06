@@ -105,7 +105,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 			<div class="accordion-inner">
 				 				<?php
 				 					if ( @$billing_to_shipping ) {
-				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('Same as a Billing Address');
+				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('COM_PAYCART_ADDRESS_SAME_AS_BILLING');
 				 					} else {
 				 						$layout = new JLayoutFile('paycart_buyeraddress_display');
 										echo $layout->render($shipping_address);

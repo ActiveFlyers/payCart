@@ -36,7 +36,7 @@ if(!defined( '_JEXEC' )){
 		<div class="control-group" data-pc-selector="pc-emailcheckout">
 			<div class="control-label">
 	 			<label id="paycart_cart_login_email-lbl" for="paycart_cart_login_email" class="required" aria-invalid="false">
-	 				<?php echo JText::_('JGLOBAL_EMAIL');?>
+	 				<?php echo JText::_('COM_PAYCART_EMAIL');?>
 	 			</label>
 	 		</div>
 	 		<div class="controls">
@@ -47,7 +47,7 @@ if(!defined( '_JEXEC' )){
 		<div class="control-group" data-pc-selector="pc-logincheckout">
 			<div class="control-label">
 	 			<label id="paycart_cart_login_username-lbl" for="paycart_cart_login_username" class="required" aria-invalid="false">
-	 				<?php echo JText::_('JGLOBAL_USERNAME').' / '.JText::_('JGLOBAL_EMAIL');?>
+	 				<?php echo JText::_('COM_PAYCART_USERNAME').' / '.JText::_('COM_PAYCART_EMAIL');?>
 	 			</label>
 	 		</div>
 	 		<div class="controls">
