@@ -88,7 +88,9 @@ abstract class PaycartTaxruleProcessor
 	protected function _calculateTax($taxableAmount, $taxRate)
 	{
 		if(!$taxableAmount){
-			throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_TAXRULE_CANT_BE_PROCESSED_ON_ZERO'));
+			//if taxamount is zero then do nothing
+			return 0;
+			//throw new InvalidArgumentException(Rb_Text::_('COM_PAYCART_TAXRULE_CANT_BE_PROCESSED_ON_ZERO'));
 		}
 		
 		if(!$taxRate){
