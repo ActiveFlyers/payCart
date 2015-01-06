@@ -177,14 +177,16 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 
 			for(a=0; a<shipmentStatus.length; a++){
 				shipmentStatus[a].disabled = false;
-				if(!shipmentId && shipmentStatus[a].value != "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>"){
+				if(!shipmentId && (shipmentStatus[a].value != "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>"
+					           && shipmentStatus[a].value != "<?php echo Paycart::STATUS_SHIPMENT_FAILED?>")){
 					shipmentStatus[a].disabled = true;
 					continue;
 				}
 
 				if((currentStatus == "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>") && 
 				   (shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>" &&  
-					shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_DISPATCHED?>")){
+					shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_DISPATCHED?>" && 
+					shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_FAILED?>" )){
 					shipmentStatus[a].disabled = true;
 					continue;
 				}
