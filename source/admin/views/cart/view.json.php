@@ -30,6 +30,14 @@ class PaycartAdminJsonViewCart extends PaycartAdminBaseViewCart
 		
 		$data   = $this->input->get('shipmentDetails',array(),'ARRAY');
 		
+		//if no shipping rule is there then do nothing
+		if(!isset($data['shippingrule_id'])){
+			$response->valid   = false;
+			$response->message = JText::_("COM_PAYCART_ADMIN_SHIPMENT_ERROR_WHILE_SAVING");
+			$this->assign('json', $response);
+			return true;
+		}
+		
 		if(!isset($data['est_delivery_date'])){
 			$shippingRule = PaycartShippingrule::getInstance($data['shippingrule_id']);
 			$date          = new Rb_Date();
@@ -43,11 +51,10 @@ class PaycartAdminJsonViewCart extends PaycartAdminBaseViewCart
 		if(!$result){
 			$response->valid  = false;
 			$response->message = JText::_("COM_PAYCART_ADMIN_SHIPMENT_ERROR_WHILE_SAVING");
-		}
-		
-		$data['shipment_id'] = $result->getId();
-		$response->data = $data;
-		
+		}else{
+			$data['shipment_id'] = $result->getId();
+			$response->data = $data;
+		}	
 
 		$this->assign('json', $response);
 		return true;

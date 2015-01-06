@@ -20,18 +20,17 @@ PaycartHtml::_('behavior.formvalidation');
 <div  data-ng-controller="pcngCartShipmentCtrl">
 	
 	<script>
-		var cartId    		= <?php echo $cart->getId();?>;
-		var shippingMethods = <?php echo json_encode($shippingMethods)?>;
-		var status 			= <?php echo json_encode($status);?>;
-		var products		= <?php echo json_encode(array_values($product_particular));?>;
-		var errMessage		= false;
-		var tempArray		= [{}]; // used to store indexes of two shipment to show in one row
-		var tempStatus		= [];
+		var pc_shipment_cartId    		= <?php echo $cart->getId();?>;
+		var pc_shipment_shippingMethods = <?php echo json_encode($shippingMethods)?>;
+		var pc_shipment_status 			= <?php echo json_encode($status);?>;
+		var pc_shipment_products		= <?php echo json_encode(array_values($product_particular));?>;
+		var pc_shipment_tempArray		= [{}]; // used to store indexes of two shipment to show in one row
+		var pc_shipment_tempStatus		= [];
 		
 		<?php if($shipments):?>
-			var shipments   = <?php echo json_encode($shipments, true);?>;
+			var pc_shipments   = <?php echo json_encode($shipments, true);?>;
 		<?php else :?>
-			var shipments   = [ {'products':[{}]} ];
+			var pc_shipments   = [ {'products':[{}]} ];
 		<?php endif;?>
 	</script>
 		
@@ -68,7 +67,9 @@ PaycartHtml::_('behavior.formvalidation');
 							</label>
 							<div class="controls">
 								<select data-ng-model="shipments[value].shippingrule_id" data-ng-options="value as title for (value, title) in shippingMethods" 
-										required="true" class="pc_shipment_selectbox" data-ng-disabled="shipments[value].shipment_id"></select>
+										required="true" class="pc_shipment_selectbox" data-ng-disabled="shipments[value].shipment_id">
+										<option value=""></option>
+								</select>
 								<input type="hidden" data-ng-model="shipments[value].shipment_id">
 								<input type="hidden" data-ng-model="shipments[value].cart_id" data-ng-init="shipments[value].cart_id = cartId">
 							</div>
@@ -145,7 +146,9 @@ PaycartHtml::_('behavior.formvalidation');
 							<div class="controls">
 								<span data-ng-repeat="product in shipments[value].products">
 									<select data-ng-model="product.product_id" data-ng-options="p.particular_id as p.title for p in products" 
-									        required="true" class="pc_shipment_selectbox" data-ng-disabled="shipments[value].shipment_id"></select>
+									        required="true" class="pc_shipment_selectbox" data-ng-disabled="shipments[value].shipment_id">
+											<option value=""></option>
+									</select>
 									: <input type="text" class="input-mini" data-ng-model="product.quantity" required="true" data-ng-disabled="shipments[value].shipment_id">
 									<a data-ng-show="$index != 0" href="javascript:void(0);" data-ng-click="removeProduct(value, $index)" 
 									   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-class="{hide:shipments[value].shipment_id}" >

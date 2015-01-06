@@ -202,7 +202,7 @@ class PaycartHelperEvent extends PaycartHelper
             Rb_HelperPlugin::trigger('onPaycartShipmentAfterDispatched', $params, self::$default_plugin_type);
             
             //send notification 
-            $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $shipment->getCart()->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($shipment);
            	}
