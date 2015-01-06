@@ -179,7 +179,7 @@ class PaycartRouter extends Rb_Router
     	//gat current url category alias from alias hierachy
     	$category_alias = $segments[$category_level-1];
 		
-		$lang_code = Rb_Factory::getLanguage()->getTag();
+		$lang_code = $this->_getPaycartCurrentLanguage();
 		
 		$query = "
 					SELECT `productcategory_id` 
@@ -238,7 +238,7 @@ class PaycartRouter extends Rb_Router
     	
     	$root_category_id = PAYCART_PRODUCTCATEGORY_ROOT_ID;
     	
-    	$current_lang_id = Rb_Factory::getLanguage()->getTag();
+    	$current_lang_id = $this->_getPaycartCurrentLanguage();
     	
     	// if parent is root then no need to iterate with parent
     	if ( $root_category_id == $row->parent_id) {
