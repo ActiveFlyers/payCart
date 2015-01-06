@@ -94,11 +94,11 @@
 			   <option value="d/m/Y"></option>
 			   <option value="d-m-Y"></option>
 				
-			   <option value="d B y"></option>
-			   <option value="d B Y"></option>
+			   <option value="d M y"></option>
+			   <option value="d M Y"></option>
 				
-			   <option value="B d, y"></option>
-			   <option value="B d, Y"></option>
+			   <option value="M d, y"></option>
+			   <option value="M d, Y"></option>
 		</field>
 		
 		<field name="localization_currency"
