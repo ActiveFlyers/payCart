@@ -200,7 +200,7 @@ if (typeof(paycart.element)=='undefined'){
 
 			paycart.ajax.go( link, 
 							{ 	'country_id' : $(country_selector).val(), 'state_selector' : state_selector, 
-								'default_state' : default_selected_state,  'spinner_selector' :'#paycart-ajax-spinner'  
+								'default_state' : typeof(default_selected_state) == 'undefined' ? $(state_selector).val() : default_selected_state,  'spinner_selector' :'#paycart-ajax-spinner'  
 							},success_callback
 					);
 		}

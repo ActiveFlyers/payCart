@@ -71,11 +71,11 @@ defined('_JEXEC') or die( 'Restricted access' );
 				<tbody>
 				<!-- TABLE BODY START -->
 					<?php $count= $limitstart;
-					$cbCount = 0;
-					$nonEditable = false;
+					$cbCount = 0;					
 					$errorMsg = '';
 					
 					foreach ($records as $record):?>
+						<?php $nonEditable = false;?>
 						<?php $type   = $record->type;?>
 						<?php $params = json_decode($record->params);?>
 						<?php if(isset($availableGroupRules[$type])):?>

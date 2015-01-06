@@ -14,19 +14,19 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 /**
 * @author Gaurav Jain
 */
-class PlgPaycartGroupruleBuyeraddress extends RB_Plugin
+class PlgPaycartGroupruleCartaddress extends RB_Plugin
 {
 	function __construct(& $subject, $config = array())
 	{
     	parent::__construct($subject, $config);
 
 		$helper = PaycartFactory::getHelper('group');
-		$helper->push(Paycart::GROUPRULE_TYPE_BUYER, 'PaycartGroupruleBuyeraddress',
+		$helper->push(Paycart::GROUPRULE_TYPE_CART, 'PaycartGroupruleCartaddress',
 						array(
-							'filepath' 	=> dirname(__FILE__).'/rules/buyeraddress/buyeraddress.php',
-							'type'		=> paycart::GROUPRULE_TYPE_BUYER,
-							'title' 	=> 'PLG_PAYCART_GROUPRULEBUYERADDRESS_TITLE',
-							'description'=> 'PLG_PAYCART_GROUPRULEBUYERADDRESS_DESC',
+							'filepath' 	=> dirname(__FILE__).'/rules/cartaddress/cartaddress.php',
+							'type'		=> paycart::GROUPRULE_TYPE_CART,
+							'title' 	=> 'PLG_PAYCART_GROUPRULECARTADDRESS_TITLE',
+							'description'=> 'PLG_PAYCART_GROUPRULECARTADDRESS_DESC',
 							'icon' 		=> ''
                       ));
 	}

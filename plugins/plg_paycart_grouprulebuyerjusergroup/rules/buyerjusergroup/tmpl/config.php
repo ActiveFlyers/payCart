@@ -18,9 +18,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	</label>
 	<div class="controls">
 		<select class="paycart-grouprule-buyerjusergroup-groups" name="<?php echo $namePrefix;?>[jusergroup_assignment]">
-			<option value="any" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Any');?></option>
-			<option value="selected" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'selected' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Selected');?></option>
-			<option value="except" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'except' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('Except');?></option>
+			<option value="any" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_ANY');?></option>
+			<option value="selected" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'selected' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_SELECTED');?></option>
+			<option value="except" <?php echo isset($config['jusergroup_assignment']) && $config['jusergroup_assignment'] == 'except' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_EXCEPT');?></option>
 		</select>
 		
 		<select class="paycart-grouprule-buyerjusergroup-groups" name="<?php echo $namePrefix;?>[jusergroups][]" multiple="true">

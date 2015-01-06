@@ -28,8 +28,13 @@ class PaycartSiteControllerState extends PaycartController
 	 */
 	public function getOptions() 
 	{
-		$country_id	=	$this->input->get('country_id');
-		$default_selected_state_id	=	$this->input->get('default_state', 0);
+		$country_id	=	$this->input->get('country_id', 0, 'array');
+		if(is_array($country_id) && count($country_id) == 1){
+			$country_id = array_shift($country_id);
+		}
+		
+		$default_selected_state_id	=	$this->input->get('default_state', array(), 'Array');
+
 		// get raw strin without any filter
 		$selector	=	$this->input->get('state_selector', NULL, 'RAW');
 		
@@ -55,18 +60,39 @@ class PaycartSiteControllerState extends PaycartController
 		
 		//@PCTODO:: Sorting required 
 		// limit must be cleaned other wise only specific number of record will fetch
-		$states = PaycartFactory::getModel('state')->loadRecords(Array('country_id'=> $country_id), Array('limit'));
-		
-		$html = '';
-		
-		foreach ($states as $state_id => $state_detail) {
-			$selected = '';
-			if ($default_selected_state_id == $state_id) {
-				$selected = 'selected="selected"';
-			}
-			$html .= "<option value={$state_detail->state_id}  $selected > {$state_detail->title} </option>";
+		if(is_array($country_id)){
+			$filter['country_id'] = array('IN', '('.implode(',', $country_id)); 
+		}
+		else{
+			$filter['country_id'] = $country_id;
 		}
 		
+		$states = PaycartFactory::getModel('state')->loadRecords($filter, Array('limit'));
+		
+				
+		$country_states = array();		
+		foreach ($states as $state_id => $state_detail) {
+			if(!isset($country_states[$state_detail->country_id])){
+				$country_states[$state_detail->country_id] = '';
+			}
+			
+			$selected = '';
+			if (in_array($state_id, $default_selected_state_id)) {
+				$selected = 'selected="selected"';
+			}
+			$country_states[$state_detail->country_id] .= "<option value='{$state_detail->state_id}'  $selected > {$state_detail->title} </option>";
+		}
+		
+		$html = '';
+		if(count($country_states) > 1){
+			$formatter = PaycartFactory::getHelper('format');
+			foreach($country_states as $country_id => $stateshtml){
+				$html .= '<optgroup label="'.$formatter->country($country_id).'">'.$stateshtml.'</optgroup>';
+			}
+		}
+		else{
+			$html = $country_states[$country_id];
+		}
 		
 		PaycartFactory::getAjaxResponse()->addScriptCall('paycart.address.state.html', Array('state_selector' => $selector, 'state_option_html' => $html));
 		
