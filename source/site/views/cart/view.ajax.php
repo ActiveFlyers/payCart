@@ -239,6 +239,9 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		
 		$applied_promotion_code = PaycartFactory::getHelper('cart')->getAppliedPromotionCode($promotion_particular_ids, $promotions);	
 		
+		//get available shipping options
+		$shippingOptions = $this->_getShippingOptions();
+		
 		// set all particular details
 		$this->assign('product_total',			$product_total);
 		$this->assign('product_quantity',		$product_quantity);
@@ -256,8 +259,14 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		$this->assign('promotion_usage', 	$promotion_usage);
 		$this->assign('duties_usage', 	$duties_usage);
 		
-		$this->assign('shipping_options', $this->_getShippingOptions());
+		$this->assign('shipping_options', $shippingOptions);
 		$this->assign('default_shipping', $default_shipping);
+		
+		//set click action on proceed to payment button
+		$shipping  = $this->cart->getParam('shipping',null);
+		$condition = ( empty($shipping) || empty($shippingOptions) || !array_key_exists($shipping, $shippingOptions));
+		$this->assign('clickActionOnProceed',$condition?'onClick="return false"':'onClick="return paycart.cart.confirm.do();"');
+		$this->assign('isDisabled',$condition?'disabled':'');
 		
 		// applied promotion code
 		$this->assign('applied_promotion_code', $applied_promotion_code);

@@ -279,7 +279,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 <!-- Process ne		 -->
 			 <div class="row-fluid">
 			 	<input type="hidden" name="paycart_cart_confirm">
-			 	<button type="button" class="btn btn-primary btn-block btn-large" onClick="return paycart.cart.confirm.do(); " ><?php echo JText::_('COM_PAYCART_CART_PROCEED_TO_PAYMENT'); ?></button>
+			 	<button type="button" class="btn btn-primary btn-block btn-large <?php echo $isDisabled;?>" <?php echo $clickActionOnProceed?> ><?php echo JText::_('COM_PAYCART_CART_PROCEED_TO_PAYMENT'); ?></button>
 			 </div>
 			 
 			 <input	type="hidden"	name='step_name' value='confirm' />
