@@ -58,28 +58,6 @@ $currencyId = $cart->getCurrency();
 				$total    = 0;
 			?>
 			
-			<?php 
-				$taxDetails  	 = array();
-				$discountDetails = array();
-				$shippingDetails = array();
-				
-				foreach ($usage as $id=>$use){
-				
-						switch ($use->rule_type)
-						{
-							case Paycart::PROCESSOR_TYPE_TAXRULE : 
-												$taxDetails[$use->cartparticular_id] = (isset($taxDetails[$use->cartparticular_id]))?$taxDetails[$use->cartparticular_id].$use->message.'<br/>':$use->message;
-												break;
-							case Paycart::PROCESSOR_TYPE_DISCOUNTRULE : 
-												$discountDetails[$use->cartparticular_id] = (isset($discountDetails[$use->cartparticular_id]))?$discountDetails[$use->cartparticular_id].$use->message.'<br/>':$use->message;
-												break;		
-							case paycart::PROCESSOR_TYPE_SHIPPINGRULE :
-												$shippingDetails[$use->cartparticular_id] = (isset($shippingDetails[$use->cartparticular_id]))?$shippingDetails[$use->cartparticular_id].$use->message.'<br/>':$use->message;
-												break;													
-						}
-				}
-			?>
-			
 			
 			<?php foreach ($product_particular as $particular) :?>
 				<?php $price    += $particular->price;?>
@@ -94,9 +72,10 @@ $currencyId = $cart->getCurrency();
 					<td>
 						<?php echo $formatter->amount($particular->tax, true, $currencyId); ?>
 						&nbsp;
-							<?php if(isset($taxDetails[$particular->particular_id])):?>
+							<?php $key = $particular->type.'-'.$particular->particular_id;?>
+							<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE])):?>
 							  <a href="#" class="pc-popover" title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-							  	 data-content="<?php echo $taxDetails[$particular->particular_id];?>" data-trigger="hover">
+							  	 data-content="<?php echo implode("<hr/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE]);?>" data-trigger="hover">
 							 	 <i class="fa fa-info-circle"></i>
 							  </a>
 							<?php endif;?>
@@ -104,9 +83,10 @@ $currencyId = $cart->getCurrency();
 					<td>
 						<?php echo $formatter->amount($particular->discount, true, $currencyId); ?>
 						&nbsp;
-						<?php if(isset($discountDetails[$particular->particular_id])):?>
+						<?php $key = $particular->type.'-'.$particular->particular_id;?>
+						<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE])):?>
 							  <a href="#" class="pc-popover" title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-							  data-content="<?php echo $discountDetails[$particular->particular_id];?>" data-trigger="hover">
+							  data-content="<?php echo implode("<hr/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE]);?>" data-trigger="hover">
 							 	 <i class="fa fa-info-circle"></i>
 							  </a>
 						<?php endif;?>
@@ -145,9 +125,10 @@ $currencyId = $cart->getCurrency();
 						<?php echo $promotion_particular->title;?>
 						<br>
 						<small>
-							<?php if(isset($discountDetails[$promotion_particular->cartparticular_id]))
-								 	echo '('.$discountDetails[$promotion_particular->cartparticular_id].')';
-							?>
+							<?php $key = $promotion_particular->type.'-'.$promotion_particular->particular_id;?>
+							<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE])):?>
+								 	<?php echo '('.implode("<br/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE]).')';?>
+							<?php endif;?>
 						</small>
 					</td>
 					<td><?php echo $formatter->amount($promotion_particular->total, true, $currencyId);?></td>
@@ -163,9 +144,10 @@ $currencyId = $cart->getCurrency();
 						<?php echo $duties_particular->title;?>
 						<br>
 						<small>
-							<?php if(isset($taxDetails[$duties_particular->cartparticular_id]))
-							 	echo '('.$taxDetails[$duties_particular->cartparticular_id].')';
-							?>
+							<?php $key = $duties_particular->type.'-'.$duties_particular->particular_id;?>
+							<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE])):?>
+								 	<?php echo '('.implode("<br/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE]).')';?>
+							<?php endif;?>
 						</small>
 					</td>
 					<td><?php echo $formatter->amount($duties_particular->total, true, $currencyId);?></td>
@@ -201,11 +183,30 @@ $currencyId = $cart->getCurrency();
 							<?php echo $product_particular[$productId]->title.' : '.$details->quantity.'<br>'; ?>
 							<?php endforeach;?>
 						</td>
-						<td><?php echo $particular->unit_price;?></td>
-						<td><?php echo $particular->tax;?></td>
-						<td><?php echo $particular->discount;?></td>
-						<td><?php echo $params->delivery_date;?> </td>
-						<td><?php echo $particular->total;?></td>
+						<td><?php echo $formatter->amount($particular->unit_price, true, $currencyId);?></td>
+						<td>
+							<?php echo $formatter->amount($particular->tax, true, $currencyId);?>
+							&nbsp;
+							<?php $key = $particular->type.'-'.$particular->particular_id;?>
+							<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE])):?>
+								  <a href="#" class="pc-popover" title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+								  data-content="<?php echo implode("<hr/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE]);?>" data-trigger="hover">
+								 	 <i class="fa fa-info-circle"></i>
+								  </a>
+							<?php endif;?>
+						</td>
+						<td>
+							<?php echo $formatter->amount($particular->discount, true, $currencyId);?>
+							&nbsp;
+							<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE])):?>
+								  <a href="#" class="pc-popover" title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+								  data-content="<?php echo implode("<hr/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE]);?>" data-trigger="hover">
+								 	 <i class="fa fa-info-circle"></i>
+								  </a>
+							<?php endif;?>
+						</td>
+						<td><?php echo $formatter->date(new Rb_Date($params->delivery_date));?> </td>
+						<td><?php echo $formatter->amount($particular->total, true, $currencyId);?></td>
 						
 						<?php $finalTotal += $particular->total;?>
 					</tr>

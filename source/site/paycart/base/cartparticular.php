@@ -349,7 +349,7 @@ abstract class PaycartCartparticular extends JObject
 		$model = PaycartFactory::getModel('usage');
 
 		foreach ($this->_usage as $usage) {
-			$usage->cartparticular_id = $this->particular_id;
+			$usage->cartparticular_id = $this->cartparticular_id;
 			
 			$date = new Rb_Date();
 			$usage->applied_date 	= $date->toSql();

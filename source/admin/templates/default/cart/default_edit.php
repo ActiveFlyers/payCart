@@ -262,14 +262,12 @@ echo $this->loadTemplate('edit_ng');
 
 	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 	
-	<?php if($cart->isLocked()): ?>			
 		<!--	 Invoice Details Tab		-->
 		<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'advance', Rb_Text::_('COM_PAYCART_ADMIN_ADVANCE', true)); ?>
 			
 		<?php echo $this->loadTemplate('particulars'); ?>
 	
 		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
-	<?php endif;?>
 	
 	<?php if($cart->isApproved()):?>
 		<!--	 Shipment Details Tab		-->
