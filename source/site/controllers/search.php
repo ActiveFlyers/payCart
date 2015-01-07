@@ -28,7 +28,7 @@ class PaycartSiteControllerSearch extends PaycartController
 
 	public function filter()
 	{
-		$searchWord   			= $this->input->get('q',null,'STRING');
+		$searchWord   			= $this->input->get('query',null,'STRING');
 		$start					= $this->input->get('pagination_start',0);
 		$postFilters   			= $this->input->get('filters',array(), 'ARRAY');
 		
@@ -133,7 +133,7 @@ class PaycartSiteControllerSearch extends PaycartController
 	 */
 	function loadMore()
 	{
-		$searchWord   			= $this->input->get('q',null,'STRING');
+		$searchWord   			= $this->input->get('query',null,'STRING');
 		$start					= $this->input->get('pagination_start',0);
 		$filters	   		    = $this->input->get('filters','', 'ARRAY');
 		$appliedCoreFilters     = isset($filters['core'])?$filters['core']:array();

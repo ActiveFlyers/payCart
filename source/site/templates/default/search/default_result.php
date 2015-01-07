@@ -76,7 +76,7 @@ $records = (array)$products;
 				<?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?>
 			
 				<input type="hidden" name="filters[sort]" data-pc-filter="sort-destination" value="<?php echo $appliedSort;?>" />
-				<input type="hidden" name="q" value="<?php echo $filters->searchWord?>"/>
+				<input type="hidden" name="query" value="<?php echo $filters->searchWord?>"/>
 				<input type="hidden" name="pagination_start" value="<?php echo $start;?>"/>
 			<?php endif;?>
 		 <?php 

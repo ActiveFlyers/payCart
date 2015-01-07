@@ -31,7 +31,7 @@ class PaycartSiteHtmlViewProductcategory extends PaycartSiteBaseViewProductcateg
 	public function display($tpl = NULL)
 	{			
 		$categoryId	     = $this->input->get('productcategory_id', Paycart::PRODUCTCATEGORY_ROOT_ID);
-		$searchWord		 = $this->input->get('q',null,'STRING'); 
+		$searchWord		 = $this->input->get('query',null,'STRING'); 
 		$categoryFilters = array();
 		$productFilters	 = array();
 		

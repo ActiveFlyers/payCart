@@ -25,7 +25,7 @@ class PaycartSiteControllerProductCategory extends PaycartController
 	function display($cachable = false, $urlparams = array())
 	{
 		$catId = $this->getModel()->getId();
-		$searchWord	= $this->input->get('q',null,'STRING');
+		$searchWord	= $this->input->get('query',null,'STRING');
 		
 		$record = PaycartFactory::getModel('productcategory')->loadRecords(array('productcategory_id' => $catId , 'published' => 1));
 		

@@ -20,7 +20,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 	paycart.product.filter = {};
 
 	paycart.product.filter.init = function(searchWord,filters){
-		var link = 'index.php?option=com_paycart&view=search&task=filter&q='+searchWord;
+		var link = 'index.php?option=com_paycart&view=search&task=filter&query='+searchWord;
 		//parseJSON is used because filters are being passed as json string, so need to convert it object
 		paycart.ajax.go(link , {'filters':$.parseJSON(filters), 'spinner_selector' : '#paycart-ajax-spinner'} );
 		return false;
