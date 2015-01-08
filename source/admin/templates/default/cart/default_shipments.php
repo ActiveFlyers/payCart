@@ -118,11 +118,17 @@ PaycartHtml::_('behavior.formvalidation');
 							<div class="controls" data-ng-init="shipments[value].status = shipments[value].status || 'pending'">
 								<span data-ng-init="tempStatus[value] = getStatus(shipments[value].status, shipments[value].shipment_id)">
 									<label data-ng-repeat="s in tempStatus[value]"  data-ng-class="{muted : s.disabled}">
-									    <input data-ng-disabled="{{s.disabled}}"
+									    <input ng-if="shipments[value].status != s.value" data-ng-disabled="{{s.disabled}}"
 									        name="status{{value}}"
 									        type="radio"
 									        value="{{s.value}}"
-									        data-ng-model="shipments[value].status" data-ng-confirm-click="<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_STATUS_CHANGE_CONFIRMATION");?>" confirmed-click="save(value);" />
+									        data-ng-model="shipments[value].status" data-ng-confirm-click="<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_STATUS_CHANGE_CONFIRMATION");?>" confirmed-click="save(value)" />
+
+									    <input ng-if="shipments[value].status == s.value" data-ng-disabled="{{s.disabled}}"
+									        name="status{{value}}"
+									        type="radio"
+									        value="{{s.value}}"
+									        data-ng-model="shipments[value].status"/>
 									        {{ s.title }} 
 									</label>
 								</span>
