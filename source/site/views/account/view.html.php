@@ -24,16 +24,19 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 		$buyer = PaycartBuyer::getInstance($juser->id);
 	
 		/** IMP : Order is equals to Cart **/
-		$model = $this->getModel();//PaycartFactory::getInstance('cart', 'model');
-		$filter['buyer_id'] = $juser->id;
-		$filter['is_locked'] = 1;
+		$model = $this->getModel();
 		
 		// @PCTODO : TEMP SOLUTION
 		$model->set('_query', null);
+		$query = $model->getQuery();		
+		$query->where('`buyer_id` = '.$juser->id);
+		$query->where('`is_locked` = 1');
+		$model->set('_query', $query);
+		
 		$model->setState('filter_order', 'locked_date');
 		$model->setState('filter_order_Dir', 'DESC');		
-		$carts = $model->loadRecords($filter);		
-		$totalCarts = $model->loadRecords($filter, array('limit'));
+		$carts = $model->loadRecords();		
+		$totalCarts = $model->loadRecords(array(), array('limit'));
 		
 		/* @var $invoiceHelper PaycartHelperInvoice */ 
 		$invoiceHelper = PaycartFactory::getHelper('invoice');
