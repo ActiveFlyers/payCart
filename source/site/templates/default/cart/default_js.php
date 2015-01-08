@@ -318,6 +318,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						//Before Submit Copy billing to shipping address
 						if ( $('#billing_to_shipping').prop('checked') == true ) { 
 							paycart.cart.address.copy('billing', 'shipping',paycart.cart.address.do);
+						}else{
+							paycart.cart.address.do();
 						}
 					};
 
