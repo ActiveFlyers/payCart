@@ -130,6 +130,7 @@
   'paycarthelpertaxrule' => 'site/paycart/helpers/taxrule.php',
   'paycarthelpertoken' => 'site/paycart/helpers/token.php',
   'paycarthtml' => 'site/paycart/base/html.php',
+  'paycarthtmlapplyon' => 'site/paycart/html/html/applyon.php',
   'paycarthtmlcategory' => 'site/paycart/html/html/category.php',
   'paycarthtmlcountry' => 'site/paycart/html/html/country.php',
   'paycarthtmllanguageflag' => 'site/paycart/html/html/languageflag.php',

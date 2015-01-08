@@ -223,14 +223,6 @@ paycart.admin.discountrule = {};
 				
 				<hr/>
 				
-				<div class="row-fluid">		
-					<?php $field = $form->getField('apply_on') ?>
-					<div><?php echo Jtext::_('COM_PAYCART_ADMIN_DISCOUNTRULE_APPLY');?> <?php echo JText::_('COM_PAYCART_ADMIN_DISCOUNTRULE_ON');?></div>
-					<div class="control-group">						
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-				</div>	
-				
 				<div class="row-fluid">
 					<div class="control-group">
 						<?php $field = $form->getField('processor_classname') ?>

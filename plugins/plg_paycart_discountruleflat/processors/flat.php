@@ -18,4 +18,26 @@ defined('_JEXEC') or die;
  * @author 		manish
  *
  */
-class PaycartDiscountRuleProcessorFlat extends PaycartDiscountRuleProcessor {}
+class PaycartDiscountRuleProcessorFlat extends PaycartDiscountRuleProcessor 
+{
+	/**
+	 * (non-PHPdoc)
+	 * @see /components/com_paycart/paycart/discountrule/PaycartDiscountRuleProcessor::getConfigHtml()
+	 */
+	public function getConfigHtml(PaycartDiscountRuleRequest $request, PaycartDiscountRuleResponse $response)
+	{
+		$applyOn = $this->rule_config->apply_on;
+
+		ob_start();
+		
+		include_once 'tmpl/config.php';
+		
+		$html = ob_get_contents();
+		ob_end_clean();
+		
+		$response->configHtml =  $html;
+					
+		return $response;
+	}
+}
+

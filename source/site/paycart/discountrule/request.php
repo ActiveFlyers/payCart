@@ -54,4 +54,5 @@ class PaycartDiscountruleRequestRuleconfig {
 	public $usage_limit			=	1;		// rule usage limit
 	public $buyer_usage_limit	=	1;		// buyer usage limit as per rule
 	public $coupon				=	null;	// If rule have coupon code then set it
+	public $apply_on			=   paycart::RULE_APPLY_ON_CART;
 }

@@ -239,6 +239,7 @@ class PaycartDiscountrule extends PaycartLib
 		$object->usage_limit		= $this->usage_limit;
 		$object->buyer_usage_limit 	= $this->buyer_usage_limit;
 		$object->coupon				= $this->coupon;
+		$object->apply_on			= $this->apply_on;
 		
 		return $object;
 	}
