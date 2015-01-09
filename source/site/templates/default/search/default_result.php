@@ -87,13 +87,13 @@ $records = (array)$products;
 		<div class="span4 pc-product-filter navbar">
 			<ul class="nav"> 				
 				<li class="visible-phone"> 
-				  	<a href="javascript:void(0);" data-toggle="collapse" data-target=".nav-collapse">
+				  	<a href="javascript:void(0);" data-toggle="collapse" data-target=".nav-collapse.pc-nav-filters">
 						<i class="fa fa-bars"></i> <?php echo JText::_("COM_PAYCART_FILTER_BY")?>
 				 	</a>
 				</li>
 			</ul>
 	
-			<div class="nav-collapse collapse visible-phone">
+			<div class="nav-collapse pc-nav-filters collapse visible-phone">
 				<form class="pc-form-product-filter navbar-form" data-pc-filter-form="mobile" method="post">
 					<?php echo $filterHtml?>
 				</form>

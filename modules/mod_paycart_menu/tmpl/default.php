@@ -47,8 +47,8 @@ $return_link	= 	base64_encode($link);
 <!-- Product Category Menu 	-->
         <ul class="nav">
             
-            <li class="visible-phone" data-toggle="collapse" data-target=".nav-collapse">
-                <a href="javascript:void()"><i class="fa fa-bars"></i></a>
+            <li class="visible-phone" data-toggle="collapse" data-target=".nav-collapse.pc-nav-menu">
+                <a href="javascript:void(0);"><i class="fa fa-bars"></i></a>
             </li>
 			
 			<!-- Product Category link on desktop, tab etc -->
@@ -202,7 +202,7 @@ $return_link	= 	base64_encode($link);
          
     
     	<!-- Product Category link on mobile etc -->    
-        <div class="nav-collapse collapse visible-phone">
+        <div class="nav-collapse pc-nav-menu collapse visible-phone">
         	<ul class="nav">
               <!-- get ctaegory links -->
                 <?php  foreach( $categories as $cat): ?>
