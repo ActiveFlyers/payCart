@@ -37,7 +37,7 @@ class PaycartModelConfig extends PaycartModel
 					$data[$key] = json_encode($data[$key]);
 				}
 				
-				$tmp .= "WHEN '".$key."' THEN '".$data[$key]. "' ";
+				$tmp .= "WHEN '".$key."' THEN ".$db->quote($data[$key]);
 				unset($data[$key]);
 		}	
 

@@ -52,10 +52,10 @@ PaycartHtml::_('behavior.formvalidation');
 						<div data-ng-show="shipments[value].errMessage" class="alert alert-danger">{{ shipments[value].errMessage }}</div>
 						
 						<span class="pull-right">
-							<a data-ng-if="!shipments[value].shipment_id" href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
+							<a href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
 								<i class="fa fa-check"></i>
 							</a>
-							<span data-ng-if="!shipments[value].shipment_id">&nbsp; | &nbsp; </span>
+							<span >&nbsp; | &nbsp; </span>
 							<a href="javascript:void(0);"  class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-click="remove(value)">
 								<i class="fa fa-trash-o"></i>
 							</a>
@@ -67,7 +67,7 @@ PaycartHtml::_('behavior.formvalidation');
 							</label>
 							<div class="controls">
 								<select data-ng-model="shipments[value].shippingrule_id" data-ng-options="value as title for (value, title) in shippingMethods" 
-										required="true" class="pc_shipment_selectbox" data-ng-disabled="shipments[value].shipment_id">
+										required="true" class="pc_shipment_selectbox">
 										<option value=""></option>
 								</select>
 								<input type="hidden" data-ng-model="shipments[value].shipment_id">
@@ -82,7 +82,7 @@ PaycartHtml::_('behavior.formvalidation');
 							<div class="controls">
 								<div class="input-prepend">
 									<span class="add-on"><?php echo PaycartFactory::getConfig()->get('catalogue_weight_unit');?></span>
-									<input type="text" class="input-mini" data-ng-model="shipments[value].weight" data-ng-disabled="shipments[value].shipment_id">
+									<input type="text" class="input-mini" data-ng-model="shipments[value].weight">
 								</div>
 							</div>
 						</div>
@@ -94,7 +94,7 @@ PaycartHtml::_('behavior.formvalidation');
 							<div class="controls">
 								<div class="input-prepend">
 									<span class="add-on"><?php echo $formatter->currency(PaycartFactory::getConfig()->get('localization_currency'));?></span>
-									<input type="text" class="input-mini" data-ng-model="shipments[value].actual_shipping_cost" data-ng-disabled="shipments[value].shipment_id">
+									<input type="text" class="input-mini" data-ng-model="shipments[value].actual_shipping_cost">
 								</div>
 							</div>
 						</div>
@@ -105,9 +105,9 @@ PaycartHtml::_('behavior.formvalidation');
 							</label>
 							<div class="controls">
 								<input type="text" class="input-mini" data-ng-model="shipments[value].tracking_number"> 
-								<a data-ng-if="shipments[value].shipment_id" href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
-								<i class="fa fa-check"></i>
-							</a>
+<!--								<a data-ng-if="shipments[value].shipment_id" href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">-->
+<!--								<i class="fa fa-check"></i>-->
+<!--							</a>-->
 							</div>
 						</div>
 						
@@ -152,10 +152,10 @@ PaycartHtml::_('behavior.formvalidation');
 							<div class="controls">
 								<span data-ng-repeat="product in shipments[value].products">
 									<select data-ng-model="product.product_id" data-ng-options="p.particular_id as p.title for p in products" 
-									        required="true" class="pc_shipment_selectbox" data-ng-disabled="shipments[value].shipment_id">
+									        required="true" class="pc_shipment_selectbox">
 											<option value=""></option>
 									</select>
-									: <input type="text" class="input-mini" data-ng-model="product.quantity" required="true" data-ng-disabled="shipments[value].shipment_id">
+									: <input type="text" class="input-mini" data-ng-model="product.quantity" required="true">
 									<a data-ng-show="$index != 0" href="javascript:void(0);" data-ng-click="removeProduct(value, $index)" 
 									   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-class="{hide:shipments[value].shipment_id}" >
 										<i class="fa fa-trash-o"></i>

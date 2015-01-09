@@ -834,6 +834,7 @@ class PaycartCart extends PaycartLib
 		if(isset($shippingOptions[$md5Address][$selectedShippingMethods])){
 			foreach($shippingOptions[$md5Address][$selectedShippingMethods]['shippingrule_list'] as $shippingrule_id => $shippingOption){
 				$productParticulars = $this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+				$binddata = array();
 				
 				foreach ($shippingOption['product_list'] as $product_id){
 					$binddata['params']['product_list'][$product_id] = array('product_id' => $product_id, 'quantity' => $productParticulars[$product_id]->getQuantity());
