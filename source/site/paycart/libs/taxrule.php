@@ -69,7 +69,7 @@ class PaycartTaxrule extends PaycartLib
 		$this->published			= 1;
 		$this->description			= '';
 		$this->amount				= 0;
-		$this->apply_on				= '';
+		$this->apply_on				= Paycart::RULE_APPLY_ON_PRODUCT;
 		$this->processor_classname	= '';
 		$this->processor_config		= new Rb_Registry();
 		$this->created_date			= new Rb_date();

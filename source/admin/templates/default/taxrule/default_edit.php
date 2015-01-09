@@ -25,7 +25,25 @@ paycart.admin.taxrule = {};
 		}	
 	};
 
+	paycart.admin.taxrule.showHelpMsg = function(){
+		if($('#paycart_taxrule_form_apply_on').val() == '<?php echo paycart::RULE_APPLY_ON_CART?>'){
+			return $('[data-pc-selector="applyon-helpMsg"]').show();
+		}
+		$('[data-pc-selector="applyon-helpMsg"]').hide();
+	};
+
+	$(document).on('change','#paycart_taxrule_form_apply_on', function(){
+		paycart.admin.taxrule.showHelpMsg();
+	});
+	
 	$(document).ready(function(){
+		//change tax cart to tax on tax as it is confusing
+		$('#paycart_taxrule_form_apply_on option[value="<?php echo paycart::RULE_APPLY_ON_CART?>"]').text('<?php echo JText::_('COM_PAYCART_ADMIN_TAXRULE_TAX_ON_TAX')?>');
+		$('#paycart_taxrule_form_apply_on').trigger("liszt:updated");
+
+		//show help msg
+		paycart.admin.taxrule.showHelpMsg();
+		
 		paycart.admin.taxrule.getProcessorConfig();
 		$('[data-pc-taxrule="processor"] select').change(function(){					
 			paycart.admin.taxrule.getProcessorConfig();
@@ -137,6 +155,7 @@ paycart.admin.taxrule = {};
 					<div class="control-group">						
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
+					<div class="well" data-pc-selector="applyon-helpMsg"><?php echo JText::_('COM_PAYCART_ADMIN_TAXRULE_TAX_ON_TAX_HELP_MSG')?></div>
 				</div>				
 				<br/>
 				<div class="row-fluid">					

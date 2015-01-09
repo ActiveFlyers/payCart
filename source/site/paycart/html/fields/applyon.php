@@ -29,9 +29,9 @@ class PaycartFormFieldApplyon extends JFormFieldList
 	private function getApplyonOptions()
 	{
 		return array(
-					Paycart::RULE_APPLY_ON_CART 	=> 'COM_PAYCART_ADMIN_APPLYON_CART',
 					Paycart::RULE_APPLY_ON_PRODUCT 	=> 'COM_PAYCART_ADMIN_APPLYON_PRODUCT',
-					Paycart::RULE_APPLY_ON_SHIPPING => 'COM_PAYCART_ADMIN_APPLYON_SHIPPING'
+					Paycart::RULE_APPLY_ON_SHIPPING => 'COM_PAYCART_ADMIN_APPLYON_SHIPPING',
+					Paycart::RULE_APPLY_ON_CART 	=> 'COM_PAYCART_ADMIN_APPLYON_CART',
 		);
 	}
 }
