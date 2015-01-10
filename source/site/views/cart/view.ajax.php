@@ -222,6 +222,7 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 						$usageDetails[$key][$use->rule_type] = array();
 					}
 					$usageDetails[$key][$use->rule_type][] = $use->message;
+					$usageDetails[$key]['rule_id'][] = $use->rule_id;
 				}
 				
 				$tmppraticulars[$particular->particular_id] = $particular;
@@ -233,8 +234,14 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		
 		// applied promotion code
 		$promotions = $this->cart->getParam('promotions', Array());
+		$promotion_particular_ids = array();
+		foreach ($promotion_particular as $promotion){
+			if(isset($usageDetails['promotion-'.$promotion->particular_id]['rule_id'])){
+				$promotion_particular_ids = array_merge($promotion_particular_ids,$usageDetails['promotion-'.$promotion->particular_id]['rule_id']);
+			} 
+		}
 		
-		$applied_promotion_code = PaycartFactory::getHelper('cart')->getAppliedPromotionCode(array_keys($promotion_particular), $promotions);	
+		$applied_promotion_code = PaycartFactory::getHelper('cart')->getAppliedPromotionCode($promotion_particular_ids, $promotions);	
 		
 		//get available shipping options
 		$shippingOptions  = $this->_getShippingOptions();
