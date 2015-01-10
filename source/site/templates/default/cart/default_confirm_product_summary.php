@@ -55,14 +55,37 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 							<?php echo JText::_('COM_PAYCART_UNIT_PRICE').':'.$formatter->amount($particular->unit_price, true, $currency_id);  ?>
 		 						</div>
 		 						
-		 						<?php if ($particular->tax) : 
-		 								echo '<div>+'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
-		 							 endif;  
-		 						?>
-		 						<?php if ($particular->discount) : 
-		 								echo '<div>-'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount(-($particular->discount), true, $currency_id).'</div>';
-		 							 endif;  
-		 						?>
+		 						<?php if ($particular->tax) : ?>
+		 						 	<div>
+		 						 		<?php $key = $particular->type.'-'.$particular->particular_id;?>
+		 								<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE])):?>
+											 	<a 	href="javascript:void(0)"  
+											  		class="pc-popover" 
+											  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+											  		data-content="<?php echo implode("<hr>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE]);?>" data-trigger="hover">
+											  		
+											 	 	<i class="fa fa-info-circle"></i>
+											  </a>
+										<?php endif;?> 
+		 								<?php echo ' +'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id);?>
+		 							</div>
+		 						<?php endif;?>
+		 						
+		 						<?php if ($particular->discount) : ?>
+		 						 	<div>
+		 						 		<?php $key = $particular->type.'-'.$particular->particular_id;?>
+		 								<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE])):?>
+											 	<a 	href="javascript:void(0)"  
+											  		class="pc-popover" 
+											  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+											  		data-content="<?php echo implode("<hr>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE]);?>" data-trigger="hover">
+											  		
+											 	 	<i class="fa fa-info-circle"></i>
+											  </a>
+										<?php endif;?>
+		 								<?php echo ' -'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount(-($particular->discount), true, $currency_id);?>		 								
+		 							</div>
+		 						<?php endif;?>
 		 					</div>
 	 					
 	 						<!-- Product Price and quantity			 				-->

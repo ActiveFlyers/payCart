@@ -175,72 +175,70 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		
 		$this->_setupCartVars();
 		
-		$product_particular	= Array();
-		$product_total	 	= 0;
-		$product_quantity	= 0;
-		$product_media		= Array();
-		$product_usage		= Array();
+		$product_particular	  = Array();
+		$shipping_particular  = Array();
+		$promotion_particular = Array();
+		$duties_particular	  = Array();
+		$shipping_total		  = 0;
+		$promotion_total	  = 0;
+		$duties_total         = 0;
+		$product_total	 	  = 0;
+		$product_quantity	  = 0;
+		$product_media		  = Array();
+		$usageDetails		  = Array();
 		
-		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_PRODUCT) as  $key => $particular) {
-			/* @var $particular Paycartcartparticular */
-			$product_particular[$particular->getParticularId()] = $particular->toObject();
-			$product_usage[$particular->getParticularId()] = $particular->getUsage();
+		// collect all particular details
+		$carparticulars['product'] 		= $this->cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		$carparticulars['promotion'] 	= $this->cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+		$carparticulars['duties'] 		= $this->cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_DUTIES);
+		$carparticulars['shipping']  	= $this->cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+		
+		$product_quantity = 0;
+		foreach ($carparticulars as $name => $particulars){
+			$tmppraticulars = array();
+			$type_total = 0;
 			
-			$product_total 	 	+=	$particular->getTotal(true);
-			$product_quantity 	+=	$particular->getQuantity();
-			
-			// get product media
-			$product_id = $particular->getParticularId();
-			
-			$product_media[$product_id]	=	PaycartProduct::getInstance($product_id)->getCoverMedia();
-		}
-		
-		$shipping_particular	= Array();
-		$shipping_total			= 0;
-		$default_shipping		= $this->cart->getParam('shipping');
-		
-		
-		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_SHIPPING) as  $key => $particular) {
-			/* @var $particular Paycartcartparticular */
-			$shipping_particular[] = $particular->toObject();
-			$shipping_total		  += $particular->getTotal(true);
-		}
-		
-		$promotion_particular	=	Array();
-		$promotion_total		=	0;
-		$promotion_usage		= Array();
-		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_PROMOTION) as  $key => $particular) {
-			/* @var $particular Paycartcartparticular */
-			$promotion_particular[] = $particular->toObject();
-			$promotion_total		  += $particular->getTotal(true);
-			$promotion_usage[$particular->getParticularId()] = $particular->getUsage();
-		}
-		
-		//fetch promotion particular ids
-		$promotion_particular_ids = Array();
-		foreach ($promotion_usage as $usage_records) {
-			foreach ($usage_records as $usage) {
-				$promotion_particular_ids[] = $usage->rule_id;
+			foreach($particulars as $particular){
+				$usage = $particular->getUsage();
+				
+				// IMP :: This is patch for promotion and duties type processors
+				// as we need to pass true to get actual total
+				$total = $particular->getTotal(true);
+				$particular = $particular->toObject();
+				$particular->total = $total;
+				
+				//build media and total quantity when type of particular is product
+				if($particular->type == Paycart::CART_PARTICULAR_TYPE_PRODUCT){
+					$product_media[$particular->particular_id]	=	PaycartProduct::getInstance($particular->particular_id)->getCoverMedia();
+					$product_quantity += $particular->quantity;
+				}
+				
+				foreach($usage as $use){
+					$key = $particular->type.'-'.$particular->particular_id;
+					if(!isset($usageDetails[$key])){
+						$usageDetails[$key] 		=  array();
+					}					
+					if(!isset($usageDetails[$key][$use->rule_type])){
+						$usageDetails[$key][$use->rule_type] = array();
+					}
+					$usageDetails[$key][$use->rule_type][] = $use->message;
+				}
+				
+				$tmppraticulars[$particular->particular_id] = $particular;
+				$type_total += $total;
 			}
-		}
-		
-		$duties_particular	=	Array();
-		$duties_total		=	0;
-		$duties_usage		= Array();
-		foreach ($this->cart->getCartparticulars(paycart::CART_PARTICULAR_TYPE_DUTIES) as  $key => $particular) {
-			/* @var $particular Paycartcartparticular */
-			$duties_particular[] = $particular->toObject();
-			$duties_total  	    += $particular->getTotal(true);
-			$duties_usage[$particular->getParticularId()] = $particular->getUsage();
+			${$name.'_total'} = $type_total;
+			${$name.'_particular'} = $tmppraticulars;
 		}
 		
 		// applied promotion code
 		$promotions = $this->cart->getParam('promotions', Array());
 		
-		$applied_promotion_code = PaycartFactory::getHelper('cart')->getAppliedPromotionCode($promotion_particular_ids, $promotions);	
+		$applied_promotion_code = PaycartFactory::getHelper('cart')->getAppliedPromotionCode(array_keys($promotion_particular), $promotions);	
 		
 		//get available shipping options
-		$shippingOptions = $this->_getShippingOptions();
+		$shippingOptions  = $this->_getShippingOptions();
+		$default_shipping = $this->cart->getParam('shipping');
 		
 		// set all particular details
 		$this->assign('product_total',			$product_total);
@@ -255,10 +253,7 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		$this->assign('promotion_particular',	$promotion_particular);
 		$this->assign('duties_particular',		$duties_particular);
 		
-		$this->assign('product_usage', 	$product_usage);
-		$this->assign('promotion_usage', 	$promotion_usage);
-		$this->assign('duties_usage', 	$duties_usage);
-		
+		$this->assign('usageDetails', 	$usageDetails);
 		$this->assign('shipping_options', $shippingOptions);
 		$this->assign('default_shipping', $default_shipping);
 		

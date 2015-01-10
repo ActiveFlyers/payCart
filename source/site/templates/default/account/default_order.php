@@ -108,8 +108,11 @@ echo $this->loadTemplate('js');
 											<?php endif;?>
 											<?php if(!empty($cart->duties)):?>
 												<tr>
-													<td><?php echo JText::_('COM_PAYCART_PROMOTION_DUTIES');?> :</td>
-													<td><span class="pull-right"><?php echo $formatter->amount($cart->duties);?></span></td>
+													<td><?php echo JText::_('COM_PAYCART_TAX');?> :</td>
+													<td>
+														<span class="pull-right"><?php echo $formatter->amount($cart->duties);?></span>
+														<br><small class="pull-right">(<?php echo JText::_("COM_PAYCART_CART_TAX_ON_TAX_DESC")?>)</small>
+													</td>
 												</tr>
 											<?php endif;?>
 											<tr>

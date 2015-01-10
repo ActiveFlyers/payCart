@@ -11,24 +11,6 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-
-	// Promotion msg
-	$promotion_message = '';	
- 	foreach ($promotion_usage as $usages ) :
- 		foreach ($usages as $usage) :
- 			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_DISCOUNTRULE)
- 				$promotion_message[] = $usage->message;
- 		endforeach;
-  	endforeach;
-  	
-  	// Duties msg
-	$duties_message = '';
- 	foreach ($duties_usage as $usages ) :
- 		foreach ($usages as $usage) :
- 			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_TAXRULE)
- 				$duties_message[] = $usage->message;
- 		endforeach;
-  	endforeach;
   	
 ?>
 <div class="pc-checkout-state row-fluid clearfix">
@@ -105,7 +87,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 			<div class="accordion-inner">
 				 				<?php
 				 					if ( @$billing_to_shipping ) {
-				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('COM_PAYCART_ADDRESS_SAME_AS_BILLING');
+				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('COM_PAYCART_CART_ADDRESS_SAME_AS_BILLING');
 				 					} else {
 				 						$layout = new JLayoutFile('paycart_buyeraddress_display');
 										echo $layout->render($shipping_address);
@@ -201,44 +183,46 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 							<td><?php echo $formatter->amount($shipping_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
-			 						<tr>
-										<td>
-											<?php
-			 									if(!empty($duties_message) ):
-			 								?>
-												  
-												  <a 	href="javascript:void(0)"  
-												  		class="pc-popover" 
-												  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-												  		data-content="<?php echo implode('<hr>', $duties_message);?>" data-trigger="hover">
-												  		
-												 	 	<i class="fa fa-info-circle"></i>
-												  </a>
-												  
-											<?php endif;?>
-			 							<?php echo JText::_('COM_PAYCART_TAX'); ?></td>
-			 							<td><?php echo $formatter->amount($duties_total, true, $currency_id); ?></td>
-			 						</tr>
+			 						<?php if(!empty($duties_particular) && floatval($duties_total) != 0):?>
+				 						<tr>
+											<td>
+												<?php $duties_particular = array_shift($duties_particular);?>
+												<?php $key = $duties_particular->type.'-'.$duties_particular->particular_id;?>
+												<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE])):?>
+													 	<a 	href="javascript:void(0)"  
+													  		class="pc-popover" 
+													  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+													  		data-content="<?php echo implode("<br/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE]);?>" data-trigger="hover">
+													  		
+													 	 	<i class="fa fa-info-circle"></i>
+													  </a>
+												<?php endif;?>
+				 							<?php echo JText::_('COM_PAYCART_TAX'); ?></td>
+				 							<td><?php echo $formatter->amount($duties_total, true, $currency_id); ?>
+				 								<br><small>(<?php echo JText::_("COM_PAYCART_CART_TAX_ON_TAX_DESC")?>)</small>
+				 							</td>
+				 						</tr>
+			 						<?php endif;?>
 			 						
-			 						<tr>
-			 							<td>
-			 								<?php
-			 										if(!empty($promotion_message) ):
-			 								?>
-												  
-												  <a 	href="javascript:void(0)"  
-												  		class="pc-popover" 
-												  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-												  		data-content="<?php echo implode('<hr>', $promotion_message);?>" data-trigger="hover">
-												  		
-												 	 	<i class="fa fa-info-circle"></i>
-												  </a>
-												  
-											<?php endif;?>
-			 								<?php echo JText::_('COM_PAYCART_DISCOUNT'); ?>
-			 							</td>
-			 							<td><?php echo $formatter->amount($promotion_total, true, $currency_id); ?></td>
-			 						</tr>
+			 						<?php if(!empty($promotion_particular) && floatval($promotion_total) != 0):?>
+				 						<tr>
+				 							<td>
+				 								<?php $promotion_particular = array_shift($promotion_particular);?>
+				 								<?php $key = $promotion_particular->type.'-'.$promotion_particular->particular_id;?>
+				 								<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE])):?>
+													 	<a 	href="javascript:void(0)"  
+													  		class="pc-popover" 
+													  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+													  		data-content="<?php echo implode("<br/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE]);?>" data-trigger="hover">
+													  		
+													 	 	<i class="fa fa-info-circle"></i>
+													  </a>												  
+												<?php endif;?>
+				 								<?php echo JText::_('COM_PAYCART_DISCOUNT'); ?>
+				 							</td>
+				 							<td><?php echo $formatter->amount($promotion_total, true, $currency_id); ?></td>
+				 						</tr>
+			 						<?php endif;?>
 			 						
 			 						<tr>
 			 							<td><?php echo JText::_('COM_PAYCART_TOTAL'); ?></td>
