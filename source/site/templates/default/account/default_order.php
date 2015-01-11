@@ -235,7 +235,7 @@ echo $this->loadTemplate('js');
 																<?php if($productParticular->total !=  $productParticular->price):?>
 																	<hr/><span class='pull-right'><?php echo JText::_('com_paycart_subtotal').' : '.$formatter->amount($productParticular->price);?></span><br/>
 																<?php endif;?>																		
-																<?php if($productParticular->discount > 0):?>
+																<?php if($productParticular->discount < 0):?>
 																	<span class='pull-right'><?php echo JText::_('com_paycart_discount').' : '.$formatter->amount($productParticular->discount);?></span><br/>
 																<?php endif;?>
 																<?php if($productParticular->tax > 0):?>
