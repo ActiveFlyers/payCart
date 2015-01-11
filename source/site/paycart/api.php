@@ -31,7 +31,7 @@ class PaycartAPI
 	 * 
 	 * @return Array of stdclass, which conatin category data
 	 */
-	static public function getCategories($parentId = null)
+	static public function getCategories($parentId = null, $lang = null)
 	{
 		$categoryFilters = array('published' => 1);
 
@@ -39,7 +39,15 @@ class PaycartAPI
 			$categoryFilters['parent_id'] = $parentId;
 		}
 		$catModel = PaycartFactory::getInstance('productcategory', 'model');
-		return $catModel->loadRecords($categoryFilters);
+		if($lang == null){
+			$lang = paycart_getCurrentLanguage();
+			$catModel->lang_code = $lang;
+		}
+		
+		$categories = $catModel->loadRecords($categoryFilters);
+		
+		$catModel->lang_code = null;
+		return $categories;
 	}
 
 	/**

@@ -21,6 +21,7 @@ define('PAYCART_CORE_LOADED', true);
 
 // include defines
 include_once dirname(__FILE__).'/defines.php';
+include_once dirname(__FILE__).'/functions.php';
 
 // load frontend language file on both end
 $filename = 'com_paycart';
