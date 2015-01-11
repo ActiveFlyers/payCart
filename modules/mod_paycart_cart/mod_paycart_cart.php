@@ -24,7 +24,8 @@ include_once $file_path;
 
 // load bootsrap, font-awesome
 Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/paycart.js');
+Rb_HelperTemplate::loadSetupEnv();
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
 
 // get layout name
 $layout           = $params->get('layout', 'default');
