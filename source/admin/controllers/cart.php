@@ -14,6 +14,8 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 
 class PaycartAdminControllerCart extends PaycartController 
 {
+	protected	$_defaultOrderingDirection = 'DESC';
+	
 	/**
 	 * Json task : save new/existing shipment from the current cart
 	 */
