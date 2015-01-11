@@ -83,7 +83,7 @@ defined('_JEXEC') or die( 'Restricted access' );
                             <div class="row-fluid">
                                 <?php $field = $form->getField('body') ?>					
                                 <div class="control-group">
-                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> <span class="muted">( <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_BODY_USE_HTML');?> ) </span></div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 </div>
                             </div>
