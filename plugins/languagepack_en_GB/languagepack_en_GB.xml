@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="file" method="upgrade">
       <name>Paycart Plugins English Language Pack</name>
-      <version>@global.version@.@svn.lastrevision@</version>
+      <version>1.0.0</version>
       <creationDate>August 2014</creationDate>
       <author>Team Readybytes</author>
       <authorEmail>support+paycart@readybytes.in</authorEmail>
