@@ -34,7 +34,7 @@ class PaycartBuyer extends PaycartLib
 	protected $realname;
 	protected $username;
 	protected $email;
-	protected $usertype;
+	protected $user_type;
 	protected $register_date;
 	protected $lastvisit_date;
 	protected $default_phone;
@@ -60,8 +60,20 @@ class PaycartBuyer extends PaycartLib
 		$this->is_registered_by_guestcheckout	=	0;
 		$this->default_address_id				=	0;
 		$this->default_phone					= '';
-		
+		$this->user_type							=  array();
 		return $this;
+	}
+
+	public function bind($data, $ignore=array())
+	{
+		if(is_object($data)){
+			$data = (array) ($data);
+		}
+		if(isset($data['user_type']) && !is_array($data['user_type'])){
+			$data['user_type'] = explode(',', $data['user_type']);
+		}
+		
+		return parent::bind($data, $ignore);
 	}
 	
 	/**
