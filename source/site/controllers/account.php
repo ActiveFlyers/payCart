@@ -200,12 +200,16 @@ class PaycartSiteControllerAccount extends PaycartController
 		$view->assign('address_id', $address_id);
 		
 		$errors = array();
+		$msg 	= '';
+		$type 	= '';
 		if($address_id){
 			$buyer = PaycartBuyer::getInstance($buyer_id);
-			$buyer->set('default_address_id', $address_id)->save();			
+			$buyer->set('default_address_id', $address_id)->save();
+			$msg = JText::_('COM_PAYCART_ACCOUNT_DEFAULT_ADDRESS_CHANGED');
+			$type = "success";	
 		}
 		
-		$this->setRedirect(JRoute::_('index.php?option=com_paycart&view=account&task=address'));
+		$this->setRedirect(JRoute::_('index.php?option=com_paycart&view=account&task=address'), $msg, $type);
 		return false;
 	}
 	
