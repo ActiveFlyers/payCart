@@ -87,24 +87,24 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		
 		 		
 		 		<!-- Filterable Attributes -->
+		 		<?php if(!empty($selectors)):?>
 		 		<div>
 		 		    <form class="pc-product-attributes" method="post">
-		 		    	 <fieldset>
-		 		    	 	<?php if(!empty($variants)):?>
-							    	<?php foreach ($selectors as $productAttributeId => $data):?>
-							    		<?php $instance  = PaycartProductAttribute::getInstance($productAttributeId);?>
-							    		
-							    		 <div>
-							    			<label class="muted"><?php echo $instance->getTitle();?>:</label>
-							    			<?php echo $product->getAttributeHtml('selector', $productAttributeId, $data['selectedvalue'],$data['options']);?>
-							    		 </div>
-							        <?php endforeach;?>
-							<?php endif;?>
+		 		    	 <fieldset>		 		    	 	
+					    	<?php foreach ($selectors as $productAttributeId => $data):?>
+					    		<?php $instance  = PaycartProductAttribute::getInstance($productAttributeId);?>
+					    		
+					    		 <div>
+					    			<label class="muted"><?php echo $instance->getTitle();?>:</label>
+					    			<?php echo $product->getAttributeHtml('selector', $productAttributeId, $data['selectedvalue'],$data['options']);?>
+					    		 </div>
+					        <?php endforeach;?>							
 							<!-- -->
 							<input type="hidden" name="pc-product-base-attribute" class="pc-product-base-attribute"/>
 					    </fieldset>
 				    </form>
     			</div>
+    			<?php endif;?>
 		 		
 		 		<!-- buy now -->
                 <?php if($isAvailableInStock):?>                     
