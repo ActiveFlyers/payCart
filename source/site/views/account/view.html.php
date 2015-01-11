@@ -92,13 +92,15 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 		$shipments = $cartHelper->getShipments($id);
 		$productShipments = array();
 		foreach($shipments as $shipment){
-			foreach($shipment->products as $product){
-				if(!isset($productShipments[$product['product_id']])){
-					$productShipments[$product['product_id']] = array();
+			if(isset($shipment->products)){
+				foreach($shipment->products as $product){
+					if(!isset($productShipments[$product['product_id']])){
+						$productShipments[$product['product_id']] = array();
+					}
+					
+					$productShipments[$product['product_id']][] = array('quantity' => $product['quantity'],
+																		'shipment_id' => $shipment->shipment_id);
 				}
-				
-				$productShipments[$product['product_id']][] = array('quantity' => $product['quantity'],
-																	'shipment_id' => $shipment->shipment_id);
 			}
 		}
 		
