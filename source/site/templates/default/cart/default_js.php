@@ -617,11 +617,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 							// Payment-form setup into payment div
 					    	$('.payment-form-html').html(response['html']);
 
-					    	$('#payment-form-html').prop('action', '');
+					    	$('#payment-form-html').attr('action', '');
 
 					    	if (response['post_url']) {
 						    	// Payment-form action setup
-						    	$('#payment-form-html').prop('action', response['post_url']);
+						    	$('#payment-form-html').attr('action', response['post_url']);
 					    	} 
 
 					    	// reinitialize validation if exist
@@ -671,7 +671,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			function(response){
 
 				if(response.isValid) {
-					var action_url = $('#payment-form-html').prop('action');
+					//if use prop function rather than attr then current page url is returned in chorme
+					var action_url = $('#payment-form-html').attr('action');
 
 					// form will be post to payment gateway site
 					if (action_url) {
