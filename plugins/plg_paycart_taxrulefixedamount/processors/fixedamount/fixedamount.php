@@ -16,7 +16,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * Flat Amount Processor 
  * @author rimjhim
  */
-class PaycartTaxruleProcessorFlatAmount extends PaycartTaxruleProcessor
+class PaycartTaxruleProcessorFixedamount extends PaycartTaxruleProcessor
 {
 	function process(PaycartTaxruleRequest $request, PaycartTaxruleResponse $response)
 	{

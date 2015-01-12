@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @author rimjhim
  *
  */
-class PlgPaycartTaxruleFlat extends RB_Plugin
+class PlgPaycartTaxruleFixedamount extends RB_Plugin
 {
 	function __construct(& $subject, $config = array())
 	{
@@ -28,12 +28,12 @@ class PlgPaycartTaxruleFlat extends RB_Plugin
 		
 		// push processor of flatRate
 		$helper->push(paycart::PROCESSOR_TYPE_TAXRULE,
-					 'PaycartTaxruleProcessorFlatRate',		  
+					 'PaycartTaxruleProcessorFixedamount',		  
                       array(
-                            'filepath'   => dirname(__FILE__).'/processors/flatrate/flatrate.php',
-                            'title'      => Rb_Text::_('PLG_PAYCART_TAXRULE_FLAT_RATE_TITLE'),
-                            'description'=> Rb_Text::_('PLG_PAYCART_TAXRULE_FLAT_RATE_DESC'),
+                            'filepath'   => dirname(__FILE__).'/processors/fixedamount/fixedamount.php',
+                            'title'      => Rb_Text::_('PLG_PAYCART_TAXRULE_FIXED_AMOUNT_TITLE'),
+                            'description'=> Rb_Text::_('PLG_PAYCART_TAXRULE_FIXED_AMOUNT_DESC'),
                       		'icon'		 => ''
-                      ));
+                      ));        
 	}
 }
