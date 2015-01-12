@@ -222,14 +222,48 @@ class PaycartHelperEvent extends PaycartHelper
             
             Rb_HelperPlugin::trigger('onPaycartShipmentAfterDelivered', $params, self::$default_plugin_type);
             
-            $cart 			 = $shipment->getCart();
-            $shipments 		 = PaycartFactory::getHelper('cart')->getShipments($cart->getId());
+            $cart 		= $shipment->getCart();
+            $id 		= $cart->getId();
+
+            /* @var $cartHelper PaycartHelperCart */
+            $cartHelper = PaycartFactory::getHelper('cart');
+            $shipments 	= $cartHelper->getShipments($id);
+            $productCartParticulars = $cartHelper->getCartParticularsData($id, Paycart::CART_PARTICULAR_TYPE_PRODUCT);
             $isCartDelivered = true;
             
-            foreach ($shipments as $data) {
-            	if($data->status != Paycart::STATUS_SHIPMENT_DELIVERED){
+            // Calculate Shipments
+            $productShipments = array();
+            foreach($shipments as $object){
+            	foreach($object->products as $product){
+            		if(!isset($productShipments[$product['product_id']])){
+            			$productShipments[$product['product_id']] = array();
+            		}
+            
+            		$productShipments[$product['product_id']][] = array('quantity' => $product['quantity'],
+            				'shipment_id' => $object->shipment_id);
+            	}
+            }
+            
+            $products = array();
+            foreach($productCartParticulars as $particular){
+            	$products[$particular->particular_id] = PaycartProduct::getInstance($particular->particular_id);
+            		
+            	// if shipment is not created for any product, then do not mark the cart as delivered
+            	if(!isset($productShipments[$particular->particular_id])){
             		$isCartDelivered = false;
             		break;
+            	}
+            	else{
+            		// if all quantity of product is not consumed in shipment, then do not mark the cart as delivered
+            		$quantity = 0;
+            		foreach($productShipments[$product['product_id']] as $object){
+            			$quantity += $object['quantity'];
+            		}
+            
+            		if($quantity < $particular->quantity){
+            			$isCartDelivered = false;
+            			break;
+            		}
             	}
             }
             

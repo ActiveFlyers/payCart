@@ -37,7 +37,7 @@ class PaycartsiteControllerCron extends paycartController
 			header("Content-type: image/png");
 		}
 
-	    echo file_get_contents(PAYCART_PATH_CORE_MEDIA.'images/cron.png');
+	    echo file_get_contents(PAYCART_PATH_CORE_MEDIA.'/images/cron.png');
 	
  		// check if we need to trigger, dont trigger too frequently
 		if(PaycartHelperCron::checkRequired()==false){
