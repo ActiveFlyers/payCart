@@ -370,8 +370,7 @@ class PaycartHelperToken extends PaycartHelper
     	$display_data = new stdClass();
     	$display_data->products = $products;
     	
-    	$layout = new JLayoutFile('paycart_token_shipment_products');
-        $tokens['products'] = $layout->render($display_data);
+        $tokens['products'] = Rb_HelperTemplate::renderLayout('paycart_token_shipment_products',$display_data, PAYCART_LAYOUTS_PATH);
         
         return $tokens;
     }
