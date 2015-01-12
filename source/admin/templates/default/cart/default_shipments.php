@@ -51,7 +51,7 @@ PaycartHtml::_('behavior.formvalidation');
 						<div data-ng-show="shipments[value].message" class="alert alert-success">{{ shipments[value].message }}</div>
 						<div data-ng-show="shipments[value].errMessage" class="alert alert-danger">{{ shipments[value].errMessage }}</div>
 						
-						<span class="pull-right">
+						<span data-ng-if="shipments[value].status != '<?php echo paycart::STATUS_SHIPMENT_DELIVERED?>'" class="pull-right">
 							<a href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
 								<i class="fa fa-check"></i>
 							</a>
