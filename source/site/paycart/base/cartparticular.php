@@ -443,13 +443,13 @@ abstract class PaycartCartparticular extends JObject
 		$query = ' SELECT * FROM 
 		         (
 			         ( select * from `#__paycart_taxrule` as rule NATURAL left join (select * from `#__paycart_taxrule_x_group` 
-					  as grp where grp.type = "product" ) as tbl where '.$productCondition.' tbl.group_id IS NULL ) 
+					  as grp where grp.type = "product" ) as tbl where '.$productCondition.' tbl.group_id IS NULL group by rule.taxrule_id ) 
 				 UNION ALL 
 			 		 ( select * from `#__paycart_taxrule` as rule NATURAL left join (select * from `#__paycart_taxrule_x_group` 
-			 		  as grp where grp.type = "buyer" ) as tbl where '.$buyerCondition.' tbl.group_id IS NULL  ) 
+			 		  as grp where grp.type = "buyer" ) as tbl where '.$buyerCondition.' tbl.group_id IS NULL group by rule.taxrule_id  ) 
 				 UNION ALL 
 			 	     ( select * from `#__paycart_taxrule` as rule NATURAL left join (select * from `#__paycart_taxrule_x_group` 
-			  		  as grp where grp.type = "cart" ) as tbl where '.$cartCondition.' tbl.group_id IS NULL  ) 
+			  		  as grp where grp.type = "cart" ) as tbl where '.$cartCondition.' tbl.group_id IS NULL group by rule.taxrule_id  ) 
 		  		 ) 
 		 		 as result group by result.taxrule_id 
 		 		 having count(result.taxrule_id) = 3 and result.published = 1 and result.`apply_on` = "'.$this->_rule_apply_on.'" 
@@ -492,13 +492,13 @@ abstract class PaycartCartparticular extends JObject
 		$query = ' SELECT * FROM 
 		         (
 			         ( select * from `#__paycart_discountrule` as rule NATURAL left join (select * from `#__paycart_discountrule_x_group` 
-					  as grp where grp.type = "product" ) as tbl where '.$productCondition.' tbl.group_id IS NULL ) 
+					  as grp where grp.type = "product" ) as tbl where '.$productCondition.' tbl.group_id IS NULL group by rule.discountrule_id  ) 
 				 UNION ALL 
 			 		 ( select * from `#__paycart_discountrule` as rule NATURAL left join (select * from `#__paycart_discountrule_x_group` 
-			 		  as grp where grp.type = "buyer" ) as tbl where '.$buyerCondition.' tbl.group_id IS NULL  ) 
+			 		  as grp where grp.type = "buyer" ) as tbl where '.$buyerCondition.' tbl.group_id IS NULL group by rule.discountrule_id  ) 
 				 UNION ALL 
 			 	     ( select * from `#__paycart_discountrule` as rule NATURAL left join (select * from `#__paycart_discountrule_x_group` 
-			  		  as grp where grp.type = "cart" ) as tbl where '.$cartCondition.' tbl.group_id IS NULL  ) 
+			  		  as grp where grp.type = "cart" ) as tbl where '.$cartCondition.' tbl.group_id IS NULL group by rule.discountrule_id  ) 
 		  		 ) 
 		 		 as result group by result.discountrule_id 
 		 		 having count(result.discountrule_id) = 3 and 

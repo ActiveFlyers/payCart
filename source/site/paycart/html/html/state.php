@@ -51,7 +51,10 @@ class PaycartHtmlState
 			}
 			
 			$selected = '';
-			if (in_array($state_id, $value)){
+			if(is_array($value) && in_array($state_id, $value)){
+				$selected = 'selected="selected"';
+			}
+			if(!is_array($value) && $state_id == $value){
 				$selected = 'selected="selected"';
 			}
 			$country_states[$state_detail->country_id] .= "<option value='{$state_detail->state_id}'  $selected > {$state_detail->title} </option>";
