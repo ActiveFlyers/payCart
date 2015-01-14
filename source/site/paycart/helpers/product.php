@@ -77,7 +77,7 @@ class PaycartHelperProduct extends PaycartHelper
 		foreach(array('product_id', 'variation_of', 'created_date', 'modified_date', 'cover_media' , 'alias', 'product_lang_id') as $key){
 			unset($data[$key]);
 		}		
-		$data['variation_of'] = $product->getId();		
+		$data['variation_of'] = $product->getVariationOf();		
 		$newProduct->bind($data);
 		
 		

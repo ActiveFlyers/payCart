@@ -552,7 +552,7 @@ class PaycartProduct extends PaycartLib
 	public function getVariants()
 	{
 		if(empty($this->_variants)){
-			$records = PaycartFactory::getModel('product')->loadRecords(array('variation_of' => $this->getVariationOf()));
+			$records = PaycartFactory::getModel('product')->loadRecords(array('variation_of' => $this->getVariationOf(), 'published' => 1));
 			foreach ($records as $record){
 				$this->_variants[$record->product_id] = PaycartProduct::getInstance($record->product_id,$record);
 			}

@@ -72,9 +72,7 @@ defined('_JEXEC') OR die();
 						<span><?php echo $pagination->orderDownIcon( $count , count($records), true , 'orderdown', 'Move Down', true ); ?></span>
 					</td>
 					<td class="center">
-						<?php if($record->product_id == $record->variation_of):?>
 							<a href="<?php echo $uri.'&task=addVariant&variant_of='.$record->product_id; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_ADD_VARIANT');?></a>
-						<?php endif;?>
 					</td>
 				</tr>
 			<?php $count++;?>
