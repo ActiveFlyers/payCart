@@ -31,7 +31,7 @@ if(!defined( '_JEXEC' )){
 									<strong><span class="<?php echo $class;?> text-center"><?php echo strtoupper(JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK"));?></span></strong>
 								<?php endif;?>  
 								
-								<img class="<?php echo !$inStock?'pc-product-stockout-image':'';?>" src="<?php echo $media['optimized'];?>">
+								<img class="<?php echo !$inStock?'pc-product-stockout-image':'';?>" src="<?php echo @$media['optimized'];?>">
 								<p class="pc-product-title pc-break-word"><?php echo $instance->getTitle();?></p>
 							</div>
 						</a>
