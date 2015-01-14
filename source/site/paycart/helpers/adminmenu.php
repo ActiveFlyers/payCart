@@ -146,15 +146,15 @@ class PaycartHelperAdminmenu extends PaycartHelper
 //											'title' => JText::_('COM_PAYCART_ADMIN_INTEGRATION_APPS'),
 //											'url' => 'index.php?option=com_paycart&view=integration',
 //											'class' => 'fa-cubes'
-//										),
-//										Array(
-//											'title' => JText::_('COM_PAYCART_ADMIN_APPSTORE'),
-//											'url' => 'index.php?option=com_paycart&view=appstore',
-//											'class' => 'fa-th'
 //										)
 									)
 								);
-					
+
+		$adminMenus['appstore'] = Array(
+									'title' => JText::_('COM_PAYCART_ADMIN_APPSTORE'),
+									'url' => 'index.php?option=com_paycart&view=appstore',
+									'class' => 'fa-th'
+								);
 //		$adminMenus['history'] = Array(
 //									'title' => JText::_('COM_PAYCART_ADMIN_HISTORY'),
 //									'url' => '#',
