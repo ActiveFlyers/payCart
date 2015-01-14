@@ -113,6 +113,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `productcategory_id` int(11) DEFAULT 0,
   `type` varchar(50) NOT NULL COMMENT 'Type of Product',
   `published` tinyint(1) NOT NULL DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   `variation_of` int(11) NOT NULL DEFAULT '0' COMMENT 'This product is variation of another product. ',
   `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
   `price` double(15,4) NOT NULL,
