@@ -24,7 +24,7 @@ $loggin_user 	= PaycartFactory::getUser();
 
 $link = isset($displayData->return_link) ? $displayData->return_link : 'index.php';
 $return_link	= 	base64_encode($link);
-
+$isMobile = PaycartFactory::getApplication()->client->mobile;
 ?>
 <style>
 	/* styles for Tab browsers smaller than 1280px;  */
@@ -38,37 +38,121 @@ $return_link	= 	base64_encode($link);
     @media only screen and (max-width:480px){
 	     .mob-nav > ul.nav:first-child{margin-right:0;}
     }
+    
+<?php if(!$isMobile):?>
+.pc-menu .pc-menu-categories .dropup, 
+.pc-menu .pc-menu-categories .dropdown,
+.pc-menu .pc-menu-categories.nav, 
+.pc-menu .pc-menu-categories .collapse {
+    position: static;
+}
+.pc-menu .navbar-inner{
+    position: relative;
+}
+.pc-menu .pc-column{
+	display: inline-block;
+	min-height: 30px;
+	vertical-align: top;
+}
+.pc-menu .pc-coloumn-group{
+	overflow-x: auto; 
+	overflow-y: hidden; 
+	white-space: nowrap;
+}
+
+.pc-menu .pc-menu-category > li > ul {
+  padding: 0;
+  margin: 0;
+}
+<?php endif;?>
+
+.pc-menu .navbar-nav>li>.pc-menu-category {
+    margin-top:20px;
+    border-top-left-radius:4px;
+    border-top-right-radius:4px;
+}
+
+.pc-menu .navbar-default .navbar-nav>li>a {
+    width:200px;
+    font-weight:bold;
+}
+
+.pc-menu .pc-menu-category > li > ul > li {
+  list-style: none;
+}
+
+.pc-menu .pc-menu-category > li > ul > li > a {
+	display: block;
+	padding: 2px 30px;
+	clear: both;
+	font-weight: normal;
+	line-height: 1.428571429;
+	color: rgb(153, 153, 153);
+	white-space: normal;
+}
+
+.pc-menu .pc-menu-category > li > ul > li.dropdown-header > a {
+	padding: 4px 20px;
+}
+
+.pc-menu .pc-menu-category {
+    padding: 20px 0px;
+    width: 100%;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    overflow-x: auto;	
+	white-space: nowrap;
+}
+
+.pc-menu .pc-menu-category > li > ul > li > a:hover,
+.pc-menu .pc-menu-category > li > ul > li > a:focus {
+  text-decoration: none;
+  color: #444;
+  background-color: #f5f5f5;  
+}
+
+.pc-menu .pc-menu-category .dropdown-header > a{
+  color: #428bca;
+  font-size: 16px;
+  font-weight:bold;
+}
 </style>
 
-<div class="navbar navbar-inverse">
-	
-  <div class="navbar-inner mob-nav">
-  
-<!-- Product Category Menu 	-->
-        <ul class="nav">
-            
-            <li class="visible-phone" data-toggle="collapse" data-target=".nav-collapse.pc-nav-menu">
-                <a href="javascript:void(0);"><i class="fa fa-bars"></i></a>
-            </li>
-			
-			<!-- Product Category link on desktop, tab etc -->
-             <li class="dropdown hidden-phone">
-             
-                <a class="dropdown-toggle" data-toggle="dropdown"  href="#">
-                	<?php echo JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?> 
-                	<b class="caret"></b></a>
-                <ul class="dropdown-menu ">
-                  <!-- get ctaegory links -->
-                    <?php foreach( $categories as $cat): ?>
-                        <li>
-                        	<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$cat->productcategory_id);?>">
-                        		<?php echo $cat->title; ?>
-                        	</a>
-                       </li>
-                    <?php endforeach;?>
-                </ul>
-            </li>
-            
+<div class="navbar navbar-inverse pc-menu">
+	<div class="navbar-inner mob-nav">
+			<!-- Product Category Menu 	-->
+        	<ul class="nav pc-menu-categories">
+				<!-- Product Category link on desktop, tab etc -->
+             	<li class="dropdown">             
+                	<a class="dropdown-toggle" data-toggle="dropdown"  href="#">
+                		<span class="hidden-phone"><?php echo JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?> <b class="caret"></b></span>
+                		<span class="visible-phone"><i class="fa fa-bars"> </i></span>
+                	</a>
+                	
+                	<ul class="dropdown-menu pc-menu-category row-fluid">
+                  		<!-- get ctaegory links -->
+                  		<li class="">
+                        	<ul class="pc-column unstyled">
+                  				<?php $counter = 0;?>
+								<?php foreach( $categories as $cat): ?>
+				     				<?php if (!$cat->level == 0 && $cat->level <= 2):?>	
+				     					<li class="<?php if ($cat->level == 1) { echo 'dropdown-header'; };?>">
+				     						<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$cat->productcategory_id);?>" class="<?php echo 'pc-level'.$cat->level;?>">
+				     							<?php echo $cat->title;?>
+				     						</a>
+				     					</li>
+				     					<?php $counter++;?>
+				     					<?php if ($counter == $itemsPerColumn): ?>
+				     						</ul>
+				     						<ul class="pc-column unstyled">
+				     			 			<?php $counter = 0;?>
+				     					<?php endif;?>
+				     				<?php endif;?>
+				     			<?php endforeach;?>
+                			</ul>
+                		</li>
+                	</ul>
+            	</li>            
             <li>
 				<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
 					<input type="text" class="navbar-search input-large search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH")?>" name="query"/>
@@ -77,150 +161,94 @@ $return_link	= 	base64_encode($link);
             
            </ul>
            
-           <ul class="nav pull-right">
-           <!--
-            <li class="hidden-phone pc-menu-popover"
-            	data-content="Coming Soon!!"  
-            	data-placement="bottom"
-            	>
-            	<a href="javascript:void()">
-	            	<i class="fa fa-rocket"></i>
-	            	<span class="hidden-phone">
-	            	<?php echo JText::_('COM_PAYCART_WHATS_NEW'); ?></span>
-            	</a>
-           </li>
+           
+			<div class="pull-right">
+				<ul class="nav">
+           	    	<?php if (!$loggin_user->get('id')) : ?>
+	           		<li>
+	            		<a href="<?php echo JRoute::_('index.php?option=com_users&view=login');?>" >
+	            			<i class="fa fa-user"></i>
+	            			<span class="hidden-phone"> 
+	            				<?php echo JText::_('COM_PAYCART_LOGIN_AND_REGISTER'); ?>	            			
+	            			</span>	            		
+	            		</a>            	
+	            	</li>
+            <?php else :?>
+            		<?php $display_name = $loggin_user->get('name');?>
+               		<li class="dropdown ">
+            	    	<a class="dropdown-toggle " data-toggle="dropdown"  href="#">
+                			<span class=" visible-phone">
+	                    		<i class="fa fa-user fa-stack-1x"></i>
+								<i class="fa fa-check fa-stack-1x text-info"></i>
+							</span>
+					        <span class="hidden-phone"> 
+                    			<i class="fa fa-user"></i>
+                    			<?php echo ucfirst($display_name); ?>
+                    			<b class="caret"></b> 
+                    		</span> 
+                		</a>
+                
+               			<ul class="dropdown-menu ">
+                  			<!-- Users links -->                    
+                    		<li><a href="javascript::void();"><?php echo JText::_('COM_PAYCART_MODULE_MENU_HI');?>! <?php echo ucfirst($display_name); ?></a></li>
+                    		<li class="divider"></li>           
+                    		<li>
+                        		<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order');?>"> 
+                        			<i class="fa fa-tags"> </i> <?php echo JText::_('COM_PAYCART_MY_ORDERS'); ?>
+                        		</a>
+	                       	</li>                       
+    	                   	<li>
+        	                	<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=address');?>"> 
+            	            		<i class="fa fa-home"> </i> <?php echo JText::_('COM_PAYCART_MANAGE_ADDRESS'); ?>
+                	        	</a>
+                    	   	</li>
+                       		<li>
+                        		<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=setting');?>"> 
+                        			<i class="fa fa-user"> </i> <?php echo JText::_('COM_PAYCART_ACCOUNT_SETTINGS'); ?>
+	                        	</a>
+    	                   	</li>
+        	               	<li class="divider"></li>
+            	           	<li>
+                       			<a href="#" onclick='pc_menu_logout(); return false;' >
+                       				<i class="fa fa-sign-out"> </i> <?php echo JText::_('JLOGOUT'); ?>
+                       			</a>
+                       		</li>
+                		</ul>
+                	</li>	
+            <?php endif;?>
             
-           
-           <li class="pc-menu-popover"
-            	data-content="Coming Soon!!" 
-            	data-placement="bottom"
-            	">
-            	<a href="javascript:void()">
-	            	<i class="fa fa-gift"></i>
-	            	<span class="hidden-phone"> <?php echo JText::_('COM_PAYCART_OFFERS'); ?> </span>
-            	</a>
-           </li>
-           
-           
-           <li class="pc-menu-popover"
-            	data-content="Coming Soon!!" 
-            	data-placement="bottom"
-            	">
-            	<a href="javascript:void()">
-	            	<i class="fa fa-map-marker"></i>
-	            	<span class="hidden-phone"> <?php echo JText::_('COM_PAYCART_TRACK_ORDER'); ?></span>
-            	</a>
-           </li>
-		   -->
-           
-            <li><a href='<?php echo JRoute::_('index.php?option=com_paycart&view=cart&task=display');?>'>
+             <li><a href='<?php echo JRoute::_('index.php?option=com_paycart&view=cart&task=display');?>'>
                 <i class="fa fa-shopping-cart"></i>
                 <span class="hidden-phone"> 
                 <?php echo JText::_('COM_PAYCART_CART'); ?></span>
                 <span class="badge badge-info pc-demo-cart-counter"></span>
                 </a>
             </li>
-           
-           <?php if (!$loggin_user->get('id')) : ?>
-	           	<li>
-	            	<a href="<?php echo JRoute::_('index.php?option=com_users&view=login');?>" >
-	            		<i class="fa fa-user"></i>
-	            		<span class="hidden-phone"> 
-	            			<?php echo JText::_('COM_PAYCART_LOGIN_AND_REGISTER'); ?> 
-	            		</span>
-	            	</a>
-	            </li>
-            <?php else :
-            		$display_name = $loggin_user->get('name');
-            ?>
-            
-             <li class="dropdown ">
-                <a class="dropdown-toggle " data-toggle="dropdown"  href="#">
-                	<span class=" visible-phone">
-	                    <i class="fa fa-user fa-stack-1x"></i>
-						<i class="fa fa-check fa-stack-1x text-info"></i>
-					</span>
-					
-                    <span class="hidden-phone"> 
-                    	<i class="fa fa-user"></i>
-                    	<?php echo ucfirst($display_name); ?>
-                    </span> 
-                </a>
-                
-                <ul class="dropdown-menu ">
-                  <!-- Users links -->
-                    
-                    	<li class="pc-menu-popover"
-			            	data-content="Coming Soon!!" 
-			            	data-placement="bottom"
-			            	data-trigger="hover"
-			            	">
-			            	<a href="#">
-				            	<span class=""> <?php echo JText::_('COM_PAYCART_DASHBOARD'); ?> </span>
-			            	</a>
-			           </li>
-           
-                    	<li>
-                        	<a href='<?php echo JRoute::_('index.php?option=com_users&view=profile&layout=edit');?>'> 
-                        		<?php echo 'Profile-Edit'; ?>
-                        	</a>
-                       </li>
-                       
-                       <li>
-                       		<a href="#" onclick='pc_menu_logout(); return false;' >
-                       			<?php echo JText::_('JLOGOUT'); ?>
-                       		</a>
-                       </li>
-                       
-                       <li class ="hide">
-                       		<script>
-					         	var pc_menu_logout =function()
-										{
-						        			document.getElementById("pc-demo-logout-form").submit();
-											return false;
-										};
-					         </script>
-					         
-								<form action="<?php echo 'index.php?option=com_users'; ?>" method="post" id="pc-demo-logout-form" name="pc-demo-logout-form"  class="hide">
-									<div>
-										<input type="hidden" name="option" value="com_users" />
-										<input type="hidden" name="task" value="user.logout" />
-										<input type="hidden" name="return" value="<?php echo $return_link; ?>" />
-										<?php echo JHtml::_('form.token'); ?>
-									</div>
-								</form>
-                       </li>
-                </ul>
-                
-            </li>
-            
-            
-            	
-            <?php endif;?>
-            
-        </ul>
-         
-    
-    	<!-- Product Category link on mobile etc -->    
-        <div class="nav-collapse pc-nav-menu collapse visible-phone">
-        	<ul class="nav">
-              <!-- get ctaegory links -->
-                <?php  foreach( $categories as $cat): ?>
-                    <li>
-                    	<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$cat->productcategory_id);?>">
-                    		<?php echo $cat->title; ?>
-                    	</a>
-                    </li>
-                    
-                <?php endforeach;?>
-            </ul>   
-       </div>
-        
-        
+        </ul>         
+    </div>	
   </div>
   
 </div>
 
+<div class ="hide">
+	<script>
+		var pc_menu_logout =function()
+		{
+			document.getElementById("pc-demo-logout-form").submit();
+			return false;
+		};
+	</script>
+					         
+	<form action="<?php echo 'index.php?option=com_users'; ?>" method="post" id="pc-demo-logout-form" name="pc-demo-logout-form"  class="hide">
+		<div>
+			<input type="hidden" name="option" value="com_users" />
+			<input type="hidden" name="task" value="user.logout" />
+			<input type="hidden" name="return" value="<?php echo $return_link; ?>" />
+			<?php echo JHtml::_('form.token'); ?>
+		</div>
+	</form>
+</div>
+                       
 	<script>
         	(function($){
 
@@ -277,3 +305,4 @@ $return_link	= 	base64_encode($link);
         
         </script>
 
+<?php 

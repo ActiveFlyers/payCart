@@ -105,6 +105,14 @@ class Com_paycartInstallerScript
 	 */
 	public function postFlight( $type, $parent ) 
 	{
+		//install/update required extensions
+		$this->installExtensions();
+
+		$extensions 	= array();
+		$extensions[] 	= array('type'=>'system', 'name'=>'paycart');
+
+		$this->changeExtensionState($extensions);
+
 		// Create default Front end menus
 		require_once JPATH_ADMINISTRATOR.'/components/com_paycart/install/script/menu.php';
 		PaycartInstallScriptMenu::createMenus();
