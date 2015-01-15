@@ -40,7 +40,7 @@ rbframework.location	  	=	http://10.0.0.91/intranet/downloads/SetupKits/RbFramew
 # required for build pkg
 build.package.location	  	= ${rbframework.location}
 
-build.package.name	  	= Package_Paycart
+build.package.name	  	= Paycart
 script.tag			= <scriptfile>script.php</scriptfile>
 
 ## Define for Package script File
