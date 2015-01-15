@@ -43,8 +43,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_lang` (
   `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL COMMENT 'attribute name',
   PRIMARY KEY (`productattribute_lang_id`),
-  KEY `idx_productattribute_id` (`productattribute_id`),
-  KEY `idx_lang_code` (`lang_code`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `productattribute_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -78,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
   `created_date` datetime NOT NULL,
   `modified_date` datetime NOT NULL,
   `ordering` int(11) NOT NULL,
+  `params` text COMMENT 'Include extra stuff like, tree.',
   PRIMARY KEY (`productcategory_id`),
   KEY `idx_left_right` (`lft`,`rgt`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -91,14 +91,15 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
 CREATE TABLE IF NOT EXISTS `#__paycart_productcategory_lang` (
   `productcategory_lang_id` int(11) NOT NULL AUTO_INCREMENT,
   `productcategory_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
+  `title` varchar(100) NOT NULL,
   `alias` varchar(100) NOT NULL,
   `lang_code` char(7) NOT NULL,
   `description` text,
   `metadata_title` varchar(255) DEFAULT NULL,
   `metadata_keywords` varchar(255) DEFAULT NULL,
   `metadata_description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`productcategory_lang_id`)
+  PRIMARY KEY (`productcategory_lang_id`),
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `productcategory_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -112,6 +113,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `productcategory_id` int(11) DEFAULT 0,
   `type` varchar(50) NOT NULL COMMENT 'Type of Product',
   `published` tinyint(1) NOT NULL DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   `variation_of` int(11) NOT NULL DEFAULT '0' COMMENT 'This product is variation of another product. ',
   `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
   `price` double(15,4) NOT NULL,
@@ -119,6 +121,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `featured` tinyint(1) NOT NULL DEFAULT '0',
   `cover_media` varchar(250) DEFAULT NULL,
   `stockout_limit`int NOT NULL COMMENT 'out-of-stock limit of Product',
+  `hits` int(11) NOT NULL DEFAULT '0' COMMENT 'maintain hit count of products',
   `weight` decimal(12,4) DEFAULT '0.0000',
   `weight_unit` varchar(50) DEFAULT NULL,
   `height` decimal(12,4) DEFAULT '0.0000',
@@ -149,8 +152,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product_lang` (
   `metadata_keywords` varchar(255) COMMENT 'Here you can store meta tag.',
   `metadata_description` varchar(255) COMMENT 'Here you can store meta description.',
   PRIMARY KEY (`product_lang_id`),
-  KEY `idx_product_id` (`product_id`),
-  KEY `idx_lang_code` (`lang_code`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -164,6 +166,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `buyer_id` int(11) DEFAULT '0',
   `session_id` varchar(200) DEFAULT '',
   `invoice_id` int(11) DEFAULT '0' COMMENT 'mapped invoice id with rb_ecommerce_invoice table',
+  `lang_code` char(7) NOT NULL,
   `status` enum('drafted','paid','cancelled') NOT NULL,
   `is_locked` int(4) NOT NULL DEFAULT '0' COMMENT 'after cart lock, Buyer can''t change into cart',
   `is_approved` int(4) NOT NULL DEFAULT '0' COMMENT 'Approved either by admin or on payment.',
@@ -182,6 +185,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `paid_date` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Payment Completion date.',
   `cancelled_date` datetime DEFAULT '0000-00-00 00:00:00',
   `delivered_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `note` varchar(255) DEFAULT '' ,
   `params` text COMMENT 'Products and their quantiy store here initial',
   PRIMARY KEY (`cart_id`),
   KEY `idx_invoice_id` (`invoice_id`),
@@ -226,13 +230,12 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cartparticular` (
 --
 
 CREATE TABLE IF NOT EXISTS `#__paycart_buyer` (
-  `buyer_id` int(11) NOT NULL AUTO_INCREMENT,
+ `buyer_id` int(11) NOT NULL AUTO_INCREMENT,
   `is_registered_by_guestcheckout` tinyint(4) NOT NULL DEFAULT '0',
-  `billing_address_id` int(11) DEFAULT NULL,
-  `shipping_address_id` int(11) DEFAULT NULL,
+  `default_address_id` int(11) DEFAULT NULL,
+  `default_phone` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`buyer_id`),
-  KEY `idx_billing_address_id` (`billing_address_id`),
-  KEY `idx_shipping_address_id` (`shipping_address_id`)
+  KEY `idx_default_address_id` (`default_address_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -253,10 +256,12 @@ CREATE TABLE IF NOT EXISTS `#__paycart_buyeraddress` (
   `country_id` char(3) NOT NULL COMMENT 'Country ISO code3',
   `zipcode` varchar(10) NOT NULL DEFAULT '',
   `vat_number` varchar(100) NOT NULL,
-  `phone` varchar(32) NOT NULL
+  `phone` varchar(32) NOT NULL,
+  `is_removed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`buyeraddress_id`),
   KEY `idx_md5` (`md5`),
-  KEY `idx_buyer_id` (`buyer_id`)
+  KEY `idx_buyer_id` (`buyer_id`),
+  KEY `idx_is_removed` (`is_removed`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -303,8 +308,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_discountrule_lang` (
   `lang_code` char(7) NOT NULL,
   `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
   PRIMARY KEY (`discountrule_lang_id`),
-  KEY `idx_discountrule_id` (`discountrule_id`),
-  KEY `idx_lang_code` (`lang_code`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `discountrule_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -352,7 +356,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_country_lang` (
   `country_id` char(3) NOT NULL,
   `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL,
-  PRIMARY KEY (`country_lang_id`)
+  PRIMARY KEY (`country_lang_id`),
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `country_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -382,7 +387,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_state_lang` (
   `state_id` int(11) NOT NULL,
   `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL,
-  PRIMARY KEY (`state_lang_id`)
+  PRIMARY KEY (`state_lang_id`),
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `state_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -419,8 +425,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_lang` (
   `lang_code` char(7) NOT NULL,
   `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
   PRIMARY KEY (`taxrule_lang_id`),
-  KEY `idx_taxrule_id` (`taxrule_id`),
-  KEY `idx_lang_code` (`lang_code`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `taxrule_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -446,6 +451,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_taxrule_x_group` (
 CREATE TABLE IF NOT EXISTS `#__paycart_media` (
   `media_id` int(11) NOT NULL AUTO_INCREMENT,
   `is_free` TINYINT(1) NOT NULL DEFAULT 1,
+  `filename` varchar(255) NOT NULL,
+  `mime_type` varchar(255) NOT NULL,
   PRIMARY KEY (`media_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -459,15 +466,12 @@ CREATE TABLE IF NOT EXISTS `#__paycart_media_lang` (
   `media_id` int(11) NOT NULL,
   `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL COMMENT 'media name',
-  `filename` varchar(255) NOT NULL,
-  `mime_type` varchar(255) NOT NULL,
   `description` text,
   `metadata_title` varchar(255) DEFAULT NULL,
   `metadata_keywords` varchar(255) DEFAULT NULL,
   `metadata_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`media_lang_id`),
-  KEY `idx_media_id` (`media_id`),
-  KEY `idx_lang_code` (`lang_code`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `media_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -494,8 +498,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_color_lang` (
   `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL COMMENT 'name of color',
   PRIMARY KEY (`color_lang_id`),
-  KEY `idx_color_id` (`color_id`),
-  KEY `idx_lang_code` (`lang_code`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `color_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -522,8 +525,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productattribute_option_lang` (
   `lang_code` char(7) NOT NULL,
   `title` varchar(100) NOT NULL,
   PRIMARY KEY (`productattribute_option_lang_id`),
-  KEY `idx_productattribute_option_id` (`productattribute_option_id`),
-  KEY `idx_lang_code` (`lang_code`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `productattribute_option_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -575,7 +577,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_paymentgateway_lang` (
   `title` varchar(100) NOT NULL,
   `description` varchar(255) NOT NULL,
   PRIMARY KEY (`paymentgateway_lang_id`),
-  KEY `lang_code` (`lang_code`,`paymentgateway_id`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `paymentgateway_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -637,7 +639,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_notification_lang` (
   `subject` varchar(255) NOT NULL,
   `body` text NOT NULL,
   PRIMARY KEY (`notification_lang_id`),
-  INDEX `idx_notification_id` (`notification_id`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `notification_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
 
 -- --------------------------------------------------------
@@ -675,8 +677,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shippingrule_lang` (
   `description` varchar(255) NOT NULL,
   `message` varchar(255) NOT NULL COMMENT 'Help msg for end user',
   PRIMARY KEY (`shippingrule_lang_id`),
-  KEY `idx_shippingrule_id` (`shippingrule_id`),
-  KEY `idx_lang_code` (`lang_code`)
+  UNIQUE KEY `uni_id_lang` (`lang_code`, `shippingrule_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -712,6 +713,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shipment` (
   `created_date` datetime NOT NULL,
   `delivered_date` datetime NOT NULL,
   `dispatched_date` datetime NOT NULL,
+  `est_delivery_date` datetime NOT NULL,
   PRIMARY KEY (`shipment_id`),
   KEY `idx_shippingrule_id` (`shippingrule_id`),
   KEY `idx_cart_id` (`cart_id`)
@@ -730,6 +732,18 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shipment_x_product` (
   KEY `idx_cart_id` (`product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='mapping product and shipments' AUTO_INCREMENT=1 ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__paycart_product_index`
+--
+CREATE TABLE IF NOT EXISTS `#__paycart_product_index` (
+  `product_id` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `modified_date` datetime NOT NULL,
+  PRIMARY KEY (`product_id`),
+  FULLTEXT KEY `idx_content` (`content`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 -- ------------------- DEFAULT VALUES ---------------------
@@ -745,7 +759,8 @@ INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `e
 (3, 1, 'onpaycartcartafterpaid', '[[buyer_email]]', '', '', '{}'),
 (4, 1, 'onpaycartcartafterdelivered', '[[billing_to]]', '', '', '{}'),
 (5, 1, 'onpaycartshipmentafterdispatched', '[[buyer_email]]', '', '', '{}'),
-(6, 1, 'onpaycartshipmentafterdelivered', '[[buyer_email]]', '', '', '');
+(6, 1, 'onpaycartshipmentafterdelivered', '[[buyer_email]]', '', '', '{}'),
+(7, 1, 'onorderurlrequest', '[[buyer_email]]', '', '', '{}');
 
 
 --
@@ -758,7 +773,9 @@ INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `noti
 (3, 3, 'en-GB', 'Order successfully Paid', 'Your payment is successfully received by [[store_name]]\r\n\r\n[[products_detail]]'),
 (4, 4, 'en-GB', 'Order Successfully Delivered ', 'Your order is successfully delivered on your shipping address.\r\n\r\n[[shipping_to]],\r\n[[shipping_address]] , \r\n[[shipping_city]] , [[shipping_state]]\r\n[[shipping_country]] [[shipping_zip_code]]\r\n\r\n'),
 (5, 5, 'en-GB', '', ''),
-(6, 6, 'en-GB', '', '');
+(6, 6, 'en-GB', '', ''),
+(7, 7, 'en-GB', 'Order Details Request of your order (id : [[order_id]])', 'Hello [[buyer_name]], \r\n\r\nYou have requested for the order detail url of your order [[order_id]]. This email contains the order detail url from which you can track your order. \r\n\r\n[[order_url]]\r\n\r\nPlease save or bookmark this url for further tracking. Still you can request this url again anytime at our website.');
+
 
 
 --
@@ -775,13 +792,16 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('catalogue_weight_unit', 'gm'),
 ('company_address', ''),
 ('company_name', ''),
+('cron_frequency','1800'),
+('cron_run_automatic','1'),
 ('invoice_serial_prefix', 'paycart'),
 ('localization_currency', 'USD'),
 ('localization_currency_format', 'symbol'),
 ('localization_currency_position', 'before'),
-('localization_date_format', '%Y-%m-%d'),
+('localization_date_format', 'Y-m-d'),
 ('localization_decimal_separator', '.'),
-('localization_fraction_digit_count', '2');
+('localization_fraction_digit_count', '2'),
+('product_index_limit','20');
 
 INSERT IGNORE INTO `#__paycart_productcategory_lang` (`productcategory_lang_id`, `productcategory_id`, `title`, `alias`, `lang_code`, `description`, `metadata_title`, `metadata_keywords`, `metadata_description`) VALUES
 (1, 1, 'root', 'root', 'en-GB', NULL, NULL, NULL, NULL);

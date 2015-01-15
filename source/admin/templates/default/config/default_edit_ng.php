@@ -15,6 +15,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
 
 <script type="text/javascript">	
+	paycart.ng.config = angular.module('pcngConfigApp', []);
 	paycart.ng.config.controller('pcngConfigLogoCtrl', function($scope, $http){
 		$scope.message 		= '';
 		$scope.errMessage 	= '';

@@ -38,6 +38,7 @@ class PaycartProduct extends PaycartLib
 	protected $weight_unit	 	= '';
 	protected $dimension_unit	= '';
 	protected $stockout_limit	= 0;
+	protected $hits				= 0;
 	protected $config			= '';
 	
 	//Extra fields (not related to columm) 
@@ -82,7 +83,8 @@ class PaycartProduct extends PaycartLib
 		$this->width		 	= 0.00;
 		$this->weight_unit	 	= '';
 		$this->dimension_unit	= '';
-		$this->stockout_limit	= null;
+		$this->stockout_limit	= 0;
+		$this->hits				= 0;
 		$this->config			= new Rb_Registry();
 		$this->created_date  	= Rb_Date::getInstance();	
 		$this->modified_date 	= Rb_Date::getInstance(); 
@@ -91,7 +93,7 @@ class PaycartProduct extends PaycartLib
 		$this->_images			= array();
 		
 		$this->product_lang_id	   = 0;		
-		$this->lang_code 		   = PaycartFactory::getCurrentLanguageCode();	
+		$this->lang_code 		   = PaycartFactory::getPCDefaultLanguageCode();	
 		$this->title	 		   = '';	
 		$this->alias  			   = '';
 		$this->description 		   = '';	
@@ -216,6 +218,11 @@ class PaycartProduct extends PaycartLib
 		return $this->stockout_limit;
 	}
 	
+	public function getSKU()
+	{
+		return $this->sku;	
+	}
+	
 	/**
 	 * We required media/image processing after Product save
 	 * 
@@ -237,14 +244,8 @@ class PaycartProduct extends PaycartLib
 		//if variation_of parameter is still 0 then resave plan again 
 		// because every base plan should be a variation of itself
 		if(!$this->variation_of){
-			//to reflect the automatic changes in object, it is required (like ordering)
-//			$this->reload();
-			
 			$this->variation_of = $id;
 			parent::_save($previousObject);
-			
-			//to reflect variation_of property, it is required
-//			$this->reload();
 		}
 		
 		// Process If images exist
@@ -258,6 +259,7 @@ class PaycartProduct extends PaycartLib
 				
 				$media = PaycartMedia::getInstance();
 				$data = array();
+				$data['lang_code'] = $this->lang_code;
 				$data['title'] = $image['name'];
 				$media->bind($data);
 				$media->save();
@@ -278,6 +280,9 @@ class PaycartProduct extends PaycartLib
 		
 		// Process Attribute Value
 		$this->_saveAttributeValue($previousObject);
+		
+		//do index the product data for keyword search
+		PaycartFactory::getHelper('productindex')->doIndexing($previousObject, $this);
 
 		// few class property might be changed by model validation
 		// so we need to reflect these kind of changes (by model validation) to lib object
@@ -363,7 +368,8 @@ class PaycartProduct extends PaycartLib
 			$this->_uploaded_files = $data['_uploaded_files'];
 		}
 		
-		if(isset($data['config']['positions'])){
+		// is array must be checked other wise wrong data will be binded on loadrecords (Issue with isset)
+		if(is_array($data['config']) && isset($data['config']['positions'])){
 			// reset $this->config->positions
 			$this->config->set('positions', $data['config']['positions']);
 		}
@@ -430,6 +436,9 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 		
+		//delete index data
+		PaycartFactory::getModel('productindex')->delete($this->getId());
+		
 		return true;
 	}
 	
@@ -445,7 +454,7 @@ class PaycartProduct extends PaycartLib
 		return PaycartFactory::getModel('productattributevalue')->deleteMany($condition);
 	}
 	
-	public function getAttributeValues($productAttributeId = null)
+	public function getAttributes($productAttributeId = null)
 	{
 		if(!empty($productAttributeId) && isset($this->_attributeValues[$productAttributeId])){
 			$attributeValue = $this->_attributeValues[$productAttributeId];
@@ -543,7 +552,7 @@ class PaycartProduct extends PaycartLib
 	public function getVariants()
 	{
 		if(empty($this->_variants)){
-			$records = PaycartFactory::getModel('product')->loadRecords(array('variation_of' => $this->getVariationOf()));
+			$records = PaycartFactory::getModel('product')->loadRecords(array('variation_of' => $this->getVariationOf(), 'published' => 1));
 			foreach ($records as $record){
 				$this->_variants[$record->product_id] = PaycartProduct::getInstance($record->product_id,$record);
 			}
@@ -589,7 +598,7 @@ class PaycartProduct extends PaycartLib
 	public function getProductCategory($requireInstance = false)
 	{
 		if($requireInstance){
-			return PaycartCategory::getInstance($this->productcategory_id);
+			return PaycartProductcategory::getInstance($this->productcategory_id);
 		}
 		
 		return $this->productcategory_id;

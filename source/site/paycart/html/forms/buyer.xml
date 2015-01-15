@@ -28,9 +28,11 @@
 				readonly="true"
 				/>
 
-		<field 	name="usertype" 
-				type="text"
+		<field 	name="user_type" 
+				type="usergroup"
+				multiple="true"
 				readonly="true"
+				disabled="true"
 				label="COM_PAYCART_USERTYPE"/>
 		</fieldset>
 </form>

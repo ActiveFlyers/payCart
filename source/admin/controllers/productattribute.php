@@ -21,7 +21,7 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 	public function save()
 	{
 		if($this->input->get('format', 'html') == 'json'){
-			$data 	= $this->input->post->get($this->_component->getNameSmall().'_form', array(), 'array');		
+			$data 	= $this->input->post->get($this->getControlNamePrefix(), array(), 'array');		
 			$itemId = $this->_getId();		
 			$ret 	= $this::_save($data, $itemId);
 			
@@ -55,7 +55,7 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 	public function _save(array $data, $itemId=null, $type=null)
 	{
 		//Get All files from paycart form
-		$data['_options'] = $this->input->get('options', false, 'ARRAY');
+		$data['_options'] = isset($data['options']) ? $data['options'] : array() ;
 		return parent::_save($data, $itemId, $type);
 	}
 			
@@ -109,7 +109,7 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 		$counter   = $this->input->get('counter');
 		$optionId  = $this->input->get('optionId',0);
 		
-		if(PaycartAttribute::getInstance($type)->deleteOptions($attribute, $optionId)){
+		if(PaycartAttribute::getInstance($type)->deleteOptions(null,$optionId)){
 			$ajaxResponse = PaycartFactory::getAjaxResponse();
 			$ajaxResponse->addScriptCall('paycart.jQuery("#option_row_'.$counter.'").remove');
 		}	

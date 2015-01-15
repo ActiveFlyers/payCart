@@ -24,7 +24,7 @@ defined('_JEXEC') or die();
 		<h1 class="center"><?php echo JText::_('COM_PAYCART_ADMIN_ATTRIBUTE_DRAG_BELOW');?></h1>
 		<div data-ng-repeat="position in positions">
 			<div data-ng-repeat="attribute in added[position]">
-				<input type="hidden" value="{{ attribute.productattribute_id }}" name="paycart_form[config][positions][{{ position }}][]"> 
+				<input type="hidden" value="{{ attribute.productattribute_id }}" name="paycart_product_form[config][positions][{{ position }}][]"> 
 			</div> 				
 		</div>
 		

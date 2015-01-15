@@ -69,7 +69,7 @@ class PaycartTaxrule extends PaycartLib
 		$this->published			= 1;
 		$this->description			= '';
 		$this->amount				= 0;
-		$this->apply_on				= '';
+		$this->apply_on				= Paycart::RULE_APPLY_ON_PRODUCT;
 		$this->processor_classname	= '';
 		$this->processor_config		= new Rb_Registry();
 		$this->created_date			= new Rb_date();
@@ -77,7 +77,7 @@ class PaycartTaxrule extends PaycartLib
 		$this->ordering				= 0;
 		
 		$this->taxrule_lang_id		= 0;
-		$this->lang_code			= PaycartFactory::getCurrentLanguageCode();
+		$this->lang_code			= PaycartFactory::getPCDefaultLanguageCode();
 		$this->message				= '';
 		
 		$this->_buyergroups			= array();
@@ -169,7 +169,7 @@ class PaycartTaxrule extends PaycartLib
 		$request->shipping_address		= $helperRequest->getBuyeraddressObject($cart->getShippingAddress(true));
 		$request->billing_address		= $helperRequest->getBuyeraddressObject($cart->getBillingAddress(true));
 		$request->buyer					= $helperRequest->getBuyerObject($cart->getBuyer(true));
-		$request->taxable_amount		= $request->cartparticular->price;
+		$request->taxable_amount		= $request->cartparticular->total; //tax will be applied on discounted price
 		
 		return $request;
 	}

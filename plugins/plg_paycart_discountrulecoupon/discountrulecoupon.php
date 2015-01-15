@@ -38,10 +38,10 @@ class PlgPaycartDiscountrulecoupon extends Rb_Plugin
 		$processor->push( Paycart::PROCESSOR_TYPE_DISCOUNTRULE,
 						  'PaycartDiscountruleProcessorCoupon',
 						  Array( 'filepath'	 	=> $fileLocation,
-								 'title'		=> Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_COUPON_TITLE'),
+								 'title'		=> JText::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_COUPON_TITLE'),
 								 'icon'		 	=> '',
 								 'tooltip'	 	=>	'',
-								 'description'	=> Rb_Text::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_FLAT_DESC')
+								 'description'	=> JText::_('PLG_PAYCART_PROCESSOR_DISCOUNTRULE_COUPON_DESC')
 								));
 	}
 

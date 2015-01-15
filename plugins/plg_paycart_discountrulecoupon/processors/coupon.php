@@ -28,6 +28,7 @@ class PaycartDiscountRuleProcessorCoupon extends PaycartDiscountRuleProcessor
 	{
 		
 		$coupon_code = $this->rule_config->coupon;
+		$applyOn	 = $this->rule_config->apply_on;
 
 		ob_start();
 		

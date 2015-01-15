@@ -341,7 +341,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 				);
 	}
 	
-	public function getConfigHtml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
+	public function getConfigHtml(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response, $namePrefix)
 	{
 		$serviceCode     = $this->_getServiceCodes();
 		$packagingSize   = $this->_getPackagingSize();

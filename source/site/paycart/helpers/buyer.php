@@ -30,17 +30,17 @@ class PaycartHelperBuyer extends PaycartHelper
 	 * 
 	 * @return string value 'username' if username exist otherwise false
 	 */
-	public function getUsername($email)
+	public function getUser($value, $of = 'email')
 	{
 		$db = PaycartFactory::getDbo();
 		
 		$query = new Rb_Query();
-		$query->select('username')
+		$query->select('*')
 			  ->from('#__users')
-			  ->where('`email` = '.$db->quote($email), 'OR');
+			  ->where($db->quoteName($of).' = '.$db->quote($value), 'AND');
 //			  ->where('`username` = '.$db->quote($email));
 			  
-		return $query->dbLoadQuery()->loadResult();
+		return $query->dbLoadQuery()->loadObject();
 	}
 	
 	/**

@@ -29,7 +29,7 @@ class PaycartAttributeSelect extends PaycartAttribute
 		$options = parent::getOptions($attribute);
 		
 		if( !empty($options)){
-			$html .= "<select id='attribute".$attribute->getId()."' name='paycart_form[attributes][".$attribute->getId()."]'>";
+			$html .= "<select id='attribute".$attribute->getId()."' name='paycart_product_form[attributes][".$attribute->getId()."]'>";
 			
 			foreach($options as $option){
 				

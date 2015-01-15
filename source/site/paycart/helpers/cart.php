@@ -40,10 +40,10 @@ class PaycartHelperCart extends PaycartHelper
 		
 		// get cart data
 		$cart_data =	PaycartFactory::getModel('cart')
-							->loadRecords(Array('session_id' => $session_id, 
-                                                                            'status' => Paycart::STATUS_CART_DRAFTED,
-                                                                            'is_locked'=>0 )
-                                                                     );
+							->loadRecords( Array( 'session_id' => $session_id,
+											  	  'status' => Paycart::STATUS_CART_DRAFTED,
+												  'is_locked'=>0 )
+										  );
 
 		// if cart doesn't exist and new cart is not requested then don't create new cart 
 		// and return false
@@ -67,6 +67,30 @@ class PaycartHelperCart extends PaycartHelper
 		}
 		
 		return self::$cached_cart;
+	}
+	
+   /**
+	* Invoke to check is-current cart or not (cart exist into session or not )
+	*
+	* @param $cart_id : Cart id
+	* 					  
+	* @since 1.0
+	* @author Manish
+	* 
+	* @return (bool) true if cart is exist otherwise false
+	*/
+	public function isSessionCart($cart_id)
+	{
+		// get current session id
+		$session_id =	PaycartFactory::getSession()->getId();
+		
+		// get cart data
+		$cart_data =	PaycartFactory::getModel('cart')
+							->loadRecords( Array( 'session_id' 	=> $session_id,
+											  	  'cart_id' 	=> $cart_id )
+										  );
+										  
+		return !empty($cart_data);
 	}
 	
 	/**
@@ -100,7 +124,7 @@ class PaycartHelperCart extends PaycartHelper
 		//if the given quantity is greater than the avaiable quantity of product 
 		// PCFIXME #123: then through a message to user showing the maximum quantity he can order for this item 
 		$product = PaycartProduct::getInstance($productId);
-		$allowedQuantity = ($product->getQuantity()-$product->getStockoutLimit()); 
+		$allowedQuantity = $product->getQuantity(); 
 		if($quantity > $allowedQuantity){
 			return array(false,$prevQuantity,$productId,$allowedQuantity);
 		}
@@ -150,6 +174,20 @@ class PaycartHelperCart extends PaycartHelper
 	}
 	
 	/**
+	 * 
+	 * Invoke to remove promotion on {Producr/cart + Calculate}
+	 * @param string $promotion_code
+	 * 
+	 * @return PaycartCart instance 
+	 */
+	public function removePromotion($promotion_code)
+	{
+		$cart = $this->getCurrentCart();
+		$cart->removePromotionCode($promotion_code);
+		return $cart->calculate()->save();
+	}
+	
+	/**
 	 * return stdclass object of cartparticular of given cart id and type 
 	 * @param $cartId : cart id to which the cart particular belongs
 	 * @param $type : type of cart particular to be fetched. if null then all types will be returned
@@ -165,10 +203,10 @@ class PaycartHelperCart extends PaycartHelper
 		if(!isset($particularData[$cartId])){
 			//load data from model
 			$records = PaycartFactory::getModel('cartparticular')
-													->loadRecords(array('cart_id' => $cartId), array(),false, 'particular_id');
+													->loadRecords(array('cart_id' => $cartId), array(),false);
 			
 			foreach ($records as $particularId => $data){
-				$particularData[$cartId][$data->type][$particularId] =  $data;
+				$particularData[$cartId][$data->type][$data->particular_id] =  $data;
 			}	
 		}
 		
@@ -224,5 +262,47 @@ class PaycartHelperCart extends PaycartHelper
 		}
 
 		return $products_count;
+	}
+	
+	/**
+	 * 
+	 * Invoke to get Promotion code
+	 * @param array $applied_promotion_particular_ids
+	 * @param array $available_promotion_code
+	 * 
+	 * @author mManishTrivedi
+	 * @since 1.1
+	 * 
+	 * @return Array applied promotion code
+	 */
+	public function getAppliedPromotionCode(Array $applied_promotion_particular_ids, Array $available_promotion_code)
+	{
+		$applied_promotion_code = Array();
+		
+		if (empty($available_promotion_code)) {
+			return $applied_promotion_code;
+		}
+		
+		foreach ($available_promotion_code as $value) {
+			$promotion_code_string = "'$value'" ;
+		}
+
+		// get discount rule which have applied coupon code
+		$promotion_rules = PaycartFactory::getModel('discountrule')
+								->loadRecords(Array('coupon'=> Array( Array('IN', "($promotion_code_string)" ))));
+
+		if (empty($promotion_rules)) {
+			return $applied_promotion_code;
+		}
+			
+		foreach ($promotion_rules as $promotion_rule) {
+			// make sure  applied promotion and coupon code match it means promotion code applied
+			if ( in_array($promotion_rule->coupon, $available_promotion_code) && 
+				 in_array($promotion_rule->discountrule_id, $applied_promotion_particular_ids) ) {
+				$applied_promotion_code[] = $promotion_rule->coupon;  	
+			}
+		}
+		
+		return $applied_promotion_code;
 	}
 }

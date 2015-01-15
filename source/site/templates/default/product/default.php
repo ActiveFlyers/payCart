@@ -15,8 +15,8 @@ if(!defined( '_JEXEC' )){
 }?>
 
 <?php 
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/owl.carousel.min.js');
-Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/css/owl.carousel.css');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.min.js');
+Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
 
 echo $this->loadTemplate('js');
 
@@ -28,8 +28,11 @@ echo $this->loadTemplate('js');
  * 
  */
 
-$attributes = $product->getAttributeValues();
+$attributes = $product->getAttributes();
 $postionedAttributes = (array)$product->getPositionedAttributes();
+
+ echo  Rb_HelperTemplate::renderLayout('paycart_spinner'); 
+
 ?>
 <script>
 paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');
@@ -84,24 +87,24 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		
 		 		
 		 		<!-- Filterable Attributes -->
+		 		<?php if(!empty($selectors)):?>
 		 		<div>
 		 		    <form class="pc-product-attributes" method="post">
-		 		    	 <fieldset>
-		 		    	 	<?php if(!empty($variants)):?>
-							    	<?php foreach ($selectors as $productAttributeId => $data):?>
-							    		<?php $instance  = PaycartProductAttribute::getInstance($productAttributeId);?>
-							    		
-							    		 <div>
-							    			<label class="muted"><?php echo $instance->getTitle();?>:</label>
-							    			<?php echo $product->getAttributeHtml('selector', $productAttributeId, $data['selectedvalue'],$data['options']);?>
-							    		 </div>
-							        <?php endforeach;?>
-							<?php endif;?>
+		 		    	 <fieldset>		 		    	 	
+					    	<?php foreach ($selectors as $productAttributeId => $data):?>
+					    		<?php $instance  = PaycartProductAttribute::getInstance($productAttributeId);?>
+					    		
+					    		 <div>
+					    			<label class="muted"><?php echo $instance->getTitle();?>:</label>
+					    			<?php echo $product->getAttributeHtml('selector', $productAttributeId, $data['selectedvalue'],$data['options']);?>
+					    		 </div>
+					        <?php endforeach;?>							
 							<!-- -->
 							<input type="hidden" name="pc-product-base-attribute" class="pc-product-base-attribute"/>
 					    </fieldset>
 				    </form>
     			</div>
+    			<?php endif;?>
 		 		
 		 		<!-- buy now -->
                 <?php if($isAvailableInStock):?>                     

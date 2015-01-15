@@ -21,7 +21,7 @@ class PaycartAdminControllerMedia extends PaycartController
 	public function save()
 	{
 		if($this->input->get('format', 'html') == 'json'){
-			$data 	= $this->input->post->get($this->_component->getNameSmall().'_form', array(), 'array');		
+			$data 	= $this->input->post->get($this->getControlNamePrefix(), array(), 'array');		
 			$itemId = $this->_getId();		
 			$ret 	= parent::_save($data, $itemId);
 			

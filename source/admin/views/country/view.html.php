@@ -16,7 +16,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author mManishTrivedi
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewCountry extends PaycartAdminBaseViewCountry
+class PaycartAdminHtmlViewCountry extends PaycartAdminBaseViewCountry
 {	
 	/**
 	 * (non-PHPdoc)

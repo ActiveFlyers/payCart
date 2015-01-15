@@ -8,30 +8,8 @@
 */
 
 defined('_JEXEC') or die( 'Restricted access' );
+echo $this->loadTemplate('js');
 ?>
-<script>
-paycart.admin.group = {};
-
-// will be used to maintain the counter of grouprule added
-paycart.admin.group.ruleCounter = <?php echo $ruleCounter;?>;
-
-(function($){	
-	paycart.admin.group.addrule = function(ruleType){
-		var ruleClass = $('#paycart-grouprule-list	').val();		
-		var url = 'index.php?option=com_paycart&view=group&task=addRule&ruleType='+ruleType+'&ruleClass='+ruleClass+'&counter='+paycart.admin.group.ruleCounter;
-
-		//@PCTODO : add one more parametere in url to escape from caching of browser
-
-		paycart.ajax.go(url, {});
-	};	
-
-	$(document).ready(function(){
-		<?php foreach($ruleScripts as $script):?>
-			<?php echo $script;?>
-		<?php endforeach;?>
-	});
-})(paycart.jQuery);
-</script>
 
 <div class="pc-product-wrapper clearfix">
 <div class="pc-group row-fluid">

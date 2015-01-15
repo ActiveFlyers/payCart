@@ -38,7 +38,24 @@ echo $this->loadTemplate('edit_css');
 <!-- ADMIN MENU -->
 
 <div class="span10">
-<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data" >
+
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		if($record_id){
+			$displayData = new stdClass();
+			$displayData->uri  = $uri.'&id='.$record_id;
+			echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+		}
+		
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
+		
+<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data" novalidate>
 	<div class="row-fluid">
 		<div class="<?php echo count($variants)? 'span10' : 'span12'; ?>">
 			<?php echo PaycartHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'basic')); ?>
@@ -57,7 +74,7 @@ echo $this->loadTemplate('edit_css');
 							<div class="row-fluid">
 								<?php $field = $form->getField('title') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>
 									<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>								
 								</div>
@@ -69,7 +86,7 @@ echo $this->loadTemplate('edit_css');
 								</div>
 								<?php $field = $form->getField('description') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 							</div>
@@ -115,7 +132,7 @@ echo $this->loadTemplate('edit_css');
 						<fieldset class="form">
 							<div class="row-fluid">
 								<div class="span6">
-									<?php $currency = $global_config->get('currency', '$'); ?>
+									<?php $currency = $formatter->currency($global_config->get('localization_currency')); ?>
 									<?php $field = $form->getField('price') ?>
 									<div class="control-group">
 										<div class="control-label label-left"><?php echo $field->label; ?>&nbsp; ( <?php echo $currency;?> )</div>										
@@ -140,7 +157,7 @@ echo $this->loadTemplate('edit_css');
 										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 									</div>
 								</div>
-								<div class="span6">
+								<!--<div class="span6">
 									<?php $field = $form->getField('stockout_limit') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
@@ -148,7 +165,7 @@ echo $this->loadTemplate('edit_css');
 										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 									</div>
 								</div>
-							</div>
+							--></div>
 						</fieldset>
 					</div>					
 				</div>
@@ -166,7 +183,7 @@ echo $this->loadTemplate('edit_css');
 						<?php if(!empty($images)):?>
 							<div>								
 								<div class="row-fluid">
-									<input type="file" class="validate-image" name="paycart_form[images][]" multiple="true" id="paycart_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
+									<input type="file" class="validate-image" name="paycart_product_form[images][]" multiple="true" id="paycart_product_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
 								</div>								
 							</div>
 						<?php endif;?>
@@ -175,7 +192,7 @@ echo $this->loadTemplate('edit_css');
 						<fieldset class="form">
 							<div class="row-fluid">
 								<?php if(empty($images)):?>
-									<input type="file" class="validate-image" name="paycart_form[images][]" multiple="true" id="paycart_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
+									<input type="file" class="validate-image" name="paycart_product_form[images][]" multiple="true" id="paycart_product_form__uploaded_files_images" data-fileUploadLimit="<?php echo $uploadLimit;?>">
 									
 								<?php else :?>								
 									<script>
@@ -216,7 +233,7 @@ echo $this->loadTemplate('edit_css');
 													<div class="span7">
 														<div class="control-group">
 															<div class="control-label">
-																<label id="title_lbl"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_TITLE')?></label>
+																<?php echo $flag; ?><label id="title_lbl"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_TITLE')?></label>
 															</div>
 															 <div class="controls">
 																<input type="text" data-ng-model="activeImage.title" value=""/>																
@@ -235,7 +252,7 @@ echo $this->loadTemplate('edit_css');
 								<?php endif;?>
 							</div>
 							<br>
-							<div class="pc-error" for="paycart_form__uploaded_files_images"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INVALID_IMAGE');?></div>
+							<div class="pc-error" for="paycart_product_form__uploaded_files_images"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INVALID_IMAGE');?></div>
 							
 						</fieldset>
 					</div>					
@@ -256,19 +273,19 @@ echo $this->loadTemplate('edit_css');
 							<div class="row-fluid">								
 								<?php $field = $form->getField('metadata_title') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 								
 								<?php $field = $form->getField('metadata_description') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>
 								
 								<?php $field = $form->getField('metadata_keywords') ?>
 								<div class="control-group">
-									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								
 								</div>								
 							</div>
@@ -373,7 +390,9 @@ echo $this->loadTemplate('edit_css');
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
 	<input type='hidden' name='id' id="product_id" value='<?php echo $record_id;?>' />	
-	<?php echo $form->getInput('product_id') ?>	
+	<?php echo $form->getInput('product_id') ?>
+	<?php echo $form->getInput('product_lang_id') ?>
+	<?php echo $form->getInput('lang_code') ?>		
 </form>
 </div>
 </div>

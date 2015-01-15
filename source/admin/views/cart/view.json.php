@@ -17,7 +17,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 require_once dirname(__FILE__).'/view.php';
 
-class PaycartAdminViewCart extends PaycartAdminBaseViewCart
+class PaycartAdminJsonViewCart extends PaycartAdminBaseViewCart
 {	
 	/**
 	 * Create new shipment from the current cart
@@ -30,17 +30,31 @@ class PaycartAdminViewCart extends PaycartAdminBaseViewCart
 		
 		$data   = $this->input->get('shipmentDetails',array(),'ARRAY');
 		
+		//if no shipping rule is there then do nothing
+		if(!isset($data['shippingrule_id'])){
+			$response->valid   = false;
+			$response->message = JText::_("COM_PAYCART_ADMIN_SHIPMENT_ERROR_WHILE_SAVING");
+			$this->assign('json', $response);
+			return true;
+		}
+		
+		if(!isset($data['est_delivery_date'])){
+			$shippingRule = PaycartShippingrule::getInstance($data['shippingrule_id']);
+			$date          = new Rb_Date();
+			$date->add(new DateInterval('P'.$shippingRule->getDeliveryMaxDays().'D'));
+			$data['est_delivery_date'] = $date->toSql(); 
+		}
+		
 		//save shipment
 		$result = PaycartShipment::getInstance(0,$data)->save();
 		
 		if(!$result){
 			$response->valid  = false;
 			$response->message = JText::_("COM_PAYCART_ADMIN_SHIPMENT_ERROR_WHILE_SAVING");
-		}
-		
-		$data['shipment_id'] = $result->getId();
-		$response->data = $data;
-		
+		}else{
+			$data['shipment_id'] = $result->getId();
+			$response->data = $data;
+		}	
 
 		$this->assign('json', $response);
 		return true;

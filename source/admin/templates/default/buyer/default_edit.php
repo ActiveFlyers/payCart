@@ -79,7 +79,7 @@ PaycartHtml::_('behavior.formvalidation');
 						
 						<div class="row-fluid">	
 							<div class="span6">
-								<?php $field = $form->getField('usertype') ?>
+								<?php $field = $form->getField('user_type') ?>
 								<div class="control-group">
 									<div class="control-label"><?php echo $field->label; ?> </div>
 									<div class="controls"><?php echo $field->input; ?></div>								

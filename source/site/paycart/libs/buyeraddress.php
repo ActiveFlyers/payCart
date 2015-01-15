@@ -31,7 +31,7 @@ class PaycartBuyeraddress extends PaycartLib
 	protected $phone;
 	protected $vat_number;
 	protected $md5;
-	
+	protected $is_removed;
 
 	/**
 	 * 
@@ -50,16 +50,17 @@ class PaycartBuyeraddress extends PaycartLib
 	
 	public function reset() 
 	{
-		$this->buyeraddress_id	=	0;
-		$this->buyer_id			=	0;
-		$this->to				=	'';
-		$this->address			=	'';
-		$this->city				=	'';
-		$this->state_id			=	'';
-		$this->country_id			=	'';
-		$this->zipcode			=	'';
-		$this->phone			=	'';
-		$this->vat_number		=	'';
+		$this->buyeraddress_id	= 0;
+		$this->buyer_id			= 0;
+		$this->to				= '';
+		$this->address			= '';
+		$this->city				= '';
+		$this->state_id			= '';
+		$this->country_id		= '';
+		$this->zipcode			= '';
+		$this->phone			= '';
+		$this->vat_number		= '';
+		$this->is_removed		= 0;
 		
 		return $this;
 	}

@@ -70,6 +70,18 @@
 			   default="paycart">
 		</field>
 		
+		<field  name="localization_default_language" 
+				type="paycart.supportedlanguage"
+				label="COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_DEFAULT_LANGUAGE">
+				<option value="">COM_PAYCART_ADMIN_SELECT</option>
+		</field>
+			
+		<field  name="localization_supported_language" 
+				type="list"
+				multiple="true"
+				label="COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_SUPPORTED_LANGUAGE">				
+		</field>
+		
 		<field name="localization_date_format"
 			   type="list"  
 			   label="COM_PAYCART_ADMIN_CONFIG_DATE_FORMAT"
@@ -82,11 +94,11 @@
 			   <option value="d/m/Y"></option>
 			   <option value="d-m-Y"></option>
 				
-			   <option value="d B y"></option>
-			   <option value="d B Y"></option>
+			   <option value="d M y"></option>
+			   <option value="d M Y"></option>
 				
-			   <option value="B d, y"></option>
-			   <option value="B d, Y"></option>
+			   <option value="M d, y"></option>
+			   <option value="M d, Y"></option>
 		</field>
 		
 		<field name="localization_currency"
@@ -152,6 +164,26 @@
 			   label="COM_PAYCART_ADMIN_CONFIG_COMPANY_LOGO"
 			   default=""
 			   />
+		
+		<field name="cron_run_automatic"
+		       type="radio"
+		       label="COM_PAYCART_ADMIN_CONFIG_CRON_AUTOMATIC_RUN"
+		       default="1"
+		       class="btn-group">
+		       <option value="1">JYES</option>
+		       <option value="0">JNO</option>
+		</field>
+		
+		<field name="cron_frequency"
+		       type="radio"
+		       label="COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY"
+		       default="1800"
+		       class="btn-group">
+		       <option value="3600">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_LOWEST</option>
+		       <option value="1800">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_LOW</option>
+		       <option value="900">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_NORMAL</option>
+		       <option value="300">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_HIGH</option>     
+		</field>
 		
 	</fieldset>
 	

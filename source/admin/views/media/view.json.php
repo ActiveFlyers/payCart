@@ -18,7 +18,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author Gaurav Jain
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewMedia extends PaycartAdminBaseViewMedia
+class PaycartAdminJsonViewMedia extends PaycartAdminBaseViewMedia
 {	
 	public function save()
 	{

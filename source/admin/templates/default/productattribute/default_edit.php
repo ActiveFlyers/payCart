@@ -20,13 +20,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		{
 			$(document).ready(function()
 			{
-				paycart.form.validation.init('#paycart_productattribute_form');
+				paycart.formvalidator.initialize('#paycart_productattribute_form');
 				paycart.admin.attribute.addColorScript();
 			});
 			
-			$(document).on('change','#paycart_form_attribute_type',function()
+			$(document).on('change','#paycart_productattribute_form_attribute_type',function()
 			{
-				var attributeId = $('#paycart_form_productattribute_id').val();
+				var attributeId = $('#paycart_productattribute_form_productattribute_id').val();
 				paycart.admin.attribute.getTypeConfig($(this).val(), attributeId);
 			});
 
@@ -38,12 +38,22 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	
 </script>
 
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
+
 <div class="pc-product-wrapper clearfix">
 <div class="pc-product row-fluid">
 	<form action="index.php" onSubmit="return fasle;" method="post" data="pc-json-attribute-edit" id="paycart_productattribute_form">
 	<div class=" span6">
 		<div class="control-group">
-			<div class="control-label"><?php echo $form->getLabel('title'); ?> </div>
+			<div class="control-label"><?php echo $flag; ?><?php echo $form->getLabel('title'); ?> </div>
 			<div class="controls"><?php echo $form->getInput('title'); ?></div>								
 		</div>
 
@@ -69,7 +79,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		
 		<div class="control-group">
 			<div class="control-label">
-				<?php //echo $form->getLabel('filterable'); ?>
+				<?php echo $form->getLabel('filterable'); ?>
 			</div>
 			<div class="controls">
 				<?php echo $form->getInput('filterable'); ?>
@@ -78,7 +88,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		
 		<div class="control-group">
 			<div class="control-label">
-				<?php //echo $form->getLabel('searchable'); ?>
+				<?php echo $form->getLabel('searchable'); ?>
 			</div>
 			<div class="controls">
 				<?php echo $form->getInput('searchable'); ?>
@@ -102,6 +112,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	
 	<!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="apply" />
+	<?php echo $form->getInput('lang_code'); ?>
 	<?php echo $form->getInput('productattribute_id');?>
 	<?php echo $form->getInput('productattribute_lang_id');?>
 	

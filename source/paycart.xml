@@ -25,6 +25,7 @@
 	
 	<!-- Media files -->
 	<media destination="com_paycart" folder="media">
+		<folder>admin</folder>
 		<folder>css</folder>
 		<folder>js</folder>
 		<folder>images</folder>
@@ -56,9 +57,9 @@
 		
 		<menu img="">COM_PAYCART</menu>
 		<submenu>
-			<menu 	view="product" 		img="">COM_PAYCART_ADMIN_MENU_CATALOGUE</menu>
-			<menu 	view="cart"			img="">COM_PAYCART_ADMIN_MENU_SALES</menu>
+			<menu 	view="product" 		img="">COM_PAYCART_ADMIN_MENU_CATALOGUE</menu>			
 			<menu 	view="buyer"		img="">COM_PAYCART_ADMIN_MENU_BUYER</menu>
+			<menu 	view="cart"			img="">COM_PAYCART_ADMIN_MENU_SALES</menu>
 			<menu 	view="config"		img="">COM_PAYCART_ADMIN_MENU_SETTINGS</menu>
 		</submenu>
 		
@@ -71,6 +72,7 @@
 			<folder>views</folder>
 			<folder>install</folder>
 			<folder>templates</folder>
+			<folder>layouts</folder>
 		</files>
 		
 		<languages>

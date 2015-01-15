@@ -34,7 +34,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 					<?php $field = $form->getField('catalogue_image_thumb_height') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>
+						<div class="controls">
+							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+						</div>
 					</div>
 				</div>
 				
@@ -42,7 +45,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 					<?php $field = $form->getField('catalogue_image_thumb_width') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>
+						<div class="controls">
+							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+						</div>
 					</div>
 				</div>						
 			</div>
@@ -52,7 +58,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 					<?php $field = $form->getField('catalogue_image_optimized_height') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>
+						<div class="controls">
+							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+						</div>
 					</div>
 				</div>
 				
@@ -60,7 +69,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 					<?php $field = $form->getField('catalogue_image_optimized_width') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>
+						<div class="controls">
+							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+						</div>
 					</div>
 				</div>						
 			</div>
@@ -70,7 +82,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 					<?php $field = $form->getField('catalogue_image_squared_size') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>
+						<div class="controls">
+							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+						</div>
 					</div>
 				</div>
 				
@@ -82,7 +97,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 					<?php $field = $form->getField('catalogue_image_upload_size') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
-						<div class="controls"><?php echo $field->input; ?></div>
+						<div class="controls">
+							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+						</div>
 					</div>
 				</div>
 				

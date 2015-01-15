@@ -25,8 +25,8 @@
 <!--		<language tag="en-GB">en-GB.mod_paycart_meni.sys.ini</language>-->
 <!--	</languages>-->
 
-    <alias>pc-cart-module</alias>
-    <version_number>0.9.0</version_number>
-    <version_name>Paycart Cart Module 0.9.0</version_name>
+    <alias>pc-module-menu</alias>
+    <version_number>1.0.0</version_number>
+    <version_name>Menu Module 1.0</version_name>
 
 </extension>

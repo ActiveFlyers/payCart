@@ -26,11 +26,13 @@ class PaycartHelperEvent extends PaycartHelper
 	 * #######################################################################
 	 *
      *  Listed all available triggers on cart
-     *      1#. onPaycartCart Drafted 
-     *      2#. onPaycartCart Locked
-     *      3#. onPaycartCart Approved
-     *      4#. onPaycartCart Paid
-     *      5#. onPaycartCart Delivered
+     *      1#. onPaycart-Cart-After-Drafted 
+     *      2#. onPaycart-Cart-After-Locked
+     *      3#. onPaycart-Cart-After-Approved
+     *      4#. onPaycart-Cart-After-Paid
+     *      5#. onPaycartCart-After-Delivered
+     *      6#. onPaycart-Cart-Before-Calculate
+     *      7#. onPaycart-Cart-After-Calculate
 	 * #######################################################################
 	 */
         
@@ -66,7 +68,7 @@ class PaycartHelperEvent extends PaycartHelper
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
             //send notification 
-            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($cart);
            	}
@@ -88,7 +90,7 @@ class PaycartHelperEvent extends PaycartHelper
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
 
             //send notification 
-            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($cart);
            	}
@@ -118,7 +120,7 @@ class PaycartHelperEvent extends PaycartHelper
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
            //send notification 
-            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($cart);
            	}
@@ -140,11 +142,50 @@ class PaycartHelperEvent extends PaycartHelper
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
             //send notification 
-            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($cart);
            	}
         }
+        
+		/**
+         * 
+         * Trigger before cart calculation begin
+         * @param $params
+         * 
+         * @return trigger output
+         */
+        public function onPaycartCartBeforeCalculate(Array $params) 
+        {
+        	$event_name =   'onPaycartCartBeforeCalculate';
+            
+            // trigger
+            return Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+        }
+        
+        /**
+         * 
+         * Trigger After cart calculation begin
+         * @param $params
+         * 
+         * @return trigger output
+         */
+		public function onPaycartCartAfterCalculate(Array $params) 
+        {
+        	$event_name =   'onPaycartCartAfterCalculate';
+            
+            // trigger
+            return Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+        }
+        
+    /**
+	 * #######################################################################
+	 *
+     *  Listed all available triggers on Shipment
+     *      1#. onPaycart-Shipment-After-Dispatched
+     *      2#. onPaycart-Shipment-After-Delivered
+	 * #######################################################################
+	 */
 
 		/**
          *
@@ -161,7 +202,7 @@ class PaycartHelperEvent extends PaycartHelper
             Rb_HelperPlugin::trigger('onPaycartShipmentAfterDispatched', $params, self::$default_plugin_type);
             
             //send notification 
-            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $shipment->getCart()->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($shipment);
            	}
@@ -181,14 +222,48 @@ class PaycartHelperEvent extends PaycartHelper
             
             Rb_HelperPlugin::trigger('onPaycartShipmentAfterDelivered', $params, self::$default_plugin_type);
             
-            $cart 			 = $shipment->getCart();
-            $shipments 		 = PaycartFactory::getHelper('cart')->getShipments($cart->getId());
+            $cart 		= $shipment->getCart();
+            $id 		= $cart->getId();
+
+            /* @var $cartHelper PaycartHelperCart */
+            $cartHelper = PaycartFactory::getHelper('cart');
+            $shipments 	= $cartHelper->getShipments($id);
+            $productCartParticulars = $cartHelper->getCartParticularsData($id, Paycart::CART_PARTICULAR_TYPE_PRODUCT);
             $isCartDelivered = true;
             
-            foreach ($shipments as $data) {
-            	if($data->status != Paycart::STATUS_SHIPMENT_DELIVERED){
+            // Calculate Shipments
+            $productShipments = array();
+            foreach($shipments as $object){
+            	foreach($object->products as $product){
+            		if(!isset($productShipments[$product['product_id']])){
+            			$productShipments[$product['product_id']] = array();
+            		}
+            
+            		$productShipments[$product['product_id']][] = array('quantity' => $product['quantity'],
+            				'shipment_id' => $object->shipment_id);
+            	}
+            }
+            
+            $products = array();
+            foreach($productCartParticulars as $particular){
+            	$products[$particular->particular_id] = PaycartProduct::getInstance($particular->particular_id);
+            		
+            	// if shipment is not created for any product, then do not mark the cart as delivered
+            	if(!isset($productShipments[$particular->particular_id])){
             		$isCartDelivered = false;
             		break;
+            	}
+            	else{
+            		// if all quantity of product is not consumed in shipment, then do not mark the cart as delivered
+            		$quantity = 0;
+            		foreach($productShipments[$product['product_id']] as $object){
+            			$quantity += $object['quantity'];
+            		}
+            
+            		if($quantity < $particular->quantity){
+            			$isCartDelivered = false;
+            			break;
+            		}
             	}
             }
             
@@ -198,9 +273,30 @@ class PaycartHelperEvent extends PaycartHelper
             }
             
          	//send notification 
-            $instance = PaycartNotification::getInstanceByEventname($event_name);
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($shipment);
            	}
+         }
+         
+                 
+    /**
+	 * #######################################################################
+	 *
+     *  Listed all available Paycart System triggers
+     *      1#. onPaycart-Cron
+	 * #######################################################################
+	 */
+         
+		 /**
+          * onPaycartCron event
+		  * Actions to be performed on cron will be done from here and trigger an event as well
+		  */
+         public function onPaycartCron()
+         {
+         	PaycartFactory::getHelper('productindex')->SyncIndexing(PaycartFactory::getConfig()->get('product_index_limit'));
+         	 
+         	$args = array();
+         	return Rb_HelperPlugin::trigger('onPaycartCron', $args , self::$default_plugin_type);
          }
 }

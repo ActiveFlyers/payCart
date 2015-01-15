@@ -11,24 +11,6 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
-
-	// Promotion msg
-	$promotion_message = '';	
- 	foreach ($promotion_usage as $usages ) :
- 		foreach ($usages as $usage) :
- 			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_DISCOUNTRULE)
- 				$promotion_message[] = $usage->message;
- 		endforeach;
-  	endforeach;
-  	
-  	// Duties msg
-	$duties_message = '';
- 	foreach ($duties_usage as $usage ) :
- 		foreach ($usages as $usage) :
- 			if ($usage->rule_type == Paycart::PROCESSOR_TYPE_TAXRULE)
- 				$duties_message[] = $usage->message;
- 		endforeach;
-  	endforeach;
   	
 ?>
 <div class="pc-checkout-state row-fluid clearfix">
@@ -105,7 +87,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 			<div class="accordion-inner">
 				 				<?php
 				 					if ( @$billing_to_shipping ) {
-				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('Same as a Billing Address');
+				 						echo '<i class="fa fa-clipboard"></i> ' . JText::_('COM_PAYCART_CART_ADDRESS_SAME_AS_BILLING');
 				 					} else {
 				 						$layout = new JLayoutFile('paycart_buyeraddress_display');
 										echo $layout->render($shipping_address);
@@ -142,14 +124,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						 				<b><?php echo JText::_('COM_PAYCART_PRICE')?> - <?php echo $formatter->amount($shipping_total);?></b><br/>
 					 				   	   <?php $estimatedDate = null;?>
 										   <?php foreach ($shipping_options[$default_shipping]['details'] as $shippingrule_id => $details):?>
-										   			<?php $date = $formatter->date($details['delivery_date']);?>
+										   			<?php $date = new Rb_Date($details['delivery_date']);?>
 										   			<?php if(empty($estimatedDate)):?>
 									   					<?php $estimatedDate = $date;?>
 									   					<?php continue?>
 									   				<?php endif;?>
-								   					<?php $estimatedDate = ($estimatedDate < $date)?$date:$estimatedDate; ?>
+									   													   				
+								   					<?php $estimatedDate = ($estimatedDate->toUnix() < $date->toUnix())?$date:$estimatedDate; ?>
 										   <?php endforeach;?>								   
-										   <?php echo JText::_("COM_PAYCART_SHIPPING_ESTIMATED_DELIVERY_DATE").' : '.$estimatedDate;?> <br />
+										   <?php echo JText::_("COM_PAYCART_SHIPPING_ESTIMATED_DELIVERY_DATE").' : '.$formatter->date($estimatedDate);?> <br />
 										   <?php if(count($shipping_options[$default_shipping]['details']) > 1):?>
 													<span class='text-error'><?php echo JText::_("COM_PAYCART_SHIPPING_ORDER_MAY_BE_IN_MULTIPLE_PACKAGES");?></span>
 										   <?php endif;?>			 				
@@ -163,103 +146,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 	</div>
 		 	
 			<!-- Product Summary		 	-->
-		 	<div class="row-fluid">
-		 		<div class="accordion-group">
-		 			<div class="accordion-heading">
-		 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-products-summary">
-	 						<?php echo JText::_('COM_PAYCART_CART_PRODUCT_SUMMARY'); ?>
-	 					</a>
-	 				</div>
-	 		
-			 		<div id="pc-confirm-products-summary" class="accordion-body in collapse"">
-			 			<div class="accordion-inner">
-			 			<?php 
-			 				foreach ($product_particular as $particular) :
-			 				?>
-			 				<div class="row-fluid">
-								
-								<!-- Product Image			 				-->
-			 					<div class="span3">
-			 					 	<img class="img-polaroid " 
-			 					 		 src="<?php echo @$product_media[$particular->particular_id]['thumbnail'];?>" 
-			 					 		/>
-			 					</div>
-			 					
-			 					<!-- Product Details			 				-->
-				 				<div class="span5">
-				 						<div>
-				 							<a class="pc-break-word" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$particular->particular_id);?>" >
-				 								<?php echo $particular->title; ?>
-				 							</a>
-				 						</div>
-				 						
-				 						<div>
-				 							<?php echo JText::_('COM_PAYCART_UNIT_PRICE').':'.$formatter->amount($particular->unit_price, true, $currency_id);  ?>
-				 						</div>
-				 						
-				 						<?php if ($particular->tax) : 
-				 								echo '<div>+'.JText::_('COM_PAYCART_TAX').':'.$formatter->amount($particular->tax, true, $currency_id).'</div>';
-				 							 endif;  
-				 						?>
-				 						<?php if ($particular->discount) : 
-				 								echo '<div>-'.JText::_('COM_PAYCART_DISCOUNT').':'.$formatter->amount(-($particular->discount), true, $currency_id).'</div>';
-				 							 endif;  
-				 						?>
-				 				</div>
-				 				
-				 				<!-- Product Price and quantity			 				-->
-				 				<div class="span4">
-				 					
-				 					<div>
-					 					<?php echo JText::_('COM_PAYCART_QUANTITY'); ?> : 
-					 					<input 
-					 							type="text"   
-					 							class="input-mini" 
-					 							id='pc-checkout-quantity-<?php echo $particular->particular_id; ?>'
-					 							value="<?php echo $particular->quantity; ?>"
-					 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" 	
-					 						/>
-					 						<a 	href="javascript:void(0);" 
-					 							onClick="paycart.cart.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value)"
-					 							>
-					 								<i class="fa fa-refresh"></i>
-					 						</a>					 											 										 					
-					 				</div>					 				
-					 				
-					 				<span class="text-error" id="pc-checkout-quantity-error-<?php echo $particular->particular_id;?>"></span>
-					 				 
-					 				<div>
-					 					<h4><?php echo JText::_('COM_PAYCART_PRICE'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></h4>
-					 				</div>
-													 				
-				 				</div>
-
-				 			</div>
-
-				 			<div class="row-fluid">
-				 				
-				 				<div class="pull-right">
-				 					<a 	class="muted" href="javascript:void(0)" 
-										onClick="paycart.cart.confirm.onRemoveProduct(<?php echo $particular->particular_id;?>)"><i class="fa fa-trash-o fa-lg">&nbsp;</i>
-									</a>
-								</div>
-								
-				 			</div>
-
-				 			<hr />
-			 			<?php 
-			 				endforeach;
-			 			?>
-			 				<div class="row-fluid">
-				 				<span class="pull-right"><?php echo JText::_("COM_PAYCART_CART_PRODUCT_TOTAL") ?> : <?php echo $formatter->amount($product_total, true, $currency_id); ?> </span>
-				 			</div>
-				 			
-			 			</div>
-			 		</div>
-	 			</div>
-		 	</div>
-		 	
-	 	
+		 	<?php echo $this->loadTemplate('confirm_product_summary')?>	 	
 	 		
 	 	</div>
 	 	
@@ -296,44 +183,46 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 							<td><?php echo $formatter->amount($shipping_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
-			 						<tr>
-										<td>
-											<?php
-			 									if(!empty($duties_message) ):
-			 								?>
-												  
-												  <a 	href="javascript:void(0)"  
-												  		class="pc-popover" 
-												  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-												  		data-content="<?php echo implode('<hr>', $duties_message);?>" data-trigger="hover">
-												  		
-												 	 	<i class="fa fa-info-circle"></i>
-												  </a>
-												  
-											<?php endif;?>
-			 							<?php echo JText::_('COM_PAYCART_TAX'); ?></td>
-			 							<td><?php echo $formatter->amount($duties_total, true, $currency_id); ?></td>
-			 						</tr>
+			 						<?php if(!empty($duties_particular) && floatval($duties_total) != 0):?>
+				 						<tr>
+											<td>
+												<?php $duties_particular = array_shift($duties_particular);?>
+												<?php $key = $duties_particular->type.'-'.$duties_particular->particular_id;?>
+												<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE])):?>
+													 	<a 	href="javascript:void(0)"  
+													  		class="pc-popover" 
+													  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+													  		data-content="<?php echo implode("<br/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE]);?>" data-trigger="hover">
+													  		
+													 	 	<i class="fa fa-info-circle"></i>
+													  </a>
+												<?php endif;?>
+				 							<?php echo JText::_('COM_PAYCART_TAX'); ?></td>
+				 							<td><?php echo $formatter->amount($duties_total, true, $currency_id); ?>
+				 								<br><small>(<?php echo JText::_("COM_PAYCART_CART_TAX_ON_TAX_DESC")?>)</small>
+				 							</td>
+				 						</tr>
+			 						<?php endif;?>
 			 						
-			 						<tr>
-			 							<td>
-			 								<?php
-			 										if(!empty($promotion_message) ):
-			 								?>
-												  
-												  <a 	href="javascript:void(0)"  
-												  		class="pc-popover" 
-												  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
-												  		data-content="<?php echo implode('<hr>', $promotion_message);?>" data-trigger="hover">
-												  		
-												 	 	<i class="fa fa-info-circle"></i>
-												  </a>
-												  
-											<?php endif;?>
-			 								<?php echo JText::_('COM_PAYCART_DISCOUNT'); ?>
-			 							</td>
-			 							<td><?php echo $formatter->amount($promotion_total, true, $currency_id); ?></td>
-			 						</tr>
+			 						<?php if(!empty($promotion_particular) && floatval($promotion_total) != 0):?>
+				 						<tr>
+				 							<td>
+				 								<?php $promotion_particular = array_shift($promotion_particular);?>
+				 								<?php $key = $promotion_particular->type.'-'.$promotion_particular->particular_id;?>
+				 								<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE])):?>
+													 	<a 	href="javascript:void(0)"  
+													  		class="pc-popover" 
+													  		title="<?php echo JText::_("COM_PAYCART_DETAILS")?>"
+													  		data-content="<?php echo implode("<br/>", $usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE]);?>" data-trigger="hover">
+													  		
+													 	 	<i class="fa fa-info-circle"></i>
+													  </a>												  
+												<?php endif;?>
+				 								<?php echo JText::_('COM_PAYCART_DISCOUNT'); ?>
+				 							</td>
+				 							<td><?php echo $formatter->amount($promotion_total, true, $currency_id); ?></td>
+				 						</tr>
+			 						<?php endif;?>
 			 						
 			 						<tr>
 			 							<td><?php echo JText::_('COM_PAYCART_TOTAL'); ?></td>
@@ -349,17 +238,32 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<!-- Cart Discount		 -->
 			 <div class="row-fluid">
 			 	<p><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_LABEL')?></p>
-			 	<div class="input-append" >
+			 	<?php  
+			 	 // Already applied discount
+			 	 if (!empty($applied_promotion_code)) :
+			 	 		foreach ($applied_promotion_code as $code) : ?>
+			 	 		<div class="input-prepend input-append" >
+				 	  	   <span class="  add-on text-success "><i class="fa fa-check "></i></span>
+						  <input class="span6" type="text" value='<?php echo $code;?>'  readonly="readonly">
+						  <button class="btn" type="button" onclick="paycart.cart.onRemovePromotionCode('<?php echo $code;?>')">
+						  <span class="  text-error  "><i class="fa fa-remove "></i></span>
+						  <?php echo JText::_('COM_PAYCART_PROMOTION_CODE_REMOVE')?></button>
+						</div>
+			 	<?php 	endforeach;
+			 	?>
+			 	<?php else :?>
+	 	 		<div class="input-append" >
 				  <input class="span9" id="paycart-promotion-code-input-id" type="text">
 				  <button class="btn" type="button" onclick="paycart.cart.onApplyPromotionCode()"><?php echo JText::_('COM_PAYCART_PROMOTION_CODE_APPLY')?></button>
 				</div>
-				<span class="text-error" id="pc-checkout-promotioncode-error"></span>
+				<?php endif;?>
+				<span class=" pc-error " id="pc-checkout-promotioncode-error" for="pc-checkout-promotioncode-error"></span>
 			 </div>
 			 
 			 <!-- Process ne		 -->
 			 <div class="row-fluid">
 			 	<input type="hidden" name="paycart_cart_confirm">
-			 	<button type="button" class="btn btn-primary btn-block btn-large" onClick="return paycart.cart.confirm.do(); " ><?php echo JText::_('COM_PAYCART_CART_PROCEED_TO_PAYMENT'); ?></button>
+			 	<button type="button" class="btn btn-primary btn-block btn-large <?php echo $isDisabled;?>" <?php echo $clickActionOnProceed?> ><?php echo JText::_('COM_PAYCART_CART_PROCEED_TO_PAYMENT'); ?></button>
 			 </div>
 			 
 			 <input	type="hidden"	name='step_name' value='confirm' />

@@ -22,8 +22,8 @@ class PaycartProductAttribute extends PaycartLib
 	protected $productattribute_id	 =	0; 
 	protected $type 		 =	'';
 	protected $code	 		 =	'';
-	protected $filterable	 = 	0;
-	protected $searchable	 =	0;
+	protected $filterable	 = 	1;
+	protected $searchable	 =	1;
 	protected $published	 =	1;
 	protected $config		 =  null;
 	protected $ordering		 =	0;
@@ -41,8 +41,8 @@ class PaycartProductAttribute extends PaycartLib
 		$this->productattribute_id	 =	0; 
 		$this->type 		 =	'';
 		$this->css_class	 =	'';
-		$this->filterable	 = 	0;
-		$this->searchable	 =	0;
+		$this->filterable	 = 	1;
+		$this->searchable	 =	1;
 		$this->published 	 =	1;
 		$this->ordering		 =	0;
 		$this->config		 =  new Rb_Registry();
@@ -50,7 +50,7 @@ class PaycartProductAttribute extends PaycartLib
 		//language specific data
 		$this->title 		= '';
 		$this->productattribute_lang_id 	= 0;
-		$this->lang_code  	= PaycartFactory::getCurrentLanguageCode();
+		$this->lang_code  	= PaycartFactory::getPCDefaultLanguageCode();
 		
 		//attribute specific options
 		$this->_options = array();
@@ -169,6 +169,11 @@ class PaycartProductAttribute extends PaycartLib
 		return $this->lang_code;
 	}
 	
+	public function isFilterable()
+	{
+		return $this->filterable;
+	} 
+	
 	function getConfigHtml($selectedValue = '', Array $options = array())
 	{
 		if(empty($this->type)){
@@ -191,5 +196,15 @@ class PaycartProductAttribute extends PaycartLib
 	function getScript()
 	{
 		return PaycartAttribute::getInstance($this->type)->getScript();
+	}
+	
+	function getFilterHtml(Array $selectedValue = array(), Array $options = array())
+	{
+		return PaycartAttribute::getInstance($this->type)->getFilterHtml($this,$selectedValue,$options);
+	}
+	
+	function getSearchableDataOfOption($optionId)
+	{
+		return PaycartAttribute::getInstance($this->type)->getSearchableDataOfOption($this->getId(), $optionId);
 	}
 }

@@ -29,5 +29,10 @@ $controller =  PaycartFactory::getInstance($controllerClass, 'controller', 'Payc
 // execute task
 $controller->execute($task);
 
+// A simple way, by which we can exit after controller request
+if(defined('PAYCART_EXIT')){
+	exit(PAYCART_EXIT);
+}
+
 // lets complete the task by taking post-action
 $controller->redirect();

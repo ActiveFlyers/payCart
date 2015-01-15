@@ -40,7 +40,10 @@ defined('_JEXEC') or die( 'Restricted access' );
 								<?php echo PaycartHtml::_('grid.sort', "ID", 'paymentgateway_id', $filter_order_Dir, $filter_order);?>
 							</th>
 						    				
-							<th ><?php echo PaycartHtml::_('grid.sort', "Title", 'title', $filter_order_Dir, $filter_order);?></th>
+							<th ><?php echo PaycartHtml::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
+							<th ><?php echo PaycartHtml::_('grid.sort', "COM_PAYCART_ADMIN_TYPE", 'processor_type', $filter_order_Dir, $filter_order);?></th>
+							<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
+							
 						</tr>
 					<!-- TABLE HEADER END -->
 					</thead>
@@ -56,6 +59,8 @@ defined('_JEXEC') or die( 'Restricted access' );
 							    </th>				
 								<td><?php echo $record->paymentgateway_id;?></td>
 								<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=paymentgateway&task=edit&id='.$record->paymentgateway_id, $record->title);?></td>
+								<td><?php echo $record->processor_type?></td>
+								<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 							</tr>
 						<?php $count++;?>
 						<?php endforeach;?>

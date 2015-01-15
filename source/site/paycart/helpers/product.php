@@ -74,24 +74,28 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		// prepare bind data
 		$data = $product->toArray();
-		foreach(array('product_id', 'variation_of', 'created_date', 'modified_date', 'cover_media' ) as $key){
+		foreach(array('product_id', 'variation_of', 'created_date', 'modified_date', 'cover_media' , 'alias', 'product_lang_id') as $key){
 			unset($data[$key]);
 		}		
-		$data['variation_of'] = $product->getId();		
+		$data['variation_of'] = $product->getVariationOf();		
 		$newProduct->bind($data);
 		
 		
 		// set attribute values
-		$newProduct->set('_attributeValues', $product->getAttributeValues());
+		$newProduct->set('_attributeValues', $product->getAttributes());
+
+		// save the records first, it will copy the same data in all the language
+		$newProduct->save();
 		
-		// fetch all the language records and save one by one
-		$records   = PaycartFactory::getModel('product')->loadLanguageRecords(array('product_id' => $product->getId()));
+		// fetch all the language records and update one by one
+		$parentRecords  = PaycartFactory::getModel('product')->loadLanguageRecords(array('product_id' => $product->getId()));
+		$records   		= PaycartFactory::getModel('product')->loadLanguageRecords(array('product_id' => $newProduct->getId()), 'lang_code');
 		
-		foreach ($records as $record){
+		foreach ($parentRecords as $record){
 			unset($record->product_id);
 			// IMP : Unset alias, so that it can be generated automatically
 			$record->alias = '';
-			$record->product_lang_id = 0;
+			$record->product_lang_id = $records[$record->lang_code]->product_lang_id;
 			$data = (array)$record;
 			$newProduct->bind($data)->save();
 		}
@@ -153,7 +157,7 @@ class PaycartHelperProduct extends PaycartHelper
 		//for base attribute
 		$productAttributeValue = PaycartFactory::getModel('productattributevalue')->loadProductAttributeValue($baseAttrId, $productIds);
 		$attributes[$baseAttrId]['options'] 	  = array_keys($productAttributeValue);
-		$attributes[$baseAttrId]['selectedvalue'] = $product->getAttributeValues($baseAttrId);
+		$attributes[$baseAttrId]['selectedvalue'] = $product->getAttributes($baseAttrId);
 		
 		unset($records[$baseAttrId]);
 		
@@ -164,13 +168,13 @@ class PaycartHelperProduct extends PaycartHelper
 			// base attribute value = current product's value for base filter 
 		 	$condition = 'product_id IN(select product_id from #__paycart_productattribute_value 
 		 				  where productattribute_id = '.$baseAttrId.'
-		 				  and productattribute_value = '.$product->getAttributeValues($baseAttrId).'  
+		 				  and productattribute_value = '.$product->getAttributes($baseAttrId).'  
 		 				  and product_id IN('.implode(',', $productIds).'))';		
 		 	
 		 	$productAttributeValue = PaycartFactory::getModel('productattributevalue')->loadProductAttributeValue($key, $productIds, $condition);
 		 	
 		 	$attributes[$key]['options'] 	   = array_keys($productAttributeValue);
-		 	$attributes[$key]['selectedvalue'] = $product->getAttributeValues($key);
+		 	$attributes[$key]['selectedvalue'] = $product->getAttributes($key);
 		}
 		
 		return $attributes;
@@ -242,7 +246,7 @@ class PaycartHelperProduct extends PaycartHelper
 		$product = PaycartProduct::getInstance($productId);
 		
 		if($product instanceof PaycartProduct){
-			return ($product->getQuantity() > $product->getStockoutLimit())?true:false;
+			return ($product->getQuantity() > 0)?true:false;
 		}
 		
 		return false;

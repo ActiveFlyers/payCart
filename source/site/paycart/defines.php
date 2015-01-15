@@ -28,7 +28,8 @@ define('PAYCART_REVISION','@global.build.number@');
 
 //shared paths
 define('PAYCART_PATH_CORE',					JPATH_SITE.'/components/com_paycart/paycart');
-define('PAYCART_PATH_CORE_MEDIA',			JPATH_ROOT.'/media/com_paycart');
+define('PAYCART_PATH_CORE_MEDIA',			'com_paycart');
+define('PAYCART_PATH_ADMIN_MEDIA',			'com_paycart/admin');
 define('PAYCART_PATH_CORE_FORM',			PAYCART_PATH_CORE.'/form');
 define('PAYCART_PATH_CORE_IMAGES',  		'images/cart');
 

@@ -26,7 +26,7 @@ class PaycartAdminControllerProduct extends PaycartController
 	public function _save(array $data, $itemId=null, $type=null)
 	{
 		//Get All files from paycart form
-		$data['_uploaded_files'] = $this->input->files->get('paycart_form', false);
+		$data['_uploaded_files'] = $this->input->files->get($this->getControlNamePrefix(), false);
 		
 		//manage media files related to attribute
 		if(isset($data['_uploaded_files']['attributes'])){			
@@ -117,7 +117,7 @@ class PaycartAdminControllerProduct extends PaycartController
 		$app = PaycartFactory::getApplication();
 		// Check variantof 
 		if(!$variantOf) {
-			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_PARENT_REQUIRED'),'error');
+			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_VARIANT_PARENT_REQUIRED'),'error');
 			$this->setRedirect('index.php?option=com_paycart&view=product');
 			return false;
 		}
@@ -126,7 +126,7 @@ class PaycartAdminControllerProduct extends PaycartController
 		
 		//Validate Variant exist or not
 		if (!$product) {
-			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_PARENT_NOT_EXIST'),'error');
+			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_VARIANT_PARENT_NOT_EXIST'),'error');
 			$this->setRedirect('index.php?option=com_paycart&view=product');
 			return false;
 		} 
@@ -135,13 +135,13 @@ class PaycartAdminControllerProduct extends PaycartController
 		$productHelper = PaycartFactory::getHelper('product');
 		$variant       = $productHelper->addVariant($product);
 		if(!$variant) {
-			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_VARIANT_CREATION_FAIL'),'error');
+			$app->enqueueMessage(Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_VARIANT_CREATION_FAIL'),'error');
 			return false;
 		}
 		
 		$this->setRedirect(
 						'index.php?option=com_paycart&view=product&task=edit&product_id='.$variant->getId(),
-						Rb_Text::_('COM_PAYCART_VARIANT_CREATION_SUCCESS')
+						Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_VARIANT_CREATION_SUCCESS')
 							);
 		// no need to execute view functions
 		return false;

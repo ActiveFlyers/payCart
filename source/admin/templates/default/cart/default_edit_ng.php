@@ -11,20 +11,27 @@
 
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
+
+// load angular
 Rb_HelperTemplate::loadMedia(array('angular'));
 ?>
 
 <script type="text/javascript">	
 
+(function($)
+	{
+
+	paycart.ng.cart = angular.module('pcngCartApp', []);
+
 	paycart.ng.cart.controller('pcngCartShipmentCtrl', function($scope, $http, $timeout){
 		$scope.message 		   = false;
-		$scope.shipments       = shipments;
-		$scope.cartId	       = cartId;
-		$scope.shippingMethods = shippingMethods;
-		$scope.status	       = status;
-		$scope.products		   = products;
-		$scope.tempArray	   = tempArray;
-		$scope.tempStatus	   = tempStatus;
+		$scope.shipments       = pc_shipments;
+		$scope.cartId	       = pc_shipment_cartId;
+		$scope.shippingMethods = pc_shipment_shippingMethods;
+		$scope.status	       = pc_shipment_status;
+		$scope.products		   = pc_shipment_products;
+		$scope.tempArray	   = pc_shipment_tempArray;
+		$scope.tempStatus	   = pc_shipment_tempStatus;
 		
 		/*
 	     * save new/existing shipment
@@ -56,6 +63,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		               // if successful, bind success message to message
 		               $scope.shipments[index] = data.data;
 		               $scope.shipments[index].message = data.message;
+		               $scope.shipments[index].errMessage = false;
    
 					   //update status
 					   $scope.tempStatus[index] = $scope.getStatus(data.data.status, data.data.shipment_id);	
@@ -169,14 +177,16 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 
 			for(a=0; a<shipmentStatus.length; a++){
 				shipmentStatus[a].disabled = false;
-				if(!shipmentId && shipmentStatus[a].value != "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>"){
+				if(!shipmentId && (shipmentStatus[a].value != "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>"
+					           && shipmentStatus[a].value != "<?php echo Paycart::STATUS_SHIPMENT_FAILED?>")){
 					shipmentStatus[a].disabled = true;
 					continue;
 				}
 
 				if((currentStatus == "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>") && 
 				   (shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_PENDING?>" &&  
-					shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_DISPATCHED?>")){
+					shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_DISPATCHED?>" && 
+					shipmentStatus[a].value !== "<?php echo Paycart::STATUS_SHIPMENT_FAILED?>" )){
 					shipmentStatus[a].disabled = true;
 					continue;
 				}
@@ -218,7 +228,59 @@ Rb_HelperTemplate::loadMedia(array('angular'));
                            });
                      }
               };
-    }])
+    }]);
+
+
+	paycart.ng.cart.controller
+		('pcngCartNextActionCtrl', 
+				
+				function($scope, $http, $timeout)
+				{
+					
+					$scope.selected = null;	// action
+					$scope.task = null; 	// task
+					$scope.task_value='';
+
+					// On Any Action Selection						
+					$scope.onActionSelection = function(selected)
+					{	
+						// select action
+						$scope.selected  = selected;
+
+						// set task according to action
+						switch($scope.selected) {
+							case 'approve' :
+								$scope.task = 'approve';
+								$scope.task_value= '<?php echo JText::_('COM_PAYCART_ADMIN_APRROVE_TASK');?>';
+								break;
+							case 'pay_by_transaction_id' :
+							case 'pay_by_anymean' :
+								$scope.task = 'pay';
+								$scope.task_value= '<?php echo JText::_('COM_PAYCART_ADMIN_PAY_TASK');?>' ;	
+								break;
+							default :
+								$('input[name="action"]').prop('checked', false); 	//unchecked radio button
+								$scope.task = null; 	
+								$scope.task_value= '';
+						} 
+					};
+
+					// On Any Action Execution
+					$scope.onActionExecute = function() 
+					{
+						// if form is validate then submit it 
+						if (paycart.formvalidator.isValid(document.id('pc-cart-action-form'))) {
+							$("#pc-cart-action-form").submit();
+						}
+						return false;
+					}					
+				}
+		);
+    
+        
+	})(paycart.jQuery)
+
+
 
 </script>
 <?php 

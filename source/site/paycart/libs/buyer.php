@@ -25,8 +25,7 @@ class PaycartBuyer extends PaycartLib
 	 */
 	protected $buyer_id;
 	protected $is_registered_by_guestcheckout;
-	protected $billing_address_id;
-	protected $shipping_address_id;
+	protected $default_address_id;
 	
 	/**
 	 * 
@@ -35,9 +34,10 @@ class PaycartBuyer extends PaycartLib
 	protected $realname;
 	protected $username;
 	protected $email;
-	protected $usertype;
+	protected $user_type;
 	protected $register_date;
 	protected $lastvisit_date;
+	protected $default_phone;
 	
 	/**
 	 * 
@@ -58,42 +58,38 @@ class PaycartBuyer extends PaycartLib
 	{		
 		$this->buyer_id	 						=	0;
 		$this->is_registered_by_guestcheckout	=	0;
-		$this->billing_address_id				=	0;
-		$this->shipping_address_id				=	0;
-		
+		$this->default_address_id				=	0;
+		$this->default_phone					= '';
+		$this->user_type							=  array();
 		return $this;
 	}
-	
-	/**
-	 * 
-	 * Return billing address information
-	 * @param Bool $instance
-	 * 
-	 * @return PaycartBuyeraddress or Buyer Billing address Id
-	 */
-	public function getBillingAddress($instance = false) 
+
+	public function bind($data, $ignore=array())
 	{
-		if ($instance) {
-			return PaycartBuyeraddress::getInstance($this->billing_address_id);
+		if(is_object($data)){
+			$data = (array) ($data);
+		}
+		if(isset($data['user_type']) && !is_array($data['user_type'])){
+			$data['user_type'] = explode(',', $data['user_type']);
 		}
 		
-		return $this->billing_address_id;
+		return parent::bind($data, $ignore);
 	}
 	
 	/**
 	 * 
-	 * Return Shipping address information
+	 * Return Default address information
 	 * @param Bool $instance
 	 * 
-	 * @return PaycartBuyeraddress or Buyer Shipping address Id
+	 * @return PaycartBuyeraddress or Buyer Default address Id
 	 */
-	public function getShippingAddress($instance = false) 
+	public function getDefaultAddress($instance = false) 
 	{
 		if ($instance) {
-			return PaycartBuyeraddress::getInstance($this->shipping_address_id);
+			return PaycartBuyeraddress::getInstance($this->default_address_id);
 		}
 		
-		return $this->shipping_address_id;
+		return $this->default_address_id;
 	}
 	
 	public function getEmail() 
@@ -109,5 +105,10 @@ class PaycartBuyer extends PaycartLib
 	public function getRealName() 
 	{
 		return $this->realname;
+	}
+	
+	public function getDefaultPhone()
+	{
+		return $this->default_phone;
 	}
 }

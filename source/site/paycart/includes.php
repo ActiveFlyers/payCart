@@ -21,62 +21,46 @@ define('PAYCART_CORE_LOADED', true);
 
 // include defines
 include_once dirname(__FILE__).'/defines.php';
+include_once dirname(__FILE__).'/functions.php';
 
 // load frontend language file on both end
 $filename = 'com_paycart';
 $language = JFactory::getLanguage();
 $language->load($filename, JPATH_SITE);
 
-//load global stuff
-Rb_HelperLoader::addAutoLoadFile(PAYCART_PATH_CORE.'/base/paycart.php',	'Paycart');
-// Manually Load event file so we can register internal events/trigger  
-include_once PAYCART_PATH_CORE.'/base/event.php';
-
-//load core
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/base',		     '',		 'Paycart');
-
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/models',		'Model',	 'Paycart');
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/models',		'Modellang',	 'Paycart');
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/models',		'Modelform', 'Paycart');
-
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/tables',		'Table',	 'Paycart');
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/tables',		'Tablelang',	 'Paycart');
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/libs',			'',			 'Paycart');
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/helpers',		'Helper',	 'Paycart');
-
-// AutoLoad TDS
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/discountrule',	'discountrule',	 'Paycart');
-
-//html
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/html/html',		'Html',		 'Paycart');
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/html/fields',	'FormField', 'Paycart');
-
-// site
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_SITE.'/controllers',	'Controller',		'PaycartSite');
-Rb_HelperLoader::addAutoLoadViews(PAYCART_PATH_SITE.'/views', RB_REQUEST_DOCUMENT_FORMAT,  'PaycartSite');
-
-// admin
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_ADMIN.'/controllers',	'Controller',		'PaycartAdmin');
-Rb_HelperLoader::addAutoLoadViews(PAYCART_PATH_ADMIN.'/views', RB_REQUEST_DOCUMENT_FORMAT, 'PaycartAdmin');
-
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/shippingrule',		'Shippingrule',	 'Paycart');
-
-//taxrule
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/taxrule',  'taxrule',   'Paycart');
-
-//attributes
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/attributes',  'attribute',   'Paycart');
-
-//request
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/requests',		'Request',	 'Paycart');
-
-//Cartparticular
-Rb_HelperLoader::addAutoLoadFolder(PAYCART_PATH_CORE.'/cartparticulars',	'cartparticular',	 'Paycart');
-
-//@PCFIXME : move to proper location
-Rb_HelperJoomla::loadPlugins('paycart');
-
 //Load language file for plugins
 $filename = 'com_paycart_plugins';
 $language = JFactory::getLanguage();
 $language->load($filename, JPATH_SITE);
+
+
+// set autoload for all classes
+$classes = require_once 'classes.php';
+foreach ($classes as $className => $filePath) {
+	
+	// load backend files
+	if ('admin/' === substr($filePath, 0, 6)) {
+		$filePath = substr($filePath,6);
+		Rb_HelperLoader::addAutoLoadFile(PAYCART_PATH_ADMIN.'/'.$filePath, $className);
+		continue; 
+	}
+	
+	// load front end files
+	if ('site/' === substr($filePath, 0, 5)) {
+		$filePath = substr($filePath,5);
+		Rb_HelperLoader::addAutoLoadFile(PAYCART_PATH_SITE.'/'.$filePath, $className);
+		continue; 
+	}	
+	
+	// load specific intaller script file
+	if ( 'com_paycartinstallerscript' === strtolower($className)) {
+		Rb_HelperLoader::addAutoLoadFile(PAYCART_PATH_ADMIN.'/'.$filePath, $className);
+		continue; 
+	}
+	
+	throw new RuntimeException('File is not exist : '.$filePath );
+}
+
+//@PCFIXME : move to proper location
+Rb_HelperJoomla::loadPlugins('paycart');
+

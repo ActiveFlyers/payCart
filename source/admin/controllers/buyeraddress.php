@@ -22,7 +22,7 @@ class PaycartAdminControllerBuyeraddress extends PaycartController
 	 */
 	public function add() 
 	{
-		$post 				= $this->input->post->get('paycart_form', array(), 'array');
+		$post 				= $this->input->post->get($this->getControlNamePrefix(), array(), 'array');
 		$buyeraddress_id 	= $this->_getId();
 
 		$buyeraddress		= $this->_save($post, $buyeraddress_id);

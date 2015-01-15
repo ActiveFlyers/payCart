@@ -27,6 +27,7 @@ class PaycartProductcategory extends PaycartLib
 	protected $cover_media	 		= 0; 	
 	protected $created_date  		= '';	
 	protected $modified_date 		= '';
+	protected $params				= '';
 	
 	// language table
 	protected $productcategory_lang_id	= 0;
@@ -37,6 +38,11 @@ class PaycartProductcategory extends PaycartLib
 	protected $metadata_title		= '';
 	protected $metadata_keywords	= '';
 	protected $metadata_description	= '';
+	protected $level				= 1;
+	protected $lft					= 0;
+	protected $rgt					= 0;
+	
+	static $isTreeCreationRunning   = false;
 
 	public function reset() 
 	{		
@@ -48,13 +54,17 @@ class PaycartProductcategory extends PaycartLib
 		$this->created_date  		= Rb_Date::getInstance();	
 		$this->modified_date 		= Rb_Date::getInstance();		
 		$this->productcategory_lang_id = 0;
-		$this->lang_code 			= PaycartFactory::getCurrentLanguageCode();
+		$this->lang_code 			= PaycartFactory::getPCDefaultLanguageCode();
 		$this->title				= '';
 		$this->alias				= '';
 		$this->description			= '';		
 		$this->metadata_title		= '';
 		$this->metadata_keywords	= '';
 		$this->metadata_description	= '';
+		$this->level				= 1;
+		$this->lft					= 0;
+		$this->rgt					= 0;
+		$this->params				= new Rb_Registry();
 		
 		return $this;
 	}
@@ -112,7 +122,8 @@ class PaycartProductcategory extends PaycartLib
 			else{
 				$media = PaycartMedia::getInstance();
 				$data = array();
-				$data['language']['title'] = $image['name'];
+				$data['lang_code'] = $this->lang_code;
+				$data['language']['title'] = $this->_uploaded_files['cover_media']['name'];
 				$media->bind($data);
 				$media->save();
 			}
@@ -124,7 +135,40 @@ class PaycartProductcategory extends PaycartLib
 			$this->cover_media = $media->getId();
 		}
 				
-		return parent::save();
+		parent::save();
+		
+		/*
+         * after save create/update category tree
+         * $isTreeCreationRunning is common for all the category, so here we used static variable
+         */
+		if(!self::$isTreeCreationRunning){
+			self::$isTreeCreationRunning = true;
+			PaycartFactory::getHelper('productcategory')->generateCategoryTree();
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Bind/populate model data on lib object if required
+	 * @return PaycartProduct
+	 */
+	protected function _bindAfterSave()
+	{
+		$data = PaycartFactory::getModel('productcategory')->loadRecords(array('productcategory_id' => $this->getId()));
+		
+		//populate only required data
+		if(!empty($data)){
+			$data = array_shift($data);
+			$this->lft   = $data->lft;
+			$this->rgt   = $data->rgt;
+			$this->level = $data->level;
+			$this->productcategory_lang_id = $data->productcategory_lang_id;
+			$this->cover_media     = $data->cover_media;
+			$this->ordering		   = $data->ordering;
+		}
+
+		return $this;
 	}
 	
 	/**
@@ -149,14 +193,30 @@ class PaycartProductcategory extends PaycartLib
 	
 	protected function _delete()
 	{
+		$isChildrenDeleted =  true;
+
+		//delete child categories from lang table
+		if($this->lft != $this->rgt){
+			$isChildrenDeleted = $this->getModel()->deleteChildrenLangRecords($this->lft, $this->rgt);
+		}
+		
 		//Delete category
-		if(!$this->getModel()->delete($this->getId())) {
+		if($isChildrenDeleted && !$this->getModel()->delete($this->getId())) {
 			return false;
 		}
 		
 		//Delete product images
 		if(!$this->deleteImage()){
 			return false;
+		}
+		
+		/*
+         * after delete update category tree
+         * $isTreeCreationRunning is common for all the category, so here we used static variable
+         */
+		if(!self::$isTreeCreationRunning){
+			self::$isTreeCreationRunning = true;
+			PaycartFactory::getHelper('productcategory')->generateCategoryTree();
 		}
 		
 		return true;
@@ -199,5 +259,31 @@ class PaycartProductcategory extends PaycartLib
 	public function getMetadataKeywords()
 	{
 		return $this->metadata_keywords;
+	}
+	
+	public function getLevel()
+	{
+		return $this->level;
+	}
+	
+	public function getLft()
+	{
+		return $this->lft;
+	}
+	
+	public function getRgt()
+	{
+		return $this->rgt;
+	}
+	
+	public function getTree()
+	{
+		return $this->params->get('tree',array());
+	}
+	
+	public function setTree(Array $tree)
+	{
+		$this->params->set('tree',$tree);
+		return $this;
 	}
 }

@@ -42,7 +42,7 @@ $currencyId = $cart->getCurrency();
  	
  	<div class="clearfix">
 		<div class="pull-right">	 			
-	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
+	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"> </i> <?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
 	    </div>
 	</div>
  	
@@ -54,26 +54,35 @@ $currencyId = $cart->getCurrency();
 		<div class="row-fluid pc-item">
 			
 			<div class="pull-left pc-grid-4">
-				<h4><img class="thumbnail" src="<?php $media = $product->getCoverMedia(); echo $media['thumbnail']?>" /></h4>
+				<h4><img class="thumbnail" src="<?php $media = $product->getCoverMedia(); echo @$media['thumbnail']?>" /></h4>
 			</div>
 			
 			<div class="pull-right pc-grid-8">
 				 <h4 class="text-info pc-break-word"><?php echo PaycartHtml::link('index.php?option=com_paycart&view=product&task=display&product_id='.$product->getId(), $product->getTitle()); ?></h4>
-				 <p class="pc-item-attribute">
-				 	 <?php foreach ($product->getAttributeValues() as $attributeId => $optionId):?>
-	                     <?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
-					 	<span><?php echo $instance->getTitle();?></span> &nbsp;<span><?php $options = $instance->getOptions(); echo $options[$optionId]->title;?></span><br /> 	
-					<?php endforeach;?>
-						<span><?php echo JText::_("COM_PAYCART_UNIT_PRICE")?> :</span>
-						
-						<span><?php echo $formatter->amount($item->getUnitPrice(),true,$currencyId); ?></span><br />
+				 <p class="pc-item-attribute">				 	
+					<?php $postionedAttributes = (array)$product->getPositionedAttributes();?>
+					<?php $attributes = $product->getAttributes();?>
+					 <div class="pc-product-overview">
+			 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>			 			
+			 				<?php foreach($postionedAttributes['product-overview'] as $attributeId) : ?>
+			 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
+			 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+						 			<span><?php echo $instance->getTitle();?></span>&nbsp;:&nbsp;<span><?php $options = $instance->getOptions(); echo $options[$attributes[$attributeId]]->title;?></span><br />
+								<?php endif?>
+			 				<?php endforeach;?>
+			 			<?php endif;?>
+			 		</div>
+			 	
+					<span><?php echo JText::_("COM_PAYCART_UNIT_PRICE")?> :</span>
+					
+					<span><?php echo $formatter->amount($item->getUnitPrice(),true,$currencyId); ?></span><br />
+
 					<?php if($item->getDiscount() != 0):?>
-				 		<span>- <?php echo JText::_("COM_PAYCART_DISCOUNT")?> </span><span> : <?php echo $formatter->amount(-($item->getDiscount()),true,$currencyId);?></span><br />
-				 	<?php endif;?> 
-				 	<?php if($item->getTax() > 0):?>
-				 		<span>+ <?php echo JText::_("COM_PAYCART_TAX")?></span><span> : <?php echo $formatter->amount($item->getTax(),true,$currencyId);?></span><br />
-					 <?php endif;?>
-				 	
+			 			<span>- <?php echo JText::_("COM_PAYCART_DISCOUNT")?> </span><span> : <?php echo $formatter->amount(-($item->getDiscount()),true,$currencyId);?></span><br />
+			 		<?php endif;?> 
+			 		<?php if($item->getTax() > 0):?>
+			 			<span>+ <?php echo JText::_("COM_PAYCART_TAX")?></span><span> : <?php echo $formatter->amount($item->getTax(),true,$currencyId);?></span><br />
+				 	<?php endif;?>				 	
 				 </p>
 				 
 				<div class="clearfix">
@@ -81,7 +90,7 @@ $currencyId = $cart->getCurrency();
 					 	 <label><big><?php echo Jtext::_("COM_PAYCART_QUANTITY")?></big></label>
 				 		 <span>
 				 		 	<!-- when enter key is presssed then also update quantity -->
- 				 		 	<input class="span2 pc-cart-quantity-<?php echo $product->getId()?>" type="text" min="1" value="<?php echo $item->getQuantity(); ?>" 
+ 				 		 	<input class="input-mini pc-cart-quantity-<?php echo $product->getId()?>" type="text" min="1" value="<?php echo $item->getQuantity(); ?>" 
 				 		 	       onkeydown="if (event.keyCode == 13) return paycart.cart.product.updateQuantity(<?php echo $product->getId();?>); "/>&nbsp;
 				 		 	<a href="javascript:void(0);" onClick="paycart.cart.product.updateQuantity(<?php echo $product->getId();?>)"><i class="fa fa-refresh"></i></a>
 				 		 </span>
@@ -137,7 +146,7 @@ $currencyId = $cart->getCurrency();
 	 <!--  footer buttons --> 
 	 <div class="clearfix">
 		<div class="pull-right">	 			
-	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"></i><?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
+	       <button class="btn btn-large btn-primary" type="button" onclick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>'); return false;"><i class="fa fa-shopping-cart"> </i> <?php echo JText::_('COM_PAYCART_PLACE_ORDER');?></button>
 	    </div>
 	</div>
 </div>

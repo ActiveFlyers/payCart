@@ -26,10 +26,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		<?php foreach ($buyer_addresses as $buyeaddress_id => $buyeraddress_details):?>
 			<?php $selected = ($billing_address_id == $buyeraddress_details->buyeraddress_id) ? 'selected' : ''; ?>
 			<option value='<?php echo $buyeraddress_details->buyeraddress_id?>'	<?php echo $selected; ?>>
-				<?php echo $buyeraddress_details->address; ?>
-				<?php echo "{$buyeraddress_details->city}-{$buyeraddress_details->zipcode}"; ?>
-				<?php echo "{$buyeraddress_details->state_id}"; ?>
-				<?php echo "{$buyeraddress_details->country_id}"; ?>
+				<?php echo $buyeraddress_details->address.","; ?>
+				<?php echo "{$buyeraddress_details->city}-{$buyeraddress_details->zipcode},"; ?>
+				<?php echo "{$formatter->state($buyeraddress_details->state_id)},"; ?>
+				<?php echo "{$formatter->country($buyeraddress_details->country_id)},"; ?>
 				<?php echo "{$buyeraddress_details->phone}"; ?>
 			</option>
 		<?php endforeach;?>
@@ -115,12 +115,17 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 		$('#paycart_billing_country_id').on('change',  function(event, data) {
 			var default_selected_state = 0;
+			var success_callback = null;
 
 			if (typeof data !== 'undefined' && typeof data.state_id !== 'undefined') {
 				default_selected_state =  data.state_id;
 			}
+
+			if(typeof data !== 'undefined' && typeof data.success_callback !== 'undefined'){
+				success_callback = data.success_callback;
+			}
 			
-			paycart.address.state.onCountryChange('#paycart_billing_country_id', '#paycart_billing_state_id', default_selected_state);
+			paycart.address.state.onCountryChange('#paycart_billing_country_id', '#paycart_billing_state_id', default_selected_state,success_callback);
 		});
 		//if state already selected then no need to get states
 		if (!$('#paycart_billing_state_id').val()) { 

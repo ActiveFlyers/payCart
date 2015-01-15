@@ -16,6 +16,7 @@ paycart.admin.discountrule = {};
 	paycart.admin.discountrule.getProcessorConfig = function(){
 		var processor_classname = $('[data-pc-discountrule="processor"] select').val();
 		if(processor_classname.length > 0){
+			paycart.formvalidator.isValid('form.pc-form-validate');
 			var url  = 'index.php?option=com_paycart&view=discountrule&task=getProcessorConfig&processor_classname='+processor_classname+'&discountrule_id='+<?php echo $form->getValue('discountrule_id');?>;
 			paycart.ajax.go(url);
 		}
@@ -49,6 +50,23 @@ paycart.admin.discountrule = {};
 
 
 <div class="span10">
+<!-- LANGUAGE SWITCHER -->
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		if($record_id){
+			$displayData = new stdClass();
+			$displayData->uri  = $uri.'&id='.$record_id;
+			echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+		}
+		
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
+
 <div class="row-fluid">	
 	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">
 		<div class="row-fluid">
@@ -64,7 +82,8 @@ paycart.admin.discountrule = {};
 						<?php $field = $form->getField('title') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls"><?php echo $field->input; ?></div>	
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>							
 						</div>
 						<?php $field = $form->getField('description') ?>
 						<div class="control-group">
@@ -73,7 +92,7 @@ paycart.admin.discountrule = {};
 						</div>
 						<?php $field = $form->getField('message') ?>
 						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 							<div class="controls"><?php echo $field->input; ?></div>								
 						</div>
 					</div>
@@ -108,7 +127,10 @@ paycart.admin.discountrule = {};
 						<?php $field = $form->getField('amount') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+							</div>								
 						</div>
 					</div>
 					<div class="span6">
@@ -142,14 +164,20 @@ paycart.admin.discountrule = {};
 						<?php $field = $form->getField('usage_limit') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+							</div>								
 						</div>
 					</div>
 					<div class="span6">
 						<?php $field = $form->getField('buyer_usage_limit') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+							</div>								
 						</div>
 					</div>
 				</div>	
@@ -181,7 +209,10 @@ paycart.admin.discountrule = {};
 						<?php $field = $form->getField('sequence') ?>
 						<div class="control-group">
 							<div class="control-label"><?php echo $field->label; ?> </div>
-							<div class="controls"><?php echo $field->input; ?></div>								
+							<div class="controls">
+								<?php echo $field->input; ?>
+								<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+							</div>								
 						</div>
 					</div>
 					
@@ -192,20 +223,17 @@ paycart.admin.discountrule = {};
 				
 				<hr/>
 				
-				<div class="row-fluid">		
-					<?php $field = $form->getField('apply_on') ?>
-					<div><?php echo Jtext::_('COM_PAYCART_ADMIN_DISCOUNTRULE_APPLY');?> <?php echo JText::_('COM_PAYCART_ADMIN_DISCOUNTRULE_ON');?></div>
-					<div class="control-group">						
-						<div class="controls"><?php echo $field->input; ?></div>								
-					</div>
-				</div>	
-				
 				<div class="row-fluid">
-					<div><?php echo Jtext::_('COM_PAYCART_ADMIN_DISCOUNTRULE_BY');?></div>
 					<div class="control-group">
+						<?php $field = $form->getField('processor_classname') ?>
+						<div class="control-label">
+							<label class="control-label required" for="<?php echo $field->id;?>">
+								<?php echo Jtext::_('COM_PAYCART_ADMIN_DISCOUNTRULE_BY');?>
+							</label>
+						</div>
 						<div class="controls" data-pc-discountrule="processor">
-							<?php $field = $form->getField('processor_classname') ?>
 							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 						</div>	
 					</div>
 					

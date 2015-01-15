@@ -25,10 +25,13 @@ class PaycartSiteControllerProductCategory extends PaycartController
 	function display($cachable = false, $urlparams = array())
 	{
 		$catId = $this->getModel()->getId();
+		$searchWord	= $this->input->get('query',null,'STRING');
 		
 		$record = PaycartFactory::getModel('productcategory')->loadRecords(array('productcategory_id' => $catId , 'published' => 1));
 		
-		if(empty($catId) || (isset($record[$catId]) && !empty($record[$catId]))){
+		// As search is also work on this view so, here we check for search word
+		// if catid doesn't exist but search word is there, it means proceed to view
+		if(empty($catId) || (isset($record[$catId]) && !empty($record[$catId])) || (!empty($searchWord))){
 			return parent::display();
 		}
 		

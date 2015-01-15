@@ -13,7 +13,7 @@
 
     	<phing phingfile="build.xml" inheritAll="true"/>
 		
-		<echo msg="Fetch RB Framework: Fetch rbframework and do copy"/>
+		<!-- <echo msg="Fetch RB Framework: Fetch rbframework and do copy"/>
 			<phingcall target="fetch_rbframework" />
 	
 		<echo msg="Delete: Delete tmp folder"/>
@@ -23,7 +23,7 @@
 			<phingcall target="copy_pkg_xml" />
 
 		<echo msg="Create: create pkg of rbframewok and payCart. " />
-			<phingcall target="create_pkg" />
+			<phingcall target="create_pkg" /> -->
         
     <echo>============================================</echo>
     <echo>BUILD PACKAGE END	</echo>	

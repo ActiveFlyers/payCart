@@ -61,7 +61,7 @@ class PaycartMedia extends PaycartLib
 		$this->mime_type = '';
 		$this->is_free = true;
 		$this->media_lang_id = 0;
-		$this->lang_code = PaycartFactory::getCurrentLanguageCode(); //Current Paycart language Tag
+		$this->lang_code = PaycartFactory::getPCDefaultLanguageCode(); //Current Paycart language Tag
 		$this->title = '';
 		$this->decsription = '';
 		$this->metadata_title = '';

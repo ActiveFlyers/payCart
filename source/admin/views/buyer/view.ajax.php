@@ -12,7 +12,7 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
+class PaycartAdminAjaxViewBuyer extends PaycartAdminBaseViewBuyer
 {	
 	public function addAddress()
 	{

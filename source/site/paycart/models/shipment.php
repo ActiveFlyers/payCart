@@ -97,7 +97,7 @@ class PaycartModelShipment extends PaycartModel
 			
 		}
 		
-		return array_values($records);
+		return $records;
 	}
 	
 	public function delete($pk=null)

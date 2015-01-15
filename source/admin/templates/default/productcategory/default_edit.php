@@ -32,6 +32,22 @@ echo $this->loadTemplate('edit_ng');
 <!-- ADMIN MENU -->
 
 <div class="span10">
+<!-- LANGUAGE SWITCHER -->
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		if($record_id){
+			$displayData = new stdClass();
+			$displayData->uri  = $uri.'&id='.$record_id;
+			echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+		}
+		
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
 	<div class="row-fluid">
 		<div class="span3">
@@ -44,7 +60,7 @@ echo $this->loadTemplate('edit_ng');
 			<div class="row-fluid">
 				<?php $field = $form->getField('title') ?>
 				<div class="control-group">
-					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 					<div class="controls"><?php echo $field->input; ?></div>
 					<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>								
 				</div>
@@ -56,7 +72,7 @@ echo $this->loadTemplate('edit_ng');
 				</div>
 				<?php $field = $form->getField('description') ?>
 				<div class="control-group">
-					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 					<div class="controls"><?php echo $field->input; ?></div>								
 				</div>
 			</div>
@@ -124,7 +140,7 @@ echo $this->loadTemplate('edit_ng');
     			</div>
 				<?php endif;?>	    			
 				<div class="row-fluid">								
-					<input type="file" name="paycart_form[cover_media]" multiple="true">
+					<input type="file" name="paycart_productcategory_form[cover_media]">
 				</div>				
 			</fieldset>
 		</div>					
@@ -145,19 +161,19 @@ echo $this->loadTemplate('edit_ng');
 				<div class="row-fluid">								
 					<?php $field = $form->getField('metadata_title') ?>
 					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
 					
 					<?php $field = $form->getField('metadata_description') ?>
 					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
 					
 					<?php $field = $form->getField('metadata_keywords') ?>
 					<div class="control-group">
-						<div class="control-label"><?php echo $field->label; ?> </div>
+						<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>								
 				</div>
@@ -170,6 +186,8 @@ echo $this->loadTemplate('edit_ng');
 <!--========	Hiddens variables	========-->	
 	<input type="hidden" name="task" value="save" />
 	<?php echo $form->getInput('productcategory_id');?>
+	<?php echo $form->getInput('productcategory_lang_id');?>
+	<?php echo $form->getInput('lang_code');?>
 </form>
 </div>
 </div>

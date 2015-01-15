@@ -15,14 +15,14 @@ defined('_JEXEC') or die( 'Restricted access' );
 * @author Manish Trivedi
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewProductcategory extends PaycartAdminBaseViewProductcategory
+class PaycartAdminHtmlViewProductcategory extends PaycartAdminBaseViewProductcategory
 {	
 	protected function _adminGridToolbar()
 	{
 		Rb_HelperToolbar::addNew('new','COM_PAYCART_ADMIN_ADD');
 		Rb_HelperToolbar::editList();
 		Rb_HelperToolbar::divider();
-		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ADMIN_DELETE_PROMPT'));
+		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ENTITY_DELETE_CONFIRMATION'));
 		Rb_HelperToolbar::publish();
 		Rb_HelperToolbar::unpublish();
 	}

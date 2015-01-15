@@ -15,7 +15,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * Buyer Html View
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
+class PaycartAdminHtmlViewBuyer extends PaycartAdminBaseViewBuyer
 {	
 	protected function _adminEditToolbar()
 	{
@@ -41,8 +41,7 @@ class PaycartAdminViewBuyer extends PaycartAdminBaseViewBuyer
 		$addresses = PaycartFactory::getModel('buyeraddress')->loadRecords($filter);
 		
 		$this->assign('form',  $buyer->getModelform()->getForm($buyer));
-		$this->assign('billing_address_id',		$buyer->getBillingAddress());
-		$this->assign('shipping_address_id',	$buyer->getShippingAddress());
+		$this->assign('default_address_id',		$buyer->getDefaultAddress());
 		$this->assign('addresses', $addresses);
 		
 		return parent::edit($tpl);

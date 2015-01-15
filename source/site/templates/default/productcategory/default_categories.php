@@ -21,7 +21,7 @@ if(!defined( '_JEXEC' )){
 			<div class="pc-category-outer">
 			<?php $media = $instance->getCoverMedia();?>
 			<?php $url   = PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$c->productcategory_id);?>
-				<a href="<?php echo $url?>">
+				<a href="<?php echo $url?>" title="<?php echo $instance->getTitle();?>">
 					<div class='pc-category blurground' style="background-image: url('<?php echo $media['squared'];?>');">
 						<div class="pc-category-inner blurground vertical-center-wrapper" >
 							<div class="pc-category-content">

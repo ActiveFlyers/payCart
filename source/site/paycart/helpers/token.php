@@ -62,11 +62,10 @@ class PaycartHelperToken extends PaycartHelper
 		    		unset($event_specific_tokens['shipment']);
                 break;
             
-            case 'onpaycartshipmentafterdispatched':
-                break;
-            
+            case 'onpaycartshipmentafterdispatched':         
             case 'onpaycartshipmentafterdelivered':
-                break;
+            case 'onpaycartorderurlrequest' :    
+            	break;
         }
         
         return $event_specific_tokens;
@@ -98,7 +97,7 @@ class PaycartHelperToken extends PaycartHelper
         // cart specific
         static::$_tokens['cart']  =
                 Array(  'cart_total', 'cart_product_count', 'cart_created_date',
-                        'cart_paid_date',  
+                        'cart_paid_date', 'order_url', 'order_id'  
 //                        'cart_link', 
                     );
         
@@ -201,18 +200,31 @@ class PaycartHelperToken extends PaycartHelper
      * @return type Array of tokens
      * @throws RuntimeException 
      */
-    public function getTokens($lib_object)
+    public function getTokens($lib_object, $lang_code = null)
     {
+		//if lang_code is different than current lang, then load that file
+		$current_lang = PaycartFactory::getPCCurrentLanguageCode();
+		$language = PaycartFactory::getLanguage();		 
+		if($lang_code !== null && $lang_code !== $current_lang){			
+			$language->load('com_paycart', JPATH_SITE, $lang_code, true, false);
+		}
+			
         // get all relative objects
         if ($lib_object instanceof PaycartCart) {
-            return $this->buildCartTokens($lib_object);
-         } 
-
-		if ($lib_object instanceof PaycartShipment) {
-            return $this->buildShipmentTokens($lib_object);
-         }
-
-        throw new RuntimeException('Unknown object for token fetching ');
+            $tokens = $this->buildCartTokens($lib_object);
+        } 
+		elseif($lib_object instanceof PaycartShipment) {
+            $tokens = $this->buildShipmentTokens($lib_object);
+        }
+        else{
+        	throw new RuntimeException('Unknown object for token fetching ');
+        }
+                
+        // load the current language file again, if another language file was loaded previously
+        if($lang_code !== null && $lang_code !== $current_lang){
+        	$language->load('com_paycart', JPATH_SITE, $current_lang, true, false);
+        }
+        return $tokens;
     }
 
     /**
@@ -278,7 +290,8 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['cart_created_date']       =   $this->_formatter->date($cart->getCreatedDate());
         // @PCTOD :: date formating here
         $tokens['cart_paid_date']          =   $this->_formatter->date($cart->getPaidDate());
-        //$tokens['cart_link']               =   $cart->getLink();
+        $tokens['order_url']               =   $cart->getOrderUrl(true);
+        $tokens['order_id']            	   =   $cart->getId();
         
         return $tokens;
     }
@@ -315,8 +328,8 @@ class PaycartHelperToken extends PaycartHelper
        
        //$tokens['store_logo'] = $config->get('company_logo');
        
-       $displayData = json_decode($config->get('localization_origin_address'));
-       $tokens['store_address'] =  JLayoutHelper::render('paycart_buyeraddress_display', $displayData);
+       $displayData = $config->get('localization_origin_address');
+       $tokens['store_address'] =  Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $displayData, PAYCART_LAYOUTS_PATH);
            
        return $tokens;
     }
@@ -335,7 +348,7 @@ class PaycartHelperToken extends PaycartHelper
         $dispalyData = new stdClass;
         $dispalyData->product_particulars = $product_particulars;
         // Create a layout to render all product details
-        $tokens['products_detail'] = JLayoutHelper::render('paycart_token_product_deatils', $dispalyData);
+        $tokens['products_detail'] = Rb_HelperTemplate::renderLayout('paycart_token_product_deatils', $dispalyData, PAYCART_LAYOUTS_PATH);
         
         return $tokens;
     }
@@ -357,8 +370,7 @@ class PaycartHelperToken extends PaycartHelper
     	$display_data = new stdClass();
     	$display_data->products = $products;
     	
-    	$layout = new JLayoutFile('paycart_token_shipment_products');
-        $tokens['products'] = $layout->render($display_data);
+        $tokens['products'] = Rb_HelperTemplate::renderLayout('paycart_token_shipment_products',$display_data, PAYCART_LAYOUTS_PATH);
         
         return $tokens;
     }

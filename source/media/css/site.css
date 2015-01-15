@@ -1,0 +1,252 @@
+/**
+* @copyright	Copyright (C) 2009-2012 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
+* @license		GNU/GPL, see LICENSE.php
+* @package		PAYCART
+* @contact 		support+paycart@readybytes.in
+*/
+
+/*
+Every time component output is displayed we can safely assume three tier classes 
+	.paycart-wrap
+		.paycart
+			.paycart-component
+			.paycart-module
+
+
+We will use row-fluid to paycart-component to make it independent of bootstrap responsive
+*/
+
+
+/*=============================================
+ Catlogue Display
+ .pc-catlogue
+ 	.pc-categories
+ 		
+ 		.pc-category-wrapper
+ 			.pc-category
+				.pc-category-content
+ 	
+===============================================*/
+.paycart .pc-catlogue{
+	
+}
+
+.pc-categories-wrapper{
+	padding:4px;
+/* 	border: 0px red dashed; */
+}
+
+.pc-categories {
+/* 	border: 0px black dashed; */
+	margin: 0 auto;
+}
+
+.pc-category {
+	/*upper limit*/
+	max-width:200px;
+	max-height:200px;
+	
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.pc-category-outer{
+	padding:4px;
+}
+.pc-category-content{
+	height:100%;
+	margin:2px;
+	padding : 2%;
+}
+
+.pc-category-outer a ,
+.pc-category-outer a:hover {
+	color : #fff;
+}
+
+.pc-size-xs .pc-category h2{
+    font-size: 14px;
+}
+
+.pc-size-xs #pc-categories[data-columns]::before {
+	content: '3 .pc-grid-4';
+}
+
+.pc-size-sm #pc-categories[data-columns]::before {
+	content: '4 .pc-grid-3';
+}
+
+.pc-size-lg #pc-categories[data-columns]::before {
+	content: '4 .pc-grid-3';
+}
+
+.pc-size-xl .pc-category {
+	width: 200px;
+	height:200px;
+}
+
+/* Also, don't forget to add this: */
+#pc-categories[data-columns]::before { 
+	display: block;
+	width:0;
+	height:0;
+	visibility: hidden;
+	 
+}
+
+
+/*
+Products Display
+*/
+.pc-products-wrapper{
+}
+
+.pc-products{
+	margin: 0 auto;
+}
+
+.pc-size-xl .pc-product {
+	width: 230px;
+}
+
+.pc-size-xs #pc-products[data-columns]::before {
+	content: '2 .pc-grid-6';
+}
+
+.pc-size-sm #pc-products[data-columns]::before {
+	content: '3 .pc-grid-4';
+}
+
+.pc-size-lg #pc-products[data-columns]::before {
+	content: '4 .pc-grid-3';
+}
+
+/* Also, don't forget to add this: */
+#pc-products[data-columns]::before { 
+	display: block; 
+	width:0;
+	height:0;
+	visibility: hidden;
+}
+
+.pc-product-outer{
+	/* seperate products with this padding */
+	padding	:	5px;	
+}
+
+.pc-product {
+	/*required for a proper white border around product content */
+	padding:5px;
+	background-color: #fff;
+	border : 1px solid transparent;
+}
+
+/* primiary border when hover */
+.pc-product:hover, 
+.pc-category-inner:hover{
+	border : 1px solid #0088CC;
+	cursor : pointer;
+}
+
+.pc-product-content{
+	position:relative;
+}
+
+.pc-product-content img{
+	width:100%;
+}
+
+.pc-size-xs .pc-product h3{
+    font-size: 18px;
+}
+
+.pc-size-xs .pc-product h4 {
+	font-size: 14px;	
+}
+
+
+
+
+/** checkout page */
+.pc-cart-wrapper .pc-item-attribute	{
+	text-transform: capitalize;
+}
+
+.pc-cart-wrapper hr{
+	margin: 5px 0px;
+}
+
+/** product-full-view */
+.pc-attribute-color{
+	border: 1px solid #e2e2e2;
+	min-height: 20px;
+	min-width: 20px;
+	display: inline-block;
+	margin-left:5px; 
+}
+
+.pc-product-specification.table,
+.pc-product-specification td{
+    border-collapse: collapse;
+    border-color: #ddd #ddd #ddd -moz-use-text-color;
+    border-style: none none solid none;
+    border-width: 1px 1px 1px 0;
+}
+							
+.pc-product-specification.table th {
+	border: none;
+}
+							
+.pc-product-specification td:first-child{
+    border-right: 1px solid #ddd;
+}
+
+@media (max-width: 480px) {
+	.pc-product-content{
+		padding: 0;
+	}
+}
+
+@media (min-width: 980px){
+	.pc-product-content{
+		padding: 7px 7px 0 7px;
+	}
+}
+	
+.pc-product-title{
+	padding-top : 5%;
+	font-size : 14px;	
+}
+
+.pc-product-stockout{
+	background-color: #ACACAC;
+    color: #000000;
+    padding: 5px 0;
+    text-shadow: 0 1px 0 #FFFFFF;
+    top: 50%;
+    left:0;
+    right:0;
+    position:absolute;
+}
+
+.pc-clickable,
+.pc-clickable:hover{
+	color: inherit;
+	text-decoration: none;
+}
+	
+.pc-product-stockout-image{
+	opacity: 0.2;
+}
+	
+.pc-break-word {
+    word-wrap : break-word;
+}
+
+.pc-product-attribute-header{
+	background-color : #F5F5F5;
+}
+
+.pc-cursor-pointer{
+	cursor : pointer;
+}

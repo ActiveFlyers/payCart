@@ -86,13 +86,14 @@ class PaycartHelperInvoice
 	 * 
 	 * create new invoice
 	 * @param PaycartCart $cart, invoice create on $cart bases
+	 * @param Array $processorData
 	 * @throws RuntimeException if cart is not exist or invoice creation fail
 	 * 
 	 * @return new created invoice id
 	 */
-	public function createInvoice(PaycartCart $cart)
+	public function createInvoice(PaycartCart $cart, $processorData = Array())
 	{
-		$data  		= $this->buildInvoiceData($cart);
+		$data  		= $this->buildInvoiceData($cart, $processorData);
 		
 		// we are not supporting recurring so always created invoice must be master invoice
 		$is_master	= true;
@@ -223,6 +224,20 @@ class PaycartHelperInvoice
 	
 	/**
 	 * 
+	 * Get Transaction records
+	 * @param Integer $invoiceId
+	 * 
+	 * @return Array(Object(COLUMN_NAME->COLUMN_VALUE))
+	 */
+	public function getTransactionData($invoiceId)
+	{
+		$records = Rb_EcommerceAPI::transaction_get_records(Array('invoice_id' => $invoiceId ));
+		
+		return $records;
+	}
+	
+	/**
+	 * 
 	 * Delete existing invoice
 	 * @param Integer $invoiceid :which will delete
 	 *  
@@ -275,14 +290,22 @@ class PaycartHelperInvoice
 	 * @param Integer $processorId : _PROCESSOR_ID_
 	 * 
 	 */
-	public function getBuildForm(PaycartCart $cart, $build_data = Array('build_type' => 'html'))
+	public function getBuildForm(PaycartCart $cart, $build_data = Array())
 	{
+		$invoice_data = $cart->getInvoiceData();
+		
+		$url_string 	= JUri::root()."index.php?option=com_paycart&view=cart&processor={$invoice_data['processor_type']}";
+		
+		$build_data['build_type'] = 'html';
+		$build_data['notify_url'] = $url_string.'&task=notify';
+		$build_data['cancel_url'] = $url_string.'&task=cancel';
+		$build_data['return_url'] = $url_string.'&task=complete';
+		
 		$processResponseData = Rb_EcommerceApi::invoice_request('build', $cart->getInvoiceId(), $build_data);
 		
 		//Create new response and set required cart's stuff. 
 		$response = new stdClass();
 		$response->post_url	=	$processResponseData->data->post_url;
-		//@PCTODO :: if html is not available then process form (XML data)
 		$response->html		=	$processResponseData->data->form;
 		$response->processorResponse = $processResponseData;
 
@@ -302,26 +325,51 @@ class PaycartHelperInvoice
 		// request function suffix
 		$requestName = 'payment';
 		
-		while (true) {
-			// Payment Start : request for payment    
-			$paymentResponseData 	= Rb_EcommerceApi::invoice_request($requestName, $invoiceId, $paymentData);
-			
-			// Process Payement : After request need to Process payament data 
-			$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $paymentResponseData);
-
-			PaycartFactory::getHelper('log')->add($processResponseData);
-			
-			// if you still need to process like fist you need to create user profile at payment-gatway then process for payment
-			if($processResponseData->get('next_request', false) == false){
-				break;
+		$response = new stdClass();
+		$response->is_error = false;
+		$response->error_message = false;
+		
+		try {
+			while (true) {
+				
+				$paymentResponseData = '';
+				
+				// Payment Start : request for payment    
+				$paymentResponseData 	= Rb_EcommerceApi::invoice_request($requestName, $invoiceId, $paymentData);
+				
+				// Process Payement : After request need to Process payament data 
+				$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $paymentResponseData);
+	
+				PaycartFactory::getHelper('log')->add($processResponseData);
+				
+				// if you still need to process like fist you need to create user profile at payment-gatway then process for payment
+				if($processResponseData->get('next_request', false) == false){
+					break;
+				}
+	
+				// our default moto is get payment, next_request_name will set by payment-processor
+				$requestName = $processResponseData->get('next_request_name', 'payment');
 			}
-
-			// our default moto is get payment, next_request_name will set by payment-processor
-			$requestName = $processResponseData->get('next_request_name', 'payment');
+		} catch (Exception $e) {
+			$response->is_error = true;
+			$response->error_message = $e->get('message');
 		}
 		
+		$reponse_status = $processResponseData->get('payment_status', Rb_EcommerceResponse::FAIL);
+		
+		// if dont have any error/exception then check transaction status
+		if ( !($response->is_error) &&
+			  ( self::STATUS_TRANSACTION_PAYMENT_FAIL == $reponse_status ||
+				self::STATUS_TRANSACTION_SUBSCR_FAIL == $reponse_status ||
+				self::STATUS_TRANSACTION_FAIL == $reponse_status
+			  )
+			) {
+				$response->is_error = true;
+				$response->error_message = $processResponseData->get('message');
+			}
+		
+		
 		//Create new response and set required cart's stuff. 
-		$response = new stdClass();
 		$response->processorResponse = $processResponseData;
 
 		return $response;
@@ -371,6 +419,20 @@ class PaycartHelperInvoice
 	}	
 	
 	/**
+	 * 
+	 * Get invoice id from invoice number
+	 * @param numeric $invoice_number :
+	 * 
+	 * @return integer invoice-id
+	 */
+	public function getInvoiceId($invoice_number) 
+	{
+		$invoiceId	= Rb_EcommerceAPI::invoice_get_id_from_number($invoice_number);
+		
+		return $invoiceId;
+	}	
+	
+	/**
 	 * return either the record of the given currencyId or all the existing records
 	 */
 	public function getCurrency($currencyId = null)
@@ -386,5 +448,42 @@ class PaycartHelperInvoice
 		}
 		
 		return $currencies;
+	}
+	
+	/**
+	 * 
+	 * Invoke to manually process specific invoice 
+	 * 
+	 * @param unknown_type $invoice_id
+	 * @param unknown_type $data
+	 * 
+	 * @return stdClass object with Rb_EcommerceResponse 
+	 */
+	public function processDirectPay($invoice_id, $data)
+	{
+		PaycartFactory::getHelper('log')->add($data);
+		
+		$processResponseData	= Rb_EcommerceAPI::invoice_directPay($invoice_id, $data);
+		
+		PaycartFactory::getHelper('log')->add($processResponseData);
+		
+		//Create new response and set required cart's stuff. 
+		$response = new stdClass();
+		$response->processorResponse = $processResponseData;
+
+		return $response;
+		
+	}
+	
+	public function getStatusList()
+	{
+		return array(
+            self::STATUS_INVOICE_NONE		=> JText::_('COM_PAYCART_INVOICE_STATUS_NONE'),
+			self::STATUS_INVOICE_DUE 		=> JText::_('COM_PAYCART_INVOICE_STATUS_DUE'),
+			self::STATUS_INVOICE_PAID		=> JText::_('COM_PAYCART_INVOICE_STATUS_PAID'),
+			self::STATUS_INVOICE_REFUNDED	=> JText::_('COM_PAYCART_INVOICE_STATUS_REFUNDED'),
+			self::STATUS_INVOICE_INPROCESS	=> JText::_('COM_PAYCART_INVOICE_STATUS_INPROCESS'),
+			self::STATUS_INVOICE_EXPIRED	=> JText::_('COM_PAYCART_INVOICE_STATUS_EXPIRED')		
+		);
 	}
 }

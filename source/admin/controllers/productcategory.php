@@ -52,9 +52,18 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 	public function _save(array $data, $itemId=null, $type=null)
 	{
 		//Get All files from paycart form
-		$data['_uploaded_files'] = $this->input->files->get('paycart_form', false);	
+		$data['_uploaded_files'] = $this->input->files->get($this->getControlNamePrefix(), false);	
 		
-		return parent::_save($data, $itemId, $type);
+		$entity = parent::_save($data, $itemId, $type);
+		
+		//Issue #415 required to add the current category at end 
+		//otherwise redirection will be on the last category in array 
+		//because itemid will be fetched from table object of last saved record
+		if($entity instanceof Rb_Lib && $entity->getId()){
+			$this->getModel()->getTable()->load($entity->getId());
+		}
+		
+		return $entity;
 	}	
 
 	/**

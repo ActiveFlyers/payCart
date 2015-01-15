@@ -89,7 +89,7 @@ class PaycartShippingrule extends PaycartLib
 		$this->ordering				= 0;
 		
 		$this->shippingrule_lang_id	= 0;
-		$this->lang_code			= PaycartFactory::getCurrentLanguageCode();
+		$this->lang_code			= PaycartFactory::getPCDefaultLanguageCode();
 		$this->message				= '';
 		
 		$this->_buyergroups			= array();
@@ -154,8 +154,7 @@ class PaycartShippingrule extends PaycartLib
 		}
 
 		//IMP : Multiple warehouses are not supported yet
-		$origin_address 			= json_decode(PaycartFactory::getConfig()
-																->get('localization_origin_address'));
+		$origin_address 			= PaycartFactory::getConfig()->get('localization_origin_address');
 		$request->origin_address 	= $helperRequest->getBuyeraddressObject(PaycartBuyeraddress::getInstance(0,$origin_address));
 		
 		$delivery_address = PaycartFactory::getHelper('shippingrule')->getAddressObject($delivery_md5_address);
@@ -184,7 +183,7 @@ class PaycartShippingrule extends PaycartLib
 		$config = new PaycartShippingruleRequestGlobalconfig();
 		$config->dimension_unit  = PaycartFactory::getConfig()->get('catalogue_dimension_unit');
 		$config->weight_unit	 = PaycartFactory::getConfig()->get('catalogue_weight_unit');
-		$config->origin_address  = json_decode(PaycartFactory::getConfig()->get('localization_origin_address'));
+		$config->origin_address  = PaycartFactory::getConfig()->get('localization_origin_address');
 		return $config;
 	}
 	
@@ -206,10 +205,10 @@ class PaycartShippingrule extends PaycartLib
 		return $this->title;
 	}
 	
-	public function getProcessorConfigHtml()
+	public function getProcessorConfigHtml($namePrefix)
 	{
 		$response = $this->getResponseObject();
-		$this->getProcessor()->getConfigHtml(new PaycartShippingruleRequest, $response);
+		$this->getProcessor()->getConfigHtml(new PaycartShippingruleRequest, $response, $namePrefix);
 		return $response->configHtml;
 	}
 	

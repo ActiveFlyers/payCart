@@ -16,6 +16,7 @@ paycart.admin.taxrule = {};
 	paycart.admin.taxrule.getProcessorConfig = function(){
 		var processor_classname = $('[data-pc-taxrule="processor"] select').val();
 		if(processor_classname.length > 0){
+			paycart.formvalidator.isValid('form.pc-form-validate');
 			var url  = 'index.php?option=com_paycart&view=taxrule&task=getProcessorConfig&processor_classname='+processor_classname+'&taxrule_id='+<?php echo $form->getValue('taxrule_id');?>;
 			paycart.ajax.go(url);
 		}
@@ -24,7 +25,25 @@ paycart.admin.taxrule = {};
 		}	
 	};
 
+	paycart.admin.taxrule.showHelpMsg = function(){
+		if($('#paycart_taxrule_form_apply_on').val() == '<?php echo paycart::RULE_APPLY_ON_CART?>'){
+			return $('[data-pc-selector="applyon-helpMsg"]').show();
+		}
+		$('[data-pc-selector="applyon-helpMsg"]').hide();
+	};
+
+	$(document).on('change','#paycart_taxrule_form_apply_on', function(){
+		paycart.admin.taxrule.showHelpMsg();
+	});
+	
 	$(document).ready(function(){
+		//change tax cart to tax on tax as it is confusing
+		$('#paycart_taxrule_form_apply_on option[value="<?php echo paycart::RULE_APPLY_ON_CART?>"]').text('<?php echo JText::_('COM_PAYCART_ADMIN_TAXRULE_TAX_ON_TAX')?>');
+		$('#paycart_taxrule_form_apply_on').trigger("liszt:updated");
+
+		//show help msg
+		paycart.admin.taxrule.showHelpMsg();
+		
 		paycart.admin.taxrule.getProcessorConfig();
 		$('[data-pc-taxrule="processor"] select').change(function(){					
 			paycart.admin.taxrule.getProcessorConfig();
@@ -49,6 +68,22 @@ paycart.admin.taxrule = {};
 
 
 <div class="span10">
+<!-- LANGUAGE SWITCHER -->
+<?php 
+	if(PAYCART_MULTILINGUAL){
+		if($record_id){
+			$displayData = new stdClass();
+			$displayData->uri  = $uri.'&id='.$record_id;
+			echo Rb_HelperTemplate::renderLayout('paycart_language_switcher', $displayData);
+		}
+		
+		$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+		$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+	}
+	else{
+		$flag = '';
+	}
+?>
 <div class="row-fluid">	
 	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">
 		<div class="row-fluid">
@@ -74,7 +109,7 @@ paycart.admin.taxrule = {};
 						</div>
 						<?php $field = $form->getField('message') ?>
 						<div class="control-group">
-							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
 							<div class="controls"><?php echo $field->input; ?></div>								
 						</div>
 					</div>
@@ -107,7 +142,10 @@ paycart.admin.taxrule = {};
 					<div><?php echo Jtext::_('COM_PAYCART_ADMIN_TAXRULE_APPLY');?></div>
 					<?php $field = $form->getField('amount') ?>
 					<div class="control-group">						
-						<div class="controls"><?php echo $field->input; ?></div>								
+						<div class="controls">
+							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>
+						</div>								
 					</div>
 				</div>
 				<br/>		
@@ -117,14 +155,20 @@ paycart.admin.taxrule = {};
 					<div class="control-group">						
 						<div class="controls"><?php echo $field->input; ?></div>								
 					</div>
+					<div class="well" data-pc-selector="applyon-helpMsg"><?php echo JText::_('COM_PAYCART_ADMIN_TAXRULE_TAX_ON_TAX_HELP_MSG')?></div>
 				</div>				
 				<br/>
 				<div class="row-fluid">					
-					<div><?php echo Jtext::_('COM_PAYCART_ADMIN_TAXRULE_BY');?></div>
+					<?php $field = $form->getField('processor_classname') ?>
+					<div class="control-label">
+						<label class="control-label required" for="<?php echo $field->id;?>">
+							<?php echo Jtext::_('COM_PAYCART_ADMIN_TAXRULE_BY');?>
+						</label>
+					</div>
 					<div class="control-group">
 						<div class="controls" data-pc-taxrule="processor">
-							<?php $field = $form->getField('processor_classname') ?>
 							<?php echo $field->input; ?>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 						</div>	
 					</div>
 					

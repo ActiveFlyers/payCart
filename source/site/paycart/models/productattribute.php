@@ -69,7 +69,7 @@ class PaycartModelProductAttributeOption extends PaycartModelLang
 	 *
 	 * @return array of resultant rows
 	 */
-	function loadOptions($attributeId, $languageCode, Array $optionIds = array())
+	function loadOptions($attributeId, $languageCode = '', Array $optionIds = array(), $indexBy = 'productattribute_option_id')
 	{
 		$query = new Rb_Query();
 		
@@ -77,14 +77,17 @@ class PaycartModelProductAttributeOption extends PaycartModelLang
 			$query->where('ao.productattribute_option_id IN('.implode(',', $optionIds).')');
 		}
 		
+		if(!empty($languageCode)){
+			$query->where('aol.lang_code = "'.$languageCode.'"');
+		}
+		
 		return $query->select('*')
 		 		     ->from('#__paycart_productattribute_option as ao')
 		 		     ->join('INNER', '#__paycart_productattribute_option_lang as aol ON ao.productattribute_option_id = aol.productattribute_option_id')
 		 		     ->where('ao.productattribute_id = '.$attributeId)
-		 		     ->where('aol.lang_code = "'.$languageCode.'"')
 		 		     ->order('ao.option_ordering')
 		 		     ->dbLoadQuery()
-		 		     ->loadAssocList('productattribute_option_id');
+		 		     ->loadAssocList($indexBy);
 	}
 	
 	/**

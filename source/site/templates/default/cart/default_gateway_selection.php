@@ -15,6 +15,10 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<?php echo $this->loadTemplate('steps');?>
 </div>
 <div class='pc-checkout-wrapper clearfix '>	
+	
+	<span for="pc-checkout-payment-error" class="pc-error" id="pc-checkout-payment-error"></span>
+	<span for="pc-checkout-payment-processing-error" class="pc-error" id="pc-checkout-payment-processing-error"></span>
+
 	<div class="pc-checkout-payment" id="accordion-parent" >
 		<div class="row-fluid ">
 			<h3><strong><?php echo JText::_('COM_PAYCART_PAYMENT');	?></strong></h3>

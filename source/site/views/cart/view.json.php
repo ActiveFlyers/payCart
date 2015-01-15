@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
  */
 require_once dirname(__FILE__).'/view.php';
 
-class PaycartSiteViewCart extends PaycartSiteBaseViewCart
+class PaycartSiteJsonViewCart extends PaycartSiteBaseViewCart
 {
 	/**
 	 * Get HTML from Payment Gateway
@@ -26,25 +26,30 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	public function paymentForm()
 	{
 		$this->json = new stdClass();
-				
+		// if getting any error
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$this->json->valid  = false;
+			$this->json->isValid  = false;
 			$this->json->errors = $errors;
 			return true;
 		}
 		
-		$response_object	=	PaycartFactory::getHelper('invoice')->getBuildForm($this->cart);
+		// if payment processed
+		$redirect_url  = $this->get('redirect_url', false);
+		if ( $redirect_url) {
+			$this->json->isValid  = true;
+			$this->json->redirect_url = $redirect_url;
+			return true;
+		}
 		
+		// fetch gateway html
+		$response_object	=	PaycartFactory::getHelper('invoice')->getBuildForm($this->cart);
 		$this->assign('response_object', $response_object); 
 		
-		if ( empty($response_object->post_url )) {
-			$response_object->post_url = 'index.php?option=com_paycart&view=cart&task=paymentForm&cart_id='.$this->cart->getId(); 
-		}
 				
 		$html =  $this->loadTemplate('payment_form');
 		
-		$this->json->valid = true;
+		$this->json->isValid = true;
 		$this->json->html 		= $html;
 		$this->json->post_url 	= $response_object->post_url;
 		
@@ -53,6 +58,8 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	
 	function order()
 	{
+		$this->json = new stdClass();
+		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
 			$this->json->isValid = false;
@@ -97,11 +104,11 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	public function updateProductQuantity()
 	{
 		$response = new stdClass();
-		$response->valid = true;
+		$response->isValid = true;
 		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$response->valid  = false;
+			$response->isValid  = false;
 			$response->errors = $errors;
 		}
 		
@@ -116,11 +123,11 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	public function removeProduct()
 	{
 		$response = new stdClass();
-		$response->valid = true;
+		$response->isValid = true;
 		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$response->valid  = false;
+			$response->isValid  = false;
 			$response->errors = $errors;
 		}
 		
@@ -133,11 +140,26 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	public function applyPromotion()
 	{
 		$response = new stdClass();
-		$response->valid = true;
+		$response->isValid = true;
 		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$response->valid  = false;
+			$response->isValid  = false;
+			$response->errors = $errors;
+		}
+		
+		$this->assign('json', $response);
+		return true;		
+	}
+	
+	public function removePromotion()
+	{
+		$response = new stdClass();
+		$response->isValid = true;
+		
+		$errors = $this->get('errors', array());
+		if(!empty($errors)){
+			$response->isValid  = false;
 			$response->errors = $errors;
 		}
 		
@@ -148,11 +170,11 @@ class PaycartSiteViewCart extends PaycartSiteBaseViewCart
 	function changeShippingMethod()
 	{
 		$response = new stdClass();
-		$response->valid = true;
+		$response->isValid = true;
 		
 		$errors = $this->get('errors', array());
 		if(!empty($errors)){
-			$response->valid  = false;
+			$response->isValid  = false;
 			$response->errors = $errors;
 		}
 		

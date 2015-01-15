@@ -68,4 +68,5 @@ class PaycartView extends PaycartViewbase
 		
 		return PaycartFactory::getHelper($name);
 	}
+
 }

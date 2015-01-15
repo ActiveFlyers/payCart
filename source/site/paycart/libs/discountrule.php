@@ -107,7 +107,7 @@ class PaycartDiscountrule extends PaycartLib
 		$this->processor_config		= new Rb_Registry();
 		
 		$this->discountrule_lang_id	= 0;
-		$this->lang_code			= PaycartFactory::getCurrentLanguageCode();
+		$this->lang_code			= PaycartFactory::getPCDefaultLanguageCode();
 		$this->message				= '';
 		
 		$this->_buyergroups			= array();
@@ -239,6 +239,7 @@ class PaycartDiscountrule extends PaycartLib
 		$object->usage_limit		= $this->usage_limit;
 		$object->buyer_usage_limit 	= $this->buyer_usage_limit;
 		$object->coupon				= $this->coupon;
+		$object->apply_on			= $this->apply_on;
 		
 		return $object;
 	}

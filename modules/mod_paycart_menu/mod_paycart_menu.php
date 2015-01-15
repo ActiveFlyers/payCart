@@ -22,9 +22,16 @@ include_once $file_path;
 
 // load bootsrap, font-awesome
 Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/js/paycart.js');
+Rb_HelperTemplate::loadSetupEnv();
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
 
 // get layout name
 $layout           = $params->get('layout', 'default');
+$layout_mob       = $params->get('layout', 'default_mobile');
+$itemsPerColumn	  = $params->get('itemsPerColumn',10);
 
-require JModuleHelper::getLayoutPath('mod_paycart_menu', $layout);
+if(PaycartFactory::getApplication()->client->mobile) {
+	require JModuleHelper::getLayoutPath('mod_paycart_menu', $layout_mob);
+} else {
+	require JModuleHelper::getLayoutPath('mod_paycart_menu', $layout);
+}

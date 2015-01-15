@@ -29,7 +29,8 @@ class PaycartCart extends PaycartLib
 	protected $billing_address_id;				// for invoicing
 	protected $shipping_address_id;	
 	protected $invoice_id;
-
+	protected $secure_key;
+	
 	protected $locked_date;					// Checkout/refund  Request date (Request for Payment)
     protected $approved_date;               // Approved date
     protected $paid_date;					// Payment Completion date
@@ -51,6 +52,9 @@ class PaycartCart extends PaycartLib
     protected $is_locked;           // Stop Cart calculation
     protected $is_approved;         // Cart is valid for paid 
     protected $is_delivered;        // All shipment 
+    
+    protected $note;
+    protected $lang_code = '';
         
     // Related Table Fields: Array of cart-particulars
 	protected $_cartparticulars;
@@ -106,22 +110,27 @@ class PaycartCart extends PaycartLib
 		$this->is_locked		= 0;
         $this->is_approved		= 0;
         $this->is_delivered		= 0;
+        $this->secure_key 		= '';
 
 		$this->locked_date		= Rb_Date::getInstance('0000-00-00 00:00:00');
 		$this->paid_date		= Rb_Date::getInstance('0000-00-00 00:00:00');
-        $this->approved_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
-		$this->delivered_date		= Rb_Date::getInstance('0000-00-00 00:00:00'); 
+        $this->approved_date	= Rb_Date::getInstance('0000-00-00 00:00:00'); 
+		$this->delivered_date	= Rb_Date::getInstance('0000-00-00 00:00:00'); 
 		
 		$this->reversal_for		= 0; 
-		$this->cancelled_date		= Rb_Date::getInstance('0000-00-00 00:00:00');  
+		$this->cancelled_date	= Rb_Date::getInstance('0000-00-00 00:00:00');  
 		
 		$this->created_date		= Rb_Date::getInstance();
-		$this->modified_date		= Rb_Date::getInstance();
+		$this->modified_date	= Rb_Date::getInstance();
+		
+		$this->lang_code 		= PaycartFactory::getPCDefaultLanguageCode();	
 		
 		$this->session_id		= '';
-		$this->is_guestcheckout		= false;
+		$this->is_guestcheckout	= false;
 		
         $this->params	=	new Rb_Registry();
+        
+        $this->note		=	'';
                 
 		// Related Table Fields: cart particulars libs instance
 		$this->clearCartParticulars();
@@ -155,6 +164,10 @@ class PaycartCart extends PaycartLib
 		return $buyer_instance;
 	}
 
+	public function getLangCode()
+	{
+		return $this->lang_code;
+	}  
 
 	public function getTotal()
 	{
@@ -212,6 +225,11 @@ class PaycartCart extends PaycartLib
 	{
 		return (bool)$this->is_locked;
 	}
+	
+	public function isPaid() 
+	{	
+		return (bool)($this->status == Paycart::STATUS_CART_PAID);
+	}
         
     public function isDelivered() 
 	{
@@ -242,8 +260,13 @@ class PaycartCart extends PaycartLib
 	{
 		$this->session_id	=	$id;
 	}
+	
+	public function setNote($note)
+	{
+		$this->note	=	$note;
+	}
         
-     public function getCreatedDate()
+    public function getCreatedDate()
      {
         return $this->created_date;
      }
@@ -251,6 +274,52 @@ class PaycartCart extends PaycartLib
 	public function getPaidDate()
     {
 		return $this->paid_date;
+	}
+	
+	/**
+	 * 
+	 * Invoke to get cart Invoice Data
+	 * 
+	 * @return Array
+	 */
+	public function getInvoiceData()
+	{
+		$invoice_id = $this->getInvoiceId();
+		
+		// if invoice is not available
+		if(!$invoice_id) {
+			return Array();
+		}
+		
+		/* @var $invoice_helper_instance PaycartHelperInvoice */
+		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+		
+		$invoice_data = $invoice_helper_instance->getInvoiceData($invoice_id);
+		
+		return $invoice_data;
+	}
+	
+	/**
+	 * 
+	 * Invoke to get Transaction data
+	 * 
+	 * @return Array
+	 */
+	public function getTransactionData() 
+	{
+		$invoice_id = $this->getInvoiceId();
+		
+		// if invoice is not available
+		if(!$invoice_id) {
+			return Array();
+		}
+		
+		/* @var $invoice_helper_instance PaycartHelperInvoice */
+		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+		
+		$transaction_data = $invoice_helper_instance->getTransactionData($invoice_id);
+		
+		return $transaction_data;
 	}
 	
 	/**
@@ -269,7 +338,7 @@ class PaycartCart extends PaycartLib
 		$shipping_address_instance = PaycartBuyeraddress::getInstance($this->shipping_address_id);
 		
 		//if address availble in cart param then bind it
-		$shipping_address	=	$this->getParam('billing_address', Array());
+		$shipping_address	=	$this->getParam('shipping_address', Array());
 		if (!empty($shipping_address)) {
 			// get buyer detail form cart param 
 			$shipping_address_instance->bind($shipping_address);
@@ -294,7 +363,7 @@ class PaycartCart extends PaycartLib
 		$billing_address_instance = PaycartBuyeraddress::getInstance($this->billing_address_id);
 		
 		//if address availble in cart param then bind it
-		$billing_address	=	$this->getParam('shipping_address', Array());
+		$billing_address	=	$this->getParam('billing_address', Array());
 		if (!empty($billing_address)) {
 			// get buyer detail form cart param 
 			$billing_address_instance->bind($billing_address);
@@ -387,8 +456,51 @@ class PaycartCart extends PaycartLib
 				
 		return $this;
 	}
-
-        /**
+	
+	/**
+	 * 
+	 * Unlock cart
+	 * 				 ) 
+	 * @since 1.0
+	 * @author mManishTrivedi, Gaurav Jain
+	 * 
+	 * @return PaycartCart instance
+	 */
+	public function markUnLock()
+	{
+		$cart_id = $this->getId();
+		 
+		// first delete depended data
+		
+		// 1#.  Delete Usage
+		$usage_model = PaycartFactory::getModel('usage')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 2#.  Delete Particulars
+		$particular_model = PaycartFactory::getModel('cartparticular')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 3#.	Delete Invoice if exist
+		$invoice_id = $this->getInvoiceId();
+		
+		if ( $invoice_id) {
+			/* @var $invoice_helper_instance PaycartHelperInvoice */
+			$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+			
+			if ( !$invoice_helper_instance->deleteInvoice($invoice_id) ) {
+				return false;
+			}
+		}
+		
+		// 4#. Reset locked field from cart
+		$this->is_locked 	= 0;
+		$this->locked_date	= Rb_Date::getInstance('0000-00-00 00:00:00');
+		$this->invoice_id 	= 0;
+						
+		return $this;
+	}
+	
+	
+	
+	    /**
          * Invoke to approve cart
          * 
          * @return \PaycartCart 
@@ -420,36 +532,15 @@ class PaycartCart extends PaycartLib
             }
             
             return $this;
-        }
+        }      
         
         /**
-         * Invoke to approve cart
+         * Invoke to Deliver cart
          * 
-         * @return \PaycartCart 
-         */
-        public function markPaid()
-        {
-            // change cart status, payment date, make it approval
-            $this->markApproved();
-            
-            // check if already paid or not other wise date will be changed
-            if (Paycart::STATUS_CART_PAID != $this->status) {
-                $this->status       =   Paycart::STATUS_CART_PAID;
-                $this->paid_date    =   Rb_Date::getInstance();
-            }
-   
-            return $this;
-        }
-        
-        /**
-         * Invoke to approve cart
-         * 
-         * @return \PaycartCart 
+         * @return PaycartCart 
          */
         public function markDelivered()
-        {
-            $this->markPaid();
- 
+        { 
             $this->is_delivered     = 1;
             $this->delivered_date   = Rb_Date::getInstance();
    
@@ -486,13 +577,35 @@ class PaycartCart extends PaycartLib
 		// @PCTODO :: its far better if we will add {code => discount-rule-id} 
 		// so we can utlize discount-rule-id on getDiscountRule method (in Query performance) 
 		  
-		// product is not already added, set it with quantity 0
+		// code is not already added
 		if(!in_array($code, $promotions)){
 			$promotions[] = $code;
 		}
 			
-		// set the new products
+		// set promotion
 		$this->params->set('promotions', $promotions);
+				
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * Remove specific promotion code from cart
+	 * @param $code
+	 * 
+	 * @return PaycartCart
+	 */
+	public function removePromotionCode($code)
+	{
+		$promotions = $this->params->get('promotions', array());
+		
+		$key = array_search($code, $promotions);
+		// if key exist the unset it and set into cart 
+		if ($key !== false ) {
+			unset($promotions[$key]);
+			// reset promotion code
+			$this->params->set('promotions', $promotions);
+		}
 				
 		return $this;
 	}
@@ -614,6 +727,12 @@ class PaycartCart extends PaycartLib
 		 */ 
 		$args 			= Array();
 		$args['cart']	= $this;
+		
+		/*  @var $event_helper PaycartHelperEvent   */
+        $event_helper = PaycartFactory::getHelper('event');
+        
+        //trigger :: onPaycartCartBeforeCalculate
+        $event_helper->onPaycartCartBeforeCalculate($args);
 
 		// At that Moment cart have only {product} particulars. 
 		Rb_HelperPlugin::trigger('onPaycartCartBeforeCalculate', $args);
@@ -671,8 +790,9 @@ class PaycartCart extends PaycartLib
 		 * @NOTE :: Clone {$this}, If required
 		 */ 
 		$args['cart']	=	$this;
-		Rb_HelperPlugin::trigger('onPaycartCartAfterCalculate', $args);
-		
+		//trigger :: onPaycartCartBeforeCalculate
+        $event_helper->onPaycartCartAfterCalculate($args);
+        
 		return $this;
 	}
 	
@@ -714,6 +834,7 @@ class PaycartCart extends PaycartLib
 		if(isset($shippingOptions[$md5Address][$selectedShippingMethods])){
 			foreach($shippingOptions[$md5Address][$selectedShippingMethods]['shippingrule_list'] as $shippingrule_id => $shippingOption){
 				$productParticulars = $this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+				$binddata = array();
 				
 				foreach ($shippingOption['product_list'] as $product_id){
 					$binddata['params']['product_list'][$product_id] = array('product_id' => $product_id, 'quantity' => $productParticulars[$product_id]->getQuantity());
@@ -874,11 +995,11 @@ class PaycartCart extends PaycartLib
 		$buyer_helper = PaycartFactory::getHelper('buyer');
 		
 		//check user already exist or not
-		$username	= $buyer_helper->getUsername($buyer->email);
+		$user	= $buyer_helper->getUser($buyer->email, 'email');
 		
-		if($username) {
+		if($user) {
 			//user already exist
-			$user_id = JUserHelper::getUserId($username);
+			$user_id = JUserHelper::getUserId($user->username);
 		} else {
 			// Create new account
 			$user_id = $buyer_helper->createAccount($buyer->email);
@@ -984,68 +1105,13 @@ class PaycartCart extends PaycartLib
 		return $this->getParam('promotions','');
 	}
 	
-        public function getLink()
-        {
-            //@FIXME :: build cart secure key
-            return PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display&key='.$this->cart_id);
-        }
+    public function getLink()
+    {
+    	//@FIXME :: build cart secure key
+        return PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display&key='.$this->cart_id);
+   	}
 
-        /**
-	 * Invoke to collect payment on this cart
-	 * Payment collection on cart 
-	 * @param Array $payment_data : $data is post data from Payment Processor
-	 * @throws RuntimeException
-	 */
-	public function collectPayment(Array $payment_data) 
-	{
-		/* @var $invoice_helper_instance PaycartHelperInvoice */
-		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
-		
-		$invoice_id = $this->getInvoiceId();
-		
-		// before process invoice
-		$invoice_beforeProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
-
-		// Process Payment data . 
-		$invoice_helper_instance->processPayment($invoice_id, $payment_data);
-
-		//after process invoice
-		$invoice_afterProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
-		
-		// After Payment cart status must be changed
-		$this->processCart($invoice_beforeProecess, $invoice_afterProecess);	
-		
-		return $this;
-	}
-	
-	
-	/**
-	 * Invoke to process cart-notification on this cart
-	 * Payment collection on cart 
-	 * @param Std Class $payment_data : $data is post data from Payment Processor
-	 * @throws RuntimeException
-	 */
-	public function processNotification( $processor_notification_data) 
-	{
-		/* @var $invoice_helper_instance PaycartHelperInvoice */
-		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
-		
-		$invoice_id = $this->getInvoiceId();
-		
-		// before process invoice
-		$invoice_beforeProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
-
-		// Process Notification data
-		$invoice_helper_instance->processNotification($invoice_id, $processor_notification_data);
-				
-		//after process invoice
-		$invoice_afterProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
-		
-		// After Payment cart status must be changed
-		$this->processCart($invoice_beforeProecess, $invoice_afterProecess);	
-		
-		return $this;
-	}
+  
         
         /**
          *
@@ -1054,6 +1120,12 @@ class PaycartCart extends PaycartLib
          */
         protected function _save($previousObject) 
         {
+        	// generate secure key on first time save
+        	if(!$this->getId()){
+        		$now = new Rb_Date();
+        		$this->secure_key =  md5($now->toUnix().'.'.$this->ip_address);
+        	}
+        	
             // save to data to table
             $id =  parent::_save($previousObject);
             
@@ -1124,7 +1196,7 @@ class PaycartCart extends PaycartLib
 
         }
 
-        /**
+    /**
 	 * #######################################################################
 	 * 		1#. ProcessCart
 	 * 		2#. OninvoicePaid
@@ -1220,5 +1292,236 @@ class PaycartCart extends PaycartLib
 		// Becoz at that moment cart is already checkout and req. date is already set 
 		
 		return true;
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Lib::_delete()
+	 */
+	protected function _delete()
+	{
+		$cart_id = $this->getId();		
+
+		// first delete depended data
+		
+		// 1#.  Delete Usage
+		$usage_model = PaycartFactory::getModel('usage')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 2#.  Delete Shipment + ( Shipment * Product relation)
+		$shipment_model = PaycartFactory::getModel('shipment')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 3#.  Delete Particulars
+		$particular_model = PaycartFactory::getModel('cartparticular')->deleteMany(Array('cart_id' => $cart_id));
+		
+		// 4#.	Delete Invoice if exist
+		$invoice_id = $this->getInvoiceId();
+		
+		if ( $invoice_id) {
+			/* @var $invoice_helper_instance PaycartHelperInvoice */
+			$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+			
+			if ( !$invoice_helper_instance->deleteInvoice($invoice_id) ) {
+				return false;
+			}
+		}
+		
+		// 5#.  Delete Self
+		if ( !parent::_delete() ) {
+			return false;
+		}
+		
+		/** 
+		 * @PCTODO ::  Trigger when required 
+		 */
+		
+		return true;
+	}
+	
+	
+	/**
+	 * #######################################################################
+	 * 	
+	 * 	Following method define How to mark cart as a paid
+	 * 
+	 * 		1# ProcessNotification 			: Like Paypal
+	 * 		2# requestPayment				: Like Stripe
+	 * 		3# markPaid_withTransactionId	: Payment remotly accepted but not reflected on site
+	 * 		4# markPaid_withManualPay		: Need to change used payment processor to manualpay payment processor.
+	 * 										  Like try to payment from paypal but notification failby any reason
+	 * 											   and now user pay by cash OR by cheque OR any other way 
+	 * 											   then admin should choosed this method to paid mark cart. 
+	 * 		5# markPaid						: When invoice is not exist like 0 amount cart
+	 * 		
+	 * 
+	 * 
+	 * #######################################################################
+	 */	
+	
+	
+	/**
+	 * Invoke to process cart-notification on this cart
+	 * Payment collection on cart 
+	 * @param Std Class $payment_data : $data is post data from Payment Processor
+	 * @throws RuntimeException
+	 */
+	public function processNotification( $processor_notification_data) 
+	{
+		/* @var $invoice_helper_instance PaycartHelperInvoice */
+		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+		
+		$invoice_id = $this->getInvoiceId();
+		
+		// before process invoice
+		$invoice_beforeProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
+
+		// Process Notification data
+		$invoice_helper_instance->processNotification($invoice_id, $processor_notification_data);
+				
+		//after process invoice
+		$invoice_afterProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
+		
+		// After Payment cart status must be changed
+		$this->processCart($invoice_beforeProecess, $invoice_afterProecess);	
+		
+		return $this;
+	}
+	
+	
+    /**
+	 * Invoke to collect payment on this cart
+	 * Payment collection on cart and process cart after payment collection
+	 * @param Array $payment_data : $data is post data from Payment Processor
+	 * @throws RuntimeException
+	 */
+	public function requestPayment(Array $payment_data) 
+	{
+		/* @var $invoice_helper_instance PaycartHelperInvoice */
+		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+		
+		$invoice_id = $this->getInvoiceId();
+		
+		// before process invoice
+		$invoice_beforeProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
+
+		// Process Payment data . 
+		$response = $invoice_helper_instance->processPayment($invoice_id, $payment_data);
+
+		//after process invoice
+		$invoice_afterProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
+		
+		// After Payment cart status must be changed
+		$this->processCart($invoice_beforeProecess, $invoice_afterProecess);	
+		
+		return $response;
+	}
+	
+	/**
+	 * 
+	 * Invoke this method when admin accepted payment by remote but did not reflected on PayCart
+	 * Admin must have gateway-transaction-id 
+	 * @param $gatewaytransaction_id
+	 * 
+	 * @return PaycartCart
+	 */
+	public function markPaid_withGatewayTransaction($gatewaytransaction_id)
+	{
+		/* @var $invoice_helper_instance PaycartHelperInvoice */
+		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+			
+		$invoice_id = $this->getInvoiceId();
+		
+		$invoice_beforeProecess =$invoice_beforeProecess = $this->getInvoiceData();
+		
+		// prepare bind data for response
+		$bind_data = Array();
+		$bind_data['gatewaytransaction_id'] 	= $gatewaytransaction_id;
+		$bind_data['amount'] 					= $invoice_beforeProecess['total'];
+		$bind_data['payment_status'] 			= PaycartHelperInvoice::STATUS_TRANSACTION_PAYMENT_COMPLETE;
+		$bind_data['message'] 					= 'COM_PAYCART_ADMIN_PAID_CART_ON_TRANSACTION_ID_BASIS' ; //On gateway-transaction-id basis, cart manually paid marked by Paycart-Admin';	// Hardcoded string
+		
+		// Process invoice with response 
+		$response = $invoice_helper_instance->processDirectPay($invoice_id, $bind_data);
+				
+		//after process invoice
+		$invoice_afterProecess = $invoice_helper_instance->getInvoiceData($invoice_id);
+		
+		// After Payment cart status must be changed
+		$this->processCart($invoice_beforeProecess, $invoice_afterProecess);	
+     	     		
+        return $this;
+	}
+	
+    /**
+     * Invoke to paid mark cart by manual-payment Processor
+     * 	- Change delete previous invoice.
+     * 	- Create new invoice
+     * 	- Attach hard-coded processor (ManualPay-Processor)
+     *  - invoke request payment on manual-payment processor
+     *  
+     *  @return PaycartCart
+     */
+	public function markPaid_withManualPay()
+	{
+        $invoice_id = $this->getInvoiceId();
+        
+        /* @var $invoice_helper_instance PaycartHelperInvoice */
+		$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+        
+		// delete invoice if exist on cart
+        if ( $invoice_id ) {
+        	$invoice_helper_instance->deleteInvoice($invoice_id);
+        }
+        
+        // Create new invoice + Attach new payment gateway ie manualpay
+        $payment_gateway_data	=	Array();
+		$payment_gateway_data['processor_type'] 	= 'manualpay';		// hardcoded name
+		$payment_gateway_data['processor_config'] 	= Array( 'require_admin_approval' => true );
+		
+		$invoice_id	=	$invoice_helper_instance->createInvoice($this, $payment_gateway_data);
+		$this->setInvoiceId($invoice_id);
+		
+		// ProactiveNess :: We will sure everting is ok at that point and we will save cart.
+        // If further any reason process halt 
+		//	then we cant find out invoice for this cart and one unused invoice also created into invoice table.
+		$this->save();
+		
+        // paid mark invoice and processo cart onInvoicePaid
+        $this->requestPayment(Array());
+                	
+        return $this;
+	}
+	
+	/**
+	 * 
+	 * Invoke to mark paid cart
+	 * 	- would not process/invoke any payment-stuff 
+	 * 
+	 * @return PaycartCart
+	 */
+	public function markPaid()
+	{
+        // change cart status, payment date, make it approval
+        $this->markApproved();
+            
+        // check if already paid or not other wise date will be changed
+        if (Paycart::STATUS_CART_PAID != $this->status) {
+        	$this->status       =   Paycart::STATUS_CART_PAID;
+            $this->paid_date    =   Rb_Date::getInstance();
+        }
+
+        return $this;
+	}	
+	
+	public function getOrderUrl($external = false)
+	{
+		if($external){
+			return JUri::root().'index.php?option=com_paycart&view=account&task=order&order_id='.$this->getId().'&key='.$this->secure_key;
+		}
+		return JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$this->getId().'&key='.$this->secure_key);
+	}
+	
+	public function getSecureKey()
+	{
+		return $this->secure_key;
 	}
 }

@@ -489,13 +489,13 @@ class PaycartHelperShippingrule extends PaycartHelper
 		$query = ' SELECT * FROM 
 		         (
 			         ( select * from `#__paycart_shippingrule` as rule NATURAL left join (select * from `#__paycart_shippingrule_x_group` 
-					  as grp where grp.type = "product" ) as tbl where '.$productCondition.' tbl.group_id IS NULL ) 
+					  as grp where grp.type = "product" ) as tbl where '.$productCondition.' tbl.group_id IS NULL group by rule.shippingrule_id  ) 
 				 UNION ALL 
 			 		 ( select * from `#__paycart_shippingrule` as rule NATURAL left join (select * from `#__paycart_shippingrule_x_group` 
-			 		  as grp where grp.type = "buyer" ) as tbl where '.$buyerCondition.' tbl.group_id IS NULL  ) 
+			 		  as grp where grp.type = "buyer" ) as tbl where '.$buyerCondition.' tbl.group_id IS NULL group by rule.shippingrule_id ) 
 				 UNION ALL 
 			 	     ( select * from `#__paycart_shippingrule` as rule NATURAL left join (select * from `#__paycart_shippingrule_x_group` 
-			  		  as grp where grp.type = "cart" ) as tbl where '.$cartCondition.' tbl.group_id IS NULL  ) 
+			  		  as grp where grp.type = "cart" ) as tbl where '.$cartCondition.' tbl.group_id IS NULL group by rule.shippingrule_id ) 
 		  		 ) 
 		 		 as result group by result.shippingrule_id having count(result.shippingrule_id) = 3 and result.published = 1 
 		 		 order by `ordering`';

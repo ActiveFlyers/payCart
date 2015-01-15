@@ -14,7 +14,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 * @author Team Readybytes
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewProduct extends PaycartAdminBaseViewProduct
+class PaycartAdminAjaxViewProduct extends PaycartAdminBaseViewProduct
 {	
 	protected $_response = null;
 	

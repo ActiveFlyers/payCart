@@ -58,7 +58,21 @@ class PaycartModelProduct extends PaycartModelLang
 			  
 	}
 	
-	public function loadLanguageRecords($filter = array())
+	/**
+	 * update hits value of the given product id
+	 */
+	public function updateHits($productId)
+	{
+		$query = new Rb_Query();
+		
+		return $query->update($this->getTable()->get('_tbl'))
+					 ->set('hits = hits+1')
+					 ->where('product_id = '.$productId)
+					 ->dbLoadQuery()
+					 ->query();
+	}
+	
+	public function loadLanguageRecords($filter = array(), $indexBy = null)
 	{
 		$query = new Rb_Query();
 		$query->select('*')				
@@ -66,7 +80,11 @@ class PaycartModelProduct extends PaycartModelLang
 				
 		$this->_buildWhereClause($query, $filter);
 		
-		return $query->dbLoadQuery()->loadObjectList($this->getLanguageTable()->getKeyName());		
+		if($indexBy === null){
+			$indexBy = $this->getLanguageTable()->getKeyName();
+		}
+		
+		return $query->dbLoadQuery()->loadObjectList($indexBy);
 	}
 	
 	/**
@@ -116,7 +134,11 @@ class PaycartTableProductLang extends PaycartTable
 	public static function getNewAlias($alias, $id = 0, $style = 'dash')
 	{		
 		$alias  = JApplicationHelper::stringURLSafe($alias);//Sluggify the input string
-	
+		if (trim(str_replace('-', '', $alias)) == '')
+		{
+			$alias = JFactory::getDate()->format('Y-m-d-H-i-s');
+		}
+		
 		//@PCTODO:: move to helper
 		// if Value already have '-'(dash) with numeric-data then remove numeric-data 
 		$string = $alias;

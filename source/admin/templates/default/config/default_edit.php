@@ -40,6 +40,9 @@ echo $helper->render('index.php?option=com_paycart&view=config');
 		<li class="">
 			<a data-toggle="tab" href="#paycartAdminConfigTabsLocalization"><?php echo JText::_('COM_PAYCART_ADMIN_LOCALIZATION');?></a>
 		</li>
+		<li class="">
+			<a data-toggle="tab" href="#paycartAdminConfigTabsAdvance"><?php echo JText::_('COM_PAYCART_ADMIN_ADVANCE');?></a>
+		</li>
 	</ul>
 
 
@@ -54,6 +57,10 @@ echo $helper->render('index.php?option=com_paycart&view=config');
 		
 		<div class="tab-pane" id="paycartAdminConfigTabsLocalization">
 			<?php echo $this->loadTemplate('localization');?>
+		</div>
+		
+		<div class="tab-pane" id="paycartAdminConfigTabsAdvance">
+			<?php echo $this->loadTemplate('advance');?>
 		</div>
 	</div>
 	<input type="hidden" name="task" value="save" />

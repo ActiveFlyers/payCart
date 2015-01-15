@@ -34,14 +34,16 @@ defined('_JEXEC') or die( 'Restricted access' );
 				<i class="fa fa-plane fa-5x"></i>
 			</div>			
 			<div>
-<!--				<h3><?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_GRID_BLANK_MSG');?></h3>-->
-				<h3>Shipping Rules</h3>
+				<h3><?php echo JText::_('COM_PAYCART_ADMIN_SHIPPINGRULE_GRID_BLANK_MSG');?></h3>
 			</div>
 		</div>
 	</div>
 	<div class="row-fluid">	
-		<div class="center muted">
-			This feature is under development, it will be available soon.
+		<div class="center">
+			<a href="<?php echo JUri::base().'index.php?option=com_paycart&view=shippingrule&task=new';?>" class="btn btn-success btn-large">
+				<i class="icon-plus-sign icon-white"></i>&nbsp;
+				<?php echo Rb_Text::_('COM_PAYCART_ADMIN_SHIPPINGRULE_ADD');?>
+			</a>			
 		</div>
 	</div>
 	

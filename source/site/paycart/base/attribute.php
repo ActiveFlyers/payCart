@@ -19,6 +19,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartAttribute
 {
 	static $instance = array();
+	
+	static $options  = array();
 
 	public function getEditHtml($attribute,$selectedValue ='', Array $options = array())
 	{
@@ -42,7 +44,11 @@ class PaycartAttribute
 	
 	function getOptions($attribute)
 	{
-		return PaycartFactory::getInstance('productattributeoption', 'model')->loadOptions($attribute->getId(), $attribute->getLanguageCode());
+		if(isset(self::$options[$attribute->getId()])){
+			return self::$options[$attribute->getId()];
+		}
+		
+		return self::$options[$attribute->getId()] = PaycartFactory::getInstance('productattributeoption', 'model')->loadOptions($attribute->getId(), $attribute->getLanguageCode());
 	}
 	
 	/**
@@ -53,8 +59,7 @@ class PaycartAttribute
 		$options = (isset($data['_options'])) ? $data['_options']: array();
 		
 		if(empty($options) && $attribute->getId()){
-			$options = PaycartFactory::getModel('productattributeoption')
-					                           ->loadOptions($attribute->getId(), $attribute->getLanguageCode());
+			$options = $this->getOptions($attribute);
 		}
 		
 		$result = array();
@@ -141,12 +146,20 @@ class PaycartAttribute
 	 */
 	function buildCounterHtml($counter, $type, $options = array())
 	{
+		if(PAYCART_MULTILINGUAL){
+			$lang_code = PaycartFactory::getPCCurrentLanguageCode();
+			$flag = '<span class="pull-left pc-language">'.PaycartHtmlLanguageflag::getFlag($lang_code).' &nbsp; '.'</span>';
+		}
+		else{
+			$flag = '';
+		}
 		ob_start();
 		?>	
 			<div id="option_row_<?php echo $counter?>">
 				 <div class="control-group">
 					 <div class='controls'>
-					 		<input type='text' name='options[<?php echo $counter?>][title]' id='title_<?php echo $counter?>' 
+					 		<?php echo $flag;?>
+					 		<input type='text' name='paycart_productattribute_form[options][<?php echo $counter?>][title]' id='paycart_productattribute_form_title_<?php echo $counter?>' 
 					      	value='<?php echo (isset($options[$counter]['title'])?$options[$counter]['title']:'')?>' placeholder="<?php echo Rb_Text::_("COM_PAYCART_ADMIN_OPTION") ?>"/>
 					      	<button id="paycart-attribute-option-remove" class="btn btn-danger" type="button" onClick="paycart.admin.attribute.removeOption('<?php echo $type?>','<?php echo $counter;?>'); return false;">
 								<i class="fa fa-trash"></i>
@@ -154,13 +167,13 @@ class PaycartAttribute
 					</div>
 				</div>
 				 
-				<input type='hidden' name='options[<?php echo $counter?>][option_ordering]' id='option_ordering_<?php echo $counter?>'  
+				<input type='hidden' name='paycart_productattribute_form[options][<?php echo $counter?>][option_ordering]' id='paycart_productattribute_form_option_ordering_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['option_ordering'])?$options[$counter]['option_ordering']:$counter) ?>' />
 						  
-				<input type='hidden' name='options[<?php echo $counter?>][productattribute_option_id]' id='productattribute_option_id_<?php echo $counter?>'  
+				<input type='hidden' name='paycart_productattribute_form[options][<?php echo $counter?>][productattribute_option_id]' id='paycart_productattribute_form_productattribute_option_id_<?php echo $counter?>'  
 						  value='<?php echo (isset($options[$counter]['productattribute_option_id'])?$options[$counter]['productattribute_option_id']:0) ?>' />
 	
-				<input type='hidden' name='options[<?php echo $counter?>][productattribute_option_lang_id]' id='productattribute_option_lang_id_<?php echo $counter?>'  						  
+				<input type='hidden' name='paycart_productattribute_form[options][<?php echo $counter?>][productattribute_option_lang_id]' id='paycart_productattribute_form_productattribute_option_lang_id_<?php echo $counter?>'  						  
 						  value='<?php echo (isset($options[$counter]['productattribute_option_lang_id'])?$options[$counter]['productattribute_option_lang_id']:0) ?>' />
 				 
 			</div>
@@ -206,22 +219,52 @@ class PaycartAttribute
 	 */
 	function getSelectorHtml($attribute,  $selectedOption = '', Array $options = array())
 	{
-		$options  = PaycartFactory::getModel('productattributeoption')->loadOptions($attribute->getId(), $attribute->getLanguageCode(),$options);
-		if(empty($options)){
+		$records  = $this->getOptions($attribute);
+		if(empty($records)){
 			return '';
 		}	
 		
 		$html = '<select id="pc-attr-'.$attribute->getId().'" name="attributes['.$attribute->getId().']" onchange="paycart.product.selector.onChange(this)">';
 		
-		foreach ($options as $option){
+		foreach ($options as $optionId){
 			$selected = '';
-			if(!empty($selectedOption) && $selectedOption == $option['productattribute_option_id']){
+			if(!empty($selectedOption) && $selectedOption == $optionId){
 				$selected = "selected='selected'";
 			}
-			$html  .= '<option value="'.$option['productattribute_option_id'].'" '.$selected.' >'.$option['title'].'</option>' ;
+			$html  .= '<option value="'.$optionId.'" '.$selected.' >'.$records[$optionId]['title'].'</option>' ;
 		}
 		
 		$html .= '</select>';
 		return $html;
+	}
+	
+	function getFilterHtml($attribute, Array $selectedOptions = array(), Array $input = array())
+	{		
+		$options  = $this->getOptions($attribute);
+		if(empty($options)){
+			return '';
+		}	
+		
+		$html = '';
+		
+		foreach ($input as $optionId=>$option){
+			$selected = '';
+			if(!empty($selectedOptions) && in_array($optionId, $selectedOptions)){
+				$selected = "checked='checked'";
+			}
+			$disabled = ($option['disabled'])?'disabled':'';
+			$html  .= '<input data-pc-result="filter" name="filters[attribute]['.$attribute->getId().']['.$optionId.']" 
+			           value="'.$optionId.'" '.$selected.' type="checkbox" data-attribute-id="'.$attribute->getId().'" ' .$disabled. '> '
+			           .$options[$optionId]['title'].' ('.$option['productCount'].') <br/>' ;
+		}
+		
+		$html .= '</select>';
+		return $html;
+	}
+	
+	function getSearchableDataOfOption($attributeId, $optionId)
+	{
+		//Can't use getOptions function, becoz here we need option data of all the languages
+		return PaycartFactory::getModel('productattributeoption')->loadOptions($attributeId,'',array($optionId),'');
 	}
 }

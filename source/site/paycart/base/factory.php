@@ -133,12 +133,34 @@ class PaycartFactory extends Rb_Factory
 
 		$records	=	Array();
 		foreach ($paycartConfig as $record) {
-			$records[$record->key] = $record->value;
+			$value = $record->value;
+			
+			// if $value is a json string then convert decode it and use
+			json_decode($value);
+ 			if(json_last_error() == JSON_ERROR_NONE){
+ 				$value = json_decode($value);
+ 			}
+			
+			$records[$record->key] = $value;
 		}
 
 		// Bind paycart config to joomla config
 		self::$_config->loadArray($records);
 		return self::$config;
+	}
+	
+	public static function saveConfig($data, $file = null, $type = 'PHP', $namespace = '')
+	{	
+		$paycartModelConfig = self::getInstance('config', 'model');
+		if($paycartModelConfig->save($data)){
+			foreach($data as $key => $value){
+				self::$_config->set($key, $value);
+			}
+			
+			return true;
+		}
+		
+		return false;				
 	}
 		
 	/**
@@ -171,7 +193,32 @@ class PaycartFactory extends Rb_Factory
 		return self::getHelper('group')->getInstance($type, $className, $config);
 	}
 	
-	public static function getCurrentLanguageCode()
+	protected static $_pcCurrentLanguageCode = null; 
+	public static function getPCCurrentLanguageCode()
+	{
+		return self::$_pcCurrentLanguageCode;
+	}
+	
+	public static function setPCCurrentLanguageCode($lang_code)
+	{
+		if(self::$_pcCurrentLanguageCode != null && self::$_pcCurrentLanguageCode != $lang_code){
+			throw Exception('Can not change current language of Paycart in same request.');
+		}
+		
+		self::$_pcCurrentLanguageCode = $lang_code;
+	}
+	
+	public static function getPCDefaultLanguageCode()
+	{
+		return PaycartFactory::getConfig()->get('localization_default_language');
+	}
+	
+	public static function getPCSupportedLanguageCode()
+	{
+		return PaycartFactory::getConfig()->get('localization_supported_language');
+	}
+	
+	public static function getJoomlaCurentLanguageCode()
 	{
 		return PaycartFactory::getLanguage()->getTag();
 	}

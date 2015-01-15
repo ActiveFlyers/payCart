@@ -16,7 +16,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author mManishTrivedi
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewBuyeraddress extends PaycartAdminBaseViewBuyeraddress
+class PaycartAdminHtmlViewBuyeraddress extends PaycartAdminBaseViewBuyeraddress
 {	
 	protected function _adminEditToolbar()
 	{

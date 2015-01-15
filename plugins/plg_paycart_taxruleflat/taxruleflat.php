@@ -35,15 +35,5 @@ class PlgPaycartTaxruleFlat extends RB_Plugin
                             'description'=> Rb_Text::_('PLG_PAYCART_TAXRULE_FLAT_RATE_DESC'),
                       		'icon'		 => ''
                       ));
-        
-        // push processor of flatAmount
-        $helper->push(paycart::PROCESSOR_TYPE_TAXRULE,
-					 'PaycartTaxruleProcessorFlatAmount',		  
-                      array(
-                            'filepath'   => dirname(__FILE__).'/processors/flatamount/flatamount.php',
-                            'title'      => Rb_Text::_('PLG_PAYCART_TAXRULE_FLAT_AMOUNT_TITLE'),
-                            'description'=> Rb_Text::_('PLG_PAYCART_TAXRULE_FLAT_AMOUNT_DESC'),
-                      		'icon'		 => ''
-                      ));
 	}
 }

@@ -16,7 +16,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @since 1.0.0
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewTaxrule extends PaycartAdminBaseViewTaxrule
+class PaycartAdminHtmlViewTaxrule extends PaycartAdminBaseViewTaxrule
 {
 	public function edit($tpl = null)
 	{

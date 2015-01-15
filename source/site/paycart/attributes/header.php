@@ -69,6 +69,6 @@ class PaycartAttributeHeader extends PaycartAttribute
 		$options = parent::getOptions($attribute);
 		$option = array_shift($options);
 			
-		return "<hr /> <input type='hidden' name='paycart_form[attributes][".$attribute->getId()."]' value='".$option['productattribute_option_id'] ."'>";			
+		return "<hr /> <input type='hidden' name='paycart_product_form[attributes][".$attribute->getId()."]' value='".$option['productattribute_option_id'] ."'>";			
 	}
 }

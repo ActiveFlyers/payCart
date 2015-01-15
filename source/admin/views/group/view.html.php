@@ -18,7 +18,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @author Gaurav Jain
  */
 require_once dirname(__FILE__).'/view.php';
-class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
+class PaycartAdminHtmlViewGroup extends PaycartAdminBaseViewGroup
 {	
 	public function display($tpl=null) 
 	{
@@ -68,7 +68,7 @@ class PaycartAdminViewGroup extends PaycartAdminBaseViewGroup
 			$params 	= $item->getParams();			
 			  
 			foreach($params as $rule){
-				$namePrefix = $this->_component->getNameSmall().'_form[params]['.$ruleCounter.']';
+				$namePrefix = $this->_component->getNameSmall().'_'.$this->getName().'_form[params]['.$ruleCounter.']';
 				
 				// get instance of rule
 				$groupRule = PaycartFactory::getGrouprule($type, $rule->ruleClass, (array)$rule);

@@ -25,14 +25,15 @@
 					type="text"
 					class="input-block-level"
 					label="COM_PAYCART_ADMIN_SKU"
-					filter="JApplicationHelper::stringURLSafe"/>
+					filter="JApplicationHelper::objectHTMLSafe"/>
 					
 			<field 	name="stockout_limit" 
 					type="text"
 					validate="integer"
 					class="input-block-level validate-integer"
 					label="COM_PAYCART_ADMIN_PRODUCT_STOCKOUT_LIMIT"
-					required="true"/>
+					required="true"
+					default="0"/>
 					
 			<field 	name="type" 
 					class="input-block-level"
@@ -124,25 +125,26 @@
 		
 		<fieldset name='language'>
 			<field 	name="product_lang_id" 
-					type="text"
-					default="0"
-					label="COM_PAYCART_PRODUCT_LANG_ID_LABEL"
-					description="COM_PAYCART_PRODUCT_LANG_ID_DESC"
-					readonly="true"
-					size="10"/>
+					type="hidden" />
+					
+			<field 	name="lang_code" 
+					type="hidden" />
 			
 			<field 	name="title" 
 					type="text"
 					class="input-block-level"
 					label="COM_PAYCART_ADMIN_TITLE"
-					required="true"/>
+					required="true"
+					maxlength="100"/>
 					
 			<field 	name="alias" 
 					type="text"
 					validate="productalias"
 					filter="JApplicationHelper::stringURLSafe"
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_ALIAS"/>			
+					label="COM_PAYCART_ADMIN_ALIAS"
+					description="JFIELD_ALIAS_DESC"
+					maxlength="100"/>			
 			
 			<field 	name="description" 
 					type="editor"						
@@ -152,17 +154,20 @@
 			<field	name="metadata_title" 
 					type="text"
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_METADATA_TITLE"/>
+					label="COM_PAYCART_ADMIN_METADATA_TITLE"
+					maxlength="255"/>
 			
 			<field 	name="metadata_description" 
 					type="text"
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_METADATA_DESCRIPTION"/>
+					label="COM_PAYCART_ADMIN_METADATA_DESCRIPTION"
+					maxlength="255"/>
 			
 			<field	name="metadata_keywords" 
 					type="text" 
 					class="input-block-level"
-					label="COM_PAYCART_ADMIN_METADATA_KEYWORD"/>
+					label="COM_PAYCART_ADMIN_METADATA_KEYWORD"
+					maxlength="255"/>
 		</fieldset>	
 		
 		<fields name="_uploaded_files">

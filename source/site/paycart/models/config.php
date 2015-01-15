@@ -33,7 +33,11 @@ class PaycartModelConfig extends PaycartModel
 		//update existing records
 		$update = 'UPDATE `#__paycart_config` SET `value` = CASE `key` ';
 		foreach($diff as $key){
-				$tmp .= "WHEN '".$key."' THEN '".$data[$key]. "' ";
+				if(is_array($data[$key])){
+					$data[$key] = json_encode($data[$key]);
+				}
+				
+				$tmp .= "WHEN '".$key."' THEN ".$db->quote($data[$key]);
 				unset($data[$key]);
 		}	
 
@@ -51,6 +55,9 @@ class PaycartModelConfig extends PaycartModel
 		$insert 	= 'INSERT INTO `#__paycart_config` (`key`, `value`) VALUES ';
 		$queryValue = array();
 		foreach ($data as $key => $value){
+			if(is_array($value)){
+				$value = json_encode($value);
+			}
 			$queryValue[] = "(".$db->quote($key).",". $db->quote($value).")";
 		}
 		
