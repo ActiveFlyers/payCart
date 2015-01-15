@@ -119,12 +119,12 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 				// if all quantity of product is not consumed in shipment, then create empty reord for remaining quantity
 				// but without shipment. For empty shipment $estimatedDeliveryDate will be displayed
 				$quantity = 0;
-				foreach($productShipments[$product['product_id']] as $shipment){
+				foreach($productShipments[$particular->particular_id] as $shipment){
 					$quantity += $shipment['quantity'];
 				}
 				
 				if($quantity < $particular->quantity){
-					$productShipments[$product['product_id']][] = array('quantity' => ($particular->quantity - $quantity),
+					$productShipments[$particular->particular_id][] = array('quantity' => ($particular->quantity - $quantity),
 																	'shipment_id' => 0);
 				}
 			}
