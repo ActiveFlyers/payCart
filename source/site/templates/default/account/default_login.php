@@ -21,7 +21,7 @@ echo $this->loadTemplate('js');
 		<div class="row-fluid">				
 			<ul class="nav nav-tabs">
 				<li class="<?php echo $action == 'login' ? 'active' : '';?>"><a href="#pc-account-login-form" data-toggle="tab"><?php echo JText::_('COM_PAYCART_LOGIN');?></a></li>
-				<li class="<?php echo $action == 'track' ? 'active' : '';?>"><a href="#pc-account-track-form" data-toggle="tab"><?php echo JText::_('COM_PAYCART_ACCOUNT_TRACK_ORDER_AS_GUEST');?></a></li>
+				<li class="<?php echo $action == 'track' ? 'active' : '';?>"><a href="#pc-account-guest-form" data-toggle="tab"><?php echo JText::_('COM_PAYCART_ACCOUNT_TRACK_ORDER_AS_GUEST');?></a></li>
 			</ul>	
 			
 			<div class="tab-content">
@@ -87,7 +87,7 @@ echo $this->loadTemplate('js');
 					</div>                     
 				</form>
 						
-				<form id="pc-account-track-form" method="POST" action="/login/" novalidate="novalidate" class="form tab-pane <?php echo $action == 'track' ? 'active' : '';?> pc-form-validate">
+				<form id="pc-account-guest-form" method="POST" action="/login/" novalidate="novalidate" class="form tab-pane <?php echo $action == 'track' ? 'active' : '';?> pc-form-validate">
 					<div class="alert alert-success hide" data-ppc-selector="pc-account-track-form-header"> </div>
 					<span id="paycart_account_guest" for="paycart_account_guest" class="pc-error hide"></span>
 					<fieldset>
