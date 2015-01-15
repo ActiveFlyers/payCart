@@ -56,13 +56,7 @@ class Com_paycartInstallerScript
 		$db = JFactory::getDBO();
 		$db->setQuery($sql);
 		$db->query();
-		
-		$this->installExtensions();
 
-		$extensions 	= array();
-		$extensions[] 	= array('type'=>'system', 'name'=>'paycart');
-
-		$this->changeExtensionState($extensions);
 		return true;
 	}
 
