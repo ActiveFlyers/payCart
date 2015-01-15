@@ -129,10 +129,26 @@ $return_link	= 	base64_encode($link);
 				</li>
 				
 				<?php if (!$loggin_user->get('id')) : ?>
-			           	<li>
-			            	<a href="<?php echo JRoute::_('index.php?option=com_users&view=login');?>" >
-			            		<i class="fa fa-user text-white"></i>
-			            	</a>
+			           <li class="dropdown ">
+				        	<a class="dropdown-toggle " data-toggle="dropdown"  href="#">
+				            		
+					            	<i class="fa fa-user text-white "></i>
+									 <b class="fa fa-caret-down text-white"></b>
+							</a>
+						
+				            <ul class="dropdown-menu ">
+			            		<li>
+	                       			<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=track');?>">
+							     		<i class="fa fa-map-marker"> </i> <?php echo JText::_('MOD_PAYCART_MENU_TRACK_ORDER');?>
+							     	</a>
+	                       		</li>
+	                       		<li class="divider"></li>
+	                       		<li>
+	                       			<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=login');?>">
+							     		<i class="fa fa-user"> </i> <?php echo JText::_('COM_PAYCART_LOGIN_AND_REGISTER');?>
+							     	</a>
+	                       		</li>
+	                		</ul>
 			            </li>
 				<?php else : $display_name = $loggin_user->get('name'); ?>	
 						<li class="dropdown ">
@@ -144,7 +160,7 @@ $return_link	= 	base64_encode($link);
 						
 				            <ul class="dropdown-menu ">
 	                  			<!-- Users links -->                    
-	                    		<li><a href="javascript::void();"><?php echo JText::_('COM_PAYCART_MODULE_MENU_HI');?>! <?php echo ucfirst($display_name); ?></a></li>
+	                    		<li><a href="javascript::void();"><?php echo JText::_('MOD_PAYCART_MENU_HI');?>! <?php echo ucfirst($display_name); ?></a></li>
 	                    		<li class="divider"></li>           
 	                    		<li>
 	                        		<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order');?>"> 

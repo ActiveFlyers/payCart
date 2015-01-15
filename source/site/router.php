@@ -61,6 +61,11 @@ class PaycartRouter extends Rb_Router
 {
 	protected 	$_component	= 'com_paycart';
 	
+	public function __construct()
+	{
+		require_once JPATH_SITE.'/components/com_paycart/paycart/functions.php';				
+	}
+	
 	protected static $routes = 
 		        		Array (
 		        			//Productcategory {view}/{task}
@@ -73,9 +78,13 @@ class PaycartRouter extends Rb_Router
 		        			'cart/display'	=>	Array(),
 		        			'cart/checkout'	=>	Array(),
 		        			'cart/buy'		=>	Array('product_id'),
+		        			'cart/complete'	=>	Array('cart_id'),        		
 		        		
-		        			'account/display'	=>	Array(),
-		        			'account/order'	=>	Array('order_id')
+		        			'account/display'=>	Array(),
+		        			'account/order'	 =>	Array('order_id'),
+		        			'account/address'=>	Array(),
+		        			'account/login'	 =>	Array(),
+		        			'account/setting'=>	Array(),
 		        		);
 	
 
@@ -230,47 +239,24 @@ class PaycartRouter extends Rb_Router
 	 * @return string value
 	 */
 	public function productcategory_IDtoRoute($productcategory_id)
-	{
-		// get category data
-		$query = " SELECT * FROM `#__paycart_productcategory` WHERE `productcategory_id` = $productcategory_id ";
-    	$db = Rb_Factory::getDbo();
-    	$row = $db->setQuery($query)->loadObject();
-    	
-    	$root_category_id = PAYCART_PRODUCTCATEGORY_ROOT_ID;
-    	
+	{		
     	$current_lang_id = $this->_getPaycartCurrentLanguage();
+		$categories = $this->_getProductCategories($current_lang_id);
+		
+		$root_category_id = PAYCART_PRODUCTCATEGORY_ROOT_ID;
     	
-    	// if parent is root then no need to iterate with parent
-    	if ( $root_category_id == $row->parent_id) {
-    		$query ="
-	    			  SELECT lang_table.`alias`
-	    			  FROM `#__paycart_productcategory_lang` AS lang_table
-	    			  WHERE lang_table.`productcategory_id` = {$productcategory_id} AND
-	    			  		lang_table.`lang_code` = '{$current_lang_id}'  
-    			";
-    	} else {
-	    	// get all hierarchy data (alias)
-	    	$query ="
-	    			  SELECT lang_table.`alias`, categort_table.`level`
-	    			  FROM `#__paycart_productcategory_lang` AS lang_table
-	    			  INNER JOIN 
-	    			  		(    
-	    					 	SELECT `productcategory_id` , `level`
-	    						FROM `#__paycart_productcategory` 
-	    						WHERE `lft` <= {$row->lft} AND `rgt` >= {$row->rgt}
-	    						 
-	    					) AS categort_table
-	    			  ON lang_table.`productcategory_id` = categort_table.`productcategory_id`
-	    			  WHERE lang_table.`lang_code` = '{$current_lang_id}' AND lang_table.`productcategory_id`<>  $root_category_id 
-	    			  ORDER BY  `categort_table`.`level` ASC  
-	    			";
-    	}
+    	$alias = array();
+	    $category_id = $productcategory_id;
+	    while($root_category_id != $category_id){
+	    	$alias[] = $categories[$category_id]->alias;
+	    	$category_id = $categories[$category_id]->parent_id;
+	    }
 	    	
-    	$row = $db->setQuery($query)->loadColumn();
+	    $alias = array_reverse($alias);
+	    return implode('/', $alias);
     	
-    	return implode('/', $row);
 	}
-
+	
  	/** 
 	 * Invoke to translate route path (alias hierarchy) into id.
 	 * @param string $route_path
@@ -333,8 +319,12 @@ class PaycartRouter extends Rb_Router
 	}
 	
 	protected function _getPaycartCurrentLanguage()
-	{
-		require_once JPATH_SITE.'/components/com_paycart/paycart/functions.php';
+	{	
 		return paycart_getCurrentLanguage();
+	}
+	
+	protected function _getProductCategories($lang)
+	{
+		return paycart_getProductCategories($lang);		
 	}
 }

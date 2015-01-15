@@ -98,8 +98,8 @@ class PaycartInstallScriptMenu
 												 					  				'link'		=> 'index.php?option=com_paycart&view=account&task=setting'
 							 					  									),
 																'account_login' =>	array(
-							 					  									'title' 	=> 'Login',
-												 					  				'alias' 	=> 'login',
+							 					  									'title' 	=> 'Track Order',
+												 					  				'alias' 	=> 'track-order',
 												 					  				'access' 	=> 1,
 												 					  				'level'		=> 2,
 												 					  				'link'		=> 'index.php?option=com_paycart&view=account&task=login'

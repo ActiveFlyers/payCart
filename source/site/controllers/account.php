@@ -292,6 +292,7 @@ class PaycartSiteControllerAccount extends PaycartController
 		if(!PaycartFactory::getUser()->id){		
 			$form_data = $this->input->get('paycart_account_loginform', Array(), 'ARRAY');
 			if(empty($form_data)){
+				$this->getView()->assign('action', $this->input->get('action', 'login'));
 				return true;
 			}
 		

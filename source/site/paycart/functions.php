@@ -60,3 +60,24 @@ if(!function_exists('paycart_getConfig')){
 	}
 }
 
+
+if(!function_exists('paycart_getProductCategories')){
+	function paycart_getProductCategories($lang_code)
+	{
+		static $categories = array();
+		if(array_key_exists($lang_code, $categories)){
+			return $categories[$lang_code];
+		}
+		
+		$db = Rb_Factory::getDbo();		
+		$query = "SELECT 1, tbl.*,lang_tbl.productcategory_lang_id,lang_tbl.title,lang_tbl.alias,lang_tbl.lang_code,lang_tbl.description,lang_tbl.metadata_title,lang_tbl.metadata_keywords,lang_tbl.metadata_description
+				  FROM #__paycart_productcategory AS tbl
+				  LEFT JOIN #__paycart_productcategory_lang as lang_tbl 
+  				  ON (tbl.productcategory_id = lang_tbl.productcategory_id 
+  				  AND lang_tbl.lang_code = ".$db->quote($lang_code).")";
+		
+		$categories[$lang_code] = $db->setQuery($query)->loadObjectList('productcategory_id');
+		return $categories[$lang_code];
+	}
+}
+

@@ -20,12 +20,14 @@ echo $this->loadTemplate('js');
 	<div id="pc-account" class ='pc-account span12 clearfix' >
 		<div class="row-fluid">				
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#pc-account-login-form" data-toggle="tab"><?php echo JText::_('COM_PAYCART_LOGIN');?></a></li>
-				<li class=""><a href="#pc-account-guest-form" data-toggle="tab"><?php echo JText::_('COM_PAYCART_ACCOUNT_TRACK_ORDER_AS_GUEST');?></a></li>
+				<li class="<?php echo $action == 'login' ? 'active' : '';?>"><a href="#pc-account-login-form" data-toggle="tab"><?php echo JText::_('COM_PAYCART_LOGIN');?></a></li>
+				<li class="<?php echo $action == 'track' ? 'active' : '';?>"><a href="#pc-account-track-form" data-toggle="tab"><?php echo JText::_('COM_PAYCART_ACCOUNT_TRACK_ORDER_AS_GUEST');?></a></li>
 			</ul>	
 			
 			<div class="tab-content">
-				<form id="pc-account-login-form" method="POST" action="/login/" novalidate="novalidate" class="form tab-pane active pc-form-validate">					
+				<form id="pc-account-login-form" method="POST" action="/login/" novalidate="novalidate" class="form tab-pane <?php echo $action == 'login' ? 'active' : '';?> pc-form-validate">
+					<div class="row-fluid">
+					<div class="span6">					
 					<fieldset>						
 						<span id="paycart_account_login" for="paycart_account_login" class="pc-error hide"></span>
 						<div class="control-group">
@@ -70,11 +72,23 @@ echo $this->loadTemplate('js');
 	                        <div class="pull-right">
 	                        <a href="<?php echo JRoute::_('index.php?option=com_users&view=reset');?>" class=""><?php echo JText::_('COM_PAYCART_FORGOT_PASSWORD');?></a>
 	                        </div> 
-	                        </fieldset>                     
+	                	</fieldset>
+	                	</div>
+	                	<div class="span6" style="border-left : 1px;">
+	                		<div class="center muted">
+	                			<p> &nbsp; </p>	                			
+	                			<h3><?php echo JText::_('COM_PAYCART_ACCOUNT_CREATE_NEW');?></h3>
+	                			<p>
+	                				<i class="fa fa-edit fa-3x"> </i>
+	                			</p>
+	                			<a href="<?php echo JRoute::_('index.php?option=com_users&view=registration');?>" class="btn btn-large"><?php echo JText::_('COM_PAYCART_SIGN_UP');?></a>
+	                		</div>	                		
+	                	</div>	                	
+					</div>                     
 				</form>
 						
-				<form id="pc-account-guest-form" method="POST" action="/login/" novalidate="novalidate" class="form tab-pane pc-form-validate">
-					<div class="alert alert-success hide" data-ppc-selector="pc-account-guest-form-header"> </div>
+				<form id="pc-account-track-form" method="POST" action="/login/" novalidate="novalidate" class="form tab-pane <?php echo $action == 'track' ? 'active' : '';?> pc-form-validate">
+					<div class="alert alert-success hide" data-ppc-selector="pc-account-track-form-header"> </div>
 					<span id="paycart_account_guest" for="paycart_account_guest" class="pc-error hide"></span>
 					<fieldset>
 						<div class="control-group">

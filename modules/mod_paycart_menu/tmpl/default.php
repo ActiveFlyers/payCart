@@ -133,7 +133,12 @@ $isMobile = PaycartFactory::getApplication()->client->mobile;
                   		<!-- get ctaegory links -->
                   		<li class="">
                         	<ul class="pc-column unstyled">
-                  				<?php $counter = 0;?>
+                  				<?php $counter = 1;?>
+                  				<li class="dropdown-header">
+                  					<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>">
+										<?php echo JText::_('COM_PAYCART_All') .' '.JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?>
+		            				</a>
+                  				</li>
 								<?php foreach( $categories as $cat): ?>
 				     				<?php if (!$cat->level == 0 && $cat->level <= 2):?>	
 				     					<li class="<?php if ($cat->level == 1) { echo 'dropdown-header'; };?>">
@@ -164,9 +169,15 @@ $isMobile = PaycartFactory::getApplication()->client->mobile;
            
 			<div class="pull-right">
 				<ul class="nav">
+					<li>
+						<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=track');?>">
+				     		<i class="fa fa-map-marker"> </i> <?php echo JText::_('MOD_PAYCART_MENU_TRACK_ORDER');?>
+				     	</a>
+					</li>
+			
            	    	<?php if (!$loggin_user->get('id')) : ?>
 	           		<li>
-	            		<a href="<?php echo JRoute::_('index.php?option=com_users&view=login');?>" >
+	            		<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=login');?>">
 	            			<i class="fa fa-user"></i>
 	            			<span class="hidden-phone"> 
 	            				<?php echo JText::_('COM_PAYCART_LOGIN_AND_REGISTER'); ?>	            			
@@ -190,7 +201,7 @@ $isMobile = PaycartFactory::getApplication()->client->mobile;
                 
                			<ul class="dropdown-menu ">
                   			<!-- Users links -->                    
-                    		<li><a href="javascript::void();"><?php echo JText::_('COM_PAYCART_MODULE_MENU_HI');?>! <?php echo ucfirst($display_name); ?></a></li>
+                    		<li><a href="javascript::void();"><?php echo JText::_('MOD_PAYCART_MENU_HI');?>! <?php echo ucfirst($display_name); ?></a></li>
                     		<li class="divider"></li>           
                     		<li>
                         		<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order');?>"> 

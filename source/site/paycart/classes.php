@@ -31,6 +31,7 @@
   'paycartadminbaseviewshippingrule' => 'admin/views/shippingrule/view.php',
   'paycartadminbaseviewstate' => 'admin/views/state/view.php',
   'paycartadminbaseviewtaxrule' => 'admin/views/taxrule/view.php',
+  'paycartadmincontrollerappstore' => 'admin/controllers/appstore.php',
   'paycartadmincontrollerbuyer' => 'admin/controllers/buyer.php',
   'paycartadmincontrollerbuyeraddress' => 'admin/controllers/buyeraddress.php',
   'paycartadmincontrollercart' => 'admin/controllers/cart.php',
