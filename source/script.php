@@ -110,19 +110,30 @@ class Com_paycartInstallerScript
 		// Create default Front end menus
 		require_once JPATH_ADMINISTRATOR.'/components/com_paycart/install/script/menu.php';
 		PaycartInstallScriptMenu::createMenus();
-		$this->_addScript();
+		echo $this->_addScript();
 	}
 
 	//Redirects After Installation
 	function _addScript()
 	{
-		?>
-			<script type="text/javascript">
-				window.onload = function(){	
-				  setTimeout("location.href = 'index.php?option=com_paycart';", 100);
-				}
-			</script>
+		$domain = JURI::getInstance()->toString(array('scheme', 'host', 'port'));
+		$version = new JVersion();
+		$event = "product.installation";
+		$event_args = array('product'=>'PayCart', 'version'=>'@global.version@', 'domain'=>$domain, 'joomla_version'=>$version->RELEASE);
+		$event_args = urlencode(json_encode($event_args));
+
+		ob_start();
+		?>		
+		<iframe src="http://www.readybytes.net/broadcast/track.html?event=<?php echo $event;?>&event_args=<?php echo $event_args;?>" style="display :none;"></iframe>
+		<script type="text/javascript">
+			window.onload = function(){	
+				setTimeout("location.href = 'index.php?option=com_paycart';", 500);
+			}
+		</script>
 		<?php
+		$content = ob_get_contents();
+		ob_end_clean();
+		return $content;
 	}
 	
 	/**
