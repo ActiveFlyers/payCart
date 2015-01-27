@@ -9,9 +9,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}?>	
+defined( '_JEXEC' ) or die( 'Restricted access' );?>	
 
 <div class="pc-checkout-state row-fluid clearfix">
 	<?php echo $this->loadTemplate('steps');?>

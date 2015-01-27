@@ -9,9 +9,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}?>
+defined( '_JEXEC' ) or die( 'Restricted access' );?>
 
 <div class='pc-products-wrapper row-fluid clearfix'> 
 	<div id="pc-products" class ='pc-products span12 clearfix' data-columns>     

@@ -9,9 +9,7 @@
  */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 if(RB_REQUEST_DOCUMENT_FORMAT === 'ajax'){
 	class PaycartViewbase extends Rb_ViewAjax{}

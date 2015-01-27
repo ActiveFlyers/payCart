@@ -8,9 +8,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 // if PAYCART already loaded, then do not load it again
 if(defined('PAYCART_CORE_LOADED')){

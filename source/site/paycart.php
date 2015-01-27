@@ -8,9 +8,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 if(!defined('RB_FRAMEWORK_LOADED')){
 	JLog::add('RB Frameowork not loaded',JLog::ERROR);
