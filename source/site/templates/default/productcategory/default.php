@@ -9,9 +9,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 //load required javascripts
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');

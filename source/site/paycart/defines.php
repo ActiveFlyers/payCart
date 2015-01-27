@@ -8,9 +8,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 // If file is already included
 if(defined('PAYCART_SITE_DEFINED')){

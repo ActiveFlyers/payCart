@@ -10,9 +10,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}?>
+defined( '_JEXEC' ) or die( 'Restricted access' );?>
 
 <?php 
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.min.js');

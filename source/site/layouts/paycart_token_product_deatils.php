@@ -9,6 +9,8 @@
  * @author 	Manish Trivedi  
  */
 
+defined('_JEXEC') or die();
+
 /**
  * List of Populated Variables
  * $displayData = have all required data 

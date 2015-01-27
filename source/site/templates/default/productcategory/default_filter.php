@@ -10,9 +10,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 //load assests that are required before loading related templates
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/slider.css');
