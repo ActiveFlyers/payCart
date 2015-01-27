@@ -41,6 +41,14 @@ foreach($files as $file){
 
 ksort($classes);
 $data = '<?php '.PHP_EOL
+		.'/**'.PHP_EOL
+		.'* @copyright	Copyright (C) 2009 - 2015 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.'.PHP_EOL
+		.'* @license		GNU/GPL, see LICENSE.php'.PHP_EOL
+		.'* @package		Paycart '.PHP_EOL
+		.'* @author 		support+paycart@readybytes.in'.PHP_EOL
+		.'*/'.PHP_EOL
+		.'if(defined("_JEXEC")===false) die();'.PHP_EOL
+		.''.PHP_EOL
 		.' return '.var_export($classes,true)
 		.';';
 if(file_put_contents(dirname(__DIR__).'/source/site/paycart/classes.php', $data)===FALSE){

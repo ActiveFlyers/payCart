@@ -1,4 +1,12 @@
 <?php 
+/**
+* @copyright	Copyright (C) 2009 - 2015 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
+* @license		GNU/GPL, see LICENSE.php
+* @package		Paycart 
+* @author 		support+paycart@readybytes.in
+*/
+if(defined("_JEXEC")===false) die();
+
  return array (
   'com_paycartinstallerscript' => 'script.php',
   'paycart' => 'site/paycart/base/paycart.php',
