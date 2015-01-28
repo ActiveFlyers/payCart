@@ -20,6 +20,7 @@ class PaycartProduct extends PaycartLib
 	protected $product_id	 	= 0; 
 	protected $productcategory_id		= 0;
 	protected $published		= 1;
+	protected $visible			= 1;
 	protected $type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
 	protected $price		 	= null;
 	protected $quantity		 	= null;
@@ -68,6 +69,7 @@ class PaycartProduct extends PaycartLib
 		$this->product_id	 	= 0; 
 		$this->productcategory_id		= 0;
 		$this->published		= 1;
+		$this->visible			= 1;
 		$this->type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
 		$this->price		 	= null;
 		$this->quantity		 	= null;
