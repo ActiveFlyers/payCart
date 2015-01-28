@@ -28,7 +28,7 @@ class PaycartSiteControllerSearch extends PaycartController
 
 	public function filter()
 	{
-		$searchWord   			= $this->input->get('query',null,'STRING');
+		$searchWord   			= trim($this->input->get('query',null,'STRING'));
 		$start					= $this->input->get('pagination_start',0);
 		$postFilters   			= $this->input->get('filters',array(), 'ARRAY');
 		
@@ -88,14 +88,14 @@ class PaycartSiteControllerSearch extends PaycartController
 		$filters->core->categories 		      = $allAvailableCategories;
 		$filters->core->categoryTree		  = $tree;		
 		
-		$filters->core->minPriceRange         = floatval($availableCoreOptions['price']['min']);
-		$filters->core->maxPriceRange   	  = floatval($availableCoreOptions['price']['max']);
+		$filters->core->minPriceRange         = floor($availableCoreOptions['price']['min']);
+		$filters->core->maxPriceRange   	  = ceil($availableCoreOptions['price']['max']);
 		$filters->core->appliedPriceRange	  = (isset($appliedCoreFilters['price']) && !empty($appliedCoreFilters['price']))
 												? array($appliedCoreFilters['price'] => $formatter->priceRange($appliedCoreFilters['price']))
 												: array();
 		
-		$filters->core->minWeightRange	      = floatval($availableCoreOptions['weight']['min']);
-		$filters->core->maxWeightRange        = floatval($availableCoreOptions['weight']['max']);
+		$filters->core->minWeightRange	      = floor($availableCoreOptions['weight']['min']);
+		$filters->core->maxWeightRange        = ceil($availableCoreOptions['weight']['max']);
 		$filters->core->appliedWeightRange	  = (isset($appliedCoreFilters['weight']) && !empty($appliedCoreFilters['weight']))
 												? array($appliedCoreFilters['weight'] => $formatter->weightRange($appliedCoreFilters['weight']))
 												: array();	
@@ -133,7 +133,7 @@ class PaycartSiteControllerSearch extends PaycartController
 	 */
 	function loadMore()
 	{
-		$searchWord   			= $this->input->get('query',null,'STRING');
+		$searchWord   			= trim($this->input->get('query',null,'STRING'));
 		$start					= $this->input->get('pagination_start',0);
 		$filters	   		    = $this->input->get('filters','', 'ARRAY');
 		$appliedCoreFilters     = isset($filters['core'])?$filters['core']:array();

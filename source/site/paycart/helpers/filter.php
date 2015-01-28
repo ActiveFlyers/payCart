@@ -84,7 +84,8 @@ class PaycartHelperFilter extends JObject
 		$query->select('pp.`product_id`')
 			  ->from('`#__paycart_product` AS pp')
 			  ->limit($this->pagination_limit, $this->pagination_start)			  
-			  ->where('pp.published = 1');
+			  ->where('pp.published = 1')
+			  ->where('pp.visible = 1');
 			  
 		//core filters
 		if(isset($coreFilters['category']) && !empty($coreFilters['category'])){
@@ -189,6 +190,7 @@ class PaycartHelperFilter extends JObject
 										   ->innerJoin('`#__paycart_product_index` as pi ON pi.product_id = pp.product_id AND '.$where)
 										   ->innerJoin('`#__paycart_productcategory` as pc ON pc.productcategory_id = pp.productcategory_id')
 										   ->where('pp.published = 1')
+										   ->where('pp.visible = 1')
 										   ->order('pc.lft ASC')
 										   ->dbLoadQuery()
 										   ->loadObjectList('productcategory_id');	
@@ -199,6 +201,7 @@ class PaycartHelperFilter extends JObject
 						 ->from('#__paycart_product as pp')
 						 ->innerJoin('`#__paycart_product_index` as pi ON pi.product_id = pp.product_id AND '.$where)
 						 ->where('pp.published = 1')
+						 ->where('pp.visible = 1')
 						 ->dbLoadQuery()
 						 ->loadRow();
 									  
@@ -227,7 +230,7 @@ class PaycartHelperFilter extends JObject
 		return $query->select("`productattribute_id`,`productattribute_value` ,COUNT(av.`product_id`) as 'productCount'")
 					 ->from('`#__paycart_productattribute_value` as av')
 					 ->innerJoin('`#__paycart_productcategory` AS pc ON pc.`lft` >= '.$category->getLft().' AND pc.`rgt` <= '.$category->getRgt())
-					 ->innerJoin('`#__paycart_product` AS pp ON pp.productcategory_id = pc.productcategory_id and pp.published = 1 and pp.product_id = av.product_id ')
+					 ->innerJoin('`#__paycart_product` AS pp ON pp.productcategory_id = pc.productcategory_id and pp.published = 1 AND pp.visible = 1 and pp.product_id = av.product_id ')
 					 ->group('`productattribute_id`,`productattribute_value`')
 					 ->dbLoadQuery()
 					 ->loadObjectList();
@@ -249,6 +252,7 @@ class PaycartHelperFilter extends JObject
 			  							   ->from('`#__paycart_product` as p')
 			  							   ->innerJoin($innerQuery)
 			  							   ->where('p.published = 1')
+			  							   ->where('p.visible = 1')
 			  							   ->order('pc.lft ASC')
 			  							   ->dbLoadQuery()
 			  							   ->loadObjectList('productcategory_id');
@@ -322,7 +326,8 @@ class PaycartHelperFilter extends JObject
 		
 		$innerQuery->select('pp.`product_id`')
 		 		   ->from('`#__paycart_product` AS pp')
-		 		   ->where('pp.published = 1');
+		 		   ->where('pp.published = 1')
+		 		   ->where('pp.visible = 1');
 		 
 		if(isset($tempFilterQuery['category']) && !in_array('category',$ignore)){
 			$innerQuery->innerJoin($tempFilterQuery['category']);

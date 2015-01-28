@@ -34,7 +34,7 @@ class PaycartSiteHtmlViewProductcategory extends PaycartSiteBaseViewProductcateg
 		$productFilters	 = array();
 		
 		$categoryFilters = array('published' => 1, 'parent_id'=>$categoryId);
-		$productFilters  = array('published' => 1, 'productcategory_id' => $categoryId);
+		$productFilters  = array('published' => 1, 'productcategory_id' => $categoryId , 'visible' => 1 );
 		
 		//meta details
 		$category 		 = PaycartProductcategory::getInstance($categoryId);
