@@ -3,9 +3,10 @@
 * @copyright	Copyright (C) 2009 - 2012 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license		GNU/GPL, see LICENSE.php
 * @package		Paycart 
-* @author 		mManishTrivedi
+* @author 		support+paycart@readybytes.in
 */
 
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 // define root category id
 define('PAYCART_PRODUCTCATEGORY_ROOT_ID', 1);
