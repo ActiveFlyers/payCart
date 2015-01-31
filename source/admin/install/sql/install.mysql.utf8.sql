@@ -76,7 +76,6 @@ CREATE TABLE IF NOT EXISTS `#__paycart_productcategory` (
   `published` tinyint(1) NOT NULL DEFAULT '1',
   `created_date` datetime NOT NULL,
   `modified_date` datetime NOT NULL,
-  `ordering` int(11) NOT NULL,
   `params` text COMMENT 'Include extra stuff like, tree.',
   PRIMARY KEY (`productcategory_id`),
   KEY `idx_left_right` (`lft`,`rgt`)
@@ -118,6 +117,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product` (
   `sku` varchar(50) NOT NULL COMMENT 'Stock keeping unit',
   `price` double(15,4) NOT NULL,
   `quantity` int(10) NOT NULL COMMENT 'Quantity of Product',
+  `quantity_sold` int(10) NOT NULL COMMENT 'Sold Quantity of Product',
   `featured` tinyint(1) NOT NULL DEFAULT '0',
   `cover_media` varchar(250) DEFAULT NULL,
   `stockout_limit`int NOT NULL COMMENT 'out-of-stock limit of Product',

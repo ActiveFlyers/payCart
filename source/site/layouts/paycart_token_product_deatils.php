@@ -72,7 +72,7 @@ $grand_total = 0;
         endforeach;
     ?>
             <tr>
-                <td> 
+                <td colspan="2"> 
                     <?php
                         echo JText::_('COM_PAYCART_GRAND_TOTAL');
                     ?>

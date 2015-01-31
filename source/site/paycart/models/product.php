@@ -46,16 +46,25 @@ class PaycartModelProduct extends PaycartModelLang
 //		return parent::validate($data, $pk, $filter, $ignore);
 //	}
 
+	/**
+	 * Update the quantity of product that is consumed
+	 * @param int $productId : product for which to update stock
+	 * @param int $quantity : number that is needed to add in consumed stock
+	 */
 	public function updateStock($productId, $quantity)
 	{
 		$query = new Rb_Query();
 		
-		return $query->update($this->getTable()->get('_tbl'))
-					 ->set('quantity = quantity - '.$quantity)
-					 ->where('product_id = '.$productId)
-					 ->dbLoadQuery()
-					 ->query();
-			  
+		$query->update($this->getTable()->get('_tbl'))
+			  ->set('quantity_sold = quantity_sold + '.$quantity)
+			  ->where('product_id = '.$productId)
+			  ->dbLoadQuery()
+			  ->query();
+			 
+		return $query->clear('set')
+				 	 ->set('quantity = quantity - '.$quantity)
+				 	 ->dbLoadQuery()
+				 	 ->query();
 	}
 	
 	/**

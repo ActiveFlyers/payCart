@@ -24,6 +24,7 @@ class PaycartProduct extends PaycartLib
 	protected $type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
 	protected $price		 	= null;
 	protected $quantity		 	= null;
+	protected $quantity_sold 	= null;
 	protected $sku			 	= '';	
 	protected $variation_of		= 0;  		// This product is variation of another product. 	
 	protected $cover_media		= null;
@@ -73,6 +74,7 @@ class PaycartProduct extends PaycartLib
 		$this->type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
 		$this->price		 	= null;
 		$this->quantity		 	= null;
+		$this->quantity_sold	= null;
 		$this->sku			 	= '';	
 		$this->variation_of		= 0;  		// This product is variation of another product. 	
 		$this->cover_media		= null;
@@ -620,5 +622,10 @@ class PaycartProduct extends PaycartLib
 	public function getPositionedAttributes()
 	{
 		return $this->config->get('positions',array());
+	}
+	
+	public function getQuantitySold()
+	{
+		return $this->quantity_sold;
 	}
 }
