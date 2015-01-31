@@ -389,77 +389,42 @@ class PaycartHelperShippingrule extends PaycartHelper
 		
 		$groupHelper = PaycartFactory::getHelper('group');
 		$productCartparticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
-		$groups = array();
+		$shippingRules = array();
 		
 		$products = $cart->getParam('products');
-		list($productMapping, $groupRules) = $this->getApplicableGrouprules($cart,$products);
-		$shippingRules = $this->getShippingrules($groupRules);
+		$productGroupMapping = $this->getApplicableGrouprules($cart,$products);
 		
-		if(!empty($shippingRules)){
-			//get shipping rule that are applicable to all products
-			$defaultShippingRules = PaycartFactory::getDbo()->setQuery("SELECT            a.shippingrule_id
-																		FROM              #__paycart_shippingrule a
-																		NATURAL LEFT JOIN #__paycart_shippingrule_x_group b
-																		WHERE             b.group_id IS NULL and a.published = 1")->loadColumn();
-		
-			foreach($productMapping as $productId => $mapping){	
-				//first add default shippingrules
-				$groups[$productId] = $defaultShippingRules;		
-				$query = new Rb_Query();
-				
-				if(!empty($mapping)){
-					//query that matches product's groupid and applicable shippingrule id will be 
-					//the resultant shippingrules through which the current product can be shipping
-					$result = $query->select('distinct(`shippingrule_id`)')
-									 ->from('`#__paycart_shippingrule_x_group`')
-									 ->where('`group_id` IN('.implode(',', $mapping).')')
-									 ->where('`shippingrule_id` IN('.implode(',', $shippingRules).')')
-									 ->dbLoadQuery()
-									 ->loadColumn();
-					
-					if(!empty($result)){
-						$groups[$productId] = array_merge($groups[$productId],$result);
-					}
-				}
-				
-				//if no shipping rule available for any of the cart product then return and stop calculation
-				if(empty($groups[$productId])){
-					return array();
-				}
-			}	
+		foreach($productGroupMapping as $productId => $mapping){
+			$shippingRules[$productId] = $this->getShippingrules($mapping['groups']);
+			
+			//if no shipping rule available for any of the cart product then return and stop calculation
+			if(empty($shippingRules[$productId])){
+				return array();
+			}
 		}
 
-		return $groups;
+		return $shippingRules;
 	}
 	
 	public function getApplicableGrouprules(PaycartCart $cart, $products)
 	{
 		/* @var $groupHelper PaycartHelperGroup */
 		$groupHelper = PaycartFactory::getHelper('group');
-		$groups		 = array();
+
 		$productGroupMapping = array();
 		
 		//@PCTODO : caching
-	    $groups[Paycart::GROUPRULE_TYPE_BUYER] = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
+	    $groupsBuyer = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_BUYER, $cart->getBuyer());
 
-		$groups[Paycart::GROUPRULE_TYPE_CART]  =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
+		$groupsCart  =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
-		$groups[Paycart::GROUPRULE_TYPE_PRODUCT] = array();
-		
-		$commonGroups = array_merge($groups[Paycart::GROUPRULE_TYPE_BUYER],$groups[Paycart::GROUPRULE_TYPE_CART]);
-				
 		foreach($products as $product){
-			$productGroups = array_merge($commonGroups,$groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT, $product->product_id));
-			if(empty($productGroups)){
-				$productGroupMapping[$product->product_id] = array();
-				continue;
-			}
-			
-			$groups[Paycart::GROUPRULE_TYPE_PRODUCT] =  array_merge($groups[Paycart::GROUPRULE_TYPE_PRODUCT],$productGroups);
-			$productGroupMapping[$product->product_id] = $productGroups;
+			$productGroupMapping[$product->product_id]['groups'][Paycart::GROUPRULE_TYPE_BUYER]   = $groupsBuyer; 
+			$productGroupMapping[$product->product_id]['groups'][Paycart::GROUPRULE_TYPE_CART]    = $groupsCart;
+			$productGroupMapping[$product->product_id]['groups'][Paycart::GROUPRULE_TYPE_PRODUCT] = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT,$product->product_id);
 		}
 		
-		return array($productGroupMapping, $groups);	
+		return $productGroupMapping;	
 	}
 	
 	/**

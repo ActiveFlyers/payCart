@@ -32,7 +32,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	 					<div class="row-fluid">		
 	 						<div class="span7"> 											
 		 						<div>
-		 							<a class="pc-break-word" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&product_id='.$particular->particular_id);?>" >
+		 							<a class="pc-break-word" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$particular->particular_id);?>" >
 		 								<?php echo $particular->title; ?>
 		 							</a>
 		 						</div>

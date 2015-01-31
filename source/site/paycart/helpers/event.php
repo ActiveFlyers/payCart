@@ -102,6 +102,9 @@ class PaycartHelperEvent extends PaycartHelper
             $cartHelper =  PaycartFactory::getHelper('cart');
             PaycartFactory::getHelper('product')
                     ->updateProductStock($cartHelper->getCartparticularsData($cart_id, Paycart::CART_PARTICULAR_TYPE_PRODUCT));
+                    
+            // 2# create default Shipments
+            $cart->createDefaultShipments();
         }
         
         /**

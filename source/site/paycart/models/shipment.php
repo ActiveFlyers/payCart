@@ -57,17 +57,16 @@ class PaycartModelShipment extends PaycartModel
 								{$this->_db->quote($product['quantity'])}
 						      ");
 			}
+				
+			$this->_db->setQuery($query);
+			try	{
+				$this->_db->execute();
+			}
+			catch (RuntimeException $e) {
+				//@PCTODO::proper message propagates
+				Rb_Error::raiseError(500, $e->getMessage());
+			}
 		}
-		
-		$this->_db->setQuery($query);
-		try	{
-			$this->_db->execute();
-		}
-		catch (RuntimeException $e) {
-			//@PCTODO::proper message propagates
-			Rb_Error::raiseError(500, $e->getMessage());
-		}
-	
 		return $id;
 	}
 	

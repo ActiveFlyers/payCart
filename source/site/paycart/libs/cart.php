@@ -1524,4 +1524,9 @@ class PaycartCart extends PaycartLib
 	{
 		return $this->secure_key;
 	}
+	
+	public function createDefaultShipments()
+	{
+		PaycartFactory::getHelper('cart')->createDefaultShipments($this);
+	}
 }
