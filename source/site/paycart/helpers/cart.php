@@ -207,6 +207,7 @@ class PaycartHelperCart extends PaycartHelper
 			
 			foreach ($records as $particularId => $data){
 				$particularData[$cartId][$data->type][$data->particular_id] =  $data;
+				$particularData[$cartId][$data->type][$data->particular_id]->params = json_decode($data->params);
 			}	
 		}
 		
@@ -304,5 +305,28 @@ class PaycartHelperCart extends PaycartHelper
 		}
 		
 		return $applied_promotion_code;
+	}
+	
+	/**
+     * Create default shipments/packages, which cound be edited by admin in backend 
+     */
+	function createDefaultShipments(PaycartCart $cart)
+	{
+		$cartId = $cart->getId();
+		$particulars = $this->getCartParticularsData($cartId,Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+		
+		foreach ($particulars as $particular){
+			$data = array();
+			$data['cart_id'] 		   = $cartId;
+			$data['est_delivery_date'] = $particular->params->delivery_date;
+			$data['shippingrule_id']   = $particular->particular_id;
+			$data['status']			   = Paycart::STATUS_SHIPMENT_PENDING;
+			
+			foreach ($particular->params->product_list as $productId => $details){
+				$data['products'] = array();
+				$data['products'][] = array('product_id' => $productId, 'quantity' => $details->quantity);
+				PaycartShipment::getInstance(0,$data)->save();
+			}
+		}
 	}
 }

@@ -139,8 +139,8 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 		// get expeted delivery of complete cart, it will be used when no shipment is created for any item
 		$estimatedDeliveryDate = null;
 		foreach($shippingCartParticulars as $particular){
-			$params = json_decode($particular->params, true);
-			$date = new Rb_Date($params['delivery_date']);
+			$params = $particular->params;
+			$date = new Rb_Date($params->delivery_date);
 			if(empty($estimateDeliveryDate)){
 				$estimatedDeliveryDate = $date;
 				continue;
