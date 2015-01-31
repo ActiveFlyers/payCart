@@ -456,7 +456,7 @@ class PaycartRouter extends Rb_Router
     public function _getMenus()
     {
         if($this->_menus ===null){
-			$this->_menus 	= Rb_Factory::getApplication()->getMenu('site')->getItems(array('component_id', 'language'),JComponentHelper::getComponent($this->_component)->id);
+			$this->_menus 	= Rb_Factory::getApplication()->getMenu('site')->getItems(array('component_id', 'language'),array(JComponentHelper::getComponent($this->_component)->id, null));
 		}
 
 		return $this->_menus;
