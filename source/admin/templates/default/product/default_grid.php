@@ -38,17 +38,18 @@ defined('_JEXEC') OR die();
 				<th width="1%">
 					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 				</th>
-				<th>
+				<th width="4%" class="hidden-phone">
 					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'product_id', $filter_order_Dir, $filter_order);?>
 				</th>
 			    				
-				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
-				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
-				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PRICE", 'price', $filter_order_Dir, $filter_order).' ( '.$formatter->currency(PaycartFactory::getConfig()->get('localization_currency')).')';?></th>
-				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
-				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_VISIBLE", 'visible', $filter_order_Dir, $filter_order);?></th>
-				<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ORDERING", 'ordering', $filter_order_Dir, $filter_order);?></th>	
-				<th class="pull-right"></th>						
+				<th width="20%"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
+				<th width="15%"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_SKU", 'sku', $filter_order_Dir, $filter_order);?></th>
+				<th width="10%"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PRICE", 'price', $filter_order_Dir, $filter_order).' ( '.$formatter->currency(PaycartFactory::getConfig()->get('localization_currency')).')';?></th>
+				<th width="7%" class="center hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
+				<th width="8%" class="center hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_VISIBLE", 'visible', $filter_order_Dir, $filter_order);?></th>
+				<th width="10%" class="center hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ORDERING", 'ordering', $filter_order_Dir, $filter_order);?></th>	
+				<th width="15%" class="center hidden-phone"><?php echo JText::_('COM_PAYCART_QUANTITY')?></th>
+				<th width="15%" class="pull-right"></th>						
 			</tr>
 		<!-- TABLE HEADER END -->
 		</thead>
@@ -62,17 +63,32 @@ defined('_JEXEC') OR die();
 					<th>
 				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
 				    </th>				
-					<td><?php echo $record->product_id;?></td>
+					<td class="hidden-phone"><?php echo $record->product_id;?></td>
 					<td><?php echo PaycartHtml::link(JUri::base().'index.php?option=com_paycart&view=product&task=edit&product_id='.$record->{$record_key}, $record->title);?>
 					</td>
 					<td><?php echo $record->sku;?></td>
 					<td><?php echo $formatter->amount($record->price, false);?></td>
-					<td class="center"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-					<td class="center"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'visible', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-					<td class="center">
+					<td class="center hidden-phone"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+					<td class="center hidden-phone"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'visible', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+					<td class="center hidden-phone">
 						<span><?php echo $pagination->orderUpIcon( $count , true, 'orderup', 'Move Up'); ?></span>
 						<span><?php echo $pagination->orderDownIcon( $count , count($records), true , 'orderdown', 'Move Down', true ); ?></span>
 					</td>
+					<td class="hidden-phone"> 
+						<div class="progress">
+							<div class="bar bar-info"
+						  	   title="<?php echo $record->quantity.' : '.JText::_('COM_PAYCART_ADMIN_AVAILABLE')?>"
+						  	   style="width:<?php echo $record->quantity_available?>%;">
+						  	   		<bold><?php echo $record->quantity;?></bold>
+						   </div>
+						   <div class="bar bar-danger"
+						  	    title="<?php echo $record->quantity_sold.' : '.JText::_('COM_PAYCART_ADMIN_SOLD')?>"
+						  	   style="width:<?php echo $record->quantity_consumed ?>%;">
+						  	   		<bold><?php echo $record->quantity_sold;?></bold>
+						   </div>
+						</div>
+					</td>
+					
 					<td class="center">
 							<a href="<?php echo $uri.'&task=addVariant&variant_of='.$record->product_id; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_ADD_VARIANT');?></a>
 					</td>

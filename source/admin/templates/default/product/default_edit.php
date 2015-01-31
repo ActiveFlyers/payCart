@@ -54,6 +54,7 @@ echo $this->loadTemplate('edit_css');
 		$flag = '';
 	}
 ?>
+<?php echo Rb_HelperTemplate::renderLayout('paycart_spinner','',PAYCART_LAYOUTS_PATH);?>
 		
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data" novalidate>
 	<div class="row-fluid">
@@ -152,8 +153,35 @@ echo $this->loadTemplate('edit_css');
 								<div class="span6">
 									<?php $field = $form->getField('quantity') ?>
 									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?></div>
+										<div class="controls">
+											<div class="badge badge-info"><h6 data-pc-selector="quantityBadge"><?php echo $field->value;?></h6></div>
+											<div class="input-prepend input-append ">
+											    <input type="text" data-pc-selector="quantity" class="validate-integer" id="<?php echo $field->id;?>" placeholder="<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_QUANTITY_HELP')?>"/>
+											    <button class="btn" type="button" data-pc-selector="addQuantity">
+											    	<span class="text-success"><i class="fa fa-plus"></i></span>
+											    	<?php echo JText::_('COM_PAYCART_ADMIN_ADD');?>											    	
+											    </button>
+											    <button class="btn" type="button" data-pc-selector="reduceQuantity">
+												    <span class="text-error"><i class="fa fa-minus"></i></span>
+												  	<?php  echo JText::_('COM_PAYCART_ADMIN_REDUCE');?>
+											    </button>
+											    
+	   			 							</div> 
+    									</div>
+    									
+    									<input type="hidden" name="paycart_product_form[quantity]" data-pc-selector="paycart_product_form[quantity]" value="<?php echo $field->value;?>"/>
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
+									</div>
+								</div>
+								
+								<div class="span6">
+									<?php $field = $form->getField('quantity_sold') ?>
+									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>	
+										<div class="controls">
+											<div class="badge badge-info"><h6><?php echo $field->value;?></h6></div>
+										</div>	
 										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 									</div>
 								</div>

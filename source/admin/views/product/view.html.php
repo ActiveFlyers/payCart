@@ -97,4 +97,20 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		return parent::edit($tpl);
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_View::_displayGrid()
+	 */
+	function _displayGrid($records)
+	{
+		parent::_displayGrid($records);
+		
+		foreach ($records as $record){
+			$total = $record->quantity + $record->quantity_sold;
+			$record->quantity_consumed  = $record->quantity_sold/$total*100;
+			$record->quantity_available = $record->quantity/$total*100;
+		}
+		
+		return true;
+	}
 }

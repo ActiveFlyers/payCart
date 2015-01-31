@@ -19,7 +19,14 @@
 					validate="integer"
 					class="input-block-level validate-integer"
 					label="COM_PAYCART_ADMIN_QUANTITY"
-					required="true"/>
+					required="true"
+					readonly="true"/>
+			
+			<field 	name="quantity_sold" 
+					type="text"
+					class="input-block-level"
+					readonly="true"
+					label="COM_PAYCART_ADMIN_QUANTITY_SOLD"/>
 				
 			<field 	name="sku" 
 					type="text"
