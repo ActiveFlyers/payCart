@@ -22,7 +22,7 @@ site.url		= http://www.jpayplans.com
 creation.date		= June 2013
 
 # Output settings
-file.version		= 1.0.0
+file.version		= 1.0.1
 file.package		= ${project.shortform}
 file.compression	= gzip
 file.extension		= zip
