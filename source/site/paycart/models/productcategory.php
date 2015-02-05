@@ -21,17 +21,21 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartModelProductcategory extends PaycartModelLang
 {
 
-	/**
-	 * Overring this method to order categories according to lft proper 
-	 * i.e parent->child ordering  
-	 * @see plugins/system/rbsl/rb/rb/Rb_Model::_buildWhereClause()
-	 */
-	function _buildWhereClause(Rb_Query $query, Array $queryFilters)
-	{
-		parent::_buildWhereClause($query,$queryFilters);
-		return $query->clear('order')->order('lft');
-	}
-	
+ 	/**
+     * Builds a generic ORDER BY clasue based on the model's state
+     */
+    protected function _buildQueryOrder(Rb_Query &$query)
+    {
+		$order      = $this->getState('filter_order');
+       	$direction  = strtoupper($this->getState('filter_order_Dir'));
+
+    	if($order){
+    		$query->order("$order $direction");
+    	}
+    	
+		$query->order('lft');
+    }
+    
 	/**
 	 * Overriding this function because we need do some checking in between loading and 
      * binding the given data to table object 

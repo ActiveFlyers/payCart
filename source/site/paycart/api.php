@@ -31,18 +31,35 @@ class PaycartAPI
 	 * 
 	 * @return Array of stdclass, which conatin category data
 	 */
-	static public function getCategories($parentId = null, $lang = null)
+ 	static public function getCategories($categoryFilters = null, $lang = null, $order_by = "lft", $order_in = 'ASC', $limit = null)
 	{
-		$categoryFilters = array('published' => 1);
-
-		if ( !empty($parentId) ) {
-			$categoryFilters['parent_id'] = $parentId;
-		}
+		if(!isset($categoryFilters['published'])){
+			$categoryFilters['published'] = 1;
+		}		
+		
 		$catModel = PaycartFactory::getInstance('productcategory', 'model');
+		// @PCTODO : TEMP SOLUTION
+		$catModel->set('_query', null);
+		
+		$pre_order_by = $catModel->getState('filter_order', null);
+		$pre_order_in = $catModel->getState('filter_order_Dir', null);
+		
+		$catModel->setState('filter_order', $order_by);		
+		$catModel->setState('filter_order_Dir', $order_in);		
+		
 		if($lang == null){
 			$lang = paycart_getCurrentLanguage();
 			$catModel->lang_code = $lang;
 		}
+		
+		$query = $catModel->getQuery();
+		if($limit != null){
+			$query->limit($limit);
+		}
+		$catModel->set('_query', $query);
+		
+		$catModel->setState('filter_order', $pre_order_by);
+		$catModel->setState('filter_order_Dir', $pre_order_in);
 		
 		$categories = $catModel->loadRecords($categoryFilters);
 		
@@ -50,6 +67,17 @@ class PaycartAPI
 		return $categories;
 	}
 
+	static public function getCategory($id, $instanceRequired = false)
+	{
+		$category =  PaycartProductcategory::getInstance($id);
+		
+		if(!$instanceRequired){
+			return $category->toArray();
+		}
+		
+		return $category;
+	}
+	
 	/**
 	 * Invoke to get current cart
 	 * 
@@ -59,5 +87,40 @@ class PaycartAPI
 	{
 		return PaycartFactory::getHelper('cart')->getCurrentCart();
 	}
-
+	
+	static public function getProducts($filters = null, $lang = null, $order_by = "ordering", $order_in = 'ASC', $limit = null)
+	{
+		if(!isset($filters['published'])){
+			$categoryFilters['published'] = 1;
+		}		
+		
+		$pModel = PaycartFactory::getInstance('product', 'model');
+		// @PCTODO : TEMP SOLUTION
+		$pModel->set('_query', null);
+		
+		$pre_order_by = $pModel->getState('filter_order', null);
+		$pre_order_in = $pModel->getState('filter_order_Dir', null);
+		
+		$pModel->setState('filter_order', $order_by);		
+		$pModel->setState('filter_order_Dir', $order_in);		
+		
+		if($lang == null){
+			$lang = paycart_getCurrentLanguage();
+			$pModel->lang_code = $lang;
+		}
+		
+		$query = $pModel->getQuery();
+		if($limit != null){
+			$query->limit($limit);
+		}
+		$pModel->set('_query', $query);
+		
+		$pModel->setState('filter_order', $pre_order_by);
+		$pModel->setState('filter_order_Dir', $pre_order_in);
+		
+		$products = $pModel->loadRecords($filters);
+		
+		$pModel->lang_code = null;
+		return $products;
+	}
 }

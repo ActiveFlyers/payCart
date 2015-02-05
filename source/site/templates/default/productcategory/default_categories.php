@@ -20,7 +20,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 			<?php $media = $instance->getCoverMedia();?>
 			<?php $url   = PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$c->productcategory_id);?>
 				<a href="<?php echo $url?>" title="<?php echo $instance->getTitle();?>">
-					<div class='pc-category blurground' style="background-image: url('<?php echo $media['squared'];?>');">
+					<div class='pc-category blurground' style="background-image: url('<?php echo $media['squared'];?>'); background-size: contain;">
 						<div class="pc-category-inner blurground vertical-center-wrapper" >
 							<div class="pc-category-content">
 								<h2 class="vertical-center-content pc-ellipsis"><?php echo $instance->getTitle();?></h2>
