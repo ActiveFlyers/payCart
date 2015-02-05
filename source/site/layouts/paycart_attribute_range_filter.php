@@ -34,7 +34,7 @@ $weightUnit 		= $displayData->weightUnit;
 	<h4><?php echo JText::_("COM_PAYCART_PRICE").' ( '.$currency.' )'?></h4>
 	<b><?php echo $minPriceRange?></b> &nbsp;&nbsp;
 	   <input id="pc-filter-price" name="filters[core][price]" type="hidden" class="span12 pc-range-slider" value="<?php echo $priceValue;?>" data-slider-min="<?php echo $minPriceRange;?>" 
-	   data-slider-max="<?php echo $maxPriceRange;?>" data-slider-step="5" 
+	   data-slider-max="<?php echo $maxPriceRange;?>"
 	   data-slider-value="[<?php echo $sliderValue;?>]" 
 	   />
 	   &nbsp;&nbsp;<b><?php echo $maxPriceRange;?></b> 
@@ -47,7 +47,7 @@ $weightUnit 		= $displayData->weightUnit;
 	<h4><?php echo JText::_("COM_PAYCART_WEIGHT").' ( '.$weightUnit.' )'?></h4>
 	<b><?php echo $minWeightRange;?></b> &nbsp;&nbsp;
 	   <input id="pc-filter-weight" name="filters[core][weight]" type="hidden" class="span12 pc-range-slider" value="<?php echo $weightValue?>" data-slider-min="<?php echo $minWeightRange;?>" 
-	   data-slider-max="<?php echo $maxWeightRange;?>" data-slider-step="5" 
+	   data-slider-max="<?php echo $maxWeightRange;?>" 
 	   data-slider-value="[<?php echo $sliderValue?>]"
 	   />
 	   &nbsp;&nbsp;<b><?php echo $maxWeightRange;?></b> 

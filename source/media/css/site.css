@@ -141,6 +141,10 @@ Products Display
 	border : 1px solid transparent;
 }
 
+.pc-category-inner{
+border : 1px solid transparent;
+}
+
 /* primiary border when hover */
 .pc-product:hover, 
 .pc-category-inner:hover{

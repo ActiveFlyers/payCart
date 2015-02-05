@@ -76,8 +76,8 @@ if(typeof(Joomla)=='undefined'){
 		// catlogue parent wrapper CATEGORIZATION 
 		// .pc-size-xs  320px to  479px
 		// .pc-size-sm  480px to  719px
-		// .pc-size-lg  720px to  979px;
-		// .pc-size-xl  980px to all
+		// .pc-size-lg  720px to  1169px;
+		// .pc-size-xl  1170px to all
 	
 		var sizeclass = 'pc-size-xl';
 		if(wrapper_width < 480){
@@ -86,7 +86,7 @@ if(typeof(Joomla)=='undefined'){
 			if (wrapper_width < 720) {
 				sizeclass = 'pc-size-sm';
 			}else {
-				if (wrapper_width < 980) {
+				if (wrapper_width < 1170) {
 					sizeclass = 'pc-size-lg';
 				}
 			}
