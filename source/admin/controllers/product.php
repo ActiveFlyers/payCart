@@ -19,6 +19,17 @@ defined( '_JEXEC' ) or	die( 'Restricted access' );
 
 class PaycartAdminControllerProduct extends PaycartController 
 {
+	public function __construct($options = array())
+	{
+		parent::__construct($options);
+		
+		$this->_boolMap['visible']  = array('column' => 'visible','value'=>1, 'switch'=>false);
+		$this->_boolMap['invisible']= array('column' => 'visible','value'=>0, 'switch'=>false);
+
+		//Register visible task 
+		$this->registerTask( 'visible','multidobool');
+		$this->registerTask( 'invisible','multidobool');
+	}
 	
 	/**
 	 * override it due to get all uploaded files 
