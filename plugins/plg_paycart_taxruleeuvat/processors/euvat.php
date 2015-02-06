@@ -19,11 +19,36 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartTaxruleProcessorEuvat extends PaycartTaxruleProcessor
 {
 	const EUVAT_SOAP = "http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl";
-	const EUVAT_CURL = "http://vatid.eu/check/";
+	public $location = __DIR__;
 	
 	public function process(PaycartTaxruleRequest $request, PaycartTaxruleResponse $response)
 	{
-		$result = $this->isVatValid($request->billing_address->country_isocode2, $request->billing_address->vat_number, $response);
+		$result = true;
+		$ownerCountry = isset($this->global_config->origin_address->country->isocode2)?$this->global_config->origin_address->country->isocode2:null;
+		
+		if($this->processor_config->associated_address == 'billing'){
+			$buyerCountry = $request->billing_address->country->isocode2;
+			$vatNumber	  = $request->billing_address->vat_number;
+		}else{
+			$buyerCountry = $request->shipping_address->country->isocode2;
+			$vatNumber	  = $request->shipping_address->vat_number;
+		}
+		
+		//Case 1 . If buyer and seller country is same then apply vat
+		if($buyerCountry == $ownerCountry ){
+			$result = true;
+		}
+		//Case 2 . If vat number is not empty and valid then 0% vat will be applicable
+		else{
+			if(!empty($vatNumber) && $this->isVatValid($buyerCountry, $vatNumber, $response)){
+				$result = false;
+			}
+			
+			//Case 3 . If vat number is empty of not valid then vat according to seller country is applicable
+		}
+		
+		//Case 4 . If buyer is a non-eu customer then no vat will be applicable
+		// we recommend admin to make a group rule and attach it here
 		
 		if($result){
 			return parent::process($request, $response);
@@ -37,10 +62,7 @@ class PaycartTaxruleProcessorEuvat extends PaycartTaxruleProcessor
 	{
 		try{
 			//validate vatnumber through official way
-			if(!$result = $this->_soapValidation($countryCode, $vatNumber)) {
-				//validate vatnumber through some third party solution
-				$result = $this->_curlValidation($countryCode, $vatNumber);		
-			}
+			$result = $this->_soapValidation($countryCode, $vatNumber);
 			
 			//Set error if both extensions was not loaded 
 			if(!$result ){
@@ -87,37 +109,6 @@ class PaycartTaxruleProcessorEuvat extends PaycartTaxruleProcessor
 											  'countryCode' => $countryCode,
 											  'vatNumber'   => $vatNumber
 											 ));
-		}
-		return false;
-	}
-	
-	/**
-	 * Curl method to validate vat number 
-	 * It returns json like :
-	 *      {
-	 *		  "response": {
-	 *		    "country_code": "COUNTRY_CODE",
-	 *		    "vat_number": "VAT_NUMBER",
-	 *		    "valid": "false/true",
-	 *		    "name": "---",
-	 *		    "address": "---"
-	 *		  }
-	 *	   }
-	 * @param string $countryCode
-	 * @param string $vatNumber
-	 */
-	protected function _curlValidation($countryCode,$vatNumber)
-	{
-		// PCTODO: Remove it and move it on precheck list
-		if(extension_loaded('curl')){
-			$curl   = new JHttpTransportCurl(new Rb_Registry());
-			$result = $curl->request('GET', new JURI(self::EUVAT_CURL.$countryCode.'/'.$vatNumber), null, array('Accept'=>'application/json'),30);
-			$output = json_decode($result->body)->response;
-			
-			//true and false is in string, so convert it to boolean
-			$output->valid = ($output->valid === 'true')? true: false;
-			
-			return $output;
 		}
 		return false;
 	}

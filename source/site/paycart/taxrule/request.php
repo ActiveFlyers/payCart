@@ -39,7 +39,10 @@ class PaycartTaxruleRequest
 }
 
 class PaycartTaxruleRequestGlobalconfig {
-	
+	/**
+	 * @var PaycartRequestBuyeraddress
+	 */
+	public $origin_address;
 }
 
 class PaycartTaxruleRequestRuleconfig {

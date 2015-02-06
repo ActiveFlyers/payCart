@@ -26,7 +26,7 @@ class PlgPaycartTaxruleEuvat extends RB_Plugin
 		$helper->push(Paycart::PROCESSOR_TYPE_TAXRULE,
 					 'PaycartTaxruleProcessorEuvat',
                           array(
-                            'filepath'   => dirname(__FILE__).'/processors/euvat.php',
+                            'filepath'   => dirname(__FILE__).'/processors/euvat/euvat.php',
                             'title'      => Rb_Text::_('PLG_PAYCART_TAXRULE_EUVAT_TITLE'),
                             'description'=> Rb_Text::_('PLG_PAYCART_TAXRULE_EUVAT_DESC'),
                             'icon'		 => ''

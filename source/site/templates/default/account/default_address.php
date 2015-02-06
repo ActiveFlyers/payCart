@@ -49,7 +49,15 @@ echo $this->loadTemplate('js');
 						<?php unset($addresses[$default_address]);?>
 						<?php array_unshift($addresses, $defaultAddressObject);?>
 					<?php endif;?>
+					
+					<?php $columnCount = 0?>
 					<?php foreach($addresses as $address):?>
+							<?php $columnCount++;?>
+							<?php if($columnCount > 2 ):?>
+								<?php $columnCount = 1;?>
+								</div>
+								<div class="row-fluid">
+							<?php endif;?>
 							<div class="pc-grid-6" data-pc-selector="pc-address-<?php echo $address->buyeraddress_id;?>">
 								<div class="accordion">
 									<div class="accordion-group">
@@ -64,6 +72,9 @@ echo $this->loadTemplate('js');
 												<div><?php echo $address->city;?> - <?php echo $address->zipcode;?></div>
 												<div><?php echo $formatter->state($address->state_id);?> , <?php echo $formatter->country($address->country_id);?></div>
 												<div><?php echo JText::_('COM_PAYCART_PHONE');?> - <?php echo $address->phone;?></div>
+												<?php if($address->vat_number):?>
+													<div><?php echo JText::_('COM_PAYCART_VATNUMBER');?> - <?php echo $address->vat_number;?></div>
+												<?php endif;?>
 												<hr/>														
 												<div>	
 													<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=setDefaultAddress&address_id='.$address->buyeraddress_id);?>">

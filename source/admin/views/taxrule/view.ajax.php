@@ -25,7 +25,7 @@ class PaycartAdminAjaxViewTaxrule extends PaycartAdminBaseViewTaxrule
 		$data['processor_classname']	=  $this->input->get('processor_classname', '');
 		
 		$taxrule 		= PaycartTaxrule::getInstance($taxrule_id)->bind($data);		
-		$html = $taxrule->getProcessorConfigHtml();
+		$html = $taxrule->getProcessorConfigHtml($this->_component->getNameSmall().'_'.$this->getName().'_form');
 		$this->assign('processor_config_html', $html);
 		$this->setTpl('processor_config');
 		$this->_renderOptions = array('domObject'=>'pc-taxrule-processorconfig','domProperty'=>'innerHTML');

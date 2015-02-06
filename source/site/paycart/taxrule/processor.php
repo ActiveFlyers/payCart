@@ -51,10 +51,44 @@ abstract class PaycartTaxruleProcessor
 	 * @param PaycartTaxruleRequest $request
 	 * @param PaycartTaxruleResponse $response
 	 */
-	public function getConfigHtml(PaycartTaxruleRequest $request, PaycartTaxruleResponse $response)
+	public function getConfigHtml(PaycartTaxruleRequest $request, PaycartTaxruleResponse $response, $namePrefix)
 	{
-		$response->configHtml =  "<div></div>";
-		return $response;
+		$config 	= $this->getConfig();
+		$location	= $this->getLocation();
+		$tmplPath   = $location.'/tmpl/config.php';
+		
+		//if template file doesn't exist then don't proceed
+		if(!file_exists($tmplPath)){
+			return true;
+		}
+		
+		ob_start();
+		
+		include_once $tmplPath;
+		
+		$content = ob_get_contents();
+		ob_end_clean();
+		
+		$response->configHtml = $content;
+		return true;
+	}
+	
+	public function getConfig($key = null, $defaultValue = null)
+	{
+		if($key === null){
+			return $this->processor_config;
+		}
+		
+		if(isset($this->processor_config->$key)){
+			return $this->processor_config->$key;
+		}
+		
+		return $defaultValue;
+	}
+	
+	public function getLocation()
+	{
+		return $this->location;
 	}
 	
 	/**
