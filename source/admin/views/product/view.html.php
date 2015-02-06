@@ -25,6 +25,8 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		Rb_HelperToolbar::deleteList(Rb_Text::_('COM_PAYCART_ENTITY_DELETE_CONFIRMATION'));
 		Rb_HelperToolbar::publish();
 		Rb_HelperToolbar::unpublish();
+		Rb_HelperToolbar::publish('visible',JText::_('COM_PAYCART_ADMIN_VISIBLE'));
+		Rb_HelperToolbar::unpublish('invisible',JText::_('COM_PAYCART_ADMIN_INVISIBLE'));
 	}
 	
 	protected function _adminEditToolbar()

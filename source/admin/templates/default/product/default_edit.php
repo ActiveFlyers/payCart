@@ -101,20 +101,31 @@ echo $this->loadTemplate('edit_css');
 														
 							<div class="row-fluid">
 								<div class="span6">
-									<?php $field = $form->getField('productcategory_id') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls "><?php echo $field->input; ?></div>								
-									</div>
-								</div>
-								<div class="span6">
 									<?php $field = $form->getField('published') ?>
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?> </div>
 										<div class="controls"><?php echo $field->input; ?></div>								
 									</div>
+								</div>
+								
+								<div class="span6">
+									<?php $field = $form->getField('visible') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls"><?php echo $field->input; ?></div>								
+									</div>
 								</div>							
-							</div>							
+							</div>	
+						
+							<div class="row-fluid">
+								<div class="span6">
+									<?php $field = $form->getField('productcategory_id') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls "><?php echo $field->input; ?></div>
+									</div>
+								</div>
+							</div>						
 						</fieldset>
 					</div>					
 				</div>

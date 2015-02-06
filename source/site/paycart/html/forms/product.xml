@@ -63,7 +63,16 @@
 					label="COM_PAYCART_ADMIN_PUBLISHED">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>					
-			</field>			
+			</field>		
+
+			<field 	name="visible"
+					type="radio"
+					default="1"
+					class="btn-group"
+					label="COM_PAYCART_ADMIN_VISIBLE">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+			</field>	
 			
 			<!-- Custom Element for paycart product category			-->
 			<field 	name="productcategory_id" 
