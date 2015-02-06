@@ -29,7 +29,10 @@ class PaycartModelProductIndex extends PaycartModel
 		if(!empty($whereCondition)){
 			return $whereCondition;
 		}
-		
+
+		//IMP : sanitize search keyword before proceeding
+		$keyword   =  PaycartFactory::getHelper('productIndex')->sanitizeContent($keyword);
+
 		// Check mysql configuration for value 'ft_min_word_len'
 		//if length of string is less than 4 (i.e. mysql default minimum length of full text search word )
 		//then prepare a query using LIKE		
