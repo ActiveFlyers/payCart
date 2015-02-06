@@ -171,6 +171,13 @@ class PaycartTaxrule extends PaycartLib
 		$request->buyer					= $helperRequest->getBuyerObject($cart->getBuyer(true));
 		$request->taxable_amount		= $request->cartparticular->total; //tax will be applied on discounted price
 		
+		$billingAddressCountry  		= PaycartFactory::getModel('country')->loadRecords(array('country_id'=>$request->billing_address->country));
+		$shippingAddressCountry			= PaycartFactory::getModel('country')->loadRecords(array('country_id'=>$request->shipping_address->country));
+		
+		//set full detail of country on origin address' country, only isocode3 is avaiable
+		$request->billing_address->country  = array_shift($billingAddressCountry);
+		$request->shipping_address->country = array_shift($shippingAddressCountry);
+
 		return $request;
 	}
 	
@@ -184,6 +191,13 @@ class PaycartTaxrule extends PaycartLib
 	public function getGlobalconfigRequestObject()
 	{
 		$object = new PaycartTaxruleRequestGlobalconfig();
+		
+		$originAddress          = PaycartBuyeraddress::getInstance(0,PaycartFactory::getConfig()->get('localization_origin_address'));
+		$object->origin_address = PaycartFactory::getHelper('request')->getBuyeraddressObject($originAddress);
+
+		//set full detail of country on origin address' country, only isocode3 is avaiable
+		$originAddressCountry   = PaycartFactory::getModel('country')->loadRecords(array('country_id'=>$object->origin_address->country));
+		$object->origin_address->country = array_shift($originAddressCountry);
 		return $object;
 	}
 	
@@ -206,10 +220,10 @@ class PaycartTaxrule extends PaycartLib
 		return $this->processor_config->toObject();
 	}
 	
-	public function getProcessorConfigHtml()
+	public function getProcessorConfigHtml($namePrefix)
 	{
 		$response = $this->getResponseObject();
-		$this->getProcessor()->getConfigHtml(new PaycartTaxruleRequest, $response);
+		$this->getProcessor()->getConfigHtml(new PaycartTaxruleRequest, $response, $namePrefix);
 		return $response->configHtml;
 	}
 	

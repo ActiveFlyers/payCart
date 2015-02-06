@@ -105,6 +105,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<span class="pc-error" for="paycart_cart_address_shipping_address"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>
 		</div>
 	</div>
+	
+	<div class="control-group">	
+	 	<div class="control-label">
+ 			<label id="paycart_cart_address_shipping_vat_number-lbl" for="paycart_cart_address_shipping_vat_number"><?php echo JText::_('COM_PAYCART_VATNUMBER'); ?></label>
+ 		</div>
+ 		<div class="controls">
+			<input type="text" name="paycart_cart_address[shipping][vat_number]" id="paycart_cart_address_shipping_vat_number" class="input-block-level" value="<?php echo @$shipping_address->vat_number; ?>"/>
+		</div>
+	</div>
 </fieldset>
 
 	<script>

@@ -42,6 +42,9 @@ if(!isset($displayData->country_name) && isset($displayData->country_id)){
   <?php echo @$displayData->city;  ?> - <?php echo @$displayData->zipcode;  ?><br>
   <?php echo @$displayData->state_name;  ?> <?php echo @$displayData->country_name;  ?><br>
   <?php echo JText::_('COM_PAYCART_CONTACT');?> : <?php echo @$displayData->phone;  ?><br>
+  <?php if(isset($displayData->vat_number) && !empty($displayData->vat_number)):?>
+  	<?php echo JText::_('COM_PAYCART_VATNUMBER');?> : <?php echo @$displayData->vat_number;  ?><br>
+  <?php endif;?>
 </address>
 
 
