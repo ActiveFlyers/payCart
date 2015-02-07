@@ -32,12 +32,15 @@ $weightUnit 		= $displayData->weightUnit;
 	<?php $priceValue  = (!empty($appliedPriceRange))?key($appliedPriceRange):'';?>
 	
 	<h4><?php echo JText::_("COM_PAYCART_PRICE").' ( '.$currency.' )'?></h4>
-	<b><?php echo $minPriceRange?></b> &nbsp;&nbsp;
-	   <input id="pc-filter-price" name="filters[core][price]" type="hidden" class="span12 pc-range-slider" value="<?php echo $priceValue;?>" data-slider-min="<?php echo $minPriceRange;?>" 
-	   data-slider-max="<?php echo $maxPriceRange;?>"
-	   data-slider-value="[<?php echo $sliderValue;?>]" 
-	   />
-	   &nbsp;&nbsp;<b><?php echo $maxPriceRange;?></b> 
+	<div class="clearfix">
+        <span class="pull-left"><strong><?php echo $minPriceRange?></strong></span>
+    	<span class="pull-right"><strong><?php echo $maxPriceRange;?> </strong></span>
+    </div>
+	<div class="clearfix">
+		<input id="pc-filter-price" name="filters[core][price]" type="hidden" class="pc-range-slider" value="<?php echo $priceValue;?>" data-slider-min="<?php echo $minPriceRange;?>"
+			data-slider-max="<?php echo $maxPriceRange;?>"
+			data-slider-value="[<?php echo $sliderValue;?>]"/>
+	</div>
 	<hr>
 <?php endif;?>
 
