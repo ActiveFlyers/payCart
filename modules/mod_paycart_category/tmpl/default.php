@@ -24,11 +24,7 @@ defined('_JEXEC') or die;
 	<?php function pc_mod_category_style(){?>
 		<?php static $pc_mod_category_loaded = false; ?>
 		<?php if($pc_mod_category_loaded == false) :?>
-			<style>
-			.pc-mod-cat{
-				margin: 0 50px;
-			}
-				
+			<style>	
 			.pc-mod-categories .pc-mod-category{
 			    position: relative;
 			    margin:10px;  
@@ -145,8 +141,8 @@ defined('_JEXEC') or die;
 
 <div class="pc-mod-cat" id="pc-mod-cat-<?php echo $module->id;?>">
 	<div class="clearfix">
-		<h3 class="pull-left product-head"><?php echo $module->title;?></h3>
-		<ul class="customNavigation pull-right list-inline">
+		<h3 class="pull-left product-head"><?php echo $module->title;?></h3>						
+		<ul class="customNavigation pull-right inline list-inline">
 		  <li><i class="prev fa fa-angle-left fa-3x"></i></li>
 		  <li><i class="next fa fa-angle-right fa-3x"></i></li>
 		</ul>

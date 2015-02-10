@@ -806,8 +806,8 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 INSERT IGNORE INTO `#__paycart_productcategory_lang` (`productcategory_lang_id`, `productcategory_id`, `title`, `alias`, `lang_code`, `description`, `metadata_title`, `metadata_keywords`, `metadata_description`) VALUES
 (1, 1, 'root', 'root', 'en-GB', NULL, NULL, NULL, NULL);
 
-INSERT IGNORE INTO `#__paycart_productcategory` (`productcategory_id`, `cover_media`, `parent_id`, `lft`, `rgt`, `level`, `published`, `created_date`, `modified_date`, `ordering`) VALUES
-(1, NULL, 0, 0, 1, 0, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0);
+INSERT IGNORE INTO `#__paycart_productcategory` (`productcategory_id`, `cover_media`, `parent_id`, `lft`, `rgt`, `level`, `published`, `created_date`, `modified_date`) VALUES
+(1, NULL, 0, 0, 1, 0, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 
 
 --
