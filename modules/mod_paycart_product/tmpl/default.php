@@ -26,8 +26,7 @@ defined('_JEXEC') or die;
 				<style>
 				
 				.pc-module-product{
-					position: relative;	
-					margin : 0px 50px;
+					position: relative;					
 				}
 				
 				.pc-mod-products{	
@@ -155,7 +154,7 @@ defined('_JEXEC') or die;
 <div class="pc-module-product" id="pc-module-products-<?php echo $module->id;?>">
 	<div class="clearfix">
 		<h3 class="pull-left product-head"><?php echo $module->title;?></h3>						
-		<ul class="customNavigation pull-right list-inline">
+		<ul class="customNavigation pull-right inline list-inline">
 		  <li><i class="prev fa fa-angle-left fa-3x"></i></li>
 		  <li><i class="next fa fa-angle-right fa-3x"></i></li>
 		</ul>
@@ -166,7 +165,7 @@ defined('_JEXEC') or die;
 			<?php $media 		= $instance->getCoverMedia(true);?>
 			<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$products[$id]->product_id);?>"
 				title="<?php echo $products[$id]->title;?>">
-				<div class="pc-mod-product img-thumbnail item">
+				<div class="pc-mod-product img-thumbnail item thumbnail">
 					<div class="pc-mod-product-img">
 						<img class="" src="<?php echo $media['optimized'];?>" alt="<?php echo $products[$id]->title;?>">							
 					</div>
