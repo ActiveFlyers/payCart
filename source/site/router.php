@@ -159,10 +159,10 @@ class PaycartRouter extends Rb_Router
     {
     	switch ($var) {
     		case 'productcategory_id' :
-    			return $this->productcategory_IDtoRoute($query[$var]);
+    			return $this->productcategory_IDtoRoute($query[$var], $query);
     		
     		case 'product_id' :
-    			return $this->product_IDtoRoute($query[$var]);
+    			return $this->product_IDtoRoute($query[$var], $query);
     			
     		
     		default:
@@ -239,10 +239,16 @@ class PaycartRouter extends Rb_Router
 	 * 
 	 * @return string value
 	 */
-	public function productcategory_IDtoRoute($productcategory_id)
+	public function productcategory_IDtoRoute($productcategory_id, $query)
 	{		
-    	$current_lang_id = $this->_getPaycartCurrentLanguage();
-		$categories = $this->_getProductCategories($current_lang_id);
+		if(isset($query['language'])){
+			$lang_code = $query['language'];
+		}
+		else{
+    		$lang_code = $this->_getPaycartCurrentLanguage();
+		}
+		
+		$categories = $this->_getProductCategories($lang_code);
 		
 		$root_category_id = PAYCART_PRODUCTCATEGORY_ROOT_ID;
     	
@@ -302,10 +308,15 @@ class PaycartRouter extends Rb_Router
 	 * 
 	 * @return string value
 	 */
-	public function product_IDtoRoute($product_id)
+	public function product_IDtoRoute($product_id, $query)
 	{
-	    	
-		$lang_code = $this->_getPaycartCurrentLanguage();
+		if(isset($query['language'])){
+			$lang_code = $query['language'];
+		}
+		else{
+    		$lang_code = $this->_getPaycartCurrentLanguage();
+		}	
+		
 	
 		$query = "
 					SELECT `alias` 
@@ -331,73 +342,11 @@ class PaycartRouter extends Rb_Router
 	
  	public function build( &$query )
     {
-            $segments = array();
-            
-            $temp_added_vars = array();
-            // if itemId is the first key, then these are menu links, only then consider it.
-            // else the itemID might be of current page, not for the link
-            if(isset($query['Itemid']) ) {
-            	$keys = array_keys($query);
-	            if ( (array_shift($keys) === 'Itemid') ){
-	                // if item-id exists, then pick the var from menu and put into query, if not exist already
-	     			$item = Rb_Factory::getApplication()->getMenu()->getItem($query['Itemid']);
-	            	foreach($item->query as $var=>$value){
-	            		if(!isset($query[$var])){
-							$query[$var]= $value;
-							$temp_added_vars[]=$var;
-						}
-	            	}
-	            	if($item->language != '*'){
-						$query['language'] = $item->language; 
-					}
-	            }
-            }
-            
-            //find the selected menu
-            $selMenu = $this->getSelectedMenu($query, $this->_getMenus());
-            
-            // clean the added variables
-    		foreach($temp_added_vars as $var){
-				unset($query[$var]);
-            }
-            
-            //can we process the route further
-            $key = $this->getBuildKey($query, $segments, $selMenu);
-            $route=$this->_routes($key);
-            
-            $route = array_merge(array('view', 'task'), $route);
-            //remove not-required variables, which can be calculated from URL itself
-            foreach($route as $var){
-                
-                //variable not requested
-                if(!isset($query[$var])){
-                    continue;
-                }
-
-                //variable not exist in menu
-                if(!isset($selMenu->query[$var])){
-                    
-                    // var exist in request
-                    if(isset($query[$var])){
-                        $slug=$this->_slugify($query, $var);
-                        unset($query[$var]);
-                        $segments[] = $slug;
-                    }
-                    
-                    continue;
-                }
-
-                //exist & match
-                if($selMenu->query[$var] === $query[$var]){
-                    unset($query[$var]);
-                }else{
-                	$slug=$this->_slugify($query, $var);
-                    unset($query[$var]);
-                	$segments[] = $slug;
-                }
-            }
-
-            return $segments;
+    	$segments = parent::build($query);
+   		if(isset($query['language'])){
+			unset($query['language']);
+		}
+        return $segments;
     }
     
     
@@ -412,8 +361,7 @@ class PaycartRouter extends Rb_Router
 
 			$lang_tag = JFactory::getLanguage()->getTag();
 			if(isset($query['language'])){
-				$lang_tag  = $query['language'];
-				unset($query['language']);
+				$lang_tag  = $query['language'];				
 			}
 			
             foreach($menus as $menu){
