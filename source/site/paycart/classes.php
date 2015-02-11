@@ -116,6 +116,7 @@ if(defined("_JEXEC")===false) die();
   'paycartgrouprule' => 'site/paycart/base/grouprule.php',
   'paycarthelper' => 'site/paycart/base/helper.php',
   'paycarthelperadminmenu' => 'site/paycart/helpers/adminmenu.php',
+  'paycarthelperassociation' => 'site/helpers/association.php',
   'paycarthelperattribute' => 'site/paycart/helpers/attribute.php',
   'paycarthelperbuyer' => 'site/paycart/helpers/buyer.php',
   'paycarthelpercart' => 'site/paycart/helpers/cart.php',
