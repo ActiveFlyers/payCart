@@ -21,6 +21,7 @@
 		<folder>templates</folder>
 		<folder>paycart</folder>
 		<folder>layouts</folder>
+		<folder>helpers</folder>
 	</files>
 	
 	<!-- Media files -->
