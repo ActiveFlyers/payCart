@@ -233,7 +233,7 @@ paycart.admin.discountrule = {};
 						</div>
 						<div class="controls" data-pc-discountrule="processor">
 							<?php echo $field->input; ?>
-							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_DISCOUNTRULE_PROCESSOR_REQUIRED');?></div>
 						</div>	
 					</div>
 					
