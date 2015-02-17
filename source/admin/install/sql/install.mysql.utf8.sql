@@ -794,7 +794,7 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('company_name', ''),
 ('cron_frequency','1800'),
 ('cron_run_automatic','1'),
-('invoice_serial_prefix', 'paycart'),
+('invoice_serial_prefix', 'order'),
 ('localization_currency', 'USD'),
 ('localization_currency_format', 'symbol'),
 ('localization_currency_position', 'before'),

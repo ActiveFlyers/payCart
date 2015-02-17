@@ -5,6 +5,6 @@
 --
 
 -- --------------------------------------------------------
-ALTER TABLE `#__paycart_product` ADD COLUMN `quantity_sold` VARCHAR(10) AFTER `quantity`;
+ALTER TABLE `#__paycart_product` ADD COLUMN `quantity_sold` int(10) NOT NULL AFTER `quantity`;
 
 ALTER TABLE `#__paycart_productcategory` DROP COLUMN `ordering`;
