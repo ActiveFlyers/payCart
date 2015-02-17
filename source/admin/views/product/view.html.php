@@ -109,8 +109,8 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		
 		foreach ($records as $record){
 			$total = $record->quantity + $record->quantity_sold;
-			$record->quantity_consumed  = $record->quantity_sold/$total*100;
-			$record->quantity_available = $record->quantity/$total*100;
+			$record->quantity_consumed  = ($total)?$record->quantity_sold/$total*100:0;
+			$record->quantity_available = ($total)?$record->quantity/$total*100:100;
 		}
 		
 		return true;

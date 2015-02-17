@@ -17,7 +17,10 @@ Joomla.submitbutton = function(task){
 	if (task == 'save' || task == 'apply' ) {
 		paycart.jQuery('[data-pc-selector="quantity"]').val('');	
 	}
-	Joomla.submitform(task, document.getElementById('adminForm'));
+	var view 			= '<?php echo $this->getName();?>' ;
+    var validActions 	= '<?php echo json_encode($this->_validateActions);?>' ;
+
+	paycart.admin.grid.submit(view, task, validActions);
 };
 
 (function($){
