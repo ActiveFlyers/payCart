@@ -166,6 +166,7 @@ echo $this->loadTemplate('edit_css');
 									<div class="control-group">
 										<div class="control-label"><?php echo $field->label; ?></div>
 										<div class="controls">
+    									<?php if($record_id):?>
 											<div class="badge badge-info"><h6 data-pc-selector="quantityBadge"><?php echo $field->value;?></h6></div>
 											<div class="input-prepend input-append ">
 											    <input type="text" data-pc-selector="quantity" class="validate-integer" id="<?php echo $field->id;?>" placeholder="<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_QUANTITY_HELP')?>"/>
@@ -179,32 +180,36 @@ echo $this->loadTemplate('edit_css');
 											    </button>
 											    
 	   			 							</div> 
-    									</div>
-    									
-    									<input type="hidden" name="paycart_product_form[quantity]" data-pc-selector="paycart_product_form[quantity]" value="<?php echo $field->value;?>"/>
+    										<input type="hidden" name="paycart_product_form[quantity]" data-pc-selector="paycart_product_form[quantity]" value="<?php echo $field->value;?>"/>
+    									<?php else:?>
+    										<?php echo $field->input;?>
+    									<?php endif;?>
+
 										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 									</div>
 								</div>
-								
-								<div class="span6">
-									<?php $field = $form->getField('quantity_sold') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls">
-											<div class="badge badge-info"><h6><?php echo $field->value;?></h6></div>
-										</div>	
-										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
-									</div>
 								</div>
-								<!--<div class="span6">
-									<?php $field = $form->getField('stockout_limit') ?>
-									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>	
-										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
+								<?php if($record_id):?>
+									<div class="span6">
+										<?php $field = $form->getField('quantity_sold') ?>
+										<div class="control-group">
+											<div class="control-label"><?php echo $field->label; ?> </div>
+											<div class="controls">
+												<div class="badge badge-info"><h6><?php echo $field->value;?></h6></div>
+											</div>	
+											<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
+										</div>
 									</div>
-								</div>
-							--></div>
+									<!--<div class="span6">
+										<?php $field = $form->getField('stockout_limit') ?>
+										<div class="control-group">
+											<div class="control-label"><?php echo $field->label; ?> </div>
+											<div class="controls"><?php echo $field->input; ?></div>	
+											<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
+										</div>
+									</div>
+								--></div>
+							<?php endif;?>
 						</fieldset>
 					</div>					
 				</div>
