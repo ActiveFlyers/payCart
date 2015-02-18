@@ -239,7 +239,7 @@ class PaycartRouter extends Rb_Router
 	 * 
 	 * @return string value
 	 */
-	public function productcategory_IDtoRoute($productcategory_id, $query)
+	public function productcategory_IDtoRoute($productcategory_id, $query = array())
 	{		
 		if(isset($query['language'])){
 			$lang_code = $query['language'];
