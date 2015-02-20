@@ -104,6 +104,12 @@ class Paycart
 	const DIMENSION_UNIT_METER		= 'm';
 	const DIMENSION_UNIT_INCH		= 'in';
 	
+	
+	const SORTING_OPTION_HITS         = 'hits';
+	const SORTING_OPTION_CREATED_DATE = 'created_date';
+	const SORTING_OPTION_PRICE_LOW    = 'price_low';
+	const SORTING_OPTION_PRICE_HIGH   = 'price_high';
+	
 	/**
 	 * 
 	 * Return All available shipment status
@@ -142,11 +148,10 @@ class Paycart
 	 */
 	public static function getSortingOptions()
 	{
-		return Array( 	'0'            => JText::_('COM_PAYCART_SORT_SELECT'),
-						'hits' 		   => JText::_('COM_PAYCART_SORT_POPULARITY'),
-						'created_date' => JText::_('COM_PAYCART_SORT_NEW'),
- 						'price_low'    => JText::_('COM_PAYCART_SORT_PRICE_LOW'),
-						'price_high'   => JText::_('COM_PAYCART_SORT_PRICE_HIGH'),
+		return Array( 	Paycart::SORTING_OPTION_HITS         => JText::_('COM_PAYCART_SORT_POPULARITY'),
+						Paycart::SORTING_OPTION_CREATED_DATE => JText::_('COM_PAYCART_SORT_NEW'),
+ 						Paycart::SORTING_OPTION_PRICE_LOW    => JText::_('COM_PAYCART_SORT_PRICE_LOW'),
+						Paycart::SORTING_OPTION_PRICE_HIGH   => JText::_('COM_PAYCART_SORT_PRICE_HIGH'),
 						);
 	}
 	

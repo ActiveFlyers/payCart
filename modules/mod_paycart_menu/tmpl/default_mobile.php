@@ -30,30 +30,7 @@ $return_link	= 	base64_encode($link);
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-.row-offcanvas {
-	position: relative;
-	-webkit-transition: all .25s ease-out;
-	-o-transition: all .25s ease-out;
-	transition: all .25s ease-out;
-}
-.row-offcanvas-right { 
-	right: 0; 
-}
-.row-offcanvas-left { 
-	left: 0; 
-}
-.row-offcanvas-left .sidebar-offcanvas { 
-	left: -100%;
-	z-index: 10; 
-}
-.row-offcanvas-left.active { 
-	left: 100%; 
-}
-.sidebar-offcanvas { 
-	position: absolute; 
-	top: 0; 
-	width: 100%; 
-}
+
 .navbar-text > li {
 	display: inline-block;
 	padding: 0px 18px;
@@ -198,43 +175,48 @@ $return_link	= 	base64_encode($link);
 	
 	<div class="hide" id="pc-mob-offcanvas">
 		<div class="sidebar-offcanvas" role="navigation" id="allcategories">
-		<span class="close" data-toggle="offcanvas" data-target="#allcategories"><i class="fa fa-times fa-2x"></i></span>
-			<div class="mega-dropdown-menu row">
-				
-				<div class="dropdown-header">
-					<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>">
-						<?php echo JText::_('COM_PAYCART_All') .' '.JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?>
-		            </a>
-	            </div>
-				<ul class="unstyled">
-			    	<?php $counter = 0;?>
-					<?php foreach( $categories as $cat): ?>
-				     	<?php if (!$cat->level == 0):?>	
-				     		<li class="<?php if ($cat->level == 1) { echo 'dropdown-header'; };?>">
-				     			<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$cat->productcategory_id);?>" class="<?php echo 'pc-level'.$cat->level;?>">
-				     				<?php echo $cat->title;?>
-				     			</a>
-				     		</li>
-				     		<?php if ($counter == 10){ ?>
-				     			</ul>
-				     			<ul class="unstyled"><?php 				     			
-				     			 $counter = 1;}?> 
-				     		<?php $counter++;?>
-				     	<?php endif;?>
-				     <?php endforeach;?>
-				</ul>
+			<div class="sidebar-offcanvas-inner">
+				<span class="close" data-toggle="offcanvas" data-target="#allcategories"><i class="fa fa-times fa-2x"></i></span>
+				<div class="mega-dropdown-menu row">
+					
+					<div class="dropdown-header">
+						<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>">
+							<?php echo JText::_('COM_PAYCART_All') .' '.JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?>
+			            </a>
+		            </div>
+					<ul class="unstyled">
+				    	<?php $counter = 0;?>
+						<?php foreach( $categories as $cat): ?>
+					     	<?php if (!$cat->level == 0):?>	
+					     		<li class="<?php if ($cat->level == 1) { echo 'dropdown-header'; };?>">
+					     			<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$cat->productcategory_id);?>" class="<?php echo 'pc-level'.$cat->level;?>">
+					     				<?php echo $cat->title;?>
+					     			</a>
+					     		</li>
+					     		<?php if ($counter == 10){ ?>
+					     			</ul>
+					     			<ul class="unstyled"><?php 				     			
+					     			 $counter = 1;}?> 
+					     		<?php $counter++;?>
+					     	<?php endif;?>
+					     	<hr>
+					     <?php endforeach;?>
+					</ul>
+				</div>
 			</div>
 		</div>
 	
 		<div class="sidebar-offcanvas" id="searchbar" role="navigation">
-			<span class="close" data-toggle="offcanvas" data-target="#searchbar"><i class="fa fa-times fa-2x"></i></span>
-			<div class="mega-dropdown-menu">				
-				<form class="form-search" name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
-					<div class="input-append">
-						<input type="text" class="navbar-search input-large search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH")?>" name="query"/>
-					  	<button type="submit" class="btn">Search</button>
-					</div>
-				</form>
+			<div class="sidebar-offcanvas-inner">
+				<span class="close" data-toggle="offcanvas" data-target="#searchbar"><i class="fa fa-times fa-2x"></i></span>
+				<div class="mega-dropdown-menu">				
+					<form class="form-search" name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
+						<div class="input-append">
+							<input type="text" class="navbar-search input-large search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH")?>" name="query"/>
+						  	<button type="submit" class="btn">Search</button>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
      </div>

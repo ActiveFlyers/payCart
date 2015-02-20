@@ -22,8 +22,11 @@ echo $this->loadTemplate('js');
 	<?php echo $this->loadTemplate('categories', compact('categories','formatter'));?>
 <?php endif;?>
 
-<?php if(!empty($products)):?>
+<?php if(count((array)$products)):?>
 	<div class="row-fluid"><h2 class=" span12 page-header"><?php echo JText::_("COM_PAYCART_PRODUCTS");?></h2></div>
-	<?php echo $this->loadTemplate('products', compact('products','formatter'));?>
+	<?php $data = new stdclass();?>
+	<?php $data->products = $products;?>
+	<?php echo JLayoutHelper::render('paycart_product_list', $data);?>
 <?php endif;?> 
+
 <?php 

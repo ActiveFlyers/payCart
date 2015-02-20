@@ -34,7 +34,7 @@ class PaycartSiteControllerSearch extends PaycartController
 		
 		$appliedCoreFilters     = isset($postFilters['core'])?$postFilters['core']:array();
 		$appliedAttrFilters     = isset($postFilters['attribute'])?$postFilters['attribute']:array();
-		$appliedSorting         = isset($postFilters['sort'])?$postFilters['sort']:'0';
+		$appliedSorting         = isset($postFilters['sort'])?$postFilters['sort']:paycart::SORTING_OPTION_HITS;//default sorting should be popularity
 		$filterHelper  		    = PaycartFactory::getHelper('filter');
 		$formatter				= PaycartFactory::getHelper('format');
 		$filterHelper->pagination_start	= $start;
@@ -109,11 +109,6 @@ class PaycartSiteControllerSearch extends PaycartController
 		$filters->attribute->appliedAttr  		  = !empty($appliedAttrDetail)?$appliedAttrFilters:array();
 		$filters->attribute->appliedAttrDetail   = $appliedAttrDetail;
 		
-		//other common data
-		$filters->searchWord				  = $searchWord;
-		$filters->currency					  = $formatter->currency(PaycartFactory::getConfig()->get('localization_currency'));
-		$filters->weightUnit				  = PaycartFactory::getConfig()->get('catalogue_weight_unit');
-		
 		$view = $this->getView();
 		$view->assign('products',$this->_buildProductsData($result));
 		$view->assign('count',$count);
@@ -122,7 +117,10 @@ class PaycartSiteControllerSearch extends PaycartController
 		$view->assign('filters',$filters);
 		$view->assign('start',$start+$filterHelper->pagination_limit);
 		$view->assign('showFilters',(!empty($result) || !empty($postFilters))?true:false);
-		
+		$view->assign('currency', $formatter->currency(PaycartFactory::getConfig()->get('localization_currency')));
+		$view->assign('searchWord', $searchWord);
+		$view->assign('weightUnit', PaycartFactory::getConfig()->get('catalogue_weight_unit'));
+
 		$this->setTemplate('result');
 		
 		return true;		
@@ -138,7 +136,7 @@ class PaycartSiteControllerSearch extends PaycartController
 		$filters	   		    = $this->input->get('filters','', 'ARRAY');
 		$appliedCoreFilters     = isset($filters['core'])?$filters['core']:array();
 		$appliedAttrFilters     = isset($filters['attribute'])?$filters['attribute']:array();
-		$appliedSorting         = isset($filters['sort'])?$filters['sort']:'0';
+		$appliedSorting         = isset($filters['sort'])?$filters['sort']:paycart::SORTING_OPTION_HITS; //default sorting should be popularity 
 		$filterHelper  		    = PaycartFactory::getHelper('filter');
 		$filterHelper->pagination_start	= $start;
 		

@@ -43,13 +43,24 @@ class PaycartSiteHtmlViewProductcategory extends PaycartSiteBaseViewProductcateg
 		$metaKeywords    = $category->getMetadataKeywords();
 		
 		Rb_HelperJoomla::addDocumentMetadata($metaTitle,$metaKeywords,$metaDescription);
-		$products = PaycartFactory::getModel('product')->loadRecords($productFilters);
+		$products = PaycartFactory::getModel('product')->loadRecords($productFilters,array(),false,'product_id');
 	
 		// 1. If products are not there in the current category
 		// 2. If root category is selected and searching is not being taking place 
 		//    then show productcategory layout  
 		if((count($products) == 0 ||($categoryId == Paycart::PRODUCTCATEGORY_ROOT_ID)) && empty($searchWord)){	
-			$this->assign('products',$products);
+			$result    = new stdClass();
+			$formatter = PaycartFactory::getHelper('format');
+			foreach ($products as $productId => $data){
+				$instance = PaycartProduct::getInstance($productId);
+				$product  = (object)$instance->toArray();
+				$product->price 			   = $formatter->amount($instance->getPrice(), true);
+				$result->$productId 		   = $product;
+				$result->$productId->inStock   = PaycartFactory::getHelper('product')->isProductInStock($productId);
+				$result->$productId->media     = $instance->getCoverMedia();
+			}
+			
+			$this->assign('products',$result);
 			$this->assign('categories',$this->getModel()->loadRecords($categoryFilters));
 			return true;
 		}
