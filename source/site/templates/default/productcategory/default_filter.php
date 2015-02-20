@@ -18,6 +18,7 @@ Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/bootstrap-slider.js');
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');
 
 echo $this->loadTemplate('filter_js');
+echo $this->loadTemplate('filter_css');
 ?>
 <script type="text/javascript">
 (function($){	

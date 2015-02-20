@@ -30,24 +30,28 @@ defined('_JEXEC') or die();
  */
 ?>
 
-<?php foreach($displayData->products as $product) : ?>
-	<?php $inStock   = $product->inStock;?>  
-	<?php $class     = !$inStock?'pc-product-stockout':''?>  
-	<div class="pc-product-outer pc-next-<?php echo $displayData->pagination_start?>">
-		<div class='pc-product thumbnail'>
-			<?php $media = $product->media;?>      
-			<?php $url   = PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$product->product_id);?>
-			<a class="pc-clickable" href="<?php echo $url;?>">
-				<div class="pc-product-content">
-					<?php if(!empty($class)):?>
-						<strong><span class="<?php echo $class;?> text-center"><?php echo strtoupper(JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK"));?></span></strong>
-					<?php endif;?>  
-					<img class="<?php echo !$inStock?'pc-product-stockout-image':'';?>" src="<?php echo isset($media['optimized'])?$media['optimized']:'';?>">
-					<p class="pc-product-title pc-break-word"><?php echo $product->title;?></p>
+<div class='pc-products-wrapper row-fluid clearfix'>
+	<div id="pc-products" class ='pc-products' data-columns>
+		<?php foreach($displayData->products as $product) : ?>
+			<?php $inStock   = $product->inStock;?>  
+			<?php $class     = !$inStock?'pc-product-stockout':''?>  
+			<div class="pc-product-outer <?php echo isset($displayData->pagination_start)? 'pc-next-'.$displayData->pagination_start:''?>">
+				<div class='pc-product thumbnail'>
+					<?php $media = $product->media;?>      
+					<?php $url   = PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$product->product_id);?>
+					<a class="pc-clickable" href="<?php echo $url;?>">
+						<div class="pc-product-content">
+							<?php if(!empty($class)):?>
+								<strong><span class="<?php echo $class;?> text-center"><?php echo strtoupper(JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK"));?></span></strong>
+							<?php endif;?>  
+							<img class="<?php echo !$inStock?'pc-product-stockout-image':'';?>" src="<?php echo isset($media['optimized'])?$media['optimized']:'';?>">
+							<p class="pc-product-title pc-break-word"><?php echo $product->title;?></p>
+						</div>
+					</a>
+					<h4><span class="amount"><?php echo $product->price?></span></h4>
 				</div>
-			</a>
-			<h4><span class="amount"><?php echo $product->price?></span></h4>
-		</div>
+			</div>
+		<?php endforeach;?>
 	</div>
-<?php endforeach;?>
+</div>
 
