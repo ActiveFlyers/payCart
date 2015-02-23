@@ -340,7 +340,7 @@ class PaycartHelperInvoice
 				// Process Payement : After request need to Process payament data 
 				$processResponseData	= Rb_EcommerceApi::invoice_process($invoiceId, $paymentResponseData);
 	
-				PaycartFactory::getHelper('log')->add($processResponseData);
+				//PaycartFactory::getHelper('log')->add($processResponseData);
 				
 				// if you still need to process like fist you need to create user profile at payment-gatway then process for payment
 				if($processResponseData->get('next_request', false) == false){
