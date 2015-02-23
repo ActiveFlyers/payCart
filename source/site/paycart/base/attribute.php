@@ -224,18 +224,14 @@ class PaycartAttribute
 			return '';
 		}	
 		
-		$html = '<select id="pc-attr-'.$attribute->getId().'" name="attributes['.$attribute->getId().']" onchange="paycart.product.selector.onChange(this)">';
+		$displayData = new stdClass();
 		
-		foreach ($options as $optionId){
-			$selected = '';
-			if(!empty($selectedOption) && $selectedOption == $optionId){
-				$selected = "selected='selected'";
-			}
-			$html  .= '<option value="'.$optionId.'" '.$selected.' >'.$records[$optionId]['title'].'</option>' ;
-		}
+		$displayData->optionDetails = $records;
+		$displayData->options		= $options;
+		$displayData->selected      = $selectedOption;
+		$displayData->attribute		= (object)$attribute->toArray();
 		
-		$html .= '</select>';
-		return $html;
+		return Rb_HelperTemplate::renderLayout('paycart_attribute_selectorhtml', $displayData);
 	}
 	
 	function getFilterHtml($attribute, Array $selectedOptions = array(), Array $input = array())
@@ -245,21 +241,14 @@ class PaycartAttribute
 			return '';
 		}	
 		
-		$html = '';
+		$displayData = new stdClass();
 		
-		foreach ($input as $optionId=>$option){
-			$selected = '';
-			if(!empty($selectedOptions) && in_array($optionId, $selectedOptions)){
-				$selected = "checked='checked'";
-			}
-			$disabled = ($option['disabled'])?'disabled':'';
-			$html  .= '<input data-pc-result="filter" name="filters[attribute]['.$attribute->getId().']['.$optionId.']" 
-			           value="'.$optionId.'" '.$selected.' type="checkbox" data-attribute-id="'.$attribute->getId().'" ' .$disabled. '> '
-			           .$options[$optionId]['title'].' ('.$option['productCount'].') <br/>' ;
-		}
+		$displayData->optionDetails = $options;
+		$displayData->selected      = $selectedOptions;
+		$displayData->filterOptions = $input;
+		$displayData->attribute		= (object)$attribute->toArray();
 		
-		$html .= '</select>';
-		return $html;
+		return Rb_HelperTemplate::renderLayout('paycart_attribute_filterhtml', $displayData);
 	}
 	
 	function getSearchableDataOfOption($attributeId, $optionId)

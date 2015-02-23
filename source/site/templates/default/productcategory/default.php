@@ -26,7 +26,11 @@ echo $this->loadTemplate('js');
 	<div class="row-fluid"><h2 class=" span12 page-header"><?php echo JText::_("COM_PAYCART_PRODUCTS");?></h2></div>
 	<?php $data = new stdclass();?>
 	<?php $data->products = $products;?>
-	<?php echo JLayoutHelper::render('paycart_product_list', $data);?>
+	<div class='pc-products-wrapper row-fluid clearfix'>
+		<div id="pc-products" class ='pc-products' data-columns>
+			<?php echo JLayoutHelper::render('paycart_product_list', $data);?>
+		</div>
+	</div>
 <?php endif;?> 
 
 <?php 

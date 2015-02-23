@@ -223,28 +223,20 @@ class PaycartAttributeColor extends PaycartAttribute
 	 */
 	function getSelectorHtml($attribute, $selectedOption = '', Array $options = array())
 	{
-		$suffix   = '';	
-
 		$colors   = $this->getOptions($attribute);
 		
 		if(empty($colors)){
 			return '';
 		}
 		
-		$html 	= '<div><select id="pc-attr-'.$attribute->getId().'" name="attributes['.$attribute->getId().']" onChange = "paycart.product.selector.onChange(this)">';
+		$displayData = new stdClass();
 		
-		//build option html
-		foreach ($options as $colorId){
-			$selected = '';
-			if(!empty($selectedOption) && $selectedOption == $colorId){
-				$selected = 'selected="selected"';
-				$suffix   = '<span class="pc-attribute-color" style="background-color:'.$colors[$colorId]['hash_code'].'" title="'.$colors[$colorId]['title'].'"></span>';
-			}
-			$html  .= '<option value="'.$colorId.' " ' .$selected.' >'.$colors[$colorId]['title'].'</option>' ;
-		}
+		$displayData->optionDetails = $colors;
+		$displayData->options		= $options;
+		$displayData->selected      = $selectedOption;
+		$displayData->attribute		= (object)$attribute->toArray();
 		
-		$html .= '</select>'.$suffix.'</div>';
-		return $html;
+		return Rb_HelperTemplate::renderLayout('paycart_attribute_color_selectorhtml', $displayData);
 	}
 	
 	function getFilterHtml($attribute, Array $selectedOptions = array(), Array $input = array())
@@ -254,22 +246,14 @@ class PaycartAttributeColor extends PaycartAttribute
 			return '';
 		}	
 		
-		$html = '';
+		$displayData = new stdClass();
 		
-		foreach ($input as $colorId=>$color){
-			$selected = '';
-			if(!empty($selectedOptions) && in_array($colorId, $selectedOptions)){
-				$selected = "checked='checked'";
-			}
-			$disabled = ($color['disabled'])?'disabled':'';
-			$html  .= '<div class="clearfix"><input data-pc-result="filter" name="filters[attribute]['.$attribute->getId().']['.$colorId.']" 
-					   value="'.$colorId.'" '.$selected.' type="checkbox" data-attribute-id="'.$attribute->getId().'"' .$disabled. '> '.
-			           $colors[$colorId]['title'].' ('.$color['productCount'].') 
-			           <span class="pull-right pc-filter-color" style="background-color:'.$colors[$colorId]['hash_code'].'"></span></div>' ;
-		}
+		$displayData->optionDetails = $colors;
+		$displayData->selected      = $selectedOptions;
+		$displayData->filterOptions = $input;
+		$displayData->attribute		= (object)$attribute->toArray();
 		
-		$html .= '</select>';
-		return $html;
+		return Rb_HelperTemplate::renderLayout('paycart_attribute_color_filterhtml', $displayData);
 	}
 	
 	function getSearchableDataOfOption($attributeId, $optionId)
