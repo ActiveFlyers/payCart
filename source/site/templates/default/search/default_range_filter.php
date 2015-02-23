@@ -51,13 +51,13 @@ $maxWeightRange 	= $filters->core->maxWeightRange;
 				   </div>
 					
 				   <div class="clearfix hidden-phone">
-					   <input id="pc-filter-price" name="filters[core][price]" type="hidden" class="pc-range-slider" value="<?php echo $priceValue;?>" data-slider-min="<?php echo $minPriceRange;?>" 
+					   <input name="filters[core][price]" type="hidden" class="pc-range-slider" value="<?php echo $priceValue;?>" data-slider-min="<?php echo $minPriceRange;?>" 
 					   data-slider-max="<?php echo $maxPriceRange;?>"
 					   data-slider-value="[<?php echo $sliderValue;?>]"
 					   />
 				   </div>
 				   
-				    <input id="pc-filter-price" name="filters[core][price]" type="hidden" value="<?php echo $priceValue;?>" class="visible-phone"/>
+				    <input name="filters[core][price]" type="hidden" value="<?php echo $priceValue;?>" class="visible-phone"/>
 	 		 	</div>
 	 		 </div>
 	 	 </div>
@@ -89,12 +89,14 @@ $maxWeightRange 	= $filters->core->maxWeightRange;
 					   		<input type="number" class="input-mini" name="filterWeightMin" min="<?php echo $minWeightRange?>" max="<?php echo $maxWeightRange?>" value="<?php echo $array[0];?>"/> - 
 					   		<input type="number" class="input-mini" name="filterWeightMax" min="<?php echo $minWeightRange?>" max="<?php echo $maxWeightRange?>" value="<?php echo $array[1];?>"/>
 						 </div>
-						 <div class="clearfix">
+						 <div class="clearfix hidden-phone">
 							   <input id="pc-filter-weight" name="filters[core][weight]" type="hidden" class="pc-range-slider" value="<?php echo $weightValue;?>" data-slider-min="<?php echo $minWeightRange;?>" 
 							   data-slider-max="<?php echo $maxWeightRange;?>"
 							   data-slider-value="[<?php echo $sliderValue;?>]" 
 							   />
 					   	</div>
+					   	
+					   	<input name="filters[core][weight]" type="hidden" value="<?php echo $weightValue;?>" class="visible-phone"/>
 		 		 	</div>
 		 		 </div>
 		 	</div>

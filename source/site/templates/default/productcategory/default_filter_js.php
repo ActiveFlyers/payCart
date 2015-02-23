@@ -181,6 +181,21 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		return false;
 	};
 
+	//for infinite scrolling
+	$(window).data('pc-scrollready', true).scroll(function () { 
+		//required this checking, so that multiple request can't be fired if one request is in process
+		if ($(window).data('pc-scrollready') == false) return;
+		
+	    if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10) {
+	    	$(window).data('pc-scrollready', false);
+	    	
+		   //Add more products
+		   paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=loadMore');
+		   return false;
+	    }
+	});
+
+	//On click on show more button, load more products 
 	paycart.product.loadMore = function(){
 		paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=loadMore');
 	};
@@ -193,6 +208,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		$('input[name="pagination_start"]').val(response.pagination_start);
 		
 		paycart.product.arrange('update');
+
+		//required to reset parameter that was set for handling multiple scroll request
+		$(window).data('pc-scrollready', true);
 	};	
 
 	//arrage result products

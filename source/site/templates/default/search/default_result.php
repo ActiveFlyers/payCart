@@ -179,8 +179,11 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 				<?php $data           = new stdclass();?>
 				<?php $data->products = $products;?>
 				<?php $data->pagination_start = $start;?>
-				<?php echo JLayoutHelper::render('paycart_product_list', $data);?>					
-				
+				<div class='pc-products-wrapper row-fluid clearfix'>
+					<div id="pc-products" class ='pc-products' data-columns>
+						<?php echo JLayoutHelper::render('paycart_product_list', $data);?>					
+					</div>
+				</div>
 				<?php if($count > $start):?>
 					<div class="text-center pc-loadMore">
 						<button class="btn btn-large" data-pc-loadMore="click">
