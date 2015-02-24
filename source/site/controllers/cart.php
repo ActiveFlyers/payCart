@@ -493,7 +493,7 @@ class PaycartSiteControllerCart extends PaycartController
 			} else { // error in processing
 				
 				$error = new stdClass();
-				$error->message 		= $response->error_message;
+				$error->message 		= JText::_($response->error_message);
 				$error->message_type	= Paycart::MESSAGE_TYPE_ERROR;
 				$error->for				= 'payment_header';
 				
