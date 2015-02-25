@@ -564,15 +564,70 @@ class PaycartSiteControllerCart extends PaycartController
 		return true;
 	}
 
-	/**
-	 * 
-	 * Enter description here ...
-	 */
-	function complete()
-	{		
+	public function complete()
+	{
+		$itemid = $this->_getId();
+		
+		$get 	= $this->input->get->getArray();
+		$post 	= $this->input->post->getArray();
+		$data 	= array_merge($get, $post);
+		
+		$response = new stdClass();
+		$response->data = $data;
+		$response->__post	= $post;
+		$response->__get	= $get;
+			
+		if($itemid <= 0){
+			/* @var $invoice_helper_instance PaycartHelperInvoice */
+			$invoice_helper_instance = PaycartFactory::getHelper('invoice');
+			$invoice_id = $invoice_helper_instance->getNotificationInvoiceId($response);
+			
+			$cart_records	= 	PaycartFactory::getModel('cart')->loadRecords(Array('invoice_id' => $invoice_id));
+			$cart_record 	=	array_pop($cart_records);		
+			$cart = PaycartCart::getInstance(0, $cart_record);	
+			$this->getModel()->setState('id', $cart->getId());	
+		}
+		else{
+			$cart = PaycartCart::getInstance($itemid);
+			$invoice_id = $cart->getInvoiceId();
+		}	
+		
+		/* @var $cart_helper PaycartHelperCart */
+		$cart_helper = PaycartFactory::getHelper('cart');
+		if(!$cart_helper->isSessionCart($cart->getId())) { //cart is exist into session or not
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
+			return false;
+		}
+		
+		$notify = $this->input->get('notify', 0);
+		if ($notify){		
+			
+			if (defined('JDEBUG') && JDEBUG) {
+				// dump data
+				file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response_data,true), FILE_APPEND);
+			}
+			
+			if(!isset($data['processor'])){
+				// raise error
+			}			
+			
+			try {
+				$cart->processNotification($response);	
+			} catch (Exception $ex) {
+				//@PCTODO :: dump exception into log file
+				echo $ex->getMessage();
+				exit;
+			}	
+		}		
+		
+		$invoice = $cart->getInvoiceData();
+		if(empty($invoice)){
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
+			return false;
+		}
 		return true;
 	}
-	
+
 	function cancel()
 	{	
 		// Get cart id from response
@@ -881,7 +936,7 @@ class PaycartSiteControllerCart extends PaycartController
 	{
 		// Validate Task 
 		if (! JSession::checkToken('get') ) {
-			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
 			return false;
 		}
 		
@@ -891,20 +946,20 @@ class PaycartSiteControllerCart extends PaycartController
 	protected function _unlock($cart_id)
 	{
 		if (!$cart_id ) { // if cart id is not exist
-			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_CART_NOT_EXIST'), 'error');
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'), JText::_('COM_PAYCART_CART_NOT_EXIST'), 'error');
 			return false;
 		}
 		
 		/* @var $cart_helper PaycartHelperCart */
 		$cart_helper = PaycartFactory::getHelper('cart');
 		if(!$cart_helper->isSessionCart($cart_id)) { //cart is exist into session or not
-			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
 			return false;
 		}
 		
 		$cart_instance = PaycartCart::getInstance($cart_id);
 		if ($cart_instance->isPaid()) { // if cart already paid
-			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart'), JText::_('COM_PAYCART_CART_ALREADY_PAID'), 'error');
+			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'), JText::_('COM_PAYCART_CART_ALREADY_PAID'), 'error');
 			return false;
 		}
 		
@@ -912,7 +967,7 @@ class PaycartSiteControllerCart extends PaycartController
 		$cart_instance->markUnLock()->save();
 		
 		// we are assuming that cart is already exist in session.
-		$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'));
+		$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display'));
 		
 		return false;
 	}

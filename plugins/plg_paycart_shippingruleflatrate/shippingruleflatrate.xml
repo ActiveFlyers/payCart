@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="paycart" method="upgrade">
-    <name>Paycart Shippingrule Flat</name>
+    <name>Flat Rate Shipping for PayCart</name>
     <version>1.0.0</version>
     <creationDate>Nov 2012</creationDate>
     <author>Ready Bytes</author>

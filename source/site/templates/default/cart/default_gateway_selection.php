@@ -37,7 +37,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				
 				<!-- Payment Gateway Selection				-->
 				<div class="row-fluid">
-					<label> <?php echo JText::_('COM_PAYCART_CART_PAYMENT_METHOD'); ?></label>
+					<label> <?php echo JText::_('COM_PAYCART_PAYMENT_METHOD'); ?></label>
 					<select name="payment_menthod" id="pc-checkout-payment-gateway" class ="input-block-level" onchange="paycart.cart.gatewaySelection.onChangePaymentgateway()">
 						<?php foreach ($payment_gateway as $gateway_id => $gateway_details) : ?>
 							<option value=<?php echo $gateway_id; ?> > <?php echo $gateway_details->title; ?> </option>
