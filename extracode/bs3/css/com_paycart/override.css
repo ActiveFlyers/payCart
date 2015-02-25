@@ -1,0 +1,14 @@
+/**
+* @copyright	Copyright (C) 2009-2015 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
+* @license		GNU/GPL, see LICENSE.php
+* @package		PAYCART
+* @contact 		support+paycart@readybytes.in
+*/
+
+.paycart .pc-product-filter .panel{
+	box-shadow: none;
+}
+
+.rb-error.show, .pc-error{
+	margin-top: 0px;
+}

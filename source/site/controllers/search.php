@@ -154,7 +154,8 @@ class PaycartSiteControllerSearch extends PaycartController
 			
 			//if no more products available then remove loadMore button
 			if($start > $count){
-				$ajax->addScriptCall('$(".pc-loadMore").html','<div class="well">'.JText::_('COM_PAYCART_FILTER_NO_MORE_PRODUCTS_TO_DISPLAY').'</div>');
+				$ajax->addScriptCall('$("[data-pc-loadMore=\"click\"]").addClass','hide');
+				$ajax->addScriptCall('$(".pc-loadMore").append','<div class="well">'.JText::_('COM_PAYCART_FILTER_NO_MORE_PRODUCTS_TO_DISPLAY').'</div>');
 			}
 			
 			$response = Array();

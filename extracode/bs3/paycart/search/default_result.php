@@ -10,11 +10,10 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 $records = (array)$products;
+$appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 ?>
 
 <script type="text/javascript">
@@ -30,26 +29,33 @@ $records = (array)$products;
      ================================================================== -->
 	<div class="row">
 		<div class="pull-left">
-			<div class="col-sm-12">
-			<h3><?php echo !empty($filters->searchWord)?$filters->searchWord:JText::_('COM_PAYCART_TOTAL')?> : <?php echo $count;?> <?php echo ($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM");?></h3>
-			</div>
-		</div>
-		<div class="pull-right">
-			<div class="col-sm-12">
-			<?php echo PaycartHtml::_('select.genericlist',$sortingOptions, 'filter_sort', 'data-pc-result="filter" data-pc-filter="sort-source"','','',$appliedSort);?>
-			</div>
+			<?php if(!empty($searchWord)):?>
+				<h3>
+					<?php echo JText::_('COM_PAYCART_SEARCH')?> : <?php echo $searchWord ?>
+					<span class="muted"><?php echo ' ('.$count.' '.(($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM")).')';?></span>
+				</h3>
+			<?php elseif(!empty($filters->core->selectedCategoryId)):?>
+				<h3>
+					<?php echo JText::_('COM_PAYCART_CATEGORY')?> : <?php echo PaycartProductcategory::getInstance($filters->core->selectedCategoryId)->getTitle()?>
+					<span class="muted"><?php echo ' ('.$count.' '.(($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM")).')';?></span>
+				</h3>
+			<?php endif;?>
 		</div>
 	</div>
-	
+	<hr>
 <!-- =============================================
        2. Top section :  Applied filters 
      ============================================= -->
-	<div class="row">
-		<div class="col-sm-12">
-		<?php echo JLayoutHelper::render('paycart_attribute_applied_filter', $filters);?>
+    <?php if(!(empty($filters->core->appliedPriceRange) && empty($filters->core->appliedWeightRange) &&
+    		   empty($filters->core->appliedInStock) && empty($filters->attribute->appliedAttr) )):?>
+    	<div class="row">
+			<div class="col-sm-12">
+    			<?php echo $this->loadTemplate('applied_filter',compact('filters'));?>
+    		</div>
 		</div>
-	</div>
-	<hr/>
+		<hr>
+	<?php endif;?>
+	
 <!-- =============================================
        3. Search result content 
      ============================================= -->
@@ -57,76 +63,129 @@ $records = (array)$products;
 		<!-- =============================================
        		      3.1 Left section : Product filters 
              ============================================= -->
-        <?php 
-		 	ob_start();
-		?>
+        <div class="col-md-3 col-sm-4 pc-product-filter">
+	        <?php 
+			 	ob_start();
+			?>
 		 	<!-- category filters -->
-			<?php echo JLayoutHelper::render('paycart_attribute_category_filter',$filters);?>
+		 	<?php echo $this->loadTemplate('category_filter',compact('filters','searchWord'));?>
 			<?php if($showFilters):?>	
 				<hr>
-				
 				<!-- custom attribute filterHtml -->
 				<?php foreach ($filters->attribute->filterHtml as $id=>$filter):?>
-					<h4><?php echo $filter['name']; ?></h4>
-					<?php echo $filter['html'];?>
+					<div class="accordion" id="accordion-id-<?php echo $id?>">
+					 	<div class="accordion-group panel panel-default">
+					 		<div class="accordion-heading">
+					 			<a class="accordion-toggle pc-cursor-pointer" data-toggle="collapse" data-parent="#accordion-id-<?php echo $id?>" data-target=".accordion-body-id-<?php echo $id?>">		 				
+					 				<h3><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo $filter['name']; ?></span></h3>
+					 			</a>		
+					 		</div>
+					 		<!-- use class "in" for keeping it open -->
+					 		<div class="pc-product-filter-body">
+						 		 <div class="accordion-body collapse in accordion-body-id-<?php echo $id?>">
+						 		 	<div class="accordion-inner panel-body">
+						 		 		
+						 		 		<?php if(in_array($id,$appliedAttrIds )):?>
+							 		 			<span class="badge label-default pull-right pc-cursor-pointer" data-pc-selector="remove" data-pc-filter-name="filters[attribute][<?php echo $id?>]"><?php echo Jtext::_('COM_PAYCART_RESET')?></span>
+							 		 			<br>
+						 		 		<?php endif;?>
+						 		 		<?php echo $filter['html'];?>
+						 		 	</div>
+						 		 </div>
+						 	</div>
+					 	 </div>
+					</div>
 					<hr>
 				<?php endforeach;?>
 				
 				<!-- range filters -->
-				<?php echo JLayoutHelper::render('paycart_attribute_range_filter',$filters);?>
+				<?php echo $this->loadTemplate('range_filter',compact('filters','wieightUnit','currency'));?>
 				
 				<!-- exclude out-of-stock -->
-				<h4><?php echo JText::_("COM_PAYCART_AVAILABILITY")?></h4>
-				<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
-				       <?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/> 
-				<?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?>
-			
+				<div class="accordion" id="accordion-id-stock">
+				 	<div class="accordion-group">
+				 		<div class="accordion-heading">
+				 			<a class="accordion-toggle pc-cursor-pointer" data-toggle="collapse" data-parent="#accordion-id-stock" data-target=".accordion-body-id-stock">		 				
+				 				<h3><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_AVAILABILITY")?></span></h3>
+				 			</a>		
+				 		</div>
+				 		<!-- use class "in" for keeping it open -->
+				 		<div class="pc-product-filter-body">
+					 		 <div class="accordion-body collapse in accordion-body-id-stock">
+					 		 	<div class="accordion-inner clearfix">
+					 		 		<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
+			       					<?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/>
+			       					<span><?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?></span>
+					 		 	</div>
+					 		 </div>
+					 	</div>
+				 	 </div>
+				</div>
+				
 				<input type="hidden" name="filters[sort]" data-pc-filter="sort-destination" value="<?php echo $appliedSort;?>" />
-				<input type="hidden" name="query" value="<?php echo $filters->searchWord?>"/>
+				<input type="hidden" name="query" value="<?php echo $searchWord?>"/>
 				<input type="hidden" name="pagination_start" value="<?php echo $start;?>"/>
 			<?php endif;?>
-		 <?php 
-			 $filterHtml = ob_get_contents();
-			 ob_get_clean();
-		 ?>
-             
-		<div class="col-md-3 col-sm-4 pc-product-filter navbar">
-			<ul class="nav"> 				
-				<li class="visible-xs-block"> 
-				  	<a href="javascript:void(0);" data-toggle="collapse" data-target=".nav-collapse.pc-nav-filters">
-						<i class="fa fa-bars"></i> <?php echo JText::_("COM_PAYCART_FILTER_BY")?>
-				 	</a>
-				</li>
-			</ul>
-	
-			<div class="nav-collapse pc-nav-filters collapse visible-xs-block" style="height:0px;">
-				<form class="pc-form-product-filter navbar-form" data-pc-filter-form="mobile" method="post">
-					<?php echo $filterHtml?>
-				</form>
-			</div>
-		
-			<div class="hidden-xs">
-				<form class="pc-form-product-filter" data-pc-filter-form="desktop" method="post">
-					<h2><?php echo JText::_("COM_PAYCART_FILTER_BY")?></h2>
-					<?php echo $filterHtml?>
-				</form>
+			 <?php 
+				 $filterHtml = ob_get_contents();
+				 ob_get_clean();
+			 ?>
+			 
+			<form class="pc-form-product-filter hidden-xs" data-pc-filter-form="desktop" method="post">
+				<?php echo $filterHtml?>
+			</form>	 	
+		 	<div id="pc-mob-offcanvas" >
+				<div class="sidebar-offcanvas" role="navigation" id="offcanvas-filter">
+					<div class="sidebar-offcanvas-inner">
+			 			<div class="pc-fixed-top">
+			 				<table class="table">
+			              		<thead>
+			                	<tr>
+			 						<th><a class="pc-cursor-pointer" data-toggle="offcanvas-filter" data-target="#offcanvas-filter"><?php echo JString::strtoupper(JText::_('COM_PAYCART_BACK'))?></a></th>
+			                  		<th><?php echo JString::strtoupper(JText::_('COM_PAYCART_FILTER'));?></th>
+			                  		<th><a class="pc-cursor-pointer" data-toggle="offcanvas-filter" data-target="#offcanvas-filter" data-pc-selector="removeAll"><?php echo JString::strtoupper(JText::_("COM_PAYCART_FILTER_RESET_ALL"));?></a></th>
+			                	</tr>
+			              		</thead>
+			            	</table>
+						</div>
+						<form class="pc-form-product-filter" data-pc-filter-form="mobile" method="post">
+							<?php echo $filterHtml?>
+						</form>
+						<hr>
+						<div class="pc-fixed-bottom">
+							<div class="pc-filter-apply-btn">
+							 	<a class="btn btn-large btn-block btn-primary" type="button" data-pc-selector="applyFilters" data-toggle="offcanvas-filter" data-target="#offcanvas-filter">APPLY</a>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		
 		<!-- =====================================================
        		     3.2 Right section : search result product list 
              ===================================================== -->
 		<?php if(!empty($records)):?>
-			<div class="col-md-9 col-sm-8  clearfix">
+			<div class="col-md-9 col-sm-8 clearfix">
+				<div class="clearfix">
+					<div class="pull-left visible-xs-block form-group">
+						<label class="control-label"><?php echo JText::_("COM_PAYCART_SEARCH_REFINE")?></label>
+			  			<button class="btn btn-default form-control" data-toggle="offcanvas-filter" data-target="#offcanvas-filter"><i class="fa fa-filter fa-lg"></i> <?php echo JText::_('COM_PAYCART_FILTER');?></button>
+	  				</div>
+	  				
+					<div class="pull-right form-group">
+						<label class="control-label"><?php echo JText::_("COM_PAYCART_SEARCH_RESULT_SORT_BY")?></label>
+						<?php echo PaycartHtml::_('select.genericlist',$sortingOptions, 'filter_sort', 'data-pc-selector="sortOption" data-pc-filter="sort-source" class="input-medium form-control"','','',$appliedSort);?>
+					</div>						
+				</div>
+				 
+				<?php $data           = new stdclass();?>
+				<?php $data->products = $products;?>
+				<?php $data->pagination_start = $start;?>
 				<div class='pc-products-wrapper row clearfix'>
-					<div id="pc-products" class ='pc-products' data-columns> 
-					<?php $data           = new stdclass();?>
-					<?php $data->products = $products;?>
-					<?php $data->pagination_start    = $start;?>
+					<div id="pc-products" class ='pc-products' data-columns>
 						<?php echo JLayoutHelper::render('paycart_product_list', $data);?>
 					</div>
 				</div>
-				
 				<?php if($count > $start):?>
 					<div class="text-center pc-loadMore">
 						<button class="btn btn-lg" data-pc-loadMore="click">
@@ -137,8 +196,12 @@ $records = (array)$products;
 			</div>
 			
 		<?php else:?>
-			<div class="col-md-9 col-sm-8 clearfix muted center well"> 
-				<h3><?php echo JText::_("COM_PAYCART_FILTER_NO_MATCHING_RECORD");?></h3>
+			<div class="col-md-9 col-sm-8 clearfix"> 
+				<div class="visible-xs-block pc-refine-filter-mobile">
+					<span><small><?php echo JText::_("COM_PAYCART_SEARCH_REFINE")?>:</small></span>
+		  			<button class="btn btn-default" data-toggle="offcanvas-filter" data-target="#offcanvas-filter" type="button"><i class="fa fa-filter fa-lg"></i> Filter</button>
+  				</div>
+				<div class="muted text-center well"><h3><?php echo JText::_("COM_PAYCART_FILTER_NO_MATCHING_RECORD");?></h3></div>
 			</div>
 		<?php endif;?>
 	</div>

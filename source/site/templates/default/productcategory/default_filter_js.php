@@ -104,6 +104,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 			});
 		}
 
+		//for accordion toggle icon
+		$('div.accordion-body').on('shown', function () {
+			$(this).parent('div').parent("div").find(".fa-angle-right").removeClass("fa-angle-right").addClass("fa-angle-down");
+		});
+
+		$('div.accordion-body').on('hidden', function () {
+			$(this).parent("div").parent("div").find(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-right")
+		});
+
 		//scroll to first element
 		var elem  = $('#pc-product-search-content');
 		paycart.jQuery('html, body').animate({
@@ -183,10 +192,22 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 
 	//for infinite scrolling
 	$(window).data('pc-scrollready', true).scroll(function () { 
+		var elem = $('.pc-loadMore');
+		//if total elements are less then the list limit then do nothing
+		if(!elem.length){
+			return;
+		}
+		
 		//required this checking, so that multiple request can't be fired if one request is in process
 		if ($(window).data('pc-scrollready') == false) return;
-		
-	    if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10) {
+							
+		var TopView = $(window).scrollTop();
+	    var BotView = TopView + $(window).height();
+	    var TopElement = elem.offset().top;
+	    var BotElement = TopElement + elem.height();
+
+		//if load more button is visible
+		if(((BotElement <= BotView) && (TopElement >= TopView)) &&  !$('[data-pc-loadMore="click"]').hasClass('hide')){
 	    	$(window).data('pc-scrollready', false);
 	    	
 		   //Add more products

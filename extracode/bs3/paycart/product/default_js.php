@@ -29,11 +29,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			autoHeight : true, pagination:true 
 		});
 
-		$('div.accordion-body').on('shown', function () {
+		$('div.accordion-body').on('show.bs.collapse', function () {
 			$(this).parent("div").find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
 		});
 
-		$('div.accordion-body').on('hidden', function () {
+		$('div.accordion-body').on('hide.bs.collapse', function () {
 			$(this).parent("div").find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square")
 		});
 	});

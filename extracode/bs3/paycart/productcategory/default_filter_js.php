@@ -19,6 +19,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 	paycart.product = {};
 	paycart.product.filter = {};
 
+	// initize searching/filtering
 	paycart.product.filter.init = function(searchWord,filters){
 		var link = 'index.php?option=com_paycart&view=search&task=filter&query='+searchWord;
 		//parseJSON is used because filters are being passed as json string, so need to convert it object
@@ -26,10 +27,31 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		return false;
 	};
 
+	//invoke function on document ready to bind required actions on elements
 	paycart.product.filter.bindActions = function(){
+		$('body').addClass('row-offcanvas row-offcanvas-left');
+
 		paycart.product.arrange('add');
+
+		$('[data-toggle="offcanvas-filter"]').on('click',function () {
+			  var currentId = $(this).attr('data-target');
+			  $('.sidebar-offcanvas').hide();
+			  	setTimeout( function(){ 
+			  		$(currentId).show();
+				  }
+				 , 100) ;
+		    $('.row-offcanvas').toggleClass('active');
+		});
 		
-		$('[data-pc-result="filter"]').on('change',function(){
+		$('[data-pc-selector="applyFilters"]').on('click',function(){
+			//need to combine(comma seperated) min and max value in case of mobile
+			var minPrice = $('input[name=filterPriceMin]').val();
+			var maxPrice = $('input[name=filterPriceMax]').val();
+			$('input[name="filters[core][price]"]').val(minPrice+','+maxPrice);
+
+			var minWeight = $('input[name=filterWeightMin]').val();
+			var maxWeight = $('input[name=filterWeightMax]').val();
+			$('input[name="filters[core][weight]"]').val(minWeight+','+maxWeight);
 			paycart.product.filter.getResult();
 		});
 
@@ -42,8 +64,20 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		});
 
 		$('[data-pc-filter="remove"]').on('click', function(){			
-			paycart.product.filter.remove(this);
+			paycart.product.filter.removeOption(this);
+		});
+
+		$('[data-pc-selector="remove"]').on('click', function(){
+			paycart.product.filter.removeAttribute(this);
 		});	
+
+		$('[data-pc-selector="removeAll"]').on('click', function(){			
+			paycart.product.filter.removeAll();
+		});
+
+		$('[data-pc-selector="sortOption"]').on('change',function(){
+			paycart.product.filter.getResult();
+		});
 
 		//slider related script
 		$(".pc-range-slider").slider({});
@@ -51,7 +85,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		$(".pc-range-slider").on('slideStop', function (ev) {
 			$('input[name="'+this.name+'"]').attr('value',ev.value);
 			$('input[name="pagination_start"]').attr('value',0);
-
 			paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=filter');
 		});
 		
@@ -64,7 +97,21 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		}
 		else if(screen_width >= 768 || wrapper_width >= 720){
 			$('[data-pc-filter-form="mobile"]').remove();
+
+			//bind when device is not mobile
+			$('[data-pc-result="filter"]').on('change',function(){
+				paycart.product.filter.getResult();
+			});
 		}
+
+		//for accordion toggle icon
+		$('div.accordion-body').on('show.bs.collapse', function () {
+			$(this).parent('div').parent("div").find(".fa-angle-right").removeClass("fa-angle-right").addClass("fa-angle-down");
+		});
+
+		$('div.accordion-body').on('hide.bs.collapse', function () {
+			$(this).parent("div").parent("div").find(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-right")
+		});
 
 		//scroll to first element
 		var elem  = $('#pc-product-search-content');
@@ -73,7 +120,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 			  }, 100);
 		return true;
 	};
-	
+
+	//get result according to the applied filters
 	paycart.product.filter.getResult = function(){
 		//set the sorting option to hidden input so that it get post with form
 		var source = $('[data-pc-filter="sort-source"]').val();
@@ -83,8 +131,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=filter');
 	};
 
+	//remove a single applied filter 
 	//each elem have data attribute pc-filter-applied-ref
-	paycart.product.filter.remove = function(elem){
+	paycart.product.filter.removeOption = function(elem){
 		var name = $(elem).data('pc-filter-applied-ref');
 
 		$('input[name="pagination_start"]').attr('value',0);
@@ -94,6 +143,33 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=filter');
 	};
 
+	//remove all the filters belongs to a single attribute
+	paycart.product.filter.removeAttribute = function(elem){
+		var name = $(elem).data('pc-filter-name');
+
+		$('[name*="'+name+'"]:checked').each(function(){
+			$(this).prop('checked',false);
+			$(this).prop('value','');
+		});
+
+		$('input[name="pagination_start"]').attr('value',0);
+		paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=filter');
+	};
+
+	//remove all the applied filters
+	paycart.product.filter.removeAll = function(){
+
+		var category   = $('input[name="filters[core][category]"]').val();
+		var searchWord = $('input[name="query"]').val();
+		var sort 	   = $('input[name="filters[sort]"]').val();
+		
+		var postData 	= {'filters[core][category]':category,'query':searchWord,'filters[sort]':sort,'pagination_start':0};
+		
+		postData.spinner_selector = '#paycart-ajax-spinner';
+		paycart.ajax.go('index.php?option=com_paycart&view=search&task=filter', postData);
+	};
+
+	//common function that trigger filtering
 	paycart.product.filter.submit = function(link){
 		var disabledElem = $('[data-pc-result="filter"]:disabled:checked');
 
@@ -114,10 +190,38 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		return false;
 	};
 
+	//for infinite scrolling
+	$(window).data('pc-scrollready', true).scroll(function () { 
+		var elem = $('.pc-loadMore');
+		//if total elements are less then the list limit then do nothing
+		if(!elem.length){
+			return;
+		}
+		
+		//required this checking, so that multiple request can't be fired if one request is in process
+		if ($(window).data('pc-scrollready') == false) return;
+							
+		var TopView = $(window).scrollTop();
+	    var BotView = TopView + $(window).height();
+	    var TopElement = elem.offset().top;
+	    var BotElement = TopElement + elem.height()+10;
+
+		//if load more button is visible
+		if(((BotElement <= BotView) && (TopElement >= TopView)) &&  !$('[data-pc-loadMore="click"]').hasClass('hide')){
+	    	$(window).data('pc-scrollready', false);
+	    	
+		   //Add more products
+		   paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=loadMore');
+		   return false;
+	    }
+	});
+
+	//On click on show more button, load more products 
 	paycart.product.loadMore = function(){
 		paycart.product.filter.submit('index.php?option=com_paycart&view=search&task=loadMore');
 	};
 
+	//success callback for load more function 
 	paycart.product.loadMore.success = function(data){
 		var response = $.parseJSON(data);
 		
@@ -125,8 +229,12 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		$('input[name="pagination_start"]').val(response.pagination_start);
 		
 		paycart.product.arrange('update');
+
+		//required to reset parameter that was set for handling multiple scroll request
+		$(window).data('pc-scrollready', true);
 	};	
 
+	//arrage result products
 	paycart.product.arrange = function(mode){
 		// setup paycart-wrap size
 		var sizeclass = paycart.helper.do_apply_sizeclass('.pc-products-wrapper');
@@ -139,6 +247,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		}
 	};
 
+	//redirect on clicking of any category in filters
 	paycart.category = {};
 	paycart.category.redirect = function(link,categoryId){
 		$('.pc-form-product-filter').attr('action',link);
