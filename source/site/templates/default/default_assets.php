@@ -18,7 +18,7 @@ Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'))
 
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/paycart.css');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/site.css');
-
+Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/override.css');
 
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');

@@ -75,7 +75,7 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 					 	<div class="accordion-group">
 					 		<div class="accordion-heading">
 					 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-<?php echo $id?>" data-target=".accordion-body-id-<?php echo $id?>">		 				
-					 				<h2><span>&nbsp;<?php echo $filter['name']; ?></span></h2>
+					 				<h2><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo $filter['name']; ?></span></h2>
 					 			</a>		
 					 		</div>
 					 		<!-- use class "in" for keeping it open -->
@@ -104,7 +104,7 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 				 	<div class="accordion-group">
 				 		<div class="accordion-heading">
 				 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-stock" data-target=".accordion-body-id-stock">		 				
-				 				<h2><span>&nbsp;<?php echo JText::_("COM_PAYCART_AVAILABILITY")?></span></h2>
+				 				<h2><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_AVAILABILITY")?></span></h2>
 				 			</a>		
 				 		</div>
 				 		<!-- use class "in" for keeping it open -->
@@ -199,7 +199,7 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 					<span><small><?php echo JText::_("COM_PAYCART_SEARCH_REFINE")?>:</small></span>
 		  			<button class="btn btn-default" data-toggle="offcanvas-filter" data-target="#offcanvas-filter" type="button"><i class="fa fa-filter fa-lg"></i> Filter</button>
   				</div>
-				<div class="muted center well"><h3><?php echo JText::_("COM_PAYCART_FILTER_NO_MATCHING_RECORD");?></h3></div>
+				<div class="muted text-center well"><h3><?php echo JText::_("COM_PAYCART_FILTER_NO_MATCHING_RECORD");?></h3></div>
 			</div>
 		<?php endif;?>
 	</div>

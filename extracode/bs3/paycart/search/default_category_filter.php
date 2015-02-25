@@ -48,16 +48,16 @@ $displayTree = function($tree,$displayData,$searchWord) use (&$displayTree) {
 ?>
 
 <div class="accordion" id="accordion-id-category">
- 	<div class="accordion-group">
+ 	<div class="accordion-group panel panel-default">
  		<div class="accordion-heading">
- 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-category" data-target=".accordion-body-id-category">		 				
- 				<h2><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_BROWSE");?></span></h2>
+ 			<a class="accordion-toggle pc-cursor-pointer" data-toggle="collapse" data-parent="#accordion-id-category" data-target=".accordion-body-id-category">		 				
+ 				<h3><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_BROWSE");?></span></h3>
  			</a>
  		</div>
  		<!-- use class "in" for keeping it open -->
  		<div class="pc-product-filter-body">
 	 		 <div class="accordion-body collapse in accordion-body-id-category">
-	 		 	<div class="accordion-inner">
+	 		 	<div class="accordion-inner panel-body">
 	 		 		<?php 
 						// Display Link to All category
 						$q    = ($searchWord)?'?q='.urlencode($searchWord):'';

@@ -27,7 +27,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 }
 
 .paycart .pc-product-filter .accordion-toggle {
-    padding: 0 15px;
+ /* removed for bs3
+    padding: 0 15px; */
     font-weight :0;
 }
 
