@@ -39,9 +39,9 @@ echo $this->loadTemplate('js');
 					<div class="span6">
 						<div class="pc-account-order-orderdetail">
 							<fieldset>
-								<legend><?php echo JText::_('COM_PAYCART_ACCOUNT_ORDER_DETAILS');?></legend>
+								<legend><?php echo JText::_('COM_PAYCART_ORDER_DETAILS');?></legend>
 								<div><?php echo JText::_('COM_PAYCART_ORDER_ID');?> : <span class="heading"><?php echo $cart->cart_id;?></span> <span class="pc-lowercase">(<?php echo count($productCartParticulars).' '.JText::_('COM_PAYCART_ITEM'.((count($productCartParticulars) > 1 ) ? 'S' : ''));?>)</span></div>
-								<div><?php echo JText::_('COM_PAYCART_ACCOUNT_ORDER_PLACED');?> : <span class="heading"><?php echo $formatter->date(new Rb_Date($cart->locked_date));?></span></div>
+								<div><?php echo JText::_('COM_PAYCART_ORDER_PLACED');?> : <span class="heading"><?php echo $formatter->date(new Rb_Date($cart->locked_date));?></span></div>
 								<div>
 									<?php if($cart->is_delivered) :?>
 										<span class="text-success"><strong><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></strong></span>
@@ -72,7 +72,7 @@ echo $this->loadTemplate('js');
 							<legend><?php echo JText::_('COM_PAYCART_ACCOUNT_PAYMENT_DETAILS');?></legend>
 							<div class="row-fluid">
 								<div class="span6">
-									<div><?php echo JText::_('COM_PAYCART_CART_PAYMENT_METHOD');?> : <?php echo $cart->params['payment_gateway']['title'];?></div>
+									<div><?php echo JText::_('COM_PAYCART_PAYMENT_METHOD');?> : <?php echo $cart->params['payment_gateway']['title'];?></div>
 									<div><?php echo JText::_('COM_PAYCART_STATUS');?> :
 										<span class="heading pc-uppercase">
 										<?php if($invoice->status == PaycartHelperInvoice::STATUS_INVOICE_PAID): ?>
