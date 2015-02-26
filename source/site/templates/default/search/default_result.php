@@ -97,7 +97,7 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 				<?php endforeach;?>
 				
 				<!-- range filters -->
-				<?php echo $this->loadTemplate('range_filter',compact('filters','wieightUnit','currency'));?>
+				<?php echo $this->loadTemplate('range_filter',compact('filters','weightUnit','currency'));?>
 				
 				<!-- exclude out-of-stock -->
 				<div class="accordion" id="accordion-id-stock">
