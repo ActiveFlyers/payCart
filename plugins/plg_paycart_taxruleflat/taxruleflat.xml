@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="paycart" method="upgrade">
-    <name>Paycart Taxrule Flat</name>
+    <name>Flat Rate Tax for PayCart</name>
     <version>1.0.0</version>
     <creationDate>Dec 2013</creationDate>
     <author>Team PayCart</author>
