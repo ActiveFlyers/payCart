@@ -48,27 +48,27 @@ $displayTree = function($tree,$displayData,$searchWord) use (&$displayTree) {
 ?>
 
 <div class="accordion" id="accordion-id-category">
- 	<div class="accordion-group">
- 		<div class="accordion-heading">
- 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-category" data-target=".accordion-body-id-category">		 				
- 				<h2><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_BROWSE");?></span></h2>
- 			</a>
- 		</div>
- 		<!-- use class "in" for keeping it open -->
- 		<div class="pc-product-filter-body">
-	 		 <div class="accordion-body collapse in accordion-body-id-category">
-	 		 	<div class="accordion-inner">
-	 		 		<?php 
-						// Display Link to All category
-						$q    = ($searchWord)?'?q='.urlencode($searchWord):'';
-						$link = PaycartRoute::_("index.php?option=com_paycart&view=productcategory&task=display").$q;
-						echo '<span class="pc-cursor-pointer btn-link" data-pc-category="click" data-pc-categorylink="'.$link.'" data-pc-categoryid="0">'.JText::_('COM_PAYCART_ALL').'</span><br/>';
-						echo $displayTree($categoryTree,$filters,$searchWord);
-					?>		
-					<input type="hidden" name="filters[core][category]" value="<?php echo $selectedCategoryId;?>"/>
-	 		 	</div>
-	 		 </div>
+   <div class="accordion-group">
+	 	<div class="accordion-heading">
+	 		<h2>
+	 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-category" href="#accordion-body-id-category">		 				
+	 				<span>&nbsp;<?php echo JText::_("COM_PAYCART_BROWSE");?></span>
+	 			</a>
+	 		</h2>
 	 	</div>
- 	 </div>
+	 	<!-- use class "in" for keeping it open -->
+	 	 <div class="accordion-body collapse in" id="accordion-body-id-category">
+	 	 	<div class="accordion-inner pc-product-filter-body">
+	 	 		<?php 
+					// Display Link to All category
+					$q    = ($searchWord)?'?q='.urlencode($searchWord):'';
+					$link = PaycartRoute::_("index.php?option=com_paycart&view=productcategory&task=display").$q;
+					echo '<span class="pc-cursor-pointer btn-link" data-pc-category="click" data-pc-categorylink="'.$link.'" data-pc-categoryid="0">'.JText::_('COM_PAYCART_ALL').'</span><br/>';
+					echo $displayTree($categoryTree,$filters,$searchWord);
+				?>		
+				<input type="hidden" name="filters[core][category]" value="<?php echo $selectedCategoryId;?>"/>
+		 	</div>
+	 	 </div>
+    </div>
 </div>
 <?php 

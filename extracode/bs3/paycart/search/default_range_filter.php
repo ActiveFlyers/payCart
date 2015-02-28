@@ -29,16 +29,20 @@ $maxWeightRange 	= $filters->core->maxWeightRange;
 	<?php $sliderValue = (!empty($appliedPriceRange))?key($appliedPriceRange):$minPriceRange.','.$maxPriceRange;?>
 	<?php $priceValue  = (!empty($appliedPriceRange))?key($appliedPriceRange):'';?>
 	
-	<div class="accordion" id="accordion-id-price">
-	 	<div class="accordion-group">
-	 		<div class="accordion-heading">
-	 			<a class="accordion-toggle pc-cursor-pointer" data-toggle="collapse" data-parent="#accordion-id-price" data-target=".accordion-body-id-price">		 				
-	 				<h3><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_PRICE").' ( '.$currency.' )'?></span></h3>
-	 			</a>		
+	<div class="accordion panel-group" id="accordion-id-price">
+	 	<div class="accordion-group panel-default">
+	 		<div class="accordion-heading" role="tab" id="accordion-heading-price">
+	 			<h3>
+		 			<a data-toggle="collapse" data-parent="#accordion-id-price" 
+		 			   href="#accordion-body-id-price" aria-expanded="true" 
+		 			   aria-controls="accordion-body-id-price" class="accordion-toggle">		 				
+		 				<span>&nbsp;<?php echo JText::_("COM_PAYCART_PRICE").' ( '.$currency.' )'?></span>
+		 			</a>
+		 		</h3>		
 	 		</div>
 	 		<!-- use class "in" for keeping it open -->
-	 		 <div class="accordion-body collapse in accordion-body-id-price">
-	 		 	<div class="accordion-inner">
+	 		 <div class="accordion-body collapse in panel-collapse" id="accordion-body-id-price" role="tabpanel" aria-labelledby="accordion-heading-price">
+	 		 	<div class="accordion-inner panel-body">
 	 		 	   <div class="clearfix hidden-xs">
 		 		 	   	<span class="pull-left"><strong><?php echo $minPriceRange?></strong></span>
 		 		 	   	<span class="pull-right"><strong><?php echo $maxPriceRange;?> </strong></span>
@@ -68,18 +72,22 @@ $maxWeightRange 	= $filters->core->maxWeightRange;
 <?php if($minWeightRange != $maxWeightRange):?>
 	<?php $sliderValue = (!empty($appliedWeightRange))?key($appliedWeightRange):$minWeightRange.','.$maxWeightRange;?>
 	<?php $weightValue = (!empty($appliedWeightRange))?key($appliedWeightRange):'';?>
-	
-	<div class="accordion" id="accordion-id-price">
-	 	<div class="accordion-group">
-	 		<div class="accordion-heading">
-	 			<a class="accordion-toggle pc-cursor-pointer" data-toggle="collapse" data-parent="#accordion-id-price" data-target=".accordion-body-id-price">		 				
-	 				<h3><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_WEIGHT").' ( '.$weightUnit.' )'?></span></h3>
-	 			</a>		
-	 		</div>
+	<div class="accordion panel-group" id="accordion-id-weight">
+	 	<div class="accordion-group panel-default">
+	 		<div class="accordion-heading" role="tab" id="accordion-heading-weight">
+	 			<h3>
+		 			<a data-toggle="collapse" data-parent="#accordion-id-weight" 
+		 			   href="#accordion-body-id-weight" aria-expanded="true" 
+		 			   aria-controls="accordion-body-id-weight" class="accordion-toggle">
+		 			   	<span>&nbsp;<?php echo JText::_("COM_PAYCART_WEIGHT").' ( '.$weightUnit.' )'?></span>
+		 			</a>
+		 		</h3>
+		 	</div>
+		 	
 	 		<!-- use class "in" for keeping it open -->
 	 		<div class="pc-product-filter-body">
-		 		 <div class="accordion-body collapse in accordion-body-id-price">
-		 		 	<div class="accordion-inner">
+		 		 <div class="accordion-body collapse in panel-collapse" id="accordion-body-id-weight" role="tabpanel" aria-labelledby="accordion-heading-weight">
+		 		 	<div class="accordion-inner panel-body">
 			 		 	 <div class="hidden-xs clearfix">
 			 		 	   	<span class="pull-left"><strong><?php echo $minWeightRange?></strong></span>
 			 		 	   	<span class="pull-right"><strong><?php echo $maxWeightRange;?> </strong></span>

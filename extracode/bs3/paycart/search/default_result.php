@@ -28,7 +28,7 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
        1. Top section : Search word & total result count and sorting
      ================================================================== -->
 	<div class="row">
-		<div class="pull-left">
+		<div class="pull-left col-md-12 col-sm-12">
 			<?php if(!empty($searchWord)):?>
 				<h3>
 					<?php echo JText::_('COM_PAYCART_SEARCH')?> : <?php echo $searchWord ?>
@@ -73,16 +73,20 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 				<hr>
 				<!-- custom attribute filterHtml -->
 				<?php foreach ($filters->attribute->filterHtml as $id=>$filter):?>
-					<div class="accordion" id="accordion-id-<?php echo $id?>">
-					 	<div class="accordion-group panel panel-default">
-					 		<div class="accordion-heading">
-					 			<a class="accordion-toggle pc-cursor-pointer" data-toggle="collapse" data-parent="#accordion-id-<?php echo $id?>" data-target=".accordion-body-id-<?php echo $id?>">		 				
-					 				<h3><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo $filter['name']; ?></span></h3>
-					 			</a>		
+					<div class="panel-group" id="accordion-id-<?php echo $id?>" role="tablist" aria-multiselectable="true">
+					 	<div class="panel-default">
+					 		<div role="tab" id="accordion-heading-<?php echo $id?>">
+					 			<h3>
+						 			<a data-toggle="collapse" data-parent="#accordion-id-<?php echo $id?>" 
+						 			   href="#accordion-body-id-<?php echo $id?>" aria-expanded="true" 
+						 			   aria-controls="accordion-body-id-<?php echo $id?>" class="accordion-toggle">		 				
+						 				<span>&nbsp;<?php echo $filter['name']; ?></span>
+						 			</a>
+					 			</h3>		
 					 		</div>
 					 		<!-- use class "in" for keeping it open -->
 					 		<div class="pc-product-filter-body">
-						 		 <div class="accordion-body collapse in accordion-body-id-<?php echo $id?>">
+						 		 <div id="accordion-body-id-<?php echo $id?>" class="accordion-body panel-collapse collapse in" role="tabpanel" aria-labelledby="accordion-heading-<?php echo $id?>">
 						 		 	<div class="accordion-inner panel-body">
 						 		 		
 						 		 		<?php if(in_array($id,$appliedAttrIds )):?>
@@ -99,20 +103,24 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 				<?php endforeach;?>
 				
 				<!-- range filters -->
-				<?php echo $this->loadTemplate('range_filter',compact('filters','weightUnit','currency'));?>
+				<?php echo $this->loadTemplate('range_filter',compact('filters','wieightUnit','currency'));?>
 				
 				<!-- exclude out-of-stock -->
-				<div class="accordion" id="accordion-id-stock">
-				 	<div class="accordion-group">
-				 		<div class="accordion-heading">
-				 			<a class="accordion-toggle pc-cursor-pointer" data-toggle="collapse" data-parent="#accordion-id-stock" data-target=".accordion-body-id-stock">		 				
-				 				<h3><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_AVAILABILITY")?></span></h3>
-				 			</a>		
+				<div class="panel-group accordion" id="accordion-id-stock" role="tablist" aria-multiselectable="true">
+				 	<div class="accordion-group panel panel-default">
+				 		<div role="tab" class="accordion-heading" id="accordion-heading-stock">
+				 			<h3>
+					 			<a data-toggle="collapse" data-parent="#accordion-id-stock" 
+					 			   href="#accordion-body-id-stock" aria-expanded="true" 
+					 			   aria-controls="accordion-body-id-stock" class="accordion-toggle">		 				
+					 					<span>&nbsp;<?php echo JText::_("COM_PAYCART_AVAILABILITY")?></span>
+					 			</a>
+				 			</h3>		
 				 		</div>
 				 		<!-- use class "in" for keeping it open -->
 				 		<div class="pc-product-filter-body">
-					 		 <div class="accordion-body collapse in accordion-body-id-stock">
-					 		 	<div class="accordion-inner clearfix">
+					 		 <div class="accordion-body panel-collapse collapse in" id="accordion-body-id-stock">
+					 		 	<div class="accordion-inner panel-body" role="tabpanel" aria-labelledby="accordion-heading-stock">
 					 		 		<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
 			       					<?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/>
 			       					<span><?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?></span>

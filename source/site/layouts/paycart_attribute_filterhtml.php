@@ -26,11 +26,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			<?php $selected = "checked='checked'"; ?>
 	<?php endif;?>
 	<?php $disabled = ($option['disabled'])?'disabled':'';?>
-		<div class="clearfix">
+	<div>
+		<label class="checkbox help-block">
 			<input data-pc-result="filter" name="filters[attribute][<?php echo $attributeId?>][<?php echo $optionId?>]" 
 				   value="<?php echo $optionId?>" type="checkbox" data-attribute-id="<?php echo $attributeId?>"
-		           <?php echo $selected;?>  <?php echo $disabled;?> >
-		           <?php echo $optionDetails[$optionId]['title'].' ('.$option['productCount'] .')' ?>
-		</div>
+			       <?php echo $selected;?>  <?php echo $disabled;?> >
+			       <?php echo $optionDetails[$optionId]['title'].' ('.$option['productCount'] .')' ?>
+		</label>
+	</div>
 	<?php endforeach;?>
 <?php 
