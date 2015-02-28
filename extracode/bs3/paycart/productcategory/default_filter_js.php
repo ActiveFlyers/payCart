@@ -104,15 +104,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 			});
 		}
 
-		//for accordion toggle icon
-		$('div.accordion-body').on('show.bs.collapse', function () {
-			$(this).parent('div').parent("div").find(".fa-angle-right").removeClass("fa-angle-right").addClass("fa-angle-down");
-		});
-
-		$('div.accordion-body').on('hide.bs.collapse', function () {
-			$(this).parent("div").parent("div").find(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-right")
-		});
-
 		//scroll to first element
 		var elem  = $('#pc-product-search-content');
 		paycart.jQuery('html, body').animate({
@@ -257,3 +248,4 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 			
 })(paycart.jQuery);
 </script>
+<?php 

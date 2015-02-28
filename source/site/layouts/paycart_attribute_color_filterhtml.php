@@ -26,12 +26,14 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			<?php $selected = "checked='checked'"; ?>
 	<?php endif;?>
 	<?php $disabled = ($color['disabled'])?'disabled':'';?>
-		<div class="clearfix">
+	<div>
+		<label class="checkbox help-block">
 			<input data-pc-result="filter" name="filters[attribute][<?php echo $attributeId?>][<?php echo $colorId?>]" 
 				   value="<?php echo $colorId?>" type="checkbox" data-attribute-id="<?php echo $attributeId?>"
-		           <?php echo $selected;?>  <?php echo $disabled;?> >
-		           <?php echo $optionDetails[$colorId]['title'].' ('.$color['productCount'] .')' ?>
-		    <span class="pull-right pc-filter-color" style="background-color: <?php echo $optionDetails[$colorId]['hash_code']?>"></span>
-		</div>
+			       <?php echo $selected;?>  <?php echo $disabled;?> >
+			       <?php echo $optionDetails[$colorId]['title'].' ('.$color['productCount'] .')' ?>
+			<span class="pull-right pc-filter-color" style="background-color: <?php echo $optionDetails[$colorId]['hash_code']?>"></span>
+		</label>
+	</div>
 	<?php endforeach;?>
 <?php 

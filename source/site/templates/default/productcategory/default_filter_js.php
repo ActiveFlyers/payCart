@@ -104,15 +104,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 			});
 		}
 
-		//for accordion toggle icon
-		$('div.accordion-body').on('shown', function () {
-			$(this).parent('div').parent("div").find(".fa-angle-right").removeClass("fa-angle-right").addClass("fa-angle-down");
-		});
-
-		$('div.accordion-body').on('hidden', function () {
-			$(this).parent("div").parent("div").find(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-right")
-		});
-
 		//scroll to first element
 		var elem  = $('#pc-product-search-content');
 		paycart.jQuery('html, body').animate({

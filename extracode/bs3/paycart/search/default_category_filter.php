@@ -47,16 +47,20 @@ $displayTree = function($tree,$displayData,$searchWord) use (&$displayTree) {
 		
 ?>
 
-<div class="accordion" id="accordion-id-category">
+<div class="accordion panel-group" id="accordion-id-category">
  	<div class="accordion-group panel panel-default">
- 		<div class="accordion-heading">
- 			<a class="accordion-toggle pc-cursor-pointer" data-toggle="collapse" data-parent="#accordion-id-category" data-target=".accordion-body-id-category">		 				
- 				<h3><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_BROWSE");?></span></h3>
- 			</a>
+ 		<div class="accordion-heading" role="tab" id="accordion-heading-category">
+ 			<h3>
+	 			<a data-toggle="collapse" data-parent="#accordion-id-category" 
+	 			   href="#accordion-body-id-category" aria-expanded="true" 
+	 			   aria-controls="accordion-body-id-category" class="accordion-toggle">		 				
+	 				<span>&nbsp;<?php echo JText::_("COM_PAYCART_BROWSE");?></span>
+	 			</a>
+ 			</h3>	
  		</div>
  		<!-- use class "in" for keeping it open -->
  		<div class="pc-product-filter-body">
-	 		 <div class="accordion-body collapse in accordion-body-id-category">
+	 		 <div class="accordion-body collapse in panel-collapse" id="accordion-body-id-category" role="tabpanel" aria-labelledby="accordion-heading-category">
 	 		 	<div class="accordion-inner panel-body">
 	 		 		<?php 
 						// Display Link to All category

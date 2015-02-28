@@ -74,24 +74,24 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 					<div class="accordion" id="accordion-id-<?php echo $id?>">
 					 	<div class="accordion-group">
 					 		<div class="accordion-heading">
-					 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-<?php echo $id?>" data-target=".accordion-body-id-<?php echo $id?>">		 				
-					 				<h2><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo $filter['name']; ?></span></h2>
-					 			</a>		
+					 			<h2>
+						 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-<?php echo $id?>" href="#accordion-body-id-<?php echo $id?>">		 				
+						 				<span>&nbsp;<?php echo $filter['name']; ?></span>
+						 			</a>
+						 		</h2>		
 					 		</div>
 					 		<!-- use class "in" for keeping it open -->
-					 		<div class="pc-product-filter-body">
-						 		 <div class="accordion-body collapse in accordion-body-id-<?php echo $id?>">
-						 		 	<div class="accordion-inner">
-						 		 		
-						 		 		<?php if(in_array($id,$appliedAttrIds )):?>
-							 		 			<span class="badge pull-right pc-cursor-pointer" data-pc-selector="remove" data-pc-filter-name="filters[attribute][<?php echo $id?>]"><?php echo Jtext::_('COM_PAYCART_RESET')?></span>
-							 		 			<br>
-						 		 		<?php endif;?>
-						 		 		<?php echo $filter['html'];?>
-						 		 	</div>
-						 		 </div>
-						 	</div>
-					 	 </div>
+					 		 <div class="accordion-body collapse in" id="accordion-body-id-<?php echo $id?>">
+					 		 	<div class="accordion-inner pc-product-filter-body">
+					 		 		
+					 		 		<?php if(in_array($id,$appliedAttrIds )):?>
+						 		 			<span class="badge pull-right pc-cursor-pointer" data-pc-selector="remove" data-pc-filter-name="filters[attribute][<?php echo $id?>]"><?php echo Jtext::_('COM_PAYCART_RESET')?></span>
+						 		 			<br>
+					 		 		<?php endif;?>
+					 		 		<?php echo $filter['html'];?>
+					 		 	</div>
+					 		 </div>
+						</div>
 					</div>
 					<hr>
 				<?php endforeach;?>
@@ -103,20 +103,20 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 				<div class="accordion" id="accordion-id-stock">
 				 	<div class="accordion-group">
 				 		<div class="accordion-heading">
-				 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-stock" data-target=".accordion-body-id-stock">		 				
-				 				<h2><i class="fa fa-angle-down"></i><span>&nbsp;<?php echo JText::_("COM_PAYCART_AVAILABILITY")?></span></h2>
-				 			</a>		
+				 			<h2>
+					 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-stock" href="#accordion-body-id-stock">		 				
+					 				<span>&nbsp;<?php echo JText::_("COM_PAYCART_AVAILABILITY")?></span>
+					 			</a>
+				 			</h2>		
 				 		</div>
 				 		<!-- use class "in" for keeping it open -->
-				 		<div class="pc-product-filter-body">
-					 		 <div class="accordion-body collapse in accordion-body-id-stock">
-					 		 	<div class="accordion-inner clearfix">
-					 		 		<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
-			       					<?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/>
-			       					<span><?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?></span>
-					 		 	</div>
-					 		 </div>
-					 	</div>
+				 		 <div class="accordion-body collapse in" id="accordion-body-id-stock">
+				 		 	<div class="accordion-inner clearfix">
+				 		 		<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
+		       					<?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/>
+		       					<span><?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?></span>
+				 		 	</div>
+				 		 </div>
 				 	 </div>
 				</div>
 				

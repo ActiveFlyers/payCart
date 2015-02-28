@@ -42,10 +42,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 	font-weight : normal;
 }
 
-.paycart .pc-product-filter-body .collapse{
-	overflow:inherit;
-}
-
 .paycart .pc-filter-color{
 	min-height :13px;
 	min-width :13px;
@@ -71,7 +67,6 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 	max-height: 80%;
 	overflow-y: auto;
 	margin: 10% 0;
-	line-height: 2em;
 }
 
 .pc-filter-apply-btn {
@@ -90,6 +85,19 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 
 .pc-refine-filter-mobile{
 	padding : 5px;
+}
+
+.pc-product-filter .accordion-toggle span:before{
+	font-family: FontAwesome;
+	content: "\f078";
+}
+
+.pc-product-filter .accordion-toggle.collapsed span:before{
+	content: "\f054";
+}
+
+.row-offcanvas-left.active .pc-product-filter .checkbox {
+	min-height: 2.2em;
 }
 
 </style>
