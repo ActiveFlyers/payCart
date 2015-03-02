@@ -245,7 +245,7 @@ Rb_Html::script('com_paycart/jquery.ui.droppable.js');
 		 };
 		  
 		$scope.save = function(){
-			if(!paycart.formvalidator.isValid(document.id('paycart_productattribute_form'))){
+			if(!paycart.formvalidator.isValid(document.getElementById('paycart_productattribute_form'))){
 				return false;
 			}
 			

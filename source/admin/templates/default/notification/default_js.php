@@ -23,7 +23,7 @@ paycart.admin.notification.window = function(notification_id){
 paycart.admin.notification.update = {}; 
 paycart.admin.notification.update.go = function(notification_id){
 		//Validation Checking
-        if(!paycart.formvalidator.isValid(document.id('paycart_notification_form'))){
+        if(!paycart.formvalidator.isValid(document.getElementById('paycart_notification_form'))){
         	return false;
 		}
 
@@ -105,3 +105,4 @@ paycart.token =  (function(){
 })(paycart.jQuery);
 	
 </script>
+<?php 
