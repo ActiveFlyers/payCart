@@ -89,4 +89,13 @@
 				label="COM_PAYCART_ADMIN_METADATA_KEYWORD"
 				maxlength="255"/>
 	</fieldset>	
+	
+	<fields name="_uploaded_files">
+		<fieldset name="_uploaded_files">
+			<field name="cover_media"
+			   type="file"
+			   validate="image">
+			 </field>
+		</fieldset>
+	</fields>
 </form>

@@ -102,7 +102,10 @@ class PaycartProductcategory extends PaycartLib
 		parent::bind($data, $ignore);
 		
 		if( isset($data['_uploaded_files'])) {
-			$this->_uploaded_files = $data['_uploaded_files'];
+			//required to take input as array in cover media, because of validate code requirement, 
+			//so here we shift the array and assign first image array
+			$media = array_shift($data['_uploaded_files']['cover_media']);
+			$this->_uploaded_files['cover_media'] = $media;
 		}
 		
 		return $this;

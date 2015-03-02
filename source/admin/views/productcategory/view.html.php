@@ -56,7 +56,8 @@ class PaycartAdminHtmlViewProductcategory extends PaycartAdminBaseViewProductcat
 		
 		$this->assign('form', $form );
 		$this->assign('productCategory',$category);
-		
+		$this->assign('uploadLimit',PaycartFactory::getHelper('media')->getUploadLimit());
+
 		return parent::edit($tpl);
 	}
 	

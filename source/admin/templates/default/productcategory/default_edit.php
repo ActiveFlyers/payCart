@@ -140,7 +140,9 @@ echo $this->loadTemplate('edit_ng');
     			</div>
 				<?php endif;?>	    			
 				<div class="row-fluid">								
-					<input type="file" name="paycart_productcategory_form[cover_media]">
+					<input type="file" name="paycart_productcategory_form[cover_media][]" class="validate-image" 
+                           id="paycart_productcategory_form__uploaded_files_cover_media" data-fileUploadLimit="<?php echo $uploadLimit;?>">
+					<div class="pc-error" for="paycart_productcategory_form__uploaded_files_cover_media"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INVALID_IMAGE');?></div>
 				</div>				
 			</fieldset>
 		</div>					
