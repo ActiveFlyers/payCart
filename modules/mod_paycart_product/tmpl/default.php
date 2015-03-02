@@ -167,7 +167,7 @@ defined('_JEXEC') or die;
 				title="<?php echo $products[$id]->title;?>">
 				<div class="pc-mod-product img-thumbnail item thumbnail">
 					<div class="pc-mod-product-img">
-						<img class="" src="<?php echo $media['optimized'];?>" alt="<?php echo $products[$id]->title;?>">							
+						<img class="" src="<?php echo @$media['optimized'];?>" alt="<?php echo $products[$id]->title;?>">							
 					</div>
 					<span class="pc-mod-product-view">
 						<span class="btn btn-lg btn-primary">View</span>								
