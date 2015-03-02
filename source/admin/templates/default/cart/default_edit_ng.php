@@ -269,7 +269,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 					$scope.onActionExecute = function() 
 					{
 						// if form is validate then submit it 
-						if (paycart.formvalidator.isValid(document.id('pc-cart-action-form'))) {
+						if (paycart.formvalidator.isValid(document.getElementById('pc-cart-action-form'))) {
 							$("#pc-cart-action-form").submit();
 						}
 						return false;

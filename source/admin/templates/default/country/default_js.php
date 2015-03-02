@@ -24,7 +24,7 @@ paycart.admin.state.window = function(country_id, state_id){
 paycart.admin.state.add = {}; 
 paycart.admin.state.add.go = function(){
 		//Validation Checking
-		if(!paycart.formvalidator.isValid(document.id('paycart_state_form'))){
+		if(!paycart.formvalidator.isValid(document.getElementById('paycart_state_form'))){
 			return false;
 		}
 		
@@ -83,3 +83,4 @@ paycart.admin.state.remove.error = function(data){
 })(paycart.jQuery);
 
 </script>
+<?php 

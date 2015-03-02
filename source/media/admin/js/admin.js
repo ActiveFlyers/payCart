@@ -62,7 +62,7 @@ paycart.admin.grid = {
 			}
 			
 			if(isValidAction){
-				if (!paycart.formvalidator.isValid(document.id('adminForm'))) {
+				if (!paycart.formvalidator.isValid(document.getElementById('adminForm'))) {
 					return false;
 				}
 			}			
