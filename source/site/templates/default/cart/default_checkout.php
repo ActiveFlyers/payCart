@@ -43,11 +43,6 @@ if (!$is_platform_mobile) {
 <div class='pc-checkout-wrapper clearfix position-relative'>
 
 	<div>
-	<!--	Checkout flow state	-->
-		<div class="pc-checkout-state row-fluid clearfix">
-			<?php //include_once 'step.php';?>
-		</div>
-		
 	<!--	Checkout step	-->
 		<div class="pc-checkout-step-form row-fluid clearfix">		
 			<form class="pc-checkout-form pc-form-validate" id="pc-checkout-form"   name="pc-checkout-form" method="post" action="index.php">

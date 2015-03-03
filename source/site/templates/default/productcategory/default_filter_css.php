@@ -37,8 +37,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 	max-height:150px;
 }
 
-.paycart .accordion-toggle h2{
-	font-weight : normal;
+.paycart .pc-product-filter h2{
+    font-weight : normal;
 }
 
 .paycart .pc-filter-color{

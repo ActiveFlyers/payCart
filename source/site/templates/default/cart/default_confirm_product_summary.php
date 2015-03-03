@@ -42,13 +42,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 						<?php $postionedAttributes = (array)$product->getPositionedAttributes();?>
 								<?php $attributes = $product->getAttributes();?>
 								 <div class="pc-product-overview">
-						 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>			 			
+						 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>
+										<ul class="unstyled muted">
 						 				<?php foreach($postionedAttributes['product-overview'] as $attributeId) : ?>
 						 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
 						 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
-									 			<span><?php echo $instance->getTitle();?></span>&nbsp;:&nbsp;<span><?php $options = $instance->getOptions(); echo $options[$attributes[$attributeId]]->title;?></span><br />
-											<?php endif?>	                         
-						 				<?php endforeach;?>			 				
+									 			<li><small><?php echo $instance->getTitle();?>&nbsp;:&nbsp;<?php $options = $instance->getOptions(); echo $options[$attributes[$attributeId]]->title;?></small></li>
+											<?php endif?>
+						 				<?php endforeach;?>
+						 				</ul>			 				
 						 			<?php endif;?>
 						 		</div>			 	
 		 						<div>

@@ -23,7 +23,7 @@ $appliedWeightRange = $filters->core->appliedWeightRange;
 $appliedInStock     = $filters->core->appliedInStock;
 ?>
 
-<span class="muted"><i><?php echo JText::_('COM_PAYCART_FILTERED_BY').' : '?></i></span>
+<span class="text-muted"><i><?php echo JText::_('COM_PAYCART_FILTERED_BY').' : '?></i></span>
 
 <!-- Custom attributes -->
 <?php foreach ($appliedAttr as $id=>$data):?>

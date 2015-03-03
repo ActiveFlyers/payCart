@@ -142,6 +142,10 @@ Products Display
 }
 
 /* primiary border when hover */
+.pc-category-inner{
+	border : 1px solid transparent;
+}
+
 .pc-product:hover, 
 .pc-category-inner:hover{
 	border : 1px solid #0088CC;
@@ -201,18 +205,6 @@ Products Display
     border-right: 1px solid #ddd;
 }
 
-@media (max-width: 480px) {
-	.pc-product-content{
-		padding: 0;
-	}
-}
-
-@media (min-width: 980px){
-	.pc-product-content{
-		padding: 7px 7px 0 7px;
-	}
-}
-	
 .pc-product-title{
 	padding-top : 5%;
 	font-size : 14px;	
@@ -249,4 +241,17 @@ Products Display
 
 .pc-cursor-pointer{
 	cursor : pointer;
+}
+
+.pc-product-detail-title{
+	margin-top: 0px;
+}
+
+.pc-product-fullview-wrapper .accordion-toggle .accordian-icon:before{
+	font-family: FontAwesome;
+	content: "\f146";
+}
+
+.pc-product-fullview-wrapper .accordion-toggle.collapsed .accordian-icon:before{
+	content: "\f0fe";
 }

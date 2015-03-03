@@ -9,9 +9,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 echo $this->loadTemplate('css');
 echo $this->loadTemplate('js');
@@ -48,7 +46,7 @@ echo $this->loadTemplate('js');
 								</label>
 							</div>
 							<div class="controls">
-								<input type="password" class="input-block-level form-control form-control" id="paycart_account_loginform_password" name="paycart_account_loginform[password]" value="" required="">
+								<input type="password" class="input-block-level form-control" id="paycart_account_loginform_password" name="paycart_account_loginform[password]" value="" required="">
 								<span for="paycart_account_loginform_password" class="pc-error hide"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>
 							</div>
 						</div>
@@ -98,7 +96,7 @@ echo $this->loadTemplate('js');
 								</label>
 							</div>
 							<div class="controls">
-								<input type="email" class="input-block-level form-control form-control validate-email" id="paycart_account_guestform_email" name="paycart_account_guestform[email]" value="" required="">
+								<input type="email" class="input-block-level form-control validate-email" id="paycart_account_guestform_email" name="paycart_account_guestform[email]" value="" required="">
 								<span for="paycart_account_guestform_email" class="pc-error hide"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_INVALID_EMAIL_ADDRESS');?></span>
 							</div>
 						</div>
@@ -109,7 +107,7 @@ echo $this->loadTemplate('js');
 								</label>
 							</div>
 							<div class="controls">
-								<input type="text" class="input-block-level form-control form-control" id="paycart_account_guestform_order_id" name="paycart_account_guestform[order_id]" value="" required="">
+								<input type="text" class="input-block-level form-control" id="paycart_account_guestform_order_id" name="paycart_account_guestform[order_id]" value="" required="">
 								<span for="paycart_account_guestform_order_id" class="pc-error hide"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_INVALID_ORDER_ID');?></span>
 							</div>
 						</div>    

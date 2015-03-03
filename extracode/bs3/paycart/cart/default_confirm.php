@@ -117,8 +117,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 		<div id="pc-confirm-shipping-option" class="accordion-body in collapse"">
 			 			<div class="accordion-inner panel-body">
 			 				<?php if(!empty($shipping_options)):?>	
-				 				<div class='pc-checkout-shipping-list'>
-					 				<?php echo PaycartHtml::_('select.genericlist', $shipping_options, 'shipping', 'onChange="paycart.cart.confirm.onChangeShipping(this.value)"','value','title',$default_shipping);
+				 				<div class='pc-checkout-shipping-list form-group'>
+					 				<?php echo PaycartHtml::_('select.genericlist', $shipping_options, 'shipping', 'class="form-control" onChange="paycart.cart.confirm.onChangeShipping(this.value)"','value','title',$default_shipping);
 					 				?>
 					 			</div>
 					 			<div class='pc-checkout-shipping-notes'>

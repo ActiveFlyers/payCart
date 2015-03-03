@@ -9,9 +9,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 //load required javascripts
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');
@@ -24,8 +22,15 @@ echo $this->loadTemplate('js');
 	<?php echo $this->loadTemplate('categories', compact('categories','formatter'));?>
 <?php endif;?>
 
-<?php if(!empty($products)):?>
-	<div class="row"><h2 class="col-sm-12 page-header"><?php echo JText::_("COM_PAYCART_PRODUCTS");?></h2></div>
-	<?php echo $this->loadTemplate('products', compact('products','formatter'));?>
-<?php endif;?> 
+<?php if(count((array)$products)):?>
+	<div class="row"><h2 class=" col-sm-12 page-header"><?php echo JText::_("COM_PAYCART_PRODUCTS");?></h2></div>
+	<?php $data = new stdclass();?>
+	<?php $data->products = $products;?>
+	<div class='pc-products-wrapper row clearfix'>
+		<div id="pc-products" class ='pc-products col-sm-12' data-columns>
+			<?php echo JLayoutHelper::render('paycart_product_list', $data);?>
+		</div>
+	</div>
+<?php endif;?>
+
 <?php 

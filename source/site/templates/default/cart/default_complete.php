@@ -120,7 +120,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
  						<?php $product_id = $particular->particular_id;?>
  						<?php $product = $products[$product_id];?>
  						<tr>
-							<td>
+							<td style="width:60%">
 								<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$product_id);?>"><?php echo $product->getTitle();?></a>
   								<div class="muted">
   									<ul class="inline">

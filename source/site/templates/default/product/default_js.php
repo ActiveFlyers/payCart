@@ -46,7 +46,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		if(baseAttrId && value.id == 'pc-attr-' + baseAttrId){
 			$('.pc-product-base-attribute').val(baseAttrId);
 		}
-		$('.pc-product-attributes').submit();
+		$('.pc-product-selector').submit();
 	},
 
 	//@PCTODO :: Should be move in paycart.js file so other extension can utilize it

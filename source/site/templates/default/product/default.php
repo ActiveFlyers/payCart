@@ -61,7 +61,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				Right Layout
 		 =========================== -->
 		 <div class="span6">
-				<h1 class="hidden-phone pc-break-word"><?php echo $product->getTitle(); ?></h1>	
+				<h1 class="hidden-phone pc-break-word pc-product-detail-title"><?php echo $product->getTitle(); ?></h1>	
 		 		<h2><?php echo JText::_("COM_PAYCART_PRICE");?> : 
 		 			<span><?php echo $formatter->amount($product->getPrice(),true);?></span>	
 		 		</h2>
@@ -87,11 +87,11 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		<!-- Filterable Attributes -->
 		 		<?php if(!empty($selectors)):?>
 		 		<div>
-		 		    <form class="pc-product-attributes" method="post">
+		 		    <form class="pc-product-selector" method="post">
 		 		    	 <fieldset>		 		    	 	
 					    	<?php foreach ($selectors as $productAttributeId => $data):?>
 					    		<?php $instance  = PaycartProductAttribute::getInstance($productAttributeId);?>
-					    		
+					    		<hr />
 					    		 <div>
 					    			<label class="muted"><?php echo $instance->getTitle();?>:</label>
 					    			<?php echo $product->getAttributeHtml('selector', $productAttributeId, $data['selectedvalue'],$data['options']);?>
@@ -103,7 +103,7 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				    </form>
     			</div>
     			<?php endif;?>
-		 		
+		 		<hr/>
 		 		<!-- buy now -->
                 <?php if($isAvailableInStock):?>                     
 				<div class="row-fluid clearfix">
@@ -133,14 +133,13 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
                     	<h2 class="text-error"><?php echo JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK");?></h2>
                     </div>
                 <?php endif;?>
-                
+                <hr/>
                 
                 <!-- ======================
 				Position == product-addons	
 		 		=========================== -->		 		
 		 		<div class="row-fluid">		 		
-		 		<div class="pc-product-addons">
-		 			<p>&nbsp;</p>		 			
+		 		<div class="pc-product-addons"> 			
 		 			<?php if(isset($postionedAttributes['product-addons']) && !empty($postionedAttributes['product-addons'])) : ?>
 		 				<ul>
 		 				<?php foreach($postionedAttributes['product-addons'] as $attributeId) : ?>

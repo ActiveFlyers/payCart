@@ -34,14 +34,14 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				<!-- Payment detail				-->
 				<div class="">
 					<blockquote>
-						<p class="muted"><?php echo JText::_('COM_PAYCART_PAYABLE_AMOUNT')?></p>
+						<p class="text-muted"><?php echo JText::_('COM_PAYCART_PAYABLE_AMOUNT')?></p>
 						<p class="text-danger"><?php echo $formatter->amount($cart_total, true, $currency_id); ?></p>
 					</blockquote>
 				</div>
 				
 				<!-- Payment Gateway Selection				-->
 				<div class="form-group">
-					<label> <?php echo JText::_('COM_PAYCART_CART_PAYMENT_METHOD'); ?></label>
+					<label> <?php echo JText::_('COM_PAYCART_PAYMENT_METHOD'); ?></label>
 					<select name="payment_menthod" id="pc-checkout-payment-gateway" class ="form-control input-block-level" onchange="paycart.cart.gatewaySelection.onChangePaymentgateway()">
 						<?php foreach ($payment_gateway as $gateway_id => $gateway_details) : ?>
 							<option value=<?php echo $gateway_id; ?> > <?php echo $gateway_details->title; ?> </option>

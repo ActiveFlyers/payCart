@@ -102,6 +102,12 @@ class PaycartsiteHtmlViewcart extends PaycartSiteBaseViewcart
 			$products[$particular->particular_id] = PaycartProduct::getInstance($particular->particular_id);
 		}
 		
+		// set shipping cost
+		$cartObject->shipping = 0;
+		foreach($shippingCartParticulars as $particular){
+			$cartObject->shipping += $particular->total;
+		}
+		
 		// get expeted delivery of complete cart, it will be used when no shipment is created for any item
 		$estimatedDeliveryDate = null;	
 		if($payment_status == PaycartHelperInvoice::STATUS_TRANSACTION_PAYMENT_COMPLETE || $payment_status == PaycartHelperInvoice::STATUS_TRANSACTION_PAYMENT_PENDING){			
