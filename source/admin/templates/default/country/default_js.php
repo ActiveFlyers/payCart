@@ -13,6 +13,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
 <script>
 (function($){
+
+$(document).ready(function(){
+    $(".pc-popover").popover();
+});
+
 paycart.admin.state = {};
 
 //open modal window to create new state or edit in existing state
