@@ -27,11 +27,11 @@ class PaycartTaxruleProcessorEuvat extends PaycartTaxruleProcessor
 		$ownerCountry = isset($this->global_config->origin_address->country->isocode2)?$this->global_config->origin_address->country->isocode2:null;
 		
 		if($this->processor_config->associated_address == 'billing'){
-			$buyerCountry = $request->billing_address->country->isocode2;
-			$vatNumber	  = $request->billing_address->vat_number;
+			$buyerCountry = isset($request->billing_address->country->isocode2)?$request->billing_address->country->isocode2:null;
+			$vatNumber	  = isset($request->billing_address->vat_number)?$request->billing_address->vat_number:null;
 		}else{
-			$buyerCountry = $request->shipping_address->country->isocode2;
-			$vatNumber	  = $request->shipping_address->vat_number;
+			$buyerCountry = isset($request->shipping_address->country->isocode2)?$request->shipping_address->country->isocode2:null;
+			$vatNumber	  = isset($request->shipping_address->vat_number)?$request->shipping_address->vat_number:null;
 		}
 		
 		//Case 1 . If buyer and seller country is same then apply vat
