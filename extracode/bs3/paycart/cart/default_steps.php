@@ -18,7 +18,7 @@ $class = 'pc-checkout-cursor-pointer text-success';
 $click_event = true;
 ?>
 <div class="lead text-center row">
-	<hr class="clearfix col-sm-12" />	
+	<div class="col-xs-12"><hr /></div>
 	<?php foreach($available_steps as $name => $step ):?>
 			
 			<?php if($name == $active_task):?>
@@ -45,7 +45,7 @@ $click_event = true;
 				<?php $class = "text-muted";?>
 			<?php endif;?>		
 	<?php endforeach;?>
-	<hr class="clearfix col-xs-12" />
+	<div class="col-xs-12"><hr /></div>
 </div>
 <?php
 

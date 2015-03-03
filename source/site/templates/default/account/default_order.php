@@ -54,6 +54,7 @@ echo $this->loadTemplate('js');
 							</fieldset>
 						</div>
 					</div>
+					<br class="visible-xs-block" />
 					<div class="span6">
 						<div class="pc-account-order-shipping-address">
 							<fieldset>
@@ -85,6 +86,7 @@ echo $this->loadTemplate('js');
 										</span>
 									</div>
 								</div>
+								<br class="visible-xs-block" />
 								<div class="span6">
 									<table class="table">
 										<thead>

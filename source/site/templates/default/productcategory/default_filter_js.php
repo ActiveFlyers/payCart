@@ -248,3 +248,4 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 			
 })(paycart.jQuery);
 </script>
+<?php 

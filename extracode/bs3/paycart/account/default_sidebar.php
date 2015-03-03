@@ -9,9 +9,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}?>
+defined( '_JEXEC' ) or die( 'Restricted access' );?>
 <ul class="nav nav-pills nav-stacked">
 	<li class="<?php echo $task == 'display' || $task == 'order' ? 'active' : ''?>">
 		<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=display');?>"><i class="fa fa-tags"> </i> <?php echo JText::_('COM_PAYCART_MY_ORDERS');?></a>

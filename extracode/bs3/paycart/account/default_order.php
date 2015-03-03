@@ -9,9 +9,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}
+defined( '_JEXEC' ) or die( 'Restricted access' );
 
 echo $this->loadTemplate('css');
 echo $this->loadTemplate('js');
@@ -20,17 +18,17 @@ echo $this->loadTemplate('js');
 	<div id="pc-account" class ='pc-account pc-account-order clearfix col-sm-12' >
 	
 		<!-- HEADER -->
-		<div class="pc-account-header hidden-xs">			
-			<?php echo $this->loadTemplate('header');?>			
+		<div class="pc-account-header hidden-xs">
+			<?php echo $this->loadTemplate('header');?>
 		</div>		
 		
 		
-		<!-- BREADCRUMB -->				
+		<!-- BREADCRUMB -->		
 		<ul class="breadcrumb pc-account-order-breadcrumb">
-			<li><a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=display');?>"><?php echo JText::_('COM_PAYCART_ACCOUNT');?></a> <span class="divider">/</span></li>
-			<li><a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order');?>"><?php echo JText::_('COM_PAYCART_MY_ORDERS');?></a> <span class="divider">/</span></li>
+			<li><a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=display');?>"><?php echo JText::_('COM_PAYCART_ACCOUNT');?></a> <span class="divider"> </span></li>
+			<li><a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order');?>"><?php echo JText::_('COM_PAYCART_MY_ORDERS');?></a> <span class="divider"> </span></li>
 			<li class="active"><?php echo $order_id;?></li>
-		</ul>			
+		</ul>
 		
 		
 		<!-- DETAILS -->
@@ -39,9 +37,9 @@ echo $this->loadTemplate('js');
 				<div class="col-sm-6">
 					<div class="pc-account-order-orderdetail">
 						<fieldset>
-							<legend><?php echo JText::_('COM_PAYCART_ACCOUNT_ORDER_DETAILS');?></legend>
+							<legend><?php echo JText::_('COM_PAYCART_ORDER_DETAILS');?></legend>
 							<div><?php echo JText::_('COM_PAYCART_ORDER_ID');?> : <span class="heading"><?php echo $cart->cart_id;?></span> <span class="pc-lowercase">(<?php echo count($productCartParticulars).' '.JText::_('COM_PAYCART_ITEM'.((count($productCartParticulars) > 1 ) ? 'S' : ''));?>)</span></div>
-							<div><?php echo JText::_('COM_PAYCART_ACCOUNT_ORDER_PLACED');?> : <span class="heading"><?php echo $formatter->date(new Rb_Date($cart->locked_date));?></span></div>
+							<div><?php echo JText::_('COM_PAYCART_ORDER_PLACED');?> : <span class="heading"><?php echo $formatter->date(new Rb_Date($cart->locked_date));?></span></div>
 							<div>
 								<?php if($cart->is_delivered) :?>
 									<span class="text-success"><strong><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></strong></span>
@@ -54,6 +52,7 @@ echo $this->loadTemplate('js');
 						</fieldset>
 					</div>
 				</div>
+				<br class="visible-xs-block" />
 				<div class="col-sm-6">
 					<div class="pc-account-order-shipping-address">
 						<fieldset>
@@ -64,14 +63,14 @@ echo $this->loadTemplate('js');
 						</fieldset>
 					</div>
 				</div>
-			</div>			
+			</div>
 			
-			<div class="pc-account-order-paymentdetail">			
+			<div class="pc-account-order-paymentdetail">
 				<fieldset>
 					<legend><?php echo JText::_('COM_PAYCART_ACCOUNT_PAYMENT_DETAILS');?></legend>
 					<div class="row">
 						<div class="col-sm-6">
-							<div><?php echo JText::_('COM_PAYCART_CART_PAYMENT_METHOD');?> : <?php echo $cart->params['payment_gateway']['title'];?></div>
+							<div><?php echo JText::_('COM_PAYCART_PAYMENT_METHOD');?> : <?php echo $cart->params['payment_gateway']['title'];?></div>
 							<div><?php echo JText::_('COM_PAYCART_STATUS');?> :
 								<span class="heading pc-uppercase">
 								<?php if($invoice->status == PaycartHelperInvoice::STATUS_INVOICE_PAID): ?>
@@ -84,6 +83,7 @@ echo $this->loadTemplate('js');
 								</span>
 							</div>
 						</div>
+						<br class="visible-xs-block" />
 						<div class="col-sm-6">
 							<table class="table">
 								<thead>
@@ -225,7 +225,7 @@ echo $this->loadTemplate('js');
 										
 										<td class="hidden-xs" width="30%">
 	 										<div class="text-right">
-	  											<span class="lead"><?php echo $formatter->amount($productParticular->total);?></span>
+	  											<span class="heading"><?php echo $formatter->amount($productParticular->total);?></span>
 	  											<span>
 	  											<a href="#" onclick="return false;" data-toggle="popover" data-placement="left" data-trigger="click" 
 	  												data-content="">	  												

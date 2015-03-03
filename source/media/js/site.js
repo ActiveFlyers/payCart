@@ -46,7 +46,7 @@ if(typeof(Joomla)=='undefined'){
 					
 			// add the real rule
 			$('<style type="text/css">'+selector+':before { content : "' + count+' .pull-left" ;  } </style>').appendTo($('head'));
-			document.styleSheets[0].insertRule(selector+':before { content : "'+ count+' .pull-left" ;  }', 0);
+			//document.styleSheets[0].insertRule(selector+':before { content : "'+ count+' .pull-left" ;  }', 0);
 						
 		}
 		

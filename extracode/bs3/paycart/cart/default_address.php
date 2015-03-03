@@ -23,7 +23,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	 	<div class="col-sm-6 pc-checkout-billing ">
 	 	
 	 		<h3><?php echo JText::_('COM_PAYCART_ADDRESS_BILLING'); ?></h3>
-	 		
+	 		<div class="checkbox"><label>&nbsp;</label></div>
 	 		<div class="pc-checkout-billing-html">
 			 	<?php
 			 		// load billing address template

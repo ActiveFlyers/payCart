@@ -8,9 +8,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}?>
+defined( '_JEXEC' ) or die( 'Restricted access' );?>
 
 <div class='pc-categories-wrapper row clearfix'>
 	<div id="pc-categories" class='pc-categories col-sm-12 clearfix' data-columns >

@@ -10,9 +10,7 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}?>
+defined( '_JEXEC' ) or die( 'Restricted access' );?>
 
 <?php 
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.min.js');
@@ -38,7 +36,7 @@ $postionedAttributes = (array)$product->getPositionedAttributes();
 paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');
 </script>
 
-<div class='pc-product-fullview-wrapper row clearfix'>
+<div class='pc-product-fullview-wrapper clearfix'>
 
 	<h1 class="visible-xs-block pc-break-word"><?php echo $product->getTitle(); ?></h1>
 	 
@@ -63,10 +61,10 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				Right Layout
 		 =========================== -->
 		 <div class="col-sm-12 col-md-6">
-				<h1 class="hidden-xs pc-break-word"><?php echo $product->getTitle(); ?></h1>	
-		 		<h2><?php echo JText::_("COM_PAYCART_PRICE");?> : 
+				<h1 class="hidden-xs pc-break-word pc-product-detail-title"><?php echo $product->getTitle(); ?></h1>	
+		 		<h3><?php echo JText::_("COM_PAYCART_PRICE");?> : 
 		 			<span><?php echo $formatter->amount($product->getPrice(),true);?></span>	
-		 		</h2>
+		 		</h3>
 		 		
 		 		<!-- ======================
 				Position == product-overview	
@@ -89,14 +87,16 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 		<!-- Filterable Attributes -->
 		 		<?php if(!empty($selectors)):?>
 		 		<div>
-		 		    <form class="pc-product-attributes" method="post">
-		 		    	 <fieldset class="">		 		    	 	
+		 		    <form class="pc-product-selector" method="post">
+		 		    	 <fieldset>		 		    	 	
 					    	<?php foreach ($selectors as $productAttributeId => $data):?>
 					    		<?php $instance  = PaycartProductAttribute::getInstance($productAttributeId);?>
-					    		
-					    		 <div class="form-group">
+					    		<hr/>
+					    		<div class="row">
+					    		<div class="form-group pull-left col-xs-12">
 					    			<label class="text-muted"><?php echo $instance->getTitle();?>:</label>
 					    			<?php echo $product->getAttributeHtml('selector', $productAttributeId, $data['selectedvalue'],$data['options']);?>
+					    		 </div>
 					    		 </div>
 					        <?php endforeach;?>							
 							<!-- -->
@@ -105,11 +105,11 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				    </form>
     			</div>
     			<?php endif;?>
-		 		
+		 		<hr/>
 		 		<!-- buy now -->
                 <?php if($isAvailableInStock):?>                     
 				<div class="row clearfix">
-                	<div class="col-sm-12 col-md-6 help-block">                 
+                	<div class="col-sm-12 col-md-6">                 
                     	<?php if(!$isExistInCart):?>
                         	<a class="btn btn-block btn-lg btn-primary pc-btn-buynow" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>">
                             	<?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?>
@@ -118,13 +118,13 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
                         	<h3 class='text-center text-info'><?php echo JText::_('COM_PAYCART_PRODUCT_ADDED_TO_CART')?></h3>
                         <?php endif;?>
                     </div>
-                    <div class="col-sm-12 col-md-6 help-block">    
+                    <div class="col-sm-12 col-md-6">    
                     	<?php if(!$isExistInCart):?>            
-                        	<button class="btn btn-block btn-lg pc-btn-addtocart" onClick="paycart.product.addtocart(<?php echo $product->getId();?>);">
+                        	<button class="btn btn-block btn-lg pc-btn-addtocart btn-default" onClick="paycart.product.addtocart(<?php echo $product->getId();?>);">
                         		<?php echo JText::_("COM_PAYCART_PRODUCT_ADD_TO_CART");?>
                             </button>
                         <?php else:?>
-                        	<button class="btn btn-block btn-lg pc-btn-addtocart" onClick='rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display'); ?>"); return false;'>
+                        	<button class="btn btn-block btn-lg pc-btn-addtocart btn-default" onClick='rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=display'); ?>"); return false;'>
                         		<h4 class='text-center'><?php echo JText::_('COM_PAYCART_CART_VIEW')?>&nbsp;&nbsp; <i class='fa fa-chevron-right'></i></h4>
                         	</button>
                         <?php endif;?>
@@ -132,17 +132,18 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
               	</div>
               	<?php else :?>
                 	<div class="row">
+                		<div class="col-sm-12 col-md-12">
                     	<h2 class="text-error"><?php echo JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK");?></h2>
+                    	</div>
                     </div>
                 <?php endif;?>
-                
+                <hr/>
                 
                 <!-- ======================
 				Position == product-addons	
 		 		=========================== -->		 		
 		 		<div class="row">		 		
-		 		<div class="pc-product-addons">
-		 			<p>&nbsp;</p>		 			
+		 		<div class="pc-product-addons col-xs-12"> 			
 		 			<?php if(isset($postionedAttributes['product-addons']) && !empty($postionedAttributes['product-addons'])) : ?>
 		 				<ul>
 		 				<?php foreach($postionedAttributes['product-addons'] as $attributeId) : ?>
@@ -164,22 +165,21 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 	 <!-- ===============================
 	 		    Full layout 
 	 ==================================== -->
-	 <div class="row">
-	 
+	 <div class="row">	 
 	  <div class="col-sm-12">
 	  	<?php $description = $product->getDescription();?>
 	  	<?php if(!empty($description) || (isset($postionedAttributes['product-details']) && !empty($postionedAttributes['product-details']))):?>
 		 	<!-- accordion1 Detail description of product -->
-		 	<div class="accordion" id="accordion-id">
+		 	<div class="accordion panel-group" id="accordion-details-id">		 	
 		 		<div class="accordion-group panel panel-default">
-			 		<div class="accordion-heading panel-heading">
-			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id" data-target=".accordion-body-id">
+		 			<div class="accordion-heading panel-heading" role="tab" id="accordion-details-heading">			 		
+			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-details-id" aria-controls="accordion-details-body-id" href="#accordion-details-body-id">
 			 				<div class="panel-title"> <?php echo JText::_("COM_PAYCART_DETAILS");?>		 				
-			 				<div class="pull-right "><i class="fa fa-minus-square"></i></div></div>
+			 				<div class="accordian-icon pull-right "></div></div>
 			 			</a>		
 			 		</div>
 			 		<!-- use class "in" for keeping it open -->
-			 		 <div class="accordion-body collapse in accordion-body-id">
+			 		 <div class="accordion-body collapse in panel-collapse" id="accordion-details-body-id" role="tabpanel" aria-labelledby="accordion-details-heading">
 			 		 	<div class="accordion-inner panel-body">
 			 		 		<div class="pc-product-details">
 				 		 		<?php if(!empty($description)) : ?>
@@ -215,16 +215,16 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 	 	
 	 	
 	 <?php if(isset($postionedAttributes['product-specifications']) && !empty($postionedAttributes['product-specifications'])) : ?>
-		 	<!-- Specification -->
-		 	<div class="accordion" id="accordion-id2">
+		 	<!-- Specification -->		 	
+		 	<div class="accordion panel-group" id="accordion-specification-id">
 		 		<div class="accordion-group panel panel-default">
-			 		<div class="accordion-heading panel-heading">
-			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id2" data-target=".accordion-body-id2">
-			 				<div class="panel-title"><?php echo JText::_("COM_PAYCART_PRODUCT_SPECIFICATION");?><span class="pull-right"><i class="fa fa-minus-square"></i></span></div>
+			 		<div class="accordion-heading panel-heading" role="tab" id="accordion-specification-heading">
+			 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-specification-id" aria-controls="accordion-specification-body-id" href="#accordion-specification-body-id">
+			 				<div class="panel-title"><?php echo JText::_("COM_PAYCART_PRODUCT_SPECIFICATION");?><div class="accordian-icon pull-right "></div></div>
 			 			</a>		
 			 		</div>
 			 		
-			 		 <div class="accordion-body collapse in accordion-body-id2">
+			 		 <div class="accordion-body collapse in panel-collapse" id="accordion-specification-body-id">
 			 		 	<div class="accordion-inner panel-body">
 	                        <table class="pc-product-specification table table-responsive">
 	                          	

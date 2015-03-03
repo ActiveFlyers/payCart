@@ -12,3 +12,16 @@
 .rb-error.show, .pc-error{
 	margin-top: 0px;
 }
+
+.pc-product-selector select.form-control{
+	width: auto;
+	min-width: 200px;
+}
+
+.pc-account-order-product .table .progress{
+	border: none;
+}
+
+.paycart .pc-product-filter .accordion-toggle{
+	padding : 0px !important;
+}

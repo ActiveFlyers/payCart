@@ -12,7 +12,7 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 ?>
-<div class="ro">
+<div>
  	<div class="accordion-group panel panel-default">
  		<div class="accordion-heading panel-heading">
  			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-products-summary">
@@ -42,13 +42,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 						<?php $postionedAttributes = (array)$product->getPositionedAttributes();?>
 								<?php $attributes = $product->getAttributes();?>
 								 <div class="pc-product-overview">
-						 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>			 			
+						 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>
+										<ul class="list-unstyled text-muted">
 						 				<?php foreach($postionedAttributes['product-overview'] as $attributeId) : ?>
 						 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
 						 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
-									 			<span><?php echo $instance->getTitle();?></span>&nbsp;:&nbsp;<span><?php $options = $instance->getOptions(); echo $options[$attributes[$attributeId]]->title;?></span><br />
-											<?php endif?>	                         
-						 				<?php endforeach;?>			 				
+									 			<li><small><?php echo $instance->getTitle();?>&nbsp;:&nbsp;<?php $options = $instance->getOptions(); echo $options[$attributes[$attributeId]]->title;?></small></li>
+											<?php endif?>
+						 				<?php endforeach;?>
+						 				</ul>			 				
 						 			<?php endif;?>
 						 		</div>			 	
 		 						<div>
@@ -94,19 +96,24 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 						<div class="col-sm-12">
 				 					<label><?php echo JText::_('COM_PAYCART_QUANTITY'); ?> :</label>
 				 					</div>
-				 					<div class="col-sm-8 col-xs-8">			
-										<input type="text" class="form-control" id='pc-checkout-quantity-<?php echo $particular->particular_id; ?>'
-				 							value="<?php echo $particular->quantity; ?>"
-				 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" />
-				 					</div>				 					
-				 					<div class="col-sm-4 col-xs-4">				 										 											 										 					
-				 						<a href="javascript:void(0);" onClick="paycart.cart.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value);">
-				 						<i class="fa fa-refresh"></i>
-				 						</a>					 		
-				 					</div>									 										 					
-				 				</div>				 				
-				 				<span class="text-danger" id="pc-checkout-quantity-error-<?php echo $particular->particular_id;?>"></span>
-				 				<div><h4><?php echo JText::_('COM_PAYCART_PRICE'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></h4></div>
+				 					<div class="col-sm-12">
+				 						<div class="input-group">				 									
+											<input type="text" class="form-control" id='pc-checkout-quantity-<?php echo $particular->particular_id; ?>'
+					 							value="<?php echo $particular->quantity; ?>"
+					 							min="<?php echo isset($particular->min_quantity) ? $particular->min_quantity : 1; ?>" />
+				 								
+						 					<div class="input-group-addon">				 										 											 										 					
+						 						<a href="javascript:void(0);" onClick="paycart.cart.confirm.onChangeProductQuantity(<?php echo $particular->particular_id; ?>, this.value);">
+						 						<i class="fa fa-refresh"></i>
+						 						</a>					 		
+						 					</div>
+						 				</div>									 										 					
+				 					</div>				
+					 				<div class="col-sm-12"> 				
+					 					<span class="text-danger" id="pc-checkout-quantity-error-<?php echo $particular->particular_id;?>"></span>
+					 				</div>
+					 				<div class="col-sm-12"><h4><?php echo JText::_('COM_PAYCART_PRICE'); ?> : <?php echo $formatter->amount($particular->total, true, $currency_id); ?></h4></div>
+				 				</div>
 			 				</div>
 			 			</div>
 	 				</div>			

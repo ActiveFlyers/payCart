@@ -112,10 +112,11 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 				 		<!-- use class "in" for keeping it open -->
 				 		 <div class="accordion-body collapse in" id="accordion-body-id-stock">
 				 		 	<div class="accordion-inner clearfix">
-				 		 		<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
-		       					<?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/>
-		       					<span><?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?></span>
-				 		 	</div>
+			 		 			<label class="checkbox help-block"><input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
+			       					<?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/>
+			       					<span><?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?></span>
+								</label>
+							</div>
 				 		 </div>
 				 	 </div>
 				</div>

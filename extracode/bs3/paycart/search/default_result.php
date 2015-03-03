@@ -28,16 +28,16 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
        1. Top section : Search word & total result count and sorting
      ================================================================== -->
 	<div class="row">
-		<div class="pull-left col-md-12 col-sm-12">
+		<div class="pull-left col-sm-12">
 			<?php if(!empty($searchWord)):?>
 				<h3>
 					<?php echo JText::_('COM_PAYCART_SEARCH')?> : <?php echo $searchWord ?>
-					<span class="muted"><?php echo ' ('.$count.' '.(($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM")).')';?></span>
+					<span class="text-muted"><?php echo ' ('.$count.' '.(($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM")).')';?></span>
 				</h3>
 			<?php elseif(!empty($filters->core->selectedCategoryId)):?>
 				<h3>
 					<?php echo JText::_('COM_PAYCART_CATEGORY')?> : <?php echo PaycartProductcategory::getInstance($filters->core->selectedCategoryId)->getTitle()?>
-					<span class="muted"><?php echo ' ('.$count.' '.(($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM")).')';?></span>
+					<span class="text-muted"><?php echo ' ('.$count.' '.(($count > 1)?JText::_("COM_PAYCART_ITEMS"):JText::_("COM_PAYCART_ITEM")).')';?></span>
 				</h3>
 			<?php endif;?>
 		</div>
@@ -121,9 +121,12 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 				 		<div class="pc-product-filter-body">
 					 		 <div class="accordion-body panel-collapse collapse in" id="accordion-body-id-stock">
 					 		 	<div class="accordion-inner panel-body" role="tabpanel" aria-labelledby="accordion-heading-stock">
-					 		 		<input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
-			       					<?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/>
-			       					<span><?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?></span>
+									<div class="checkbox">
+					 		 			<label class="help-block"><input type="checkbox" name="filters[core][in_stock]" value="In-Stock" data-pc-result="filter"
+					       					<?php echo (!empty($filters->core->appliedInStock))?'checked=checked':'';?>/>
+					       					<span><?php echo JText::_("COM_PAYCART_FILTER_EXCULDE_OUT_OF_STOCK");?></span>
+										</label>
+									</div>
 					 		 	</div>
 					 		 </div>
 					 	</div>
@@ -209,7 +212,7 @@ $appliedAttrIds = array_keys($filters->attribute->appliedAttr);
 					<span><small><?php echo JText::_("COM_PAYCART_SEARCH_REFINE")?>:</small></span>
 		  			<button class="btn btn-default" data-toggle="offcanvas-filter" data-target="#offcanvas-filter" type="button"><i class="fa fa-filter fa-lg"></i> Filter</button>
   				</div>
-				<div class="muted text-center well"><h3><?php echo JText::_("COM_PAYCART_FILTER_NO_MATCHING_RECORD");?></h3></div>
+				<div class="text-muted text-center well"><h3><?php echo JText::_("COM_PAYCART_FILTER_NO_MATCHING_RECORD");?></h3></div>
 			</div>
 		<?php endif;?>
 	</div>

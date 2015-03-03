@@ -9,15 +9,13 @@
 */
 
 // no direct access
-if(!defined( '_JEXEC' )){
-	die( 'Restricted access' );
-}?>
+defined( '_JEXEC' ) or die( 'Restricted access' );?>
 <div class="well">
 	<div class="row">
 		<div class="col-sm-10">
 			<img class="pc-account-header-avatar img-thumbnail pull-left" src="<?php echo "http://www.gravatar.com/avatar/" . md5( strtolower( trim( $buyer->getEmail() ) ) ) . "?size=48";?>" alt="<?php echo $buyer->getRealName();?>">						
 			<h3 class="pc-account-header-name"><?php echo $buyer->getRealName();?></h3>
-			<ul class="pc-account-header-details list-inline muted text-shadow-white">
+			<ul class="pc-account-header-details list-inline text-muted text-shadow-white">
 				<li><i class="fa fa-envelope-o"></i> <?php echo JText::_('COM_PAYCART_EMAIL');?> : <?php echo $buyer->getEmail();?></li>
 				<?php $phone = $buyer->getDefaultPhone();?>
 				<?php if(!empty($phone)) :?>
