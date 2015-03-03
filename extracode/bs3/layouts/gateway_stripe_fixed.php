@@ -26,7 +26,7 @@ $year = date('Y');
 					    </label>
 				    </div>
 			        <div>
-			        	<input type="text"  size="20" value="4242424242424242" id="rb-processor-stripe-card-number" class="form-control validate-rb-credit-card" name="payment_data[card_number]" required="true" autocomplete="off"/>
+			        	<input type="text"  size="20" value="" id="rb-processor-stripe-card-number" class="form-control validate-rb-credit-card" name="payment_data[card_number]" required="true" autocomplete="off"/>
 			        </div>
 			        <span for="rb-processor-stripe-card-number" class="rb-error hide"><?php echo  JText::_('PLG_RB_ECOMMERCEPROCESSOR_STRIPE_ERROR_CREDIT_CARD_NOT_VALID'); ?></span>
 		        </div>
@@ -59,7 +59,7 @@ $year = date('Y');
 									<option value="09" ><?php echo JText::_('SEPTEMBER'); 	?></option>
 									<option value="10" ><?php echo JText::_('OCTOBER');		?></option>
 									<option value="11" ><?php echo JText::_('NOVEMBER');	?></option>
-									<option value="12" selected="selected"><?php echo JText::_('DECEMBER'); 	?></option>
+									<option value="12" ><?php echo JText::_('DECEMBER'); 	?></option>
 							</select>
 						</div>
 						
@@ -90,7 +90,7 @@ $year = date('Y');
 					    </label>
 			        </div>
 			        <div class="input-group">
-			        	<input type="text" size="4"  value="123" name="payment_data[card_code]" class="form-control validate-rb-cvc-length" id="rb-processor-stripe-cvc-number" data-rb-validate='#rb-processor-stripe-card-number'  required="true" class="input-small"  autocomplete="off"/>
+			        	<input type="text" size="4"  value="" name="payment_data[card_code]" class="form-control validate-rb-cvc-length" id="rb-processor-stripe-cvc-number" data-rb-validate='#rb-processor-stripe-card-number'  required="true" class="input-small"  autocomplete="off"/>
 			            <span class="input-group-addon">
 			            	<?php 
 				            	//@TODO:: dont use hardcoded path
