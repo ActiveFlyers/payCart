@@ -23,6 +23,7 @@ class PaycartTaxruleProcessorEuvat extends PaycartTaxruleProcessor
 	
 	public function process(PaycartTaxruleRequest $request, PaycartTaxruleResponse $response)
 	{
+		static $verifiedVat = array();
 		$result = true;
 		$ownerCountry = isset($this->global_config->origin_address->country->isocode2)?$this->global_config->origin_address->country->isocode2:null;
 		
@@ -40,7 +41,12 @@ class PaycartTaxruleProcessorEuvat extends PaycartTaxruleProcessor
 		}
 		//Case 2 . If vat number is not empty and valid then 0% vat will be applicable
 		else{
-			if(!empty($vatNumber) && $this->isVatValid($buyerCountry, $vatNumber, $response)){
+			$key = strtoupper($buyerCountry.$vatNumber);
+			if($buyerCountry && $vatNumber && !isset($verifiedVat[$key])){
+				$verifiedVat[$key] =  $this->isVatValid($buyerCountry, $vatNumber, $response);
+			}
+			
+			if(!empty($vatNumber) && $verifiedVat[$key]){
 				$result = false;
 			}
 			
