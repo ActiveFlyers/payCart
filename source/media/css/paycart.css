@@ -277,3 +277,13 @@
 .row-offcanvas-left.active .sidebar-offcanvas { 
 	left: 0%;
 }
+
+/* due to conflict with joomla 3.4 template css*/
+#paycart div.modal{
+	margin-left : -280px;
+}
+	
+#paycart .form-horizontal input, 
+#paycart .form-horizontal textarea{
+	margin-bottom : 9px;
+}

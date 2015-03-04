@@ -59,7 +59,7 @@ $id_suffix++;
 		
 <!-- Buyer To -->
 	<div class="control-group">
-	  <label class="control-label" for="to">
+	  <label class="control-label required" for="to_<?php echo $id_suffix; ?>">
 	  		<?php echo JText::_('COM_PAYCART_TO');?>
 	  </label>
 	  <div class="controls">
@@ -69,18 +69,20 @@ $id_suffix++;
 				value="<?php echo @$displayData->to; ?>"
 				type="text" required="true"
 		/>
+		<div class="pc-error" for="to_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 	  </div>
 	</div>
 		
 <!-- Buyer Address -->
 	<div class="control-group">
-	  <label class="control-label" for="address">
+	  <label class="control-label required" for="address_<?php echo $id_suffix; ?>">
 	  	<?php echo JText::_('COM_PAYCART_ADDRESS');?>
 	  </label>
 	  <div class="controls">                     
 	    <textarea 	name="<?php echo $prefix; ?>[address]" 
 					id="address_<?php echo $id_suffix; ?>"
 					required="true"><?php echo @$displayData->address; ?></textarea>
+		<div class="pc-error" for="address_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 	  </div>
 	</div>
 	
@@ -131,7 +133,7 @@ $id_suffix++;
 
 <!--	Buyeraddress City	-->
 	<div class="control-group">
-	  <label class="control-label" for="textinput">
+	  <label class="control-label required" for="city_<?php echo $id_suffix; ?>">
 	  		<?php echo JText::_('COM_PAYCART_CITY');?>
 	  </label>
 	  <div class="controls">
@@ -139,12 +141,13 @@ $id_suffix++;
 				id="city_<?php echo $id_suffix; ?>" 
 				value="<?php echo @$displayData->city; ?>"
 	    	    type="text" required="true">
+	   	<div class="pc-error" for="city_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 	  </div>
 	</div>
 
 <!--	Buyeraddress Zipcode	-->
 	<div class="control-group">
-	  <label class="control-label" for="Zipcode">
+	  <label class="control-label required" for="zipcode_<?php echo $id_suffix; ?>">
 	  		<?php echo JText::_('COM_PAYCART_ZIPCODE');?>
 	  </label>
 	  <div class="controls">
@@ -152,13 +155,14 @@ $id_suffix++;
 					id="zipcode_<?php echo $id_suffix; ?>" 
 					value="<?php echo @$displayData->zipcode; ?>"
 					type="text" required="true">
+			<div class="pc-error" for="zipcode_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 	  
 	  </div>
 	</div>
 		
 <!--	Buyeraddress Phone	-->
 	<div class="control-group">
-	  <label class="control-label" for="textinput">
+	  <label class="control-label required" for="phone_<?php echo $id_suffix; ?>">
 	  		<?php echo JText::_('COM_PAYCART_PHONE');?>
 	  </label>
 	  <div class="controls">
@@ -166,6 +170,7 @@ $id_suffix++;
 					id="phone_<?php echo $id_suffix; ?>" 
 					value="<?php echo @$displayData->phone; ?>" 
 		    		type="text" required="true">
+		    <div class="pc-error" for="phone_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 	  </div>
 	</div>
 

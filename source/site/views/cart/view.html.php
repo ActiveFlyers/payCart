@@ -114,12 +114,12 @@ class PaycartsiteHtmlViewcart extends PaycartSiteBaseViewcart
 			foreach($shippingCartParticulars as $particular){
 				$params = $particular->params;
 				$date = new Rb_Date($params->delivery_date);
-				if(empty($estimateDeliveryDate)){
+				if(empty($estimatedDeliveryDate)){
 					$estimatedDeliveryDate = $date;
 					continue;
 				}
 				
-				$estimatedDeliveryDate = ($estimateDeliveryDate->toUnix() < $date->toUnix()) ? $date : $estimatedDeliveryDate;
+				$estimatedDeliveryDate = ($estimatedDeliveryDate->toUnix() < $date->toUnix()) ? $date : $estimatedDeliveryDate;
 			}
 		}
 		

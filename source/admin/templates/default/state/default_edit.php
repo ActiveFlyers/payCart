@@ -15,6 +15,13 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 ?>
+<style>
+	/* To load popup in proper position */
+	#paycart div.modal {
+	    margin-left: -200px;
+	}
+</style>
+
 <script>
 (function($)
 {
@@ -47,19 +54,23 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 </div>
 
 <div id="rbWindowBody">
-	<div class="modal-body">
+	<div class="modal-body form-horizontal">
 		<!--  New state creation body		-->
 		<form method="post"  id="paycart_state_form" class="pc-form-validate">
 			<?php $field = $form->getField('title') ?>
 			<div class="control-group">
 				<div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
-				<div class="controls"><?php echo $field->input; ?></div>								
+				<div class="controls"><?php echo $field->input; ?>
+					<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+				</div>								
 			</div>
 
 			<?php $field = $form->getField('isocode') ?>
 			<div class="control-group">
 				<div class="control-label"><?php echo $field->label; ?> </div>
-				<div class="controls"><?php echo $field->input; ?></div>								
+				<div class="controls"><?php echo $field->input; ?>
+					<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
+				</div>								
 			</div>
 					
 			<?php $field = $form->getField('country_id') ?>
