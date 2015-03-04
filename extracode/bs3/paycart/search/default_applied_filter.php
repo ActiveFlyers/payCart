@@ -64,7 +64,7 @@ $appliedInStock     = $filters->core->appliedInStock;
 <?php endif;?>
 
 
-<span class="hidden-xs badge pull-right pc-cursor-pointer" data-pc-selector="removeAll">
+<span class="badge pull-right pc-cursor-pointer" data-pc-selector="removeAll">
 	<?php echo JText::_("COM_PAYCART_FILTER_RESET_ALL")?>&nbsp;&nbsp;<i class="fa fa-times-circle"></i>
 </span>
 

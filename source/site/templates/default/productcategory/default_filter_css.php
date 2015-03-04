@@ -99,4 +99,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 	min-height: 2.2em;
 }
 
+/* disable scrolling in individual filter in mobile */
+.row-offcanvas-left.active .pc-product-filter-body{
+	max-height:none;
+}
+
 </style>
