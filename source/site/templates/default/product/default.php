@@ -109,9 +109,9 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				<div class="row-fluid clearfix">
                 	<div class="span6 help-block">                 
                     	<?php if(!$isExistInCart):?>
-                        	<a class="btn btn-block btn-large btn-primary pc-btn-buynow" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>">
-                            	<?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?>
-                            </a>
+                        	<button class="btn btn-block btn-large btn-primary pc-btn-buynow" onClick='rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>"); return false;'>
+                            		<?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?>
+                            </button>
                         <?php else:?>
                         	<h3 class='text-center text-info'><?php echo JText::_('COM_PAYCART_PRODUCT_ADDED_TO_CART')?></h3>
                         <?php endif;?>
