@@ -34,7 +34,7 @@ $maxWeightRange 	= $filters->core->maxWeightRange;
 	 		<div class="accordion-heading">
 	 			<h2>
 		 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-price" href="#accordion-body-id-price">		 				
-		 				<span>&nbsp;<?php echo JText::_("COM_PAYCART_PRICE").' ( '.$currency.' )'?></span>
+		 				<span>&nbsp;<?php echo JText::_("COM_PAYCART_PRICE").' ('.$currency.')'?></span>
 		 			</a>
 		 		</h2>		
 	 		</div>
@@ -75,7 +75,7 @@ $maxWeightRange 	= $filters->core->maxWeightRange;
 	 		<div class="accordion-heading">
 	 			<h2>
 		 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-id-weight" href="#accordion-body-id-weight">		 				
-		 				<span>&nbsp;<?php echo JText::_("COM_PAYCART_WEIGHT").' ( '.$weightUnit.' )'?></span>
+		 				<span>&nbsp;<?php echo JText::_("COM_PAYCART_WEIGHT").' ('.$weightUnit.')'?></span>
 		 			</a>
 		 		</h2>
 	 		</div>
