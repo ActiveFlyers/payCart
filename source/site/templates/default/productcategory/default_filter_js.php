@@ -43,16 +43,23 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 		    $('.row-offcanvas').toggleClass('active');
 		});
 		
+		//apply filters on mobile
 		$('[data-pc-selector="applyFilters"]').on('click',function(){
-			//need to combine(comma seperated) min and max value in case of mobile
+			paycart.product.filter.getResult();
+		});
+
+		//need to combine(comma seperated) min and max value in case of mobile
+		$('input[name="filterPriceMin"],input[name="filterPriceMax"]').on('change', function(){
 			var minPrice = $('input[name=filterPriceMin]').val();
 			var maxPrice = $('input[name=filterPriceMax]').val();
 			$('input[name="filters[core][price]"]').val(minPrice+','+maxPrice);
+		});
 
+		//need to combine(comma seperated) min and max value in case of mobile
+		$('input[name="filterWeightMin"],input[name="filterWeightMax"]').on('change', function(){
 			var minWeight = $('input[name=filterWeightMin]').val();
 			var maxWeight = $('input[name=filterWeightMax]').val();
 			$('input[name="filters[core][weight]"]').val(minWeight+','+maxWeight);
-			paycart.product.filter.getResult();
 		});
 
 		$('[data-pc-loadMore="click"]').on('click', function(){
