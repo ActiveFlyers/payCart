@@ -35,9 +35,14 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );?>
 
 		$('[data-toggle="offcanvas-filter"]').on('click',function () {
 			  var currentId = $(this).attr('data-target');
-			  $('.sidebar-offcanvas').hide();
+			  $('.sidebar-offcanvas').not(currentId).hide();
 			  	setTimeout( function(){ 
-			  		$(currentId).show();
+			  		if($(currentId).is(':visible')){
+			  			$(currentId).hide();
+			  		}
+			  		else{
+			  			$(currentId).show();
+			  		}
 				  }
 				 , 100) ;
 		    $('.row-offcanvas').toggleClass('active');

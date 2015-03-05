@@ -245,12 +245,16 @@ $return_link	= 	base64_encode($link);
 	$(document).ready(function () {
 		$('.sidebar-offcanvas').hide();
 	  	$('[data-toggle="offcanvas"]').click(function () {
-		  var currentId = $(this).attr('data-target');
-		  $('.sidebar-offcanvas').hide();
-		  	setTimeout( function(){ 
-		  		$(currentId).show();
-			  }
-			 , 100 );		  
+		  	var currentId = $(this).attr('data-target');
+		   	$('.sidebar-offcanvas').not(currentId).hide();
+			setTimeout( function(){ 
+				if($(currentId).is(':visible')){
+					$(currentId).hide();
+				}
+				else{
+					$(currentId).show();
+				}
+			} , 100) ;		  
 		  
 	    $('.row-offcanvas').toggleClass('active');
 	  });

@@ -265,6 +265,7 @@
 	width: 100%;
 	overflow-y : scroll;
 	bottom: 0;
+	display: none;
 }
 
 .row-offcanvas-left.active { 
