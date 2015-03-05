@@ -8,7 +8,7 @@
 				type="text"
 				maxlength="7"
 				required="true"
-				label="COM_PAYCART_ADMIN_ISOCODE" />
+				label="COM_PAYCART_ADMIN_STATE_ISOCODE" />
 				
 		<field 	name="country_id"
 				type="text"
