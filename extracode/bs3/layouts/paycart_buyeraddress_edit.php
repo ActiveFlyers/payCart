@@ -4,8 +4,9 @@
 * @copyright	Copyright (C) 2009 - 2013 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
-* @contact		support_paycart@readybytes.in
-* @author		rimjhim
+* @subpackage	Layouts
+* @contact		support+paycart@readybytes.in
+* @author 		Manish Trivedi 
 */
 
 /**
@@ -19,7 +20,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 $prefix = 'paycart_buyeraddress';
 
-// custom prefix provided
+// cusom prefix provided
 if(isset($displayData->prefix) && !empty($displayData->prefix))  {
 	$prefix = $displayData->prefix;
 }

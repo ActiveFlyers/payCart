@@ -15,6 +15,12 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 ?>
+<style>
+	/* To load popup in proper position */
+	#paycart div.modal {
+	    margin-left: -200px;
+	}
+</style>
 
 <div id="rbWindowTitle">
 	<div class="modal-header">
@@ -23,7 +29,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	</div>
 </div>
 
-<div class="modal-body" id="rbWindowBody">
+<div class="modal-body form-horizontal" id="rbWindowBody">
 	<!--  New_atrribute_creation body		-->
 	<form id="paycart_buyeraddress_form" class="pc-form-validate">	 
 		<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_edit', $display_data);?>

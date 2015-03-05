@@ -321,12 +321,16 @@ class PaycartHelperCart extends PaycartHelper
 			$data['est_delivery_date'] = $particular->params->delivery_date;
 			$data['shippingrule_id']   = $particular->particular_id;
 			$data['status']			   = Paycart::STATUS_SHIPMENT_PENDING;
+			$data['products'] 		   = array();
+			$data['actual_shipping_cost'] = $particular->price;
+			$data['weight'] = 0;
 			
 			foreach ($particular->params->product_list as $productId => $details){
-				$data['products'] = array();
-				$data['products'][] = array('product_id' => $productId, 'quantity' => $details->quantity);
-				PaycartShipment::getInstance(0,$data)->save();
+				$data['products'][] = array('product_id' => $productId, 'quantity' => $details->quantity);	
+				$data['weight'] += (PaycartProduct::getInstance($productId)->getWeight() * $details->quantity);
 			}
+			
+			PaycartShipment::getInstance(0,$data)->save();
 		}
 	}
 }
