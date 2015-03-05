@@ -158,16 +158,16 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
  		
  	<div class="row">
  		<div class="col-sm-5">
-			<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" class="btn btn-lg input-block-level btn-info"><?php echo JText::_('COM_PAYCART_KEEP_SHOPPING');?></a> 		
+			<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" class="btn btn-lg input-block-level btn-info form-control"><?php echo JText::_('COM_PAYCART_KEEP_SHOPPING');?></a> 		
  		</div>
  		<div class="col-sm-2">
  			<h4 class="text-muted center"><?php echo JText::_('COM_PAYCART_OR');?></h4>
  		</div>
  		<div class="col-sm-5">
  			<?php if($payment_status == PaycartHelperInvoice::STATUS_TRANSACTION_PAYMENT_COMPLETE || $payment_status == PaycartHelperInvoice::STATUS_TRANSACTION_PAYMENT_PENDING) :?>
-				<a href="<?php echo $track_url;?>" class="btn btn-lg input-block-level btn-default"><?php echo JText::_('COM_PAYCART_TRACK_ORDER');?></a>
+				<a href="<?php echo $track_url;?>" class="btn btn-lg input-block-level btn-default form-control"><?php echo JText::_('COM_PAYCART_TRACK_ORDER');?></a>
 			<?php else:?>
-			 	<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=cart&task=unlock&cart_id='.$cart->cart_id.'&'.JSession::getFormToken().'=1');?>" class="btn btn-lg input-block-level btn-default"><?php echo JText::_('COM_PAYCART_PAY_AGAIN');?></a>
+			 	<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=cart&task=unlock&cart_id='.$cart->cart_id.'&'.JSession::getFormToken().'=1');?>" class="btn btn-lg input-block-level btn-default form-control"><?php echo JText::_('COM_PAYCART_PAY_AGAIN');?></a>
 			<?php endif;?>
  		</div>
  	</div>
