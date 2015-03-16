@@ -19,119 +19,34 @@
 // no direct access
 defined('_JEXEC') or die;
 
-$categories		= PaycartAPI::getCategories();
-$loggin_user 	= PaycartFactory::getUser();  
+Rb_HelperTemplate::loadSetupEnv();
 
-$link = isset($displayData->return_link) ? $displayData->return_link : 'index.php';
-$return_link	= 	base64_encode($link);
-$isMobile = PaycartFactory::getApplication()->client->mobile;
+// load bootsrap, font-awesome
+$config = PaycartFactory::getConfig();
+$load = array('jquery', 'rb', 'font-awesome');
+if(isset($config->template_load_bootstrap) && $config->template_load_bootstrap){
+	$load[] = 'bootstrap';
+}
+Rb_HelperTemplate::loadMedia($load);
+
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
+Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/paycart.css');
+
+Rb_Html::script('mod_paycart_menu/script.js');
+Rb_Html::stylesheet('mod_paycart_menu/style.css', array());
+
 ?>
-<style>
-	/* styles for Tab browsers smaller than 1280px;  */
-	@media only screen and (max-width:1280px){       
-     	.mob-nav{padding:0;}
-    }
-	/* styles for mobile browsers smaller than 480px; (iPhone) */
-	@media only screen and (max-width:320px){       
-     	.mob-nav{padding:0;}
-    }
-    @media only screen and (max-width:480px){
-	     .mob-nav > ul.nav:first-child{margin-right:0;}
-    }
-    
-<?php if(!$isMobile):?>
-.pc-menu .pc-menu-categories .dropup, 
-.pc-menu .pc-menu-categories .dropdown,
-.pc-menu .pc-menu-categories.nav, 
-.pc-menu .pc-menu-categories .collapse {
-    position: static;
-}
-.pc-menu .navbar-inner{
-    position: relative;
-}
-.pc-menu .pc-column{
-	display: inline-block;
-	min-height: 30px;
-	vertical-align: top;
-}
-.pc-menu .pc-coloumn-group{
-	overflow-x: auto; 
-	overflow-y: hidden; 
-	white-space: nowrap;
-}
-
-.pc-menu .pc-menu-category > li > ul {
-  padding: 0;
-  margin: 0;
-}
-<?php endif;?>
-
-.pc-menu .navbar-nav>li>.pc-menu-category {
-    margin-top:20px;
-    border-top-left-radius:4px;
-    border-top-right-radius:4px;
-}
-
-.pc-menu .navbar-default .navbar-nav>li>a {
-    width:200px;
-    font-weight:bold;
-}
-
-.pc-menu .pc-menu-category > li > ul > li {
-  list-style: none;
-}
-
-.pc-menu .pc-menu-category > li > ul > li > a {
-	display: block;
-	padding: 2px 30px;
-	clear: both;
-	font-weight: normal;
-	line-height: 1.428571429;
-	color: rgb(153, 153, 153);
-	white-space: normal;
-}
-
-.pc-menu .pc-menu-category > li > ul > li.dropdown-header > a {
-	padding: 4px 20px;
-}
-
-.pc-menu .pc-menu-category {
-    padding: 20px 0px;
-    width: 100%;
-    box-shadow: none;
-    -webkit-box-shadow: none;
-    overflow-x: auto;	
-	white-space: nowrap;
-}
-
-.pc-menu .pc-menu-category > li > ul > li > a:hover,
-.pc-menu .pc-menu-category > li > ul > li > a:focus {
-  text-decoration: none;
-  color: #444;
-  background-color: #f5f5f5;  
-}
-
-.pc-menu .pc-menu-category .dropdown-header > a{
-  color: #428bca;
-  font-size: 16px;
-  font-weight:bold;
-}
-</style>
-
-<div class="navbar navbar-inverse pc-menu">
-	<div class="navbar-inner mob-nav">
+<div class="navbar pc-mod-menu<?php echo $class_sfx;?> ">
+	<div class="navbar-inner">
 			<!-- Product Category Menu 	-->
-        	<ul class="nav pc-menu-categories">
+        	<ul class="nav">
 				<!-- Product Category link on desktop, tab etc -->
-             	<li class="dropdown">             
-                	<a class="dropdown-toggle" data-toggle="dropdown"  href="#">
-                		<span class="hidden-phone"><?php echo JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?> <b class="caret"></b></span>
-                		<span class="visible-phone"><i class="fa fa-bars"> </i></span>
-                	</a>
-                	
-                	<ul class="dropdown-menu pc-menu-category row-fluid">
+             	<li class="dropdown pc-menu-categories-dropdown">             
+                	<a class="dropdown-toggle hidden-phone" data-toggle="dropdown"  href="#"><span><?php echo JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?> <b class="caret"></b></span></a>
+                	<a href="javascript:void(0);" data-toggle="offcanvas" data-target="#allcategories" class="visible-phone"><span class="text-white fa fa-bars"></span></a>  
+                	<ul class="dropdown-menu pc-menu-categories hidden-phone">
                   		<!-- get ctaegory links -->
-                  		<li class="">
+                  		<li>
                         	<ul class="pc-column unstyled">
                   				<?php $counter = 1;?>
                   				<li class="dropdown-header">
@@ -140,65 +55,57 @@ $isMobile = PaycartFactory::getApplication()->client->mobile;
 		            				</a>
                   				</li>
 								<?php foreach( $categories as $cat): ?>
-				     				<?php if (!$cat->level == 0 && $cat->level <= 2):?>	
+				     				<?php if (!$cat->level == 0 && $cat->level <= 2):?>
+				     					<?php if ($counter == $itemsPerColumn): ?>
+				     						</ul>
+				     						<ul class="pc-column unstyled">
+				     			 			<?php $counter = 0;?>
+				     					<?php endif;?>	
 				     					<li class="<?php if ($cat->level == 1) { echo 'dropdown-header'; };?>">
 				     						<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$cat->productcategory_id);?>" class="<?php echo 'pc-level'.$cat->level;?>">
 				     							<?php echo $cat->title;?>
 				     						</a>
 				     					</li>
-				     					<?php $counter++;?>
-				     					<?php if ($counter == $itemsPerColumn): ?>
-				     						</ul>
-				     						<ul class="pc-column unstyled">
-				     			 			<?php $counter = 0;?>
-				     					<?php endif;?>
+				     					<?php $counter++;?>				     					
 				     				<?php endif;?>
 				     			<?php endforeach;?>
                 			</ul>
                 		</li>
                 	</ul>
-            	</li>            
-            <li>
-				<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
-					<input type="text" class="navbar-search input-large search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH")?>" name="query"/>
-				</form>
-			</li>	
-            
-           </ul>
-           
-           
-			<div class="pull-right">
-				<ul class="nav">
-					<li>
-						<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=track');?>">
-				     		<i class="fa fa-map-marker"> </i> <?php echo JText::_('MOD_PAYCART_MENU_TRACK_ORDER');?>
-				     	</a>
-					</li>
+            	</li>
+            	            
+            	<li>            	
+            		<a href="javascript:void(0);" class="text-white visible-phone" data-toggle="offcanvas" data-target="#searchbar"><i class="fa fa-search"> </i></a>				
+					<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get" class="hidden-phone">
+						<input type="text" class="navbar-search input-large search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH")?>" name="query"/>
+					</form>
+				</li>
+			<?php if(!$isMobile):?>	
+            	</ul>
+            	<ul class="nav pull-right">
+            <?php endif;?>
+           		<li class="hidden-phone">
+					<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=track');?>">
+				   		<i class="fa fa-map-marker"> </i> <span class="hidden-phone"><?php echo JText::_('MOD_PAYCART_MENU_TRACK_ORDER');?></span>
+				   	</a>
+				</li>
 			
-           	    	<?php if (!$loggin_user->get('id')) : ?>
-	           		<li>
-	            		<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=login');?>">
-	            			<i class="fa fa-user"></i>
-	            			<span class="hidden-phone"> 
-	            				<?php echo JText::_('COM_PAYCART_LOGIN_AND_REGISTER'); ?>	            			
-	            			</span>	            		
-	            		</a>            	
-	            	</li>
-            <?php else :?>
+           		<?php if (!$loggin_user->get('id')) : ?>
+	           	<li>
+	            	<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=login');?>">
+	            		<i class="fa fa-user"></i>
+	            		<span class="hidden-phone"> 
+	            			<?php echo JText::_('COM_PAYCART_LOGIN_AND_REGISTER'); ?>	            			
+	            		</span>	            		
+	            	</a>            		            	
+	            </li>
+            	<?php else :?>
             		<?php $display_name = $loggin_user->get('name');?>
                		<li class="dropdown ">
-            	    	<a class="dropdown-toggle " data-toggle="dropdown"  href="#">
-                			<span class=" visible-phone">
-	                    		<i class="fa fa-user fa-stack-1x"></i>
-								<i class="fa fa-check fa-stack-1x text-info"></i>
-							</span>
-					        <span class="hidden-phone"> 
-                    			<i class="fa fa-user"></i>
-                    			<?php echo ucfirst($display_name); ?>
-                    			<b class="caret"></b> 
-                    		</span> 
-                		</a>
-                
+            	    	<a class="dropdown-toggle " data-toggle="dropdown"  href="#">                			
+					        <span><i class="fa fa-user"></i><span class="hidden-phone"> <?php echo ucfirst($display_name); ?></span><b class="caret"></b></span> 
+                		</a>                
+                		
                			<ul class="dropdown-menu ">
                   			<!-- Users links -->                    
                     		<li><a href="javascript::void();"><?php echo JText::_('MOD_PAYCART_MENU_HI');?>! <?php echo ucfirst($display_name); ?></a></li>
@@ -237,8 +144,51 @@ $isMobile = PaycartFactory::getApplication()->client->mobile;
             </li>
         </ul>         
     </div>	
-  </div>
-  
+ 
+	<div class="" id="pc-mob-offcanvas">
+		<div class="sidebar-offcanvas" role="navigation" id="allcategories">
+			<div class="sidebar-offcanvas-inner">
+				<span class="close" data-toggle="offcanvas" data-target="#allcategories"><i class="fa fa-times fa-2x"></i></span>
+				<ul class="pc-menu-categories">
+                  	<!-- get ctaegory links -->
+                  	<li>
+                        <ul class="pc-column unstyled">
+                  			<?php $counter = 1;?>
+                  			<li class="dropdown-header">
+                  				<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>">
+									<?php echo JText::_('COM_PAYCART_All') .' '.JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?>
+	            				</a>
+                  			</li>
+							<?php foreach( $categories as $cat): ?>
+			     				<?php if (!$cat->level == 0 && $cat->level <= 2):?>			     						
+			     					<li class="<?php if ($cat->level == 1) { echo 'dropdown-header'; };?>">
+			     						<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$cat->productcategory_id);?>" class="<?php echo 'pc-level'.$cat->level;?>">
+			     							<?php echo $cat->title;?>
+			     						</a>
+			     					</li>
+			     					<?php $counter++;?>
+			     				<?php endif;?>
+			     			<?php endforeach;?>
+                		</ul>
+                	</li>
+                </ul>
+			</div>
+		</div>
+	
+		<div class="sidebar-offcanvas" id="searchbar" role="navigation">
+			<div class="sidebar-offcanvas-inner">
+				<span class="close" data-toggle="offcanvas" data-target="#searchbar"><i class="fa fa-times fa-2x"></i></span>
+				<div class="pc-menu-searchbox text-center">				
+					<form class="form-search" name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get">
+						<div class="input-append">
+							<input type="text" class="input-large search-query" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH")?>" name="query"/>
+						  	<button type="submit" class="btn">Search</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+     </div>
 </div>
 
 <div class ="hide">
@@ -259,61 +209,4 @@ $isMobile = PaycartFactory::getApplication()->client->mobile;
 		</div>
 	</form>
 </div>
-                       
-	<script>
-        	(function($){
-
-        		$('.pc-menu-popover')
-        				.popover()  	//pophover
-        				.mouseleave(	//on mouse leave hide it
-                				function() {
-                    				$('.pc-menu-popover').popover('hide')
-                    			});
-
-
-        		var pc_menu = {};
-   			 
-        		pc_menu.update = 
-    				{
-    					onSuccess : function(response_data)
-    					{
-        					$('.pc-demo-cart-counter').html();
-        					
-		        			// 	take action
-        					if ( response_data['products_count'] > 0 ) {
-    						 	$('.pc-demo-cart-counter').html(response_data['products_count']);
-        					}
-    					},
-
-    					onError : function(response_data)
-    					{
-    						console.log ( {" response contain error :  " : response_data } );
-    					},
-    					
-    					do : function(event)
-    					{
-    						var request 	= [];
-    						  
-    			  			request['success_callback']	=	pc_menu.update.onSuccess;
-
-    			  			request['url'] = 'index.php?option=com_paycart&view=cart&task=getProductCount&format=json';
-
-    						paycart.request(request);
-    						
-    					},
-    				};
-    			 
-    			
-    			// bind event 
-    			$(document).on( "onPaycartCartUpdateproduct", pc_menu.update.do);
-    			
-    			// on Document ready 
-    			$(document).ready(function(){
-    				pc_menu.update.do();
-    			});
-    			
-        	})(paycart.jQuery);
-        
-        </script>
-
 <?php 

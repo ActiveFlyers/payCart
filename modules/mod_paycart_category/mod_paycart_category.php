@@ -63,8 +63,7 @@ else{
 	$limit = null;
 }
 
-//die(var_dump($filter));
-$categories		= PaycartAPI::getCategories($filter, null, $order_by, $order_in, $limit);
-
+$categories	= PaycartAPI::getCategories($filter, null, $order_by, $order_in, $limit);
+$class_sfx	= htmlspecialchars($params->get('moduleclass_sfx'));
 require JModuleHelper::getLayoutPath('mod_paycart_category', $layout);
 

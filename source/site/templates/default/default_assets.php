@@ -14,8 +14,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 Rb_HelperTemplate::loadSetupEnv();
 
 // load bootsrap, font-awesome
-Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
+$config = PaycartFactory::getConfig();
+$load = array('jquery', 'rb', 'font-awesome');
+if(isset($config->template_load_bootstrap) && $config->template_load_bootstrap){
+	$load[] = 'bootstrap';
+}
 
+Rb_HelperTemplate::loadMedia($load);
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/paycart.css');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/site.css');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/override.css');

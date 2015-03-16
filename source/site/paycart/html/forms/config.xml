@@ -185,6 +185,15 @@
 		       <option value="300">COM_PAYCART_ADMIN_CONFIG_CRON_FREQUENCY_HIGH</option>     
 		</field>
 		
+		<field name="template_load_bootstrap"
+			   type="radio"
+			   class="btn-group"
+			   label="COM_PAYCART_ADMIN_CONFIG_TEMPLATE_LOAD_BOOTSTRAP"
+			   default="0">			   
+			   <option value="1">JYES</option>
+			   <option value="0">JNO</option>			   
+		</field>
+		
 	</fieldset>
 	
 </form>

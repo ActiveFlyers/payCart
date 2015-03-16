@@ -20,19 +20,16 @@ if ( !JFile::exists($file_path)) {
 
 include_once $file_path;
 
-// load bootsrap, font-awesome
-Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
-Rb_HelperTemplate::loadSetupEnv();
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
-Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/paycart.css');
+$categories		= PaycartAPI::getCategories();
+$loggin_user 	= PaycartFactory::getUser();  
+$isMobile = PaycartFactory::getApplication()->client->mobile;
+
+$return_link = isset($displayData->return_link) ? $displayData->return_link : 'index.php';
+$return_link	= 	base64_encode($return_link);
 
 // get layout name
 $layout           = $params->get('layout', 'default');
-$layout_mob       = $params->get('layout', 'default_mobile');
 $itemsPerColumn	  = $params->get('itemsPerColumn',10);
+$class_sfx		  = htmlspecialchars($params->get('moduleclass_sfx'));
 
-if(PaycartFactory::getApplication()->client->mobile) {
-	require JModuleHelper::getLayoutPath('mod_paycart_menu', $layout_mob);
-} else {
-	require JModuleHelper::getLayoutPath('mod_paycart_menu', $layout);
-}
+require JModuleHelper::getLayoutPath('mod_paycart_menu', $layout);
