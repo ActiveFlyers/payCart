@@ -16,7 +16,7 @@ Rb_HelperTemplate::loadSetupEnv();
 // load bootsrap, font-awesome
 $config = PaycartFactory::getConfig();
 $load = array('jquery', 'rb', 'font-awesome');
-if(isset($config->template_load_bootstrap) && $config->template_load_bootstrap){
+if($config->get('template_load_bootstrap', false)){
 	$load[] = 'bootstrap';
 }
 
