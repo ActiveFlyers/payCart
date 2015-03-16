@@ -1,0 +1,54 @@
+.pc-module-product{
+	position: relative;					
+}
+				
+.pc-mod-products{	
+	padding: 20px 0px;
+}
+
+.pc-mod-products .pc-mod-product{    
+    margin:10px;
+    position: relative;    
+}
+
+.pc-mod-products .pc-mod-product .pc-mod-product-img{    
+    overflow: hidden;
+    max-height: 300px;
+}  
+  
+.pc-mod-products .pc-mod-product .pc-mod-product-img img {
+    width : 100%;
+    -webkit-transition: all 300ms ease-out;  
+    -moz-transition: all 300ms ease-out;  
+    -o-transition: all 300ms ease-out;  
+    -ms-transition: all 300ms ease-out;  
+    transition: all 300ms ease-out;      
+}
+
+.pc-mod-products .pc-mod-product:hover img {  
+       -moz-transform: scale(1.2);  
+       -o-transform: scale(1.2);  
+       -webkit-transform: scale(1.2);  
+       transform: scale(1.2);  
+}
+  
+.pc-module-product .pc-mod-ellipsis{
+	text-overflow: ellipsis;
+	max-width:98%;
+	overflow:hidden;
+}
+
+.pc-module-product .customNavigation{
+			text-align: center;
+}
+.pc-module-product .customNavigation i {
+	cursor: pointer;
+}
+.pc-module-product .product-head {
+	margin:10px auto;
+}
+
+.pc-mod-products a:hover,
+.pc-mod-products a:focus{
+	text-decoration: none;	
+}

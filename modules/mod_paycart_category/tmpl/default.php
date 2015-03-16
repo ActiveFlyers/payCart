@@ -19,97 +19,20 @@
 // no direct access
 defined('_JEXEC') or die;
 
-// load bootsrap, font-awesome
-Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
+// load bootstrap, font-awesome
+$config = PaycartFactory::getConfig();
+$load = array('jquery', 'rb', 'font-awesome');
+if(isset($config->template_load_bootstrap) && $config->template_load_bootstrap){
+	$load[] = 'bootstrap';
+}
+Rb_HelperTemplate::loadMedia($load);
 Rb_HelperTemplate::loadSetupEnv();
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.js');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
-
+Rb_Html::stylesheet('mod_paycart_category/style.css', array());
 ?>
 
-<?php if(!function_exists('pc_mod_category_style')) :?>
-	<?php function pc_mod_category_style(){?>
-		<?php static $pc_mod_category_loaded = false; ?>
-		<?php if($pc_mod_category_loaded == false) :?>
-			<style>	
-			.pc-mod-categories .pc-mod-category{
-			    position: relative;
-			    margin:10px;  
-			    overflow: hidden;
-			}  
-			  
-			.pc-mod-categories .pc-mod-category img {
-			    width : 100%;
-			    -webkit-transition: all 300ms ease-out;  
-			    -moz-transition: all 300ms ease-out;  
-			    -o-transition: all 300ms ease-out;  
-			    -ms-transition: all 300ms ease-out;  
-			    transition: all 300ms ease-out;  
-			} 
-			
-			.pc-mod-categories .pc-mod-category .pc-mod-category-caption{
-				position: absolute;
-				background-color: rgba(0, 0, 0, 0.8);
-			    color: #FFFFFF;
-				z-index: 100;
-				left: 0px;	
-				right: 0px;
-				top: 0px;
-				bottom:0px;
-				-webkit-transition: all 300ms ease-out 0s;  
-			    -moz-transition: all 300ms ease-out 0s;  
-			    -o-transition: all 300ms ease-out 0s;  
-			    -ms-transition: all 300ms ease-out 0s;  
-				transition: all 300ms ease-out 0s;	
-				text-align:center;
-				opacity: 0.7;
-			}
-			
-			.pc-mod-categories .pc-mod-category .pc-mod-category-caption span{
-				position: absolute;
-				z-index: 101;
-				top: 50%;
-				left: 50%;
-				margin-right: -50%;
-				transform: translate(-50%, -50%);
-				-moz-transform: translate(-50%, -50%);  
-			    -o-transform: translate(-50%, -50%);  
-			    -webkit-transform: translate(-50%, -50%); 
-				font-size:24px;
-			    line-height:30px;
-			}	
-				  
-			.pc-mod-categories .pc-mod-category:hover .pc-mod-category-caption{    
-			    opacity: 1;    
-			}
-			
-			.pc-mod-categories .pc-mod-category:hover img {  
-			       -moz-transform: scale(1.4);  
-			       -o-transform: scale(1.4);  
-			       -webkit-transform: scale(1.4);  
-			       transform: scale(1.4);  
-			}
-			  
-			.pc-mod-ellipsis{
-			text-overflow: ellipsis;
-				max-width:98%;
-				overflow:hidden;
-			}
-		
-			.customNavigation{
-  				text-align: center;
-			}
-			.customNavigation i {
-				cursor: pointer;
-			}
-			.product-head {margin:10px auto;}
-			</style>
-			<?php $pc_mod_category_loaded = true;?>
-		<?php endif;?>
-	<?php }?>
-<?php endif;?>
-<?php pc_mod_category_style();?>
 <script>
 (function($){
 	$(document).ready(function() {
@@ -136,6 +59,8 @@ Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
 		var owl = $("#pc-mod-categories-<?php echo $module->id;?>").data('owlCarousel'); 
 		owl.prev();
 	});
+
+	$('.pc-mod-category').height($('.pc-mod-category').width());
 	});
 })(paycart.jQuery);
 
@@ -147,7 +72,7 @@ Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
 	<?php $ids = array_keys($categories);?>
 <?php endif;?>
 
-<div class="pc-mod-cat" id="pc-mod-cat-<?php echo $module->id;?>">
+<div class="pc-mod-cat<?php echo $class_sfx;?>" id="pc-mod-cat-<?php echo $module->id;?>">
 	<div class="clearfix">
 		<h3 class="pull-left product-head"><?php echo $module->title;?></h3>						
 		<ul class="customNavigation pull-right inline list-inline">
@@ -163,7 +88,9 @@ Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
 				<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display&productcategory_id='.$categories[$id]->productcategory_id);?>"
 					title="<?php echo $categories[$id]->title;?>">
 					<div class="pc-mod-category item">
+						<?php if(!empty($media['squared'])):?>
 						<img class="img-thumbnail" src="<?php echo $media['squared'];?>" alt="<?php echo $categories[$id]->title;?>">
+						<?php endif;?>
 						<span class="pc-mod-category-caption">
 							<span class="pc-mod-ellipsis"><?php echo $categories[$id]->title;?>
 							</span>

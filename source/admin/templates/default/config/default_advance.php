@@ -46,3 +46,24 @@ defined('_JEXEC') or die( 'Restricted access' );
 		</div>
 	</div>
 </div>
+<hr />
+<div class="row-fluid">
+	<div class="span3">
+		<h2><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_TEMPLATE_HEADER');?></h2>
+		<div>
+		<?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_TEMPLATE_HEADER_MSG');?>
+		</div>
+	</div>
+	<div class="span9">
+		<div class="row-fluid">
+			<div class="span6">
+				<?php $field = $form->getField('template_load_bootstrap') ?>
+				<div class="control-group">
+					<div class="control-label"><?php echo $field->label; ?> </div>
+					<div class="controls"><?php echo $field->input; ?></div>
+				</div>
+			</div>		
+		</div>
+	</div>
+</div>
+

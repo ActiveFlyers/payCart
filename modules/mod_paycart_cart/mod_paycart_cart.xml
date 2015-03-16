@@ -4,7 +4,7 @@
 	version="1.0"
 	client="site"
 	method="upgrade">
-	<name>mod_paycart_cart</name>
+	<name>PayCart Cart Module</name>
 	<author>Team Readybytes</author>
 	<creationDate>Oct 2014</creationDate>
 	<copyright>Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.</copyright>
@@ -20,11 +20,15 @@
 		<filename>mod_paycart_cart.xml</filename>
 	</files>
 	
-<!--	<languages>-->
-<!--		<language tag="en-GB">en-GB.mod_paycart_cart.ini</language>-->
-<!--		<language tag="en-GB">en-GB.mod_paycart_cart.sys.ini</language>-->
-<!--	</languages>-->
-
+	<config>
+		<fields name="params">
+			<fieldset name="advanced">
+				<field name="moduleclass_sfx" type="text" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL" description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"/>				
+				<field name="layout" type="modulelayout" label="JFIELD_ALT_LAYOUT_LABEL" description="JFIELD_ALT_MODULE_LAYOUT_DESC"/>
+			</fieldset>
+		</fields>
+	</config>
+	
     <alias>pc-module-cart</alias>
     <version_number>1.0.0</version_number>
     <version_name>Cart Module 1.0</version_name>
