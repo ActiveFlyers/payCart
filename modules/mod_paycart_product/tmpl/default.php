@@ -87,7 +87,9 @@ Rb_Html::stylesheet('mod_paycart_product/style.css', array());
 				title="<?php echo $products[$id]->title;?>">
 				<div class="pc-mod-product img-thumbnail item thumbnail">
 					<div class="pc-mod-product-img">
-						<img class="" src="<?php echo @$media['optimized'];?>" alt="<?php echo $products[$id]->title;?>">							
+						<?php if(!empty($media['optimized'])): ?>
+							<img class="" src="<?php echo @$media['optimized'];?>" alt="<?php echo $products[$id]->title;?>">
+						<?php endif;?>							
 					</div>					
 					<h5 class="text-muted"><?php echo $products[$id]->title;?></h5>
 					<h4 ><?php echo $formatter->amount($products[$id]->price);?></h4>
