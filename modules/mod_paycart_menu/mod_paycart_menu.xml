@@ -4,7 +4,7 @@
 	version="1.0"
 	client="site"
 	method="upgrade">
-	<name>mod_paycart_menu</name>
+	<name>PayCart Menu Module</name>
 	<author>Team Readybytes</author>
 	<creationDate>Oct 2014</creationDate>
 	<copyright>Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.</copyright>
@@ -20,13 +20,23 @@
 		<filename>mod_paycart_menu.xml</filename>
 	</files>
 	
-<!--	<languages>-->
-<!--		<language tag="en-GB">en-GB.mod_paycart_menu.ini</language>-->
-<!--		<language tag="en-GB">en-GB.mod_paycart_meni.sys.ini</language>-->
-<!--	</languages>-->
-
+	<!-- Media files -->
+	<media destination="mod_paycart_menu" folder="media">		
+		<folder>css</folder>
+		<folder>js</folder>		
+		<filename>index.html</filename>
+	</media>
+	
+	<config>
+		<fields name="params">
+			<fieldset name="advanced">
+				<field name="moduleclass_sfx" type="text" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL" description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"/>				
+				<field name="layout" type="modulelayout" label="JFIELD_ALT_LAYOUT_LABEL" description="JFIELD_ALT_MODULE_LAYOUT_DESC"/>
+			</fieldset>
+		</fields>
+	</config>
+	
     <alias>pc-module-menu</alias>
     <version_number>1.0.1</version_number>
     <version_name>Menu Module 1.0</version_name>
-
 </extension>

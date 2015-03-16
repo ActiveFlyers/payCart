@@ -1,0 +1,71 @@
+.pc-mod-menu .pc-menu-categories-dropdown .dropup, 
+.pc-mod-menu .dropdown.pc-menu-categories-dropdown,
+.pc-mod-menu .nav, 
+.pc-mod-menu .collapse {
+    position: static;
+}
+.pc-mod-menu .navbar-inner{
+    position: relative;
+}
+.pc-mod-menu .pc-column{
+	display: inline-block;
+	min-height: 30px;
+	vertical-align: top;
+}
+.pc-mod-menu .pc-coloumn-group{
+	overflow-x: auto; 
+	overflow-y: hidden; 
+	white-space: nowrap;
+}
+
+.pc-mod-menu .pc-menu-categories > li > ul {
+  padding: 0;
+  margin: 0;
+}
+
+.pc-mod-menu .navbar-nav>li>.pc-menu-categories {
+    margin-top:20px;
+    border-top-left-radius:4px;
+    border-top-right-radius:4px;
+}
+
+.pc-mod-menu .navbar-default .navbar-nav>li>a {
+    width:200px;
+    font-weight:bold;
+}
+
+.pc-mod-menu .pc-menu-categories > li > ul > li {
+  list-style: none;
+}
+
+.pc-mod-menu .pc-menu-categories > li > ul > li > a {
+	display: block;
+	padding: 2px 30px;	
+}
+
+.pc-mod-menu .pc-menu-categories > li > ul > li.dropdown-header > a {
+	padding: 4px 20px;
+}
+
+.pc-mod-menu .pc-menu-categories {
+    padding: 20px 0px;
+    width: 100%;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    overflow-x: auto;	
+	white-space: nowrap;
+}
+
+.pc-mod-menu .pc-menu-categories > li > ul > li > a:hover,
+.pc-mod-menu .pc-menu-categories > li > ul > li > a:focus {
+  text-decoration: none;   
+}
+
+.pc-mod-menu .pc-menu-categories .dropdown-header > a{  
+  font-size: 16px;
+  font-weight:bold;
+}
+
+.pc-mod-menu .pc-menu-searchbox {
+	margin-top : 50px;	
+}

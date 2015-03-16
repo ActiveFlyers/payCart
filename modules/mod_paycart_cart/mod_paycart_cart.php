@@ -20,13 +20,6 @@ if ( !JFile::exists($file_path)) {
 
 include_once $file_path;
 
-//@PCTODO:: load paycart language file 
-
-// load bootsrap, font-awesome
-Rb_HelperTemplate::loadMedia(array('jquery', 'bootstrap', 'rb', 'font-awesome'));
-Rb_HelperTemplate::loadSetupEnv();
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/paycart.js');
-
 // get layout name
 $layout           = $params->get('layout', 'default');
 

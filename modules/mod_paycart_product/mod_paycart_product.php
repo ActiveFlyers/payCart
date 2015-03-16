@@ -63,8 +63,7 @@ else{
 	$limit = null;
 }
 
-//die(var_dump($filter));
-$products		= PaycartAPI::getProducts($filter, null, $order_by, $order_in, $limit);
-
+$products	= PaycartAPI::getProducts($filter, null, $order_by, $order_in, $limit);
+$class_sfx	= htmlspecialchars($params->get('moduleclass_sfx'));
 require JModuleHelper::getLayoutPath('mod_paycart_product', $layout);
 
