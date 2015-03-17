@@ -604,7 +604,7 @@ class PaycartSiteControllerCart extends PaycartController
 			
 			if (defined('JDEBUG') && JDEBUG) {
 				// dump data
-				file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response_data,true), FILE_APPEND);
+				file_put_contents(JPATH_SITE.'/tmp/'.time(), var_export($response,true), FILE_APPEND);
 			}
 			
 			if(!isset($data['processor'])){
