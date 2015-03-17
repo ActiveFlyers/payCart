@@ -77,7 +77,7 @@ class PaycartSiteJsonViewCart extends PaycartSiteBaseViewCart
 	{
 		$buyeraddress = PaycartBuyeraddress::getInstance($this->input->get('buyeraddress_id'));
 		// user is not loggedin , no need to serve any abbdress
-		
+		$this->json = new stdClass();
 		$user = JFactory::getUser();
 		if (!$user->get('id') && $buyeraddress->getBuyer() == $user->get('id') ) {
 			$this->json->isValid	= 	true;
