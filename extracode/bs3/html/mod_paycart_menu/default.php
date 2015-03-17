@@ -45,9 +45,9 @@ Rb_Html::stylesheet('mod_paycart_menu/style.css', array());
 }
 </style>
 <nav class="navbar navbar-default pc-mod-menu pc-mod-menu<?php echo $class_sfx;?> ">
-	<div class="navbar-collapse">
+	<div class="navbar-collapse clearfix">
 			<!-- Product Category Menu 	-->
-        	<ul class="nav navbar-nav text-center">
+        	<ul class="nav text-center <?php echo !$isMobile ? 'navbar-nav pull-left' : '';?>">
 				<!-- Product Category link on desktop, tab etc -->
              	<li class="dropdown pc-menu-categories-dropdown">             
                 	<a class="dropdown-toggle hidden-xs" data-toggle="dropdown"  href="#"><span><?php echo JText::_('COM_PAYCART_PRODUCTCATEGORY'); ?> <b class="caret"></b></span></a>
@@ -84,7 +84,7 @@ Rb_Html::stylesheet('mod_paycart_menu/style.css', array());
             	            
             	<li>            	
             		<a href="javascript:void(0);" class="text-white visible-xs" data-toggle="offcanvas" data-target="#searchbar"><i class="fa fa-search"> </i></a>
-            		<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get" class="navbar-form navbar-left hidden-xs" role="search">
+            		<form name="pc-menu-search-form" action="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display');?>" method="get" class="navbar-form hidden-xs" role="search">
 						<div class="form-group">
 						<input type="text" class="form-control" placeholder="<?php echo JText::_("COM_PAYCART_SEARCH")?>" name="query"/>
 						</div>
@@ -92,7 +92,7 @@ Rb_Html::stylesheet('mod_paycart_menu/style.css', array());
 				</li>
 			<?php if(!$isMobile):?>	
             	</ul>
-            	<ul class="nav navbar-nav navbar-right">
+            	<ul class="nav navbar-right <?php echo !$isMobile ? 'navbar-nav' : '';?>">
             <?php endif;?>
            		<li class="hidden-xs">
 					<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=login&action=track');?>">
@@ -112,11 +112,11 @@ Rb_Html::stylesheet('mod_paycart_menu/style.css', array());
             	<?php else :?>
             		<?php $display_name = $loggin_user->get('name');?>
                		<li class="dropdown ">
-            	    	<a class="dropdown-toggle " data-toggle="dropdown"  href="#">                			
+            	    	<a class="dropdown-toggle " data-toggle="dropdown"  href="#" aria-expanded="false">                			
 					        <span><i class="fa fa-user"></i><span class="hidden-xs"> <?php echo ucfirst($display_name); ?></span><b class="caret"></b></span> 
                 		</a>                
                 		
-               			<ul class="dropdown-menu ">
+               			<ul class="dropdown-menu " role="menu">
                   			<!-- Users links -->                    
                     		<li><a href="javascript::void();"><?php echo JText::_('MOD_PAYCART_MENU_HI');?>! <?php echo ucfirst($display_name); ?></a></li>
                     		<li class="divider"></li>           
