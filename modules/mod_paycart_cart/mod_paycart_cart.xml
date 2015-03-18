@@ -11,7 +11,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>support+paycart@readybytes.in</authorEmail>
 	<authorUrl>www.readybytes.in</authorUrl>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<description>Render current cart link with number of products.</description>
 	<files>
 		<filename module="mod_paycart_cart">mod_paycart_cart.php</filename>
@@ -30,7 +30,7 @@
 	</config>
 	
     <alias>pc-module-cart</alias>
-    <version_number>1.0.0</version_number>
+    <version_number>1.0.1</version_number>
     <version_name>Cart Module 1.0</version_name>
 
 </extension>

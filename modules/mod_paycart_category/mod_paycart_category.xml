@@ -5,7 +5,7 @@
 	<creationDate>March 2012</creationDate>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>support@readybytes.in</authorEmail>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<description>PayCart Category Module can be used to display categories.</description>
 	<files>
 		<filename module="mod_paycart_category">mod_paycart_category.php</filename>
@@ -112,6 +112,6 @@
 	</config>
 
 	<alias>pc-module-category</alias>
-	<version_number>1.0.0</version_number>
+	<version_number>1.0.1</version_number>
     <version_name>Category Module 1.0</version_name>
 </extension>
