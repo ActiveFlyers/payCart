@@ -18,9 +18,30 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartModelCart extends PaycartModel
 {
 	var $filterMatchOpeartor = Array(
-									'buyer_id' 	=> array('='),
-									'status'	=> array('=')
+									'buyer_id' 	=> array('LIKE'),
+									'status'	=> array('='),
+									'is_approved' => array('='),
+									'is_delivered' => array('='),
 									);
+	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Model::_buildQueryJoins()
+	 * 
+	 * Add inner join of joomla users table, if buyer_id filter exists
+	 */								
+	protected function _buildQueryJoins(Rb_Query &$query)
+	{
+		$filters = $this->getFilters();
+		
+		if($filters && count($filters) && isset($filters['buyer_id'])){
+			$value = array_shift($filters['buyer_id']);
+    		if(!empty($value)){
+    			$operator  = array_shift($this->filterMatchOpeartor['buyer_id']); 
+    			$condition = "( `username` $operator '%{$value}%' || `name` $operator '%{$value}%' || `email` $operator '%{$value}%' )";
+    			$query->innerJoin('`#__users` as usr on tbl.`buyer_id` = usr.id and '.$condition);
+    		}
+		}
+	}									
 }
 
 class PaycartModelformCart extends PaycartModelform { }

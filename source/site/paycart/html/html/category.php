@@ -28,4 +28,21 @@ class PaycartHtmlCategory
 		
 		return PaycartHtml::_('select.genericlist', $available_categories, $name, $attr, 'productcategory_id', 'title', $value, $idtag);
 	}
+	
+	static function filter($name, $view, Array $filters = array(), $prefix='filter_paycart')
+	{
+		$elementName  = $prefix.'_'.$view.'_'.$name;
+		$elementValue = @array_shift($filters[$name]);
+		
+		$options    = array();
+		$options[0] = array('title'=>JText::_('COM_PAYCART_ADMIN_FILTERS_SELECT_CATEGORY'), 'value'=>'');
+		$categories = PaycartFactory::getHelper('productcategory')->getCategory();
+		
+		foreach ($categories as $key => $cat){
+			$title = str_repeat('&mdash;', ($cat->level - 1)<0?0:($cat->level - 1)).' '.$cat->title;
+			$options[$key] = array('title' => $title, 'value' => $key);
+		}
+		
+		return JHtml::_('select.genericlist', $options, $elementName.'[]', 'onchange="document.adminForm.submit();"', 'value', 'title', $elementValue);
+	}
 }

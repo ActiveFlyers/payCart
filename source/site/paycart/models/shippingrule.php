@@ -19,6 +19,12 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartModelShippingRule extends PaycartModelLang
 {	
+	public $filterMatchOpeartor = array(
+										'title' 	=> array('LIKE'),
+										'processor_classname'=> array('='),
+										'published' => array('='),
+									);
+	
 	public function getGroups($pk, $type)
 	{
 		$query = new Rb_Query();

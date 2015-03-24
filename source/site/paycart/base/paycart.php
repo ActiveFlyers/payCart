@@ -156,6 +156,22 @@ class Paycart
 	}
 	
 	/**
+	 * 
+	 * Return All available group rule types
+	 * 
+	 * @return Array()
+	 */
+	public static function getGroupruleType()
+	{
+		return 
+			Array(
+                Paycart::GROUPRULE_TYPE_PRODUCT   => JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_PRODUCT'),
+				Paycart::GROUPRULE_TYPE_CART      => JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_CART'),
+				Paycart::GROUPRULE_TYPE_BUYER     => JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_BUYER'),
+			 );
+	}
+	
+	/**
      * set a constant that will be used to stop execution
      */
 	public static function markExit($msg='NO_MESSAGE')

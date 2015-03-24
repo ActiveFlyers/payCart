@@ -28,7 +28,7 @@ defined('_JEXEC') OR die();
 <div class="span10">	
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
-	<?php // echo $this->loadTemplate('filter'); ?>
+	<?php echo $this->loadTemplate('filter'); ?>
 	
 	<table class="table table-striped ">
 		<thead>
@@ -48,7 +48,7 @@ defined('_JEXEC') OR die();
 				<th width="7%" class="center hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
 				<th width="8%" class="center hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_VISIBLE", 'visible', $filter_order_Dir, $filter_order);?></th>
 				<th width="10%" class="center hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ORDERING", 'ordering', $filter_order_Dir, $filter_order);?></th>	
-				<th width="15%" class="center hidden-phone"><?php echo JText::_('COM_PAYCART_QUANTITY')?></th>
+				<th width="15%" class="center hidden-phone"><?php echo JText::_('COM_PAYCART_ADMIN_QUANTITY')?></th>
 				<th width="15%" class="pull-right"></th>						
 			</tr>
 		<!-- TABLE HEADER END -->
@@ -61,15 +61,15 @@ defined('_JEXEC') OR die();
 			foreach ($records as $record):?>
 				<tr class="<?php echo "row".$count%2; ?>">								
 					<th>
-				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
+				    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->{$record_key} ); ?>
 				    </th>				
 					<td class="hidden-phone"><?php echo $record->product_id;?></td>
 					<td><?php echo PaycartHtml::link(JUri::base().'index.php?option=com_paycart&view=product&task=edit&product_id='.$record->{$record_key}, $record->title);?>
 					</td>
 					<td><?php echo $record->sku;?></td>
 					<td><?php echo $formatter->amount($record->price, false);?></td>
-					<td class="center hidden-phone"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-					<td class="center hidden-phone"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'visible', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+					<td class="center hidden-phone"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+					<td class="center hidden-phone"><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'visible', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 					<td class="center hidden-phone">
 						<span><?php echo $pagination->orderUpIcon( $count , true, 'orderup', 'Move Up'); ?></span>
 						<span><?php echo $pagination->orderDownIcon( $count , count($records), true , 'orderdown', 'Move Down', true ); ?></span>
@@ -94,13 +94,14 @@ defined('_JEXEC') OR die();
 					</td>
 				</tr>
 			<?php $count++;?>
+			<?php $cbCount++;?>
 			<?php endforeach;?>
 		<!-- TABLE BODY END -->
 		</tbody>
 		
 		<tfoot>
 			<tr>
-				<td colspan="8">
+				<td colspan="10">
 					<?php echo $pagination->getListFooter(); ?>
 				</td>
 			</tr>

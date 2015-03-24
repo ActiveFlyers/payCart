@@ -29,7 +29,7 @@ defined('_JEXEC') OR die();
 <div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
-	<?php // echo $this->loadTemplate('filter'); ?>
+	<?php echo $this->loadTemplate('filter'); ?>
 	
 	<table class="table table-striped ">
 		<thead>
@@ -59,16 +59,17 @@ defined('_JEXEC') OR die();
 			foreach ($records as $record):?>
 				<tr class="<?php echo "row".$count%2; ?>">								
 					<th>
-				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
+				    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->{$record_key} ); ?>
 				    </th>				
 					<td><?php echo $record->productcategory_id;?></td>
 					<td>
 						<?php echo str_repeat('<span class="gi">&mdash;</span>', ($record->level - 1)<0?0:($record->level - 1)); ?>
 						<?php echo PaycartHtml::link('index.php?option=com_paycart&view=productcategory&task=edit&productcategory_id='.$record->{$record_key}, $record->title);?>
 					</td>					
-					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>					
+					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>					
 				</tr>
 			<?php $count++;?>
+			<?php $cbCount++;?>
 			<?php endforeach;?>
 		<!-- TABLE BODY END -->
 		</tbody>

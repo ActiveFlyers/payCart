@@ -28,7 +28,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 	<div class="span10">		
 		<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 		
-			<?php // echo $this->loadTemplate('filter'); ?>
+			<?php echo $this->loadTemplate('filter'); ?>
 			
 			<table class="table table-striped">
 				<thead>
@@ -58,7 +58,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 					foreach ($records as $record):?>
 						<tr class="<?php echo "row".$count%2; ?>">	
 							<th>
-						    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->shippingrule_id ); ?>
+						    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->shippingrule_id ); ?>
 						    </th>				
 							<td><?php echo $record->shippingrule_id;?></td>
 							<td>
@@ -66,11 +66,12 @@ defined('_JEXEC') or die( 'Restricted access' );
 								<p><small><?php echo $record->description;?></small></p>
 							</td>
 							<td><?php echo JText::_($record->processor_classname);?></td>
-							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 							<td><?php echo $record->created_date?></td>
 							<td><?php echo $record->modified_date?></td>
 						</tr>
 					<?php $count++;?>
+					<?php $cbCount++;?>
 					<?php endforeach;?>
 				<!-- TABLE BODY END -->
 				</tbody>

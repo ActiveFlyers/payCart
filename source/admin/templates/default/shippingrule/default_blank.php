@@ -27,6 +27,9 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 <div class="span10">
 <form action="<?php echo 'index.php?option=com_paycart&view=shippingrule'; ?>" method="post" name="adminForm" id="adminForm">
+
+	<?php echo $this->loadTemplate('filter'); ?>
+
 	<div class="row-fluid">
 		<div class="center muted">
 			<div>

@@ -43,6 +43,90 @@ class PaycartModelLang extends PaycartModel
 		}
     }
     
+    /**
+     * (non-PHPdoc)
+     * @see plugins/system/rbsl/rb/rb/Rb_AbstractModel::_populateGenericFilters()
+     * 
+     * Overridden this function so that we can add filters of lang table as well
+     */
+    public function _populateGenericFilters(Array &$filters=array())
+	{
+		parent::_populateGenericFilters($filters);
+		
+    	$table = $this->getTable();
+		if(!$table)
+			return;
+
+		$key_name 	= $table->getKeyName();
+		$columns 	= $this->getLanguageTable()->getProperties();
+		unset($columns[$key_name]);
+			
+		$app  = Rb_Factory::getApplication();
+
+		//$data = array();
+		$context = $this->getContext();
+
+		foreach($columns as $k => $v)
+		{
+			$filterName  = "filter_{$context}_{$k}";
+			$oldValue= $app->getUserState($filterName);
+			$value = $app->getUserStateFromRequest($filterName ,$filterName);
+			
+			//offset is set to 0 in case previous value is not equals to current value
+			//otherwise it will filter according to the pagination offset
+			if(!empty($oldValue) && $oldValue != $value){
+				$filters['limitstart']=0;
+			}
+
+			$filters[$context][$k] = $value;
+		}
+
+		return;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see plugins/system/rbsl/rb/rb/Rb_Model::_buildQueryFilter()
+     * 
+     * Overridden this function so that table alias of proper table can be added  
+     */
+	protected function _buildQueryFilter(Rb_Query &$query, $key, $value, $tblAlias='`tbl`.')
+    {   	
+    	// Only add filter if we are working on bulk reocrds
+		if($this->getId()){
+			return $this;
+		}
+
+		//change alias, if key is related to langauge table
+		$lang_keys = array_keys($this->getLanguageTable()->getProperties());
+    	if(in_array($key, $lang_keys)){
+    		$tblAlias='`lang_tbl`.';
+    	}
+		
+    	Rb_Error::assert(isset($this->filterMatchOpeartor[$key]), "OPERATOR FOR $key IS NOT AVAILABLE FOR FILTER");
+    	Rb_Error::assert(is_array($value), JText::_('PLG_SYSTEM_RBSL_VALUE_FOR_FILTERS_MUST_BE_AN_ARRAY'));
+
+    	$cloneOP    = $this->filterMatchOpeartor[$key];
+    	$cloneValue = $value;
+    	
+    	while(!empty($cloneValue) && !empty($cloneOP)){
+    		$op  = array_shift($cloneOP);
+    		$val = array_shift($cloneValue);
+
+			// discard empty values
+    		if(!isset($val) || '' == trim($val))
+    			continue;
+
+    		if(strtoupper($op) == 'LIKE'){
+	    	  	$query->where("$tblAlias`$key` $op '%{$val}%'");
+				continue;
+	    	}
+
+    		$query->where("$tblAlias`$key` $op '$val'");
+	    		
+    	}
+    }
+    
  	protected function _buildQueryJoins(Rb_Query &$query)
     {
     	parent::_buildQueryJoins($query);

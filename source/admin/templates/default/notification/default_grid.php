@@ -48,24 +48,25 @@ echo $this->loadTemplate('js');
 					$cbCount = 0;
 					foreach ($records as $record):?>
 						<tr class="<?php echo "row".$count%2; ?>">								
-							<th><?php echo PaycartHtml::_('grid.id', $cbCount++, $record->notification_id ); ?></th>				
+							<th><?php echo PaycartHtml::_('grid.id', $cbCount, $record->notification_id ); ?></th>				
 							<td> <?php echo $record->notification_id;?></td>
 							<td>
 								<a href="#" class="edit-notification" onClick="paycart.admin.notification.window(<?php echo $record->notification_id; ?>);" >
                                 	<?php  echo JText::_('COM_PAYCART_ADMIN_EVENT_'.$record->event_name);     ?>
                                 </a>
                             </td>
-                            <td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+                            <td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
                             <td><?php echo JText::_('COM_PAYCART_ADMIN_EVENT_'.$record->event_name.'_DESCRIPTION');?></td>
                         </tr>
 					<?php $count++;?>
+					<?php $cbCount++;?>
 					<?php endforeach;?>
 				<!-- TABLE BODY END -->
 				</tbody>
 					
 				<tfoot>
 					<tr>
-						<td colspan="7"><?php echo $pagination->getListFooter(); ?></td>
+						<td colspan="5"><?php echo $pagination->getListFooter(); ?></td>
 					</tr>
 				</tfoot>
 			</table>

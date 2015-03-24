@@ -21,6 +21,12 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartModelProductcategory extends PaycartModelLang
 {
 
+	public $filterMatchOpeartor = array(
+		'title' 	=> array('LIKE'),
+		'published' => array('='),
+		'level'     => array('<='),
+	);
+	
  	/**
      * Builds a generic ORDER BY clasue based on the model's state
      */

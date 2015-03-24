@@ -17,6 +17,15 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartModelProduct extends PaycartModelLang
 {
+	public $filterMatchOpeartor = array(
+		'productcategory_id' => array('='),
+		'title' 	=> array('LIKE'),
+		'published' => array('='),
+		'visible' => array('='),
+		'quantity' => array('<=','>='),
+		'price' => array('>=', '<='),
+	);
+	
 	/**
 	 * 
 	 * Array of those column which are unique. It will be checked (uniqueness) before save Product object 
@@ -117,6 +126,48 @@ class PaycartModelProduct extends PaycartModelLang
 					 ->query();
 		
 	}
+	
+	/**
+     * (non-PHPdoc)
+     * @see components/com_paycart/paycart/base/PaycartModelLang::_buildQueryFilter()
+     * 
+     * Overridden it so that if title filter applied then extra condition can be appended
+     */
+ 	protected function _buildQueryFilter(Rb_Query &$query, $key, $value, $tblAlias='`tbl`.')
+    {
+    	// Only add filter if we are working on bulk reocrds
+		if($this->getId()){
+			return $this;
+		}
+		
+    	Rb_Error::assert(isset($this->filterMatchOpeartor[$key]), "OPERATOR FOR $key IS NOT AVAILABLE FOR FILTER");
+    	Rb_Error::assert(is_array($value), JText::_('PLG_SYSTEM_RBSL_VALUE_FOR_FILTERS_MUST_BE_AN_ARRAY'));
+
+    	$cloneOP    = $this->filterMatchOpeartor[$key];
+    	$cloneValue = $value;
+    	
+    	while(!empty($cloneValue) && !empty($cloneOP)){
+    		$op  = array_shift($cloneOP);
+    		$val = array_shift($cloneValue);
+
+			// discard empty values
+    		if(!isset($val) || '' == trim($val))
+    			continue;
+
+    		if($key == 'title'){
+    			$query->where("( `$key` $op '%{$val}%' || `sku` $op '{$val}' )");
+    			continue;
+    		}
+    			
+    		if(strtoupper($op) == 'LIKE'){
+	    	  	$query->where("$tblAlias`$key` $op '%{$val}%'");
+				continue;
+	    	}
+
+    		$query->where("$tblAlias`$key` $op '$val'");
+	    		
+    	}
+    }
 }
 
 class PaycartModelformProduct extends PaycartModelform {}
