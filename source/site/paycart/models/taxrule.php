@@ -19,6 +19,12 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 class PaycartModelTaxrule extends PaycartModelLang
 {
+	public $filterMatchOpeartor = array(
+										'title' 	=> array('LIKE'),
+										'processor_classname'=> array('='),
+										'published' => array('='),
+									);
+	
 	/**
 	 * Filter applicable rules from applicable rules 
 	 * @param array $ruleIds

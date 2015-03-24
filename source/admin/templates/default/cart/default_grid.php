@@ -28,6 +28,8 @@ defined('_JEXEC') OR die();
 <div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
+	<?php echo $this->loadTemplate('filter'); ?>
+
 	<table class="table table-striped">
 		<thead>
 		<!-- TABLE HEADER START -->
@@ -36,6 +38,8 @@ defined('_JEXEC') OR die();
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_ID", 'cart_id', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_BUYER", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_STATUS", 'status', $filter_order_Dir, $filter_order);?></th>
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_APPROVED", 'is_approved', $filter_order_Dir, $filter_order);?></th>
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_DELIVERED", 'is_delivered', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_LOCKED_DATE');?></th>
 				<th><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_PAID_DATE');?></th>			
 			</tr>
@@ -51,7 +55,7 @@ defined('_JEXEC') OR die();
 			
 				<tr class="<?php echo "row".$count%2 .' '; ?> ">								
 					<th>
-				    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} ); ?>
+				    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->{$record_key} ); ?>
 				    </th>				
 					<td><?php echo PaycartHtml::link($uri.'&task=edit&cart_id='.$record->cart_id, $record->cart_id);?></td>
 					<td>
@@ -67,10 +71,13 @@ defined('_JEXEC') OR die();
     					  ?>
 					</td>
 					<td><?php echo $record->status;?></td>
+					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'is_approved', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'is_delivered', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 					<td><?php echo $record->locked_date;?></td>
 					<td><?php echo $record->paid_date;?></td>
 				</tr>
 			<?php $count++;?>
+			<?php $cbCount++;?>
 			<?php endforeach;?>
 		<!-- TABLE BODY END -->
 		</tbody>

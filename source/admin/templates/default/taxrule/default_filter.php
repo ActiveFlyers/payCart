@@ -1,6 +1,6 @@
 <?php
 /**
-* @copyright	Copyright (C) 2009 - 2015 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
+* @copyright	Copyright (C) 2009 - 2013 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @subpackage	Back-end
@@ -12,11 +12,12 @@ defined('_JEXEC') or die( 'Restricted access' );
 ?>
 
 <div>
-	<?php echo Rb_Html::_('rb_html.text.filter', 'title', 'shippingrule', $filters, 'filter_paycart');?>
-	<?php echo Rb_Html::_('rb_html.boolean.filter', 'published', 'shippingrule', $filters, 'filter_paycart','COM_PAYCART_ADMIN');?>
-	<?php echo paycartHtml::_('paycarthtml.processor.filter','processor_classname','shippingrule','shippingrule',$filters,'filter_paycart');?>
+	<?php echo Rb_Html::_('rb_html.text.filter', 'title', 'taxrule', $filters, 'filter_paycart');?>
+	<?php echo Rb_Html::_('rb_html.boolean.filter', 'published', 'taxrule', $filters, 'filter_paycart','COM_PAYCART_ADMIN');?>
+	<?php echo paycartHtml::_('paycarthtml.processor.filter','processor_classname','taxrule','taxrule',$filters,'filter_paycart');?>
 	
 	<div><input type="submit" name="filter_submit" class="btn btn-primary" value="<?php echo JText::_('Go');?>" /></div>
 	<div><input type="reset"  name="filter_reset"  class="btn" value="<?php echo JText::_('Reset');?>" onclick="paycart.admin.grid.filters.reset(this.form);" /></div>
+	
 </div>
 <?php 

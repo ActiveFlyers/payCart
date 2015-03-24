@@ -20,6 +20,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartModelCountry extends PaycartModelLang
 {
+	public $filterMatchOpeartor = array(
+										'title' 	=> array('LIKE'),
+										'published' => array('='),
+									);
+									
 	public function delete($pk = null)
 	{
 		//get Primary key
@@ -81,6 +86,48 @@ class PaycartModelCountry extends PaycartModelLang
     	$records = parent::loadRecords($queryFilters, $queryClean, $emptyRecord, $indexedby);   	
     	return $records;
     	
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see components/com_paycart/paycart/base/PaycartModelLang::_buildQueryFilter()
+     * 
+     * Overridden it so that if title filter applied then extra condition can be appended
+     */
+ 	protected function _buildQueryFilter(Rb_Query &$query, $key, $value, $tblAlias='`tbl`.')
+    {
+    	// Only add filter if we are working on bulk reocrds
+		if($this->getId()){
+			return $this;
+		}
+		
+    	Rb_Error::assert(isset($this->filterMatchOpeartor[$key]), "OPERATOR FOR $key IS NOT AVAILABLE FOR FILTER");
+    	Rb_Error::assert(is_array($value), JText::_('PLG_SYSTEM_RBSL_VALUE_FOR_FILTERS_MUST_BE_AN_ARRAY'));
+
+    	$cloneOP    = $this->filterMatchOpeartor[$key];
+    	$cloneValue = $value;
+    	
+    	while(!empty($cloneValue) && !empty($cloneOP)){
+    		$op  = array_shift($cloneOP);
+    		$val = array_shift($cloneValue);
+
+			// discard empty values
+    		if(!isset($val) || '' == trim($val))
+    			continue;
+
+    		if($key == 'title'){
+    			$query->where("( `$key` $op '%{$val}%' || $tblAlias`country_id` $op '{$val}' || `isocode2` $op '{$val}' )");
+    			continue;
+    		}
+    			
+    		if(strtoupper($op) == 'LIKE'){
+	    	  	$query->where("$tblAlias`$key` $op '%{$val}%'");
+				continue;
+	    	}
+
+    		$query->where("$tblAlias`$key` $op '$val'");
+	    		
+    	}
     }
     
     

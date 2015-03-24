@@ -29,7 +29,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 <div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
-	<?php // echo $this->loadTemplate('filter'); ?>
+	<?php echo $this->loadTemplate('filter'); ?>
 	<table class="table table-striped">
 		<thead>
 		<!-- TABLE HEADER START -->
@@ -52,21 +52,22 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			foreach ($records as $record):?>
 			
 				<tr class="<?php echo "row".$count%2; ?>">								
-					<th><?php echo PaycartHtml::_('grid.id', $cbCount++, $record->{$record_key} );?></th>
+					<th><?php echo PaycartHtml::_('grid.id', $cbCount, $record->{$record_key} );?></th>
 					<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=country&task=edit&country_id='.$record->country_id, $record->title);?></td>
 					<td><?php echo $record->country_id;?></td>
 					<td><?php echo $record->isocode2;?></td>
-					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 
 				</tr>
 			<?php $count++;?>
+			<?php $cbCount++;?>
 			<?php endforeach;?>
 		<!-- TABLE BODY END -->
 		</tbody>
 		
 		<tfoot>
 			<tr>
-				<td colspan="7">
+				<td colspan="5">
 					<?php echo $pagination->getListFooter(); ?>
 				</td>
 			</tr>

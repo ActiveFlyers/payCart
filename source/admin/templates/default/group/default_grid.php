@@ -45,7 +45,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 	<div class="tab-pane active" id="paycartAdminGroupTabsInstances">			
 		<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 		
-			<?php // echo $this->loadTemplate('filter'); ?>
+			<?php echo $this->loadTemplate('filter'); ?>
 			
 			<table class="table table-striped">
 				<thead>
@@ -96,7 +96,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 						<tr class="<?php echo "row".$count%2; ?>">	
 						<?php if(!$nonEditable):?>
 								<th>
-							    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->group_id ); ?>
+							    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->group_id ); ?>
 							    </th>				
 								<td><?php echo $record->group_id;?></td>
 								<td>
@@ -104,7 +104,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 									<p><small><?php echo $record->description;?></small></p>
 								</td>
 								<td><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_'.$record->type);?></td>
-								<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+								<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 								<td><?php echo $record->created_date?></td>
 								<td><?php echo $record->modified_date?></td>
 							
@@ -118,6 +118,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 						<?php endif;?>
 						</tr>
 					<?php $count++;?>
+					<?php $cbCount++;?>
 					<?php endforeach;?>
 				<!-- TABLE BODY END -->
 				</tbody>

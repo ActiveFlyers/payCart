@@ -20,9 +20,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  */
 class PaycartModelDiscountrule extends PaycartModelLang
 {
-//	var $filterMatchOpeartor = Array(
-//									'coupon' => array('LIKE')
-//									);
+	public $filterMatchOpeartor = array(
+										'title' 	=> array('LIKE'),
+										'coupon'	=> array('LIKE'),
+										'amount'	=> array('>=', '<='),
+										'processor_classname'=> array('='),
+										'published' => array('='),
+									);
 
 	
 	/**

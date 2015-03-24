@@ -16,7 +16,13 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * Payment Gateway Model
  */
 class PaycartModelPaymentgateway extends PaycartModelLang
-{}
+{
+	public $filterMatchOpeartor = array(
+										'title' 	=> array('LIKE'),
+										'processor_type'=> array('='),
+										'published' => array('='),
+									);
+}
 
 /** 
  * Payment Gateway Model

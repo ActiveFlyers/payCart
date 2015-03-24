@@ -26,9 +26,9 @@ defined('_JEXEC') or die( 'Restricted access' );
 			
 			<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 			
-				<?php // echo $this->loadTemplate('filter'); ?>
+				<?php echo $this->loadTemplate('filter'); ?>
 				
-				<table class="table table-condensed ">
+				<table class="table table-striped ">
 					<thead>
 					<!-- TABLE HEADER START -->
 						<tr>
@@ -55,21 +55,22 @@ defined('_JEXEC') or die( 'Restricted access' );
 						foreach ($records as $record):?>
 							<tr class="<?php echo "row".$count%2; ?>">								
 								<th>
-							    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->paymentgateway_id ); ?>
+							    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->paymentgateway_id ); ?>
 							    </th>				
 								<td><?php echo $record->paymentgateway_id;?></td>
 								<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=paymentgateway&task=edit&id='.$record->paymentgateway_id, $record->title);?></td>
 								<td><?php echo $record->processor_type?></td>
-								<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+								<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 							</tr>
 						<?php $count++;?>
+						<?php $cbCount++;?>
 						<?php endforeach;?>
 					<!-- TABLE BODY END -->
 					</tbody>
 					
 					<tfoot>
 						<tr>
-							<td colspan="7">
+							<td colspan="5">
 								<?php echo $pagination->getListFooter(); ?>
 							</td>
 						</tr>

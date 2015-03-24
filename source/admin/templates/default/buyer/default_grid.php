@@ -27,7 +27,7 @@ defined('_JEXEC') OR die();
 <div class="span10">
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 
-	<?php // echo $this->loadTemplate('filter'); ?>
+	<?php echo $this->loadTemplate('filter'); ?>
 	<table class="table table-striped">
 		<thead>
 		<!-- TABLE HEADER START -->
@@ -61,7 +61,7 @@ defined('_JEXEC') OR die();
 		
 		<tfoot>
 			<tr>
-				<td colspan="7">
+				<td colspan="3">
 					<?php echo $pagination->getListFooter(); ?>
 				</td>
 			</tr>

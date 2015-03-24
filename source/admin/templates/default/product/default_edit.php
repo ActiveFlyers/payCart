@@ -13,7 +13,7 @@
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 Rb_HelperTemplate::loadMedia(array('angular'));
 
-echo $this->loadTemplate('edit_js');
+echo $this->loadTemplate('js');
 echo $this->loadTemplate('edit_ng');
 echo $this->loadTemplate('edit_css');
 ?>

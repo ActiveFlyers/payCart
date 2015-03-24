@@ -19,7 +19,11 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartModelGroup extends PaycartModel 
 {	
-		
+	public $filterMatchOpeartor = array(
+									'title' 	=> array('LIKE'),
+									'published' => array('LIKE'),
+									'type'		=> array('='),
+								);
 }
 
 

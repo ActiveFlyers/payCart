@@ -27,7 +27,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 	<div class="span10">		
 		<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm">
 		
-			<?php // echo $this->loadTemplate('filter'); ?>
+			<?php echo $this->loadTemplate('filter'); ?>
 			
 			<table class="table table-striped">
 				<thead>
@@ -44,6 +44,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME", 'processor_classname', $filter_order_Dir, $filter_order);?></th>						
 						<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_COUPON_CODE", 'coupon', $filter_order_Dir, $filter_order);?></th>
+						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_AMOUNT", 'amount', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CREATED_DATE", 'created_date', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_MODIFIED_DATE", 'modified_date', $filter_order_Dir, $filter_order);?></th>			
@@ -58,7 +59,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 					foreach ($records as $record):?>
 						<tr class="<?php echo "row".$count%2; ?>">	
 							<th>
-						    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->discountrule_id ); ?>
+						    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->discountrule_id ); ?>
 						    </th>				
 							<td><?php echo $record->discountrule_id;?></td>
 							<td>
@@ -67,18 +68,20 @@ defined('_JEXEC') or die( 'Restricted access' );
 							</td>
 							<td><?php echo JText::_($record->processor_classname);?></td>
 							<td class="center"><?php echo $record->coupon ? $record->coupon : '-';?></td>
-							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $count, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+							<td><?php echo $formatter->amount($record->amount,false);?></td>
+							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 							<td><?php echo $record->created_date?></td>
 							<td><?php echo $record->modified_date?></td>
 						</tr>
 					<?php $count++;?>
+					<?php $cbCount++;?>
 					<?php endforeach;?>
 				<!-- TABLE BODY END -->
 				</tbody>
 				
 				<tfoot>
 					<tr>
-						<td colspan="7">
+						<td colspan="9">
 							<?php echo $pagination->getListFooter(); ?>
 						</td>
 					</tr>

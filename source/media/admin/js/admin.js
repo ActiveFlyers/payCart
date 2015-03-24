@@ -83,7 +83,7 @@ paycart.admin.grid = {
 			            form.elements[i].value = '';
 			        }
 			    }
-				this.submit(view,null,validActions);
+			    form.submit(view,null,validActions);
 			}
 		}
 };
