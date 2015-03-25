@@ -176,7 +176,15 @@ $currencyId = $cart->getCurrency();
 				</tr>
 				<?php foreach ($shipping_particular as $id => $particular):?>
 					<tr>
-						<?php $params = $particular->params;?>
+						<?php // if cart is locked then $particular->params is stdclass object, else it will object of JRegistry?>
+						<?php if($cart->isLocked()):?>
+							<?php $params = $particular->params;?>
+						<?php else:?>
+							<?php $params = new stdClass();?>
+							<?php $params->product_list = $particular->params->get('product_list');?>
+							<?php $params->delivery_date = $particular->params->get('delivery_date');?>
+						<?php endif;?>
+						
 						<td><?php echo PaycartShippingrule::getInstance($id)->getTitle();?></td>
 						<td>
 							<?php foreach ($params->product_list as $productId => $details):?>
