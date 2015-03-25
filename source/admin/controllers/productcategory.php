@@ -38,6 +38,7 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 			// @codeCoverageIgnoreEnd
 		}
 		
+		$post['title'] = trim($post['title']);
 		$category = $this->_save($post);
 		// Id required in View
 		// IMP:: don't put category_id in property name otherwise it will not work 
