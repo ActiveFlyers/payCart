@@ -99,9 +99,10 @@ class PaycartFormFieldCategory extends JFormFieldList
 			$('#add_new_category_button').click( function()
 					{
 						var value = $('#add_new_category').val();
+						value = value.trim();
 						// check value is not empty				
 						if(!value) {
-							alert(rb.cms.text._('COM_PAYCART_JS_CATEGORY_NAME_REQUIRED', 'Category name should be required'));
+							alert('<?php echo JText::_('COM_PAYCART_ADMIN_CATEGORY_NAME_REQUIRED');?>');
 							$('#add_new_category').focus();
 							return false;
 						}
