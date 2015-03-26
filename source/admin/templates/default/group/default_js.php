@@ -29,6 +29,16 @@ paycart.admin.group.ruleCounter = <?php echo $ruleCounter;?>;
 		<?php foreach($ruleScripts as $script):?>
 			<?php echo $script;?>
 		<?php endforeach;?>
+			  
+		$(document).on('change', '[data-pc-selector="pc-option-manipulator"]', function(){
+			var id = $(this).attr('id');
+			if(!$(this).val() || $(this).val() == 'any'){
+				$('[data-pc-option-manipulator="'+id+'"]').addClass('hide');
+			}
+			else{
+				$('[data-pc-option-manipulator="'+id+'"]').removeClass('hide');
+			}		  
+		});
 	});
 })(paycart.jQuery);
 </script>

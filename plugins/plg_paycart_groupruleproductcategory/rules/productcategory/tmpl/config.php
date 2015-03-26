@@ -17,13 +17,14 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		<?php echo JText::_('PLG_PAYCART_GROUPRULE_PRODUCT_CATEGORY');?>
 	</label>
 	<div class="controls">
-		<select class="paycart-grouprule-product-category" name="<?php echo $namePrefix;?>[category_assignment]">
+		<select class="paycart-grouprule-product-category" name="<?php echo $namePrefix;?>[category_assignment]" data-pc-selector="pc-option-manipulator" id="<?php echo $idPrefix;?>category-assignment">
 			<option value="any" <?php echo isset($config['category_assignment']) && $config['category_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo JText::_('COM_PAYCART_ADMIN_ANY');?></option>
 			<option value="selected" <?php echo isset($config['category_assignment']) && $config['category_assignment'] == 'selected' ? 'selected="selected"' : '';?>><?php echo JText::_('COM_PAYCART_ADMIN_SELECTED');?></option>
 			<option value="except" <?php echo isset($config['category_assignment']) && $config['category_assignment'] == 'except' ? 'selected="selected"' : '';?>><?php echo JText::_('COM_PAYCART_ADMIN_EXCEPT');?></option>
 		</select>
 		
+		<span data-pc-option-manipulator="<?php echo $idPrefix.'category-assignment';?>" class="<?php echo !isset($config['category_assignment']) || $config['category_assignment'] == 'any' ? 'hide' : '';?>">
 		<?php echo PaycartHtmlCategory::getList($namePrefix."[category][]", isset($config['category'])?$config['category']:array(), false, array('class'=>'paycart-grouprule-product-category', 'multiple' => 'true'));?>
-
+		</span>
 	</div>
 </div>

@@ -62,6 +62,8 @@ class PaycartGroupruleBuyerjusergroup extends PaycartGrouprule
 	 */
 	public function getConfigHtml($namePrefix = '')
 	{
+		$idPrefix = str_replace(array('[', ']'), '', $namePrefix);
+		
 		// @TODO : Use paycart helper
 		$usergroups = Rb_HelperJoomla::getJoomlaGroups();
 		$config 	= $this->config->toArray();
