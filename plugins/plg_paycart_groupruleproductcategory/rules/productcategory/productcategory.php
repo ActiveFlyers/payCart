@@ -57,6 +57,8 @@ class PaycartGroupruleProductCategory extends PaycartGrouprule
 	 */
 	public function getConfigHtml($namePrefix = '')
 	{
+		$idPrefix = str_replace(array('[', ']'), '', $namePrefix);
+		
 		$config 	= $this->config->toArray();
 		
 		ob_start();

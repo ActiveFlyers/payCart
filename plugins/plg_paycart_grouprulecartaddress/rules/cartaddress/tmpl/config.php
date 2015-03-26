@@ -31,13 +31,14 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	  		<?php echo JText::_('COM_PAYCART_COUNTRY');?>
 	  </label>
 	  <div class="controls">
-		  	<select class="paycart-grouprule-buyer-countries-assignment" name="<?php echo $namePrefix;?>[countries_assignment]" data-pc-selector="pc-grouprule-selection-type" id="<?php echo $idPrefix;?>countries-assignment">
-				<option value="any" <?php echo isset($config['countries_assignment']) && $config['countries_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_ANY');?></option>
+		  	<select class="paycart-grouprule-buyer-countries-assignment" name="<?php echo $namePrefix;?>[countries_assignment]" data-pc-selector="pc-option-manipulator" id="<?php echo $idPrefix;?>countries-assignment">
+				<option value="any" <?php echo !isset($config['countries_assignment']) ||  $config['countries_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_ANY');?></option>
 				<option value="selected" <?php echo isset($config['countries_assignment']) && $config['countries_assignment'] == 'selected' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_SELECTED');?></option>
 <!--			<option value="except" <?php echo isset($config['countries_assignment']) && $config['countries_assignment'] == 'except' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_EXCEPT');?></option>-->
 			</select>
-		
-	  		<?php echo PaycartHtmlCountry::getList($namePrefix.'[countries][]', @$config['countries'], "{$idPrefix}countries", array('class' => "pc-chosen", 'multiple' => true));?>	   
+			<span data-pc-option-manipulator="<?php echo $idPrefix.'countries-assignment';?>" class="<?php echo !isset($config['countries_assignment']) || $config['countries_assignment'] == 'any' ? 'hide' : '';?>"> 
+	  			<?php echo PaycartHtmlCountry::getList($namePrefix.'[countries][]', @$config['countries'], "{$idPrefix}countries", array('class' => "pc-chosen", 'multiple' => true));?>
+	  		</span>	   
 	  </div>
 	</div>
 	
@@ -50,14 +51,16 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	  		<?php echo JText::_('COM_PAYCART_STATE');?>
 	  </label>
 	  <div class="controls">
-	  	<select class="paycart-grouprule-buyer-states-assignment" name="<?php echo $namePrefix;?>[states_assignment]" id="<?php echo $idPrefix;?>states-assignment">
-				<option value="any" <?php echo isset($config['states_assignment']) && $config['states_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_ANY');?></option>
+	  	<select class="paycart-grouprule-buyer-states-assignment" name="<?php echo $namePrefix;?>[states_assignment]" id="<?php echo $idPrefix;?>states-assignment" data-pc-selector="pc-option-manipulator">
+				<option value="any" <?php echo !isset($config['states_assignment']) || $config['states_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_ANY');?></option>
 				<option value="selected" <?php echo isset($config['states_assignment']) && $config['states_assignment'] == 'selected' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_SELECTED');?></option>
 <!--			<option value="except" <?php echo isset($config['states_assignment']) && $config['states_assignment'] == 'except' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_EXCEPT');?></option>-->
 			</select>
+			<span data-pc-option-manipulator="<?php echo $idPrefix.'states-assignment';?>" class="<?php echo !isset($config['states_assignment']) || $config['states_assignment'] == 'any' ? 'hide' : '';?>">
 		  	<?php 
 		  		echo PaycartHtmlState::getList($namePrefix.'[states][]',@$config['states'],  "{$idPrefix}states", array('class' => "pc-chosen", 'multiple' => true),  @$config['countries']);
 		  	?>
+		  	</span>
 	  </div>
 	</div>
 	
