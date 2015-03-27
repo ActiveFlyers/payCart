@@ -40,15 +40,6 @@ class PaycartSiteControllerState extends PaycartController
 		
 		$ajax_response = PaycartFactory::getAjaxResponse();
 		
-		if(!$country_id) {
-			$ajax_response->addScriptCall
-					(	'console.log', 
-						Array('message' 		=> 	JText::_('Country is not availble'),
-							  'message_type'	=>	Paycart::MESSAGE_TYPE_ERROR )
-					);
-			return false;
-		}
-		
 		if(!$selector) {
 			$ajax_response->addScriptCall
 					(	'console.log', 
@@ -57,6 +48,11 @@ class PaycartSiteControllerState extends PaycartController
 					);
 			return false;
 		}
+		
+		if(!$country_id) {
+			PaycartFactory::getAjaxResponse()->addScriptCall('paycart.address.state.html', Array('state_selector' => $selector, 'state_option_html' => ''));
+			return false;
+		}	
 		
 		//@PCTODO:: Sorting required 
 		// limit must be cleaned other wise only specific number of record will fetch
