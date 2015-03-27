@@ -29,11 +29,11 @@ $invoke_already = true;
 
 	<style>
 	
-		.paycart .pc-checkout-loader{
+		.paycart-wrap .pc-checkout-loader{
 			background-color: rgba(255, 255, 255, 0.9);
 		
 		}
-		.paycart .pc-checkout-loader i.fa-spinner{
+		.paycart-wrap .pc-checkout-loader i.fa-spinner{
 			position: fixed;
 			top: 50%;
 			left: 50%;

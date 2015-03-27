@@ -121,6 +121,7 @@ if(defined("_JEXEC")===false) die();
   'paycarthelperbuyer' => 'site/paycart/helpers/buyer.php',
   'paycarthelpercart' => 'site/paycart/helpers/cart.php',
   'paycarthelpercheckout' => 'site/paycart/helpers/checkout.php',
+  'paycarthelpercountry' => 'site/paycart/helpers/country.php',
   'paycarthelpercron' => 'site/paycart/helpers/cron.php',
   'paycarthelperevent' => 'site/paycart/helpers/event.php',
   'paycarthelperfilter' => 'site/paycart/helpers/filter.php',

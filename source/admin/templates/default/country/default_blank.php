@@ -8,6 +8,8 @@
 * @author 		rimjhim
 */
 defined('_JEXEC') or die();
+
+echo $this->loadTemplate('js');
 ?>
 <div class="pc-product-wrapper clearfix">
 <div class="pc-product row-fluid">
