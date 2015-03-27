@@ -33,6 +33,11 @@ class PaycartAdminHtmlViewCountry extends PaycartAdminBaseViewCountry
 			$country_data = (array) $country_data[$country_id];
 		}
 		
+		//set default language if creating a new record
+		if(!$country_id){
+			$country_data['lang_code'] = PaycartFactory::getPCDefaultLanguageCode();
+		}
+	
 		$this->assign('form',  PaycartFactory::getModelForm('country')->getForm($country_data, false));
 		
 		//get state data for specific country
@@ -43,5 +48,13 @@ class PaycartAdminHtmlViewCountry extends PaycartAdminBaseViewCountry
 		$this->assign('states', $states);
 		
 		return parent::edit($tpl);
+	}
+	
+	public function _adminGridToolbar()
+	{
+		parent::_adminGridToolbar();
+		
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::openPopup('initimport','import','',JText::_('COM_PAYCART_ADMIN_COUNTRY_TOOLBAR_IMPORT'));		
 	}
 }

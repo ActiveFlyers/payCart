@@ -85,6 +85,54 @@ paycart.admin.state.remove.error = function(data){
 		//close modal window
 		rb.ui.dialog.autoclose(1);
 	};
+
+//country/state importer
+paycart.admin.grid.country_initimport = function() {
+		paycart.url.modal('index.php?option=com_paycart&view=country&task=initimport');
+		return false;
+};
+
+paycart.admin.country={};
+
+paycart.admin.country.doImport = function(){
+	var countries = paycart.jQuery('#pc-country-select').val();
+	if(countries.length <= 0){
+		countries = [];
+	}
+			
+	countries = JSON.stringify(countries);
+	var link  = 'index.php?option=com_paycart&view=country&task=doimport';
+	paycart.ajax.go(link, {'countries' : countries,'spinner_selector' : '#paycart-ajax-spinner'});
+};
+
+paycart.admin.country.importsuccess = function(data){
+	var response = $.parseJSON(data);
+	if(!response.next){
+		rb.url.redirect('index.php?option=com_paycart&view=country');
+		return false;
+	}	
+
+	var countries = paycart.jQuery('#pc-country-select').val();
+	var link  	  = 'index.php?option=com_paycart&view=country&task=doimport';
+	paycart.ajax.go(link, {'countries' : response.countries,'spinner_selector' : '#paycart-ajax-spinner','start' : response.start});
+};
+
+paycart.admin.country.importerror = function(data){
+	$('[data-pc-selector="import-error"]').show();
+};
+
+$(document).on('click','[data-pc-selector="all-countries"]', function(){
+	$('[data-pc-selector="country"] option').each(function(){
+		$(this).attr("selected","selected");
+	});
+	$('[data-pc-selector="country"]').trigger("liszt:updated");
+});
+
+$(document).on('click','[data-pc-selector="no-country"]', function(){
+	$('[data-pc-selector="country"] option').attr("selected", false);
+	$('[data-pc-selector="country"]').trigger("liszt:updated");
+});
+
 })(paycart.jQuery);
 
 </script>

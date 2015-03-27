@@ -12,6 +12,7 @@
 // no direct access
 defined( '_JEXEC' ) OR die( 'Restricted access' );
 
+echo $this->loadTemplate('js');
 ?>
 <div class="pc-country-wrapper clearfix">
 <div class="pc-country row-fluid">
