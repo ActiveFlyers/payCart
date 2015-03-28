@@ -41,7 +41,9 @@ class PaycartAdminControllerConfig extends PaycartController
 		
 		PaycartFactory::saveConfig($post);
 		
-		return true;
+		$this->setMessage(JText::_('COM_PAYCART_ADMIN_CONFIG_SAVED_SUCCESSFULLY'));
+		$this->setRedirect('index.php?option=com_paycart&view=config&task=display');
+		return false;
 	}
 	
 	function deleteCompanyLogo()
