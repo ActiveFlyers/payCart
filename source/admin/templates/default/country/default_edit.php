@@ -81,7 +81,8 @@ echo $this->loadTemplate('js');
 								<div class="control-label"><?php echo $field->label; ?> </div>
 								<div class="controls">
 									<input type="text" id="<?php echo $field->id?>" name="<?php echo $field->name;?>" class="required validate-rb-regex-pattern" 
-									       data-validate-pattern="^[A-Z]{3}$" maxlength="3" value="<?php echo $field->value?>" placeholder="<?php echo JText::_("COM_PAYCART_ADMIN_COUNTRY_ISOCODE3_PLACEHOLDER");?>">
+									       data-validate-pattern="^[A-Z]{3}$" maxlength="3" value="<?php echo $field->value?>" 
+									       placeholder="<?php echo JText::_("COM_PAYCART_ADMIN_COUNTRY_ISOCODE3_PLACEHOLDER");?>" <?php echo (!$record_id)?'':'readonly'?>>
 									<a href="#" data-toggle="popover" class="pc-popover" title="<?php echo JText::_("JHELP")?>"
 									  data-content="<?php echo JText::_("COM_PAYCART_ADMIN_COUNTRY_ISOCODE_POPOVER");?>">
 									 	 <i class="fa fa-question-circle"></i>

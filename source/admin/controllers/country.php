@@ -21,6 +21,31 @@ class PaycartAdminControllerCountry extends PaycartController
 	protected $_id_data_type	=	'STRING';
 	
 	/**
+	 * Overridden this function becuase we treat country differently than other entities
+	 * User fill the country_id and if it is already exist then we will throw error 
+	 * 
+	 * (non-PHPdoc)
+	 * @see components/com_paycart/paycart/base/PaycartController::save()
+	 */
+	public function save()
+    {    		
+        $id = $this->input->get('id',null);
+       
+		//do this only if the record is new
+        if(!$id){    
+        	$itemId = $this->_getId(); 
+            $new    = $this->getModel()->getTable()->load($itemId)? false : true;;
+           
+            if(!$new){
+                $this->setRedirect('index.php?option=com_paycart&view=country',$this->setMessage(Jtext::_('COM_PAYCART_ADMIN_COUNTRY_DUPLICATE_ERROR')),'error');
+                return false;
+            }
+        }
+       
+        return parent::save();
+    }
+
+	/**
 	 * Saves an item (new or old)
 	 */
 	public function _save(array $data, $itemId=null)
