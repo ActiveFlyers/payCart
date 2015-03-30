@@ -121,7 +121,20 @@ paycart.admin.country.importerror = function(data){
 	$('[data-pc-selector="import-error"]').show();
 };
 
+$(document).on('change','[data-pc-selector="country"]',function(){
+	var countries = paycart.jQuery('#pc-country-select').val();
+
+	if(countries.length > <?php echo Paycart::LIMIT_COUNTRY_IMPORT?>){
+		$('[data-pc-selector="import-description"]').show();
+		return;
+	}
+
+	$('[data-pc-selector="import-description"]').hide();
+});
+
+
 $(document).on('click','[data-pc-selector="all-countries"]', function(){
+	$('[data-pc-selector="import-description"]').show();
 	$('[data-pc-selector="country"] option').each(function(){
 		$(this).attr("selected","selected");
 	});
@@ -129,6 +142,7 @@ $(document).on('click','[data-pc-selector="all-countries"]', function(){
 });
 
 $(document).on('click','[data-pc-selector="no-country"]', function(){
+	$('[data-pc-selector="import-description"]').hide();
 	$('[data-pc-selector="country"] option').attr("selected", false);
 	$('[data-pc-selector="country"]').trigger("liszt:updated");
 });
