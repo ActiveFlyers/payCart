@@ -42,7 +42,8 @@ defined('_JEXEC') or die( 'Restricted access' );
 						</th>
 					    				
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
-						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME", 'processor_classname', $filter_order_Dir, $filter_order);?></th>						
+						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME", 'processor_classname', $filter_order_Dir, $filter_order);?></th>
+						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TAXRULE_AMOUNT", 'amount', $filter_order_Dir, $filter_order);?></th>				
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
 						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CREATED_DATE", 'created_date', $filter_order_Dir, $filter_order);?></th>
 						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_MODIFIED_DATE", 'modified_date', $filter_order_Dir, $filter_order);?></th>			
@@ -65,6 +66,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 								<p><small><?php echo $record->description;?></small></p>
 							</td>
 							<td class="hidden-phone"><?php echo JText::_($record->processor_classname);?></td>
+							<td><?php echo $record->amount?>
 							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 							<td class="hidden-phone"><?php echo $record->created_date?></td>
 							<td class="hidden-phone"><?php echo $record->modified_date?></td>

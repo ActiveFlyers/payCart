@@ -25,6 +25,11 @@ defined('_JEXEC') or die( 'Restricted access' );
 				<div class="pc-filter-minwidth-150 span3 pc-filter-gap-top">
 					<?php echo paycartHtml::_('paycarthtml.processor.filter','processor_classname','taxrule','taxrule',$filters,'filter_paycart');?>
 				</div>
+				
+				<div class="pc-filter-minwidth-150 span3">
+					<label><?php echo JText::_('COM_PAYCART_ADMIN_TAXRULE_AMOUNT')?></label>
+					<?php echo paycartHtml::_('paycarthtml.range.filter', 'amount', 'taxrule', $filters,'text','filter_paycart');?>					
+				</div>
 		
 				<div class="pc-filter-minwidth-50 span2 pc-filter-gap-top">
 					<input type="submit" name="filter_submit" class="btn-block btn btn-primary" value="<?php echo JText::_('COM_PAYCART_ADMIN_GO');?>" />
