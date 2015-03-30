@@ -39,7 +39,7 @@ defined('_JEXEC') OR die();
 				<th  width="1%">
 					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 				</th>
-				<th>
+				<th class="hidden-phone">
 					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'productcategory_id', $filter_order_Dir, $filter_order);?>
 				</th>				
 			    <th>
@@ -61,7 +61,7 @@ defined('_JEXEC') OR die();
 					<th>
 				    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->{$record_key} ); ?>
 				    </th>				
-					<td><?php echo $record->productcategory_id;?></td>
+					<td class="hidden-phone"><?php echo $record->productcategory_id;?></td>
 					<td>
 						<?php echo str_repeat('<span class="gi">&mdash;</span>', ($record->level - 1)<0?0:($record->level - 1)); ?>
 						<?php echo PaycartHtml::link('index.php?option=com_paycart&view=productcategory&task=edit&productcategory_id='.$record->{$record_key}, $record->title);?>

@@ -32,7 +32,7 @@ defined('_JEXEC') OR die();
 		<thead>
 		<!-- TABLE HEADER START -->
 			<tr>
-				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_BUYER_ID", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
+				<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_BUYER_ID", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
 				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_USERNAME", 'username', $filter_order_Dir, $filter_order);?></th>
 				<th ><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_EMAIL", 'email', $filter_order_Dir, $filter_order);?></th>
 				
@@ -46,7 +46,7 @@ defined('_JEXEC') OR die();
 			foreach ($records as $record):?>
 			
 				<tr class="<?php echo "row".$count%2; ?>">								
-					<td><?php echo $record->buyer_id;?></td>
+					<td class="hidden-phone"><?php echo $record->buyer_id;?></td>
 					<td>
 						<?php echo PaycartHtml::link('index.php?option=com_paycart&view=buyer&task=edit&buyer_id='.$record->buyer_id, $record->username);?>
 					</td>

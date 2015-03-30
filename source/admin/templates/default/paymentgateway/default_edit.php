@@ -45,9 +45,7 @@ echo $this->loadTemplate('edit_js');
 
 			<div class="row-fluid">
 				
-				<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">
-				
-					<?php echo $this->loadTemplate('filter'); ?>
+				<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate">	
 					
 					<div class="row-fluid">
 						

@@ -36,7 +36,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 							<th  width="1%">
 								<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 							</th>
-							<th >
+							<th class="hidden-phone">
 								<?php echo PaycartHtml::_('grid.sort', "ID", 'paymentgateway_id', $filter_order_Dir, $filter_order);?>
 							</th>
 						    				
@@ -57,7 +57,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 								<th>
 							    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->paymentgateway_id ); ?>
 							    </th>				
-								<td><?php echo $record->paymentgateway_id;?></td>
+								<td class="hidden-phone"><?php echo $record->paymentgateway_id;?></td>
 								<td><?php echo PaycartHtml::link('index.php?option=com_paycart&view=paymentgateway&task=edit&id='.$record->paymentgateway_id, $record->title);?></td>
 								<td><?php echo $record->processor_type?></td>
 								<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
