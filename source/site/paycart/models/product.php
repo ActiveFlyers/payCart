@@ -128,6 +128,28 @@ class PaycartModelProduct extends PaycartModelLang
 	}
 	
 	/**
+	 * (non-PHPdoc)
+	 * @see plugins/system/rbsl/rb/rb/Rb_Model::_buildQueryJoins()
+	 * 
+	 * Add inner join of joomla users table, if buyer_id filter exists
+	 */								
+	protected function _buildQueryJoins(Rb_Query &$query)
+	{
+		parent::_buildQueryJoins($query);
+		
+		$filters = $this->getFilters();
+		
+		if($filters && count($filters) && isset($filters['productcategory_id'])){
+			$value = array_shift($filters['productcategory_id']);
+    		if(!empty($value)){
+				$category = PaycartProductcategory::getInstance($value);
+				$condition = "( cat.`lft` >= {$category->getLft()} and cat.`rgt` <= {$category->getRgt()} )";
+	    		$query->innerJoin('`#__paycart_productcategory` as cat on tbl.`productcategory_id` = cat.`productcategory_id` and '.$condition);
+    		}
+		}
+	}
+	
+	/**
      * (non-PHPdoc)
      * @see components/com_paycart/paycart/base/PaycartModelLang::_buildQueryFilter()
      * 
@@ -143,6 +165,11 @@ class PaycartModelProduct extends PaycartModelLang
     	Rb_Error::assert(isset($this->filterMatchOpeartor[$key]), "OPERATOR FOR $key IS NOT AVAILABLE FOR FILTER");
     	Rb_Error::assert(is_array($value), JText::_('PLG_SYSTEM_RBSL_VALUE_FOR_FILTERS_MUST_BE_AN_ARRAY'));
 
+	    //if category id then do nothing, a join has already been added 
+    	if($key == 'productcategory_id'){
+			return;
+    	}
+    	
     	$cloneOP    = $this->filterMatchOpeartor[$key];
     	$cloneValue = $value;
     	
@@ -155,7 +182,7 @@ class PaycartModelProduct extends PaycartModelLang
     			continue;
 
     		if($key == 'title'){
-    			$query->where("( `$key` $op '%{$val}%' || `sku` $op '{$val}' )");
+    			$query->where("( `$key` $op '%{$val}%' || `sku` $op '%{$val}%' )");
     			continue;
     		}
     			

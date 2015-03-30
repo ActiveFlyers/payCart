@@ -77,18 +77,22 @@ Joomla.submitbutton = function(task){
 	});
 
 	//script for quantity filter
-	$(document).on('click','[data-pc-selector="filter_quantity_from"]', function(){
-		$('input[name="filter_paycart_product_quantity_range[1]"]').removeAttr('checked');
-		$('input[name="filter_paycart_product_quantity[0]"]').attr('value','0');
-		$('input[name="filter_paycart_product_quantity[1]"]').attr('value','');
-		document.adminForm.submit();
-	 });
-	
-	 $(document).on('click','[data-pc-selector="filter_quantity_to"]', function(){
-			$('input[name="filter_paycart_product_quantity_range[0]"]').removeAttr('checked');
-			$('input[name="filter_paycart_product_quantity[1]"]').attr('value','1');
-			$('input[name="filter_paycart_product_quantity[0]"]').attr('value','');
-			document.adminForm.submit();
+	 $(document).on('change','[data-pc-selector="filter_paycart_product_quantity_range"]', function(){
+		 	switch($(this).val()){
+		 		//both
+		 		case "0" : $('[data-pc-selector="filter_paycart_product_quantity_from"]').attr('value','');
+						   $('[data-pc-selector="filter_paycart_product_quantity_to"]').attr('value','');
+						   break;		 
+				//in-stock		
+		 		case "1" : $('[data-pc-selector="filter_paycart_product_quantity_to"]').attr('value','1');
+						   $('[data-pc-selector="filter_paycart_product_quantity_from"]').attr('value','');
+						   break;
+				//out-of-stock	
+		 		case "2" : $('[data-pc-selector="filter_paycart_product_quantity_from"]').attr('value','0');
+				           $('[data-pc-selector="filter_paycart_product_quantity_to"]').attr('value','');
+				           break;		
+		 	}
+		 	document.adminForm.submit();
 	 });
 })(paycart.jQuery);	
 </script>
