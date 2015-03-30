@@ -39,7 +39,7 @@ class PaycartModelBuyer extends PaycartModel
     	$sql  = new Rb_Query();
     	
 		//add extra join to this query (if required)
-    	$this->_addExtraCondition($sql);
+    	//$this->_addExtraCondition($sql);
     	
     	$sql->select(' joomlausertbl.`id` AS buyer_id ')
     		->select(' joomlausertbl.`name` AS realname ')
@@ -82,7 +82,7 @@ class PaycartModelBuyer extends PaycartModel
 		$app  = Rb_Factory::getApplication();
 				
 		//now add other filters
-		$data = array('country_id','username');
+		$data = array('username');
 		foreach ($data as $key){
 			$context = $this->getContext();
 			$filterName  = "filter_{$context}_{$key}";
@@ -104,17 +104,17 @@ class PaycartModelBuyer extends PaycartModel
 	 * Add inner join with buyeraddress table only if country_id filter exists
 	 * @param $sql
 	 */
-	protected function _addExtraCondition(Rb_Query &$sql)
-	{
-		$filters = $this->getFilters();
-		
-    	if($filters && count($filters) && isset($filters['country_id'])){
-    		$value = array_shift($filters['country_id']);
-    		if(!empty($value)){
-    			$sql->innerJoin('`#__paycart_buyeraddress` AS addr ON addr.`buyer_id` = joomlausertbl.`id` AND addr.`country_id`'.array_shift($this->filterMatchOpeartor['country_id']).' '.'"'.$value.'"');
-    		}
-    	}
-	}
+//	protected function _addExtraCondition(Rb_Query &$sql)
+//	{
+//		$filters = $this->getFilters();
+//		
+//    	if($filters && count($filters) && isset($filters['country_id'])){
+//    		$value = array_shift($filters['country_id']);
+//    		if(!empty($value)){
+//    			$sql->innerJoin('`#__paycart_buyeraddress` AS addr ON addr.`buyer_id` = joomlausertbl.`id` AND addr.`country_id`'.array_shift($this->filterMatchOpeartor['country_id']).' '.'"'.$value.'"');
+//    		}
+//    	}
+//	}
 	
     //override it becuase buyer filters are dependent on joomla user table 
 	//so that proper query can be build corresponding to applied filter
@@ -130,9 +130,9 @@ class PaycartModelBuyer extends PaycartModel
     	
     	//in case of country filter, we have added the condition in buildQueryFrom function, 
     	//so no need to do anything here
-    	if($key == 'country_id'){
-			return;
-    	}
+    	//if($key == 'country_id'){
+	//		return;
+    	//}
 
     	$cloneOP    = $this->filterMatchOpeartor[$key];
     	$cloneValue = $value;
