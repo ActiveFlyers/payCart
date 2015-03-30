@@ -26,6 +26,8 @@ class PaycartModelDiscountrule extends PaycartModelLang
 										'amount'	=> array('>=', '<='),
 										'processor_classname'=> array('='),
 										'published' => array('='),
+										'start_date'=>array('>=','<='),
+										'end_date'=>array('>=','<='),
 									);
 
 	
