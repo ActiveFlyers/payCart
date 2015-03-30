@@ -16,7 +16,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 		<div class="span8">
 			<div class="row-fluid pc-filter-row">
 				<div class="pc-filter-minwidth-100 span3">
-					<label><?php echo JText::_("COM_PAYCART_ADMIN_TITLE")?></label>
+					<label><?php echo JText::_("COM_PAYCART_ADMIN_TITLE").' / '.JText::_("COM_PAYCART_ADMIN_ISOCODE")?></label>
 					<?php echo paycartHtml::_('paycarthtml.text.filter', 'title', 'country', $filters, 'filter_paycart', array('class'=>'pc-filter-width'));?>
 				</div>
 				<div class="pc-filter-minwidth-150 span3">
