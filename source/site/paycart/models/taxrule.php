@@ -23,6 +23,7 @@ class PaycartModelTaxrule extends PaycartModelLang
 										'title' 	=> array('LIKE'),
 										'processor_classname'=> array('='),
 										'published' => array('='),
+										'amount' => array('>=','<='),
 									);
 	
 	/**
