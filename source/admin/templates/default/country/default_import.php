@@ -18,6 +18,10 @@ echo Rb_HelperTemplate::renderLayout('paycart_spinner','',PAYCART_LAYOUTS_PATH);
 	<span><?php echo JText::_("COM_PAYCART_ADMIN_COUNTRY_IMPORT_FAILED")?></span>
 </div>
 
+<div class="text-center text-error hide" data-pc-selector="import-description">
+	<span><?php echo JText::_('COM_PAYCART_ADMIN_COUNTRY_IMPORT_DESCRIPTION')?></span>
+</div>
+
 <div>
 	<span class="pull-right">
 		<a href="javascript:void(0)" data-pc-selector="all-countries"><?php echo JText::_('COM_PAYCART_ADMIN_COUNTRY_IMPORT_SELECT_ALL')?></a> / 
