@@ -40,8 +40,8 @@ defined('_JEXEC') OR die();
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_STATUS", 'status', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_APPROVED", 'is_approved', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_DELIVERED", 'is_delivered', $filter_order_Dir, $filter_order);?></th>
-				<th><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_LOCKED_DATE');?></th>
-				<th><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_PAID_DATE');?></th>			
+				<th class="hidden-phone"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_LOCKED_DATE');?></th>
+				<th class="hidden-phone"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_PAID_DATE');?></th>			
 			</tr>
 		<!-- TABLE HEADER END -->
 		</thead>
@@ -73,8 +73,8 @@ defined('_JEXEC') OR die();
 					<td><?php echo $record->status;?></td>
 					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'is_approved', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
 					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'is_delivered', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-					<td><?php echo $record->locked_date;?></td>
-					<td><?php echo $record->paid_date;?></td>
+					<td class="hidden-phone"><?php echo $record->locked_date;?></td>
+					<td class="hidden-phone"><?php echo $record->paid_date;?></td>
 				</tr>
 			<?php $count++;?>
 			<?php $cbCount++;?>

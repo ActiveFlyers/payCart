@@ -55,15 +55,15 @@ defined('_JEXEC') or die( 'Restricted access' );
 						<th width="1%">
 							<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 						</th>
-						<th>
+						<th class="hidden-phone">
 							<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'group_id', $filter_order_Dir, $filter_order);?>
 						</th>
 					    				
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TYPE", 'type', $filter_order_Dir, $filter_order);?></th>						
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
-						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CREATED_DATE", 'created_date', $filter_order_Dir, $filter_order);?></th>
-						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_MODIFIED_DATE", 'modified_date', $filter_order_Dir, $filter_order);?></th>			
+						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CREATED_DATE", 'created_date', $filter_order_Dir, $filter_order);?></th>
+						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_MODIFIED_DATE", 'modified_date', $filter_order_Dir, $filter_order);?></th>			
 					</tr>
 				<!-- TABLE HEADER END -->
 				</thead>
@@ -98,15 +98,15 @@ defined('_JEXEC') or die( 'Restricted access' );
 								<th>
 							    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->group_id ); ?>
 							    </th>				
-								<td><?php echo $record->group_id;?></td>
+								<td class="hidden-phone"><?php echo $record->group_id;?></td>
 								<td>
 									<?php echo PaycartHtml::link('index.php?option=com_paycart&view=group&task=edit&group_id='.$record->group_id, $record->title);?>
 									<p><small><?php echo $record->description;?></small></p>
 								</td>
 								<td><?php echo JText::_('COM_PAYCART_ADMIN_GROUPRULE_TYPE_'.$record->type);?></td>
 								<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-								<td><?php echo $record->created_date?></td>
-								<td><?php echo $record->modified_date?></td>
+								<td class="hidden-phone"><?php echo $record->created_date?></td>
+								<td class="hidden-phone"><?php echo $record->modified_date?></td>
 							
 						<?php else:?>
 								<th>

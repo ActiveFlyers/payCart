@@ -37,15 +37,15 @@ defined('_JEXEC') or die( 'Restricted access' );
 						<th width="1%">
 							<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 						</th>
-						<th>
+						<th class="hidden-phone">
 							<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'taxrule_id', $filter_order_Dir, $filter_order);?>
 						</th>
 					    				
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?></th>
-						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME", 'processor_classname', $filter_order_Dir, $filter_order);?></th>						
+						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PROCESSOR_CLASSNAME", 'processor_classname', $filter_order_Dir, $filter_order);?></th>						
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
-						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CREATED_DATE", 'created_date', $filter_order_Dir, $filter_order);?></th>
-						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_MODIFIED_DATE", 'modified_date', $filter_order_Dir, $filter_order);?></th>			
+						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CREATED_DATE", 'created_date', $filter_order_Dir, $filter_order);?></th>
+						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_MODIFIED_DATE", 'modified_date', $filter_order_Dir, $filter_order);?></th>			
 					</tr>
 				<!-- TABLE HEADER END -->
 				</thead>
@@ -59,15 +59,15 @@ defined('_JEXEC') or die( 'Restricted access' );
 							<th>
 						    	<?php echo PaycartHtml::_('grid.id', $cbCount++, $record->taxrule_id ); ?>
 						    </th>				
-							<td><?php echo $record->taxrule_id;?></td>
+							<td class="hidden-phone"><?php echo $record->taxrule_id;?></td>
 							<td>
 								<?php echo PaycartHtml::link('index.php?option=com_paycart&view=taxrule&task=edit&taxrule_id='.$record->taxrule_id, $record->title);?>
 								<p><small><?php echo $record->description;?></small></p>
 							</td>
-							<td><?php echo JText::_($record->processor_classname);?></td>
+							<td class="hidden-phone"><?php echo JText::_($record->processor_classname);?></td>
 							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-							<td><?php echo $record->created_date?></td>
-							<td><?php echo $record->modified_date?></td>
+							<td class="hidden-phone"><?php echo $record->created_date?></td>
+							<td class="hidden-phone"><?php echo $record->modified_date?></td>
 						</tr>
 					<?php $count++;?>
 					<?php $cbCount++;?>

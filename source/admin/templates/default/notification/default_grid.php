@@ -34,7 +34,7 @@ echo $this->loadTemplate('js');
                 <thead>
                 	<tr>
                 		<th width="1%"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" /></th>
-                		<th><?php echo PaycartHtml::_('grid.sort', 'COM_PAYCART_ADMIN_ID', 'notification_id', $filter_order_Dir, $filter_order);?></th>
+                		<th class="hidden-phone"><?php echo PaycartHtml::_('grid.sort', 'COM_PAYCART_ADMIN_ID', 'notification_id', $filter_order_Dir, $filter_order);?></th>
                 		<th><?php echo PaycartHtml::_('grid.sort', 'COM_PAYCART_ADMIN_TITLE', 'event_name', $filter_order_Dir, $filter_order);?></th>
                 		<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_STATUS", 'published', $filter_order_Dir, $filter_order);?></th>
                 		<th><?php echo JText::_('COM_PAYCART_ADMIN_DESCRIPTION'); ?></th>
@@ -49,7 +49,7 @@ echo $this->loadTemplate('js');
 					foreach ($records as $record):?>
 						<tr class="<?php echo "row".$count%2; ?>">								
 							<th><?php echo PaycartHtml::_('grid.id', $cbCount, $record->notification_id ); ?></th>				
-							<td> <?php echo $record->notification_id;?></td>
+							<td class="hidden-phone"> <?php echo $record->notification_id;?></td>
 							<td>
 								<a href="#" class="edit-notification" onClick="paycart.admin.notification.window(<?php echo $record->notification_id; ?>);" >
                                 	<?php  echo JText::_('COM_PAYCART_ADMIN_EVENT_'.$record->event_name);     ?>

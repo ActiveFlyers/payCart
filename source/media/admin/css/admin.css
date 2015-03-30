@@ -66,3 +66,33 @@
 .paycart .pc-language{
 	opacity : .5
 }
+
+/*
+ * Filters css rules
+ */
+.paycart .pc-filter-width {
+    max-width: 100%;
+}
+
+.paycart .pc-filter-gap-top {
+    margin-top: 23px;
+}
+
+/*
+* Required to do this otherwise last span takes margin and alignment become improper
+*/
+.paycart .row-fluid.pc-filter-row [class*="span"]:first-child{
+	margin-left:15px;
+}
+
+.paycart .pc-filter-minwidth-100{
+	min-width: 100px;
+}
+
+.paycart .pc-filter-minwidth-150{
+	min-width: 150px;
+}
+
+.paycart .pc-filter-minwidth-50{
+	min-width: 50px;
+}
