@@ -79,21 +79,23 @@ class PaycartModelBuyer extends PaycartModel
 	{
 		parent::_populateGenericFilters($filters);
 
-		//now add country_id
-		$key  = 'country_id';
 		$app  = Rb_Factory::getApplication();
-		$context = $this->getContext();
-
-		$filterName  = "filter_{$context}_{$key}";
-		$oldValue    = $app->getUserState($filterName);
-		$value       = $app->getUserStateFromRequest($filterName ,$filterName);
+				
+		//now add other filters
+		$data = array('country_id','username');
+		foreach ($data as $key){
+			$context = $this->getContext();
+			$filterName  = "filter_{$context}_{$key}";
+			$oldValue    = $app->getUserState($filterName);
+			$value       = $app->getUserStateFromRequest($filterName ,$filterName);
 		
-		//offset is set to 0 in case previous value is not equals to current value
-		//otherwise it will filter according to the pagination offset
-		if(!empty($oldValue) && $oldValue != $value){
-			$filters['limitstart']=0;
+			//offset is set to 0 in case previous value is not equals to current value
+			//otherwise it will filter according to the pagination offset
+			if(!empty($oldValue) && $oldValue != $value){
+				$filters['limitstart']=0;
+			}
+			$filters[$context][$key] = $value;
 		}
-		$filters[$context][$key] = $value;
 
 		return;		
 	}
