@@ -46,8 +46,8 @@ defined('_JEXEC') or die( 'Restricted access' );
 						<th class="center"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_COUPON_CODE", 'coupon', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_AMOUNT", 'amount', $filter_order_Dir, $filter_order);?></th>
 						<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?></th>
-						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CREATED_DATE", 'created_date', $filter_order_Dir, $filter_order);?></th>
-						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_MODIFIED_DATE", 'modified_date', $filter_order_Dir, $filter_order);?></th>			
+						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_START_DATE", 'start_date', $filter_order_Dir, $filter_order);?></th>
+						<th class="hidden-phone"><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_END_DATE", 'end_date', $filter_order_Dir, $filter_order);?></th>			
 					</tr>
 				<!-- TABLE HEADER END -->
 				</thead>
@@ -70,8 +70,8 @@ defined('_JEXEC') or die( 'Restricted access' );
 							<td class="center"><?php echo $record->coupon ? $record->coupon : '-';?></td>
 							<td><?php echo $formatter->amount($record->amount,false);?></td>
 							<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'published', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-							<td class="hidden-phone"><?php echo $record->created_date?></td>
-							<td class="hidden-phone"><?php echo $record->modified_date?></td>
+							<td class="hidden-phone"><?php echo $record->start_date?></td>
+							<td class="hidden-phone"><?php echo $record->end_date?></td>
 						</tr>
 					<?php $count++;?>
 					<?php $cbCount++;?>

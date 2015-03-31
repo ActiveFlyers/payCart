@@ -19,11 +19,12 @@ class PaycartHtmlProcessor
 		
 		$options    = array();
 		$options[0] = array('title'=>JText::_('COM_PAYCART_ADMIN_FILTERS_SELECT_TYPE'), 'value'=>'');
-		$helper     = PaycartFactory::getHelper('processor');
-		$processor  = $helper->getList($type);	
 		
-		foreach ($processor as $key => $data){			
-			$options[$key] = array('title' => $data->title, 'value' => $key);
+		//only those processor will be listed out for which any instance is created
+		$processors	= PaycartFactory::getModel($type)->loadRecords(array(),array(), false, 'processor_classname');
+		$installed  = PaycartFactory::getHelper('processor')->getList($type);
+		foreach ($processors as $key => $data){			
+			$options[$key] = array('title' => $installed[$key]->title, 'value' => $key);
 		}
 		
 		return JHtml::_('select.genericlist', $options, $elementName.'[]', 'onchange="document.adminForm.submit();"', 'value', 'title', $elementValue);
