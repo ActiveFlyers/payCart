@@ -37,7 +37,7 @@ class PaycartModelCart extends PaycartModel
 		$filters = $this->getFilters();
 		
 		if($filters && count($filters) && isset($filters['buyer_id'])){
-			$value = array_shift($filters['buyer_id']);
+			$value = trim(array_shift($filters['buyer_id']));
     		if(!empty($value)){
     			$operator  = array_shift($this->filterMatchOpeartor['buyer_id']); 
     			$condition = "( `username` $operator '%{$value}%' || `name` $operator '%{$value}%' || `email` $operator '%{$value}%' )";
@@ -102,15 +102,12 @@ class PaycartModelCart extends PaycartModel
     		
     		while(!empty($cloneValue) && !empty($cloneOP)){
 	    		$op  = array_shift($cloneOP);
-	    		$val = array_shift($cloneValue);
+	    		$val = trim(array_shift($cloneValue));
 	    		
 	    		// discard empty values
-    			if(!isset($val) || '' == trim($val))
+    			if(!isset($val) || '' == $val)
     				continue;
-    				
-    			//trim value before adding it to condition
-    			$val = trim($val);
-    		
+   			    		
     			$condition[] =  "SUM(cp.`total`) {$op} {$val} ";
     		}
     		
@@ -123,10 +120,10 @@ class PaycartModelCart extends PaycartModel
     	
     	while(!empty($cloneValue) && !empty($cloneOP)){
     		$op  = array_shift($cloneOP);
-    		$val = array_shift($cloneValue);
+    		$val = trim(array_shift($cloneValue));
 
 			// discard empty values
-    		if(!isset($val) || '' == trim($val))
+    		if(!isset($val) || '' == $val)
     			continue;
     			
     		//trim value before adding it to condition

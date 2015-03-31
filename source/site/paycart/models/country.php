@@ -109,14 +109,11 @@ class PaycartModelCountry extends PaycartModelLang
     	
     	while(!empty($cloneValue) && !empty($cloneOP)){
     		$op  = array_shift($cloneOP);
-    		$val = array_shift($cloneValue);
+    		$val = trim(array_shift($cloneValue));
 
 			// discard empty values
-    		if(!isset($val) || '' == trim($val))
+    		if(!isset($val) || '' == $val)
     			continue;
-    			
-    		//trim value before adding it to condition
-    		$val = trim($val);
 
     		if($key == 'title'){
     			$query->where("( `$key` $op '%{$val}%' || $tblAlias`country_id` $op '{$val}' || `isocode2` $op '{$val}' )");
