@@ -76,12 +76,12 @@ defined('_JEXEC') OR die();
 					</td>
 					<td class="hidden-phone"> 
 						<div class="progress">
-							<div class="bar bar-info"
+						   <div class="bar <?php echo ($record->quantity > 0 )?'bar-info':'bar-danger'?>"
 						  	   title="<?php echo $record->quantity.' : '.JText::_('COM_PAYCART_ADMIN_AVAILABLE')?>"
 						  	   style="width:<?php echo $record->quantity_available?>%;">
 						  	   		<bold><?php echo $record->quantity;?></bold>
 						   </div>
-						   <div class="bar bar-danger"
+						   <div class="bar bar-warning"
 						  	    title="<?php echo $record->quantity_sold.' : '.JText::_('COM_PAYCART_ADMIN_SOLD')?>"
 						  	   style="width:<?php echo $record->quantity_consumed ?>%;">
 						  	   		<bold><?php echo $record->quantity_sold;?></bold>
