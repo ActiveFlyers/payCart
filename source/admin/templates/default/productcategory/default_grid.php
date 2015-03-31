@@ -39,13 +39,13 @@ defined('_JEXEC') OR die();
 				<th  width="1%">
 					<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 				</th>
-				<th class="hidden-phone">
-					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_ID", 'productcategory_id', $filter_order_Dir, $filter_order);?>
+				<th width="24%" class="hidden-phone">
+					<?php echo JText::_("COM_PAYCART_ADMIN_ID");?>
 				</th>				
-			    <th>
+			    <th  width="25%">
 			    	<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_TITLE", 'title', $filter_order_Dir, $filter_order);?>
 			    </th>
-				<th>
+				<th  width="25%">
 					<?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_PUBLISHED", 'published', $filter_order_Dir, $filter_order);?>
 				</th>
 			</tr>
