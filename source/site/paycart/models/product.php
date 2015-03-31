@@ -181,8 +181,11 @@ class PaycartModelProduct extends PaycartModelLang
     		if(!isset($val) || '' == trim($val))
     			continue;
 
+    		//trim value before adding it to condition
+    		$val = trim($val);
+    			
     		if($key == 'title'){
-    			$query->where("( `$key` $op '%{$val}%' || `sku` $op '%{$val}%' )");
+    			$query->where("( `$key` $op '%{$val}%' || `sku` $op '%{$val}%'  || `alias` $op '%{$val}%' )");
     			continue;
     		}
     			

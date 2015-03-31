@@ -17,7 +17,7 @@ echo $this->loadTemplate('js');
 <div class="well">
 	<div class="row-fluid pc-filter-row">
 		<div class="pc-filter-minwidth-100 span2">
-			<label><?php echo JText::_('COM_PAYCART_ADMIN_TITLE').' / '.JText::_('COM_PAYCART_ADMIN_SKU')?></label>
+			<label><?php echo JText::_('COM_PAYCART_ADMIN_TITLE').'/ '.JText::_('COM_PAYCART_ADMIN_SKU').'/ '.JText::_('COM_PAYCART_ADMIN_ALIAS')?></label>
 			<?php echo paycartHtml::_('paycarthtml.text.filter', 'title', 'product', $filters, 'filter_paycart', array('class'=> 'pc-filter-width'));?>
 		</div>
 

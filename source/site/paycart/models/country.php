@@ -114,6 +114,9 @@ class PaycartModelCountry extends PaycartModelLang
 			// discard empty values
     		if(!isset($val) || '' == trim($val))
     			continue;
+    			
+    		//trim value before adding it to condition
+    		$val = trim($val);
 
     		if($key == 'title'){
     			$query->where("( `$key` $op '%{$val}%' || $tblAlias`country_id` $op '{$val}' || `isocode2` $op '{$val}' )");
