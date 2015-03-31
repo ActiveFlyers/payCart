@@ -21,7 +21,7 @@ class PaycartHtmlPaymentgateway
 		$options[0] = array('title'=>JText::_('COM_PAYCART_ADMIN_FILTERS_SELECT_TYPE'), 'value'=>'');
 
 		//only those processor will be listed out for which any instance is created
-		$processors = PaycartFactory::getModel('paymentgateway')->loadRecords(array(),array(), false, 'processor_type');
+		$processors = PaycartFactory::getModel('paymentgateway')->loadRecords(array(),array('where'), false, 'processor_type');
 		
 		foreach ($processors as $key => $data){			
 			$options[$key] = array('title' => $key, 'value' => $key);

@@ -79,7 +79,14 @@ defined('_JEXEC') OR die();
 					</td>
 					<td><?php echo $record->status;?></td>
 <!--					<td><?php echo ($record->is_approved)?'<i class="fa fa-check-circle-o text-success"></i>':'<i class="hasTooltip fa fa-times-circle-o text-error" title="'.JText::_('COM_PAYCART_ADMIN_CART_EDIT_CART_TO_MARK_APPROVED').'"></i>'?></td>-->
-					<td><?php echo ($record->is_delivered)?'<i class="fa fa-check-circle-o text-success"></i>':'<i class="hasTooltip fa fa-times-circle-o text-error" title="'.JText::_('COM_PAYCART_ADMIN_CART_EDIT_CART_TO_MARK_DELIVERED').'"></i>'?></td>
+					<td>
+						<?php if($record->is_delivered):?>
+							<i class="fa fa-check-circle-o text-success"></i>
+						<?php else:?>
+							<?php echo PaycartHtml::link($uri.'&task=edit&cart_id='.$record->cart_id, '<i class="hasTooltip fa fa-times-circle-o text-error" title="'. JText::_('COM_PAYCART_ADMIN_CART_EDIT_CART_TO_MARK_DELIVERED').'"></i>');?>
+						<?php endif;?>
+						
+					</td>
 					<td class="hidden-phone"><?php echo $record->locked_date;?></td>
 					<td class="hidden-phone"><?php echo $record->paid_date;?></td>
 				</tr>
@@ -91,7 +98,7 @@ defined('_JEXEC') OR die();
 		
 		<tfoot>
 			<tr>
-				<td colspan="8">
+				<td colspan="7">
 					<?php echo $pagination->getListFooter(); ?>
 				</td>
 			</tr>
