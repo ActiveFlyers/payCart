@@ -285,14 +285,12 @@ class PaycartInstallScriptMenu
 		// Bind the data, Check the data then Store the data.
 		if (!$menu_table->bind($data) || !$menu_table->check() || !$menu_table->store() )
 		{
-			$this->setError($menu_table->getError());
 			return false;
 		}
 
 		// Rebuild the tree path.
 		if (!$menu_table->rebuildPath($menu_table->id))
 		{
-			$this->setError($menu_table->getError());
 			return false;
 		}
 		
