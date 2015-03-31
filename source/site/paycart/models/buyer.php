@@ -21,6 +21,7 @@ class PaycartModelBuyer extends PaycartModel
 	public $filterMatchOpeartor = array(
 										'username' 	=> array('LIKE'),
 										'country_id'=> array('LIKE'),
+										'usertype'	=> array('LIKE'),
 									);
 	
 	/**
@@ -37,9 +38,6 @@ class PaycartModelBuyer extends PaycartModel
     	$join2 = " `#__user_usergroup_map` AS g  ON ( g.`user_id` = joomlausertbl.`id` ) ";
     	
     	$sql  = new Rb_Query();
-    	
-		//add extra join to this query (if required)
-    	//$this->_addExtraCondition($sql);
     	
     	$sql->select(' joomlausertbl.`id` AS buyer_id ')
     		->select(' joomlausertbl.`name` AS realname ')
@@ -82,7 +80,7 @@ class PaycartModelBuyer extends PaycartModel
 		$app  = Rb_Factory::getApplication();
 				
 		//now add other filters
-		$data = array('username');
+		$data = array('country_id','username','usertype');
 		foreach ($data as $key){
 			$context = $this->getContext();
 			$filterName  = "filter_{$context}_{$key}";
@@ -100,22 +98,6 @@ class PaycartModelBuyer extends PaycartModel
 		return;		
 	}
 	
-	/**
-	 * Add inner join with buyeraddress table only if country_id filter exists
-	 * @param $sql
-	 */
-//	protected function _addExtraCondition(Rb_Query &$sql)
-//	{
-//		$filters = $this->getFilters();
-//		
-//    	if($filters && count($filters) && isset($filters['country_id'])){
-//    		$value = array_shift($filters['country_id']);
-//    		if(!empty($value)){
-//    			$sql->innerJoin('`#__paycart_buyeraddress` AS addr ON addr.`buyer_id` = joomlausertbl.`id` AND addr.`country_id`'.array_shift($this->filterMatchOpeartor['country_id']).' '.'"'.$value.'"');
-//    		}
-//    	}
-//	}
-	
     //override it becuase buyer filters are dependent on joomla user table 
 	//so that proper query can be build corresponding to applied filter
     protected function _buildQueryFilter(Rb_Query &$query, $key, $value, $tblAlias='`tbl`.')
@@ -128,12 +110,6 @@ class PaycartModelBuyer extends PaycartModel
     	Rb_Error::assert(isset($this->filterMatchOpeartor[$key]), "OPERATOR FOR $key IS NOT AVAILABLE FOR FILTER");
     	Rb_Error::assert(is_array($value), JText::_('PLG_SYSTEM_RBSL_VALUE_FOR_FILTERS_MUST_BE_AN_ARRAY'));
     	
-    	//in case of country filter, we have added the condition in buildQueryFrom function, 
-    	//so no need to do anything here
-    	//if($key == 'country_id'){
-	//		return;
-    	//}
-
     	$cloneOP    = $this->filterMatchOpeartor[$key];
     	$cloneValue = $value;
     	
@@ -145,12 +121,25 @@ class PaycartModelBuyer extends PaycartModel
     		if(!isset($val) || '' == trim($val))
     			continue;
 
+    		if($key == 'country_id'){
+    			$query->where(" `tbl`.`buyer_id` IN( SELECT addr.`buyer_id` FROM `#__paycart_buyeraddress` AS addr 
+    								                 WHERE addr.`country_id` = '{$val}' )");
+    			continue;
+    		}
+    			
     		if($key == 'username'){
     			$query->where("( `$key` $op '%{$val}%' || `realname` $op '%{$val}%' || `email` $op '%{$val}%' )");
     			continue;
     		}
     			
     		if(strtoupper($op) == 'LIKE'){
+    			if($key == 'usertype'){
+					//this subquery will fetch all the users with the desired usertype 
+					$query->where(" `tbl`.`buyer_id` IN( SELECT map.`user_id` 
+								    FROM `#__usergroups` as groups, `#__user_usergroup_map` as map 
+								    WHERE ( map.group_id = groups.id AND groups.title = '$val'))	");
+					continue;
+				}
 	    	  	$query->where("$tblAlias`$key` $op '%{$val}%'");
 				continue;
 	    	}

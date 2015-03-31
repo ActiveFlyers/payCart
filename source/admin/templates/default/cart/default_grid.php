@@ -11,6 +11,13 @@
 
 defined('_JEXEC') OR die();
 ?>
+<script type="text/javascript">
+ (function($){
+	$(doucment).ready(function(){
+		$('.hasTooltip').tooltip();
+	})
+ })(paycart.jQuery);
+</script>
 
 <div class="pc-cart-wrapper clearfix">
 <div class="pc-cart row-fluid">
@@ -71,8 +78,8 @@ defined('_JEXEC') OR die();
     					  ?>
 					</td>
 					<td><?php echo $record->status;?></td>
-					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'is_approved', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
-					<td><?php echo PaycartHtml::_("rb_html.boolean.grid", $record, 'is_delivered', $cbCount, 'tick.png', 'publish_x.png', '', $langPrefix='COM_PAYCART');?></td>
+					<td><?php echo ($record->is_approved)?'<i class="fa fa-check-circle-o text-success"></i>':'<i class="hasTooltip fa fa-times-circle-o text-error" title="'.JText::_('COM_PAYCART_ADMIN_CART_EDIT_CART_TO_MARK_APPROVED').'"></i>'?></td>
+					<td><?php echo ($record->is_delivered)?'<i class="fa fa-check-circle-o text-success"></i>':'<i class="hasTooltip fa fa-times-circle-o text-error" title="'.JText::_('COM_PAYCART_ADMIN_CART_EDIT_CART_TO_MARK_DELIVERED').'"></i>'?></td>
 					<td class="hidden-phone"><?php echo $record->locked_date;?></td>
 					<td class="hidden-phone"><?php echo $record->paid_date;?></td>
 				</tr>

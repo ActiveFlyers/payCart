@@ -20,11 +20,15 @@ defined('_JEXEC') OR die();
 					<?php echo paycartHtml::_('paycarthtml.text.filter', 'username', 'buyer', $filters, 'filter_paycart',array('class'=>'pc-filter-width'));?>
 				</div>
 				
-				<!--<div class="pc-filter-minwidth-150 span3 pc-filter-gap-top">	
+				<div class="pc-filter-minwidth-150 span3 pc-filter-gap-top">	
 					<?php echo paycartHtml::_('paycarthtml.country.filter','country_id','buyer',$filters,'filter_paycart')?>
 				</div>
 		
-				--><div class="pc-filter-minwidth-50 span2 pc-filter-gap-top">
+				<div class="pc-filter-minwidth-150 span3 pc-filter-gap-top">	
+					<?php echo rb_Html::_('rb_html.jusertype.filter','usertype','buyer',$filters,'filter_paycart')?>
+				</div>
+
+				<div class="pc-filter-minwidth-50 span2 pc-filter-gap-top">
 					<input type="submit" name="filter_submit" class="btn-block btn btn-primary" value="<?php echo JText::_('COM_PAYCART_ADMIN_GO');?>" />
 					<input type="reset"  name="filter_reset"  class="btn-block btn" value="<?php echo JText::_('COM_PAYCART_ADMIN_RESET');?>" onclick="paycart.admin.grid.filters.reset(this.form);" />
 				</div>
