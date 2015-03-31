@@ -22,6 +22,9 @@ class PaycartModelCart extends PaycartModel
 									'status'	=> array('='),
 									'is_approved' => array('='),
 									'is_delivered' => array('='),
+									'paid_date' => array('>=','<='),
+									'cart_id'	=> array('='),
+									'price'		=>array('>=','<='),
 									);
 	/**
 	 * (non-PHPdoc)
@@ -41,7 +44,102 @@ class PaycartModelCart extends PaycartModel
     			$query->innerJoin('`#__users` as usr on tbl.`buyer_id` = usr.id and '.$condition);
     		}
 		}
-	}									
+	}	
+
+	/**
+    * (non-PHPdoc)
+    * @see plugins/system/rbsl/rb/rb/Rb_AbstractModel::_populateGenericFilters()
+    * 
+    * Overridden it to add only specific filter directly , do it only for country_id
+    */
+    public function _populateGenericFilters(Array &$filters=array())
+	{
+		parent::_populateGenericFilters($filters);
+
+		$app  = Rb_Factory::getApplication();
+				
+		//now add other filters
+		$data = array('price');
+		foreach ($data as $key){
+			$context = $this->getContext();
+			$filterName  = "filter_{$context}_{$key}";
+			$oldValue    = $app->getUserState($filterName);
+			$value       = $app->getUserStateFromRequest($filterName ,$filterName);
+		
+			//offset is set to 0 in case previous value is not equals to current value
+			//otherwise it will filter according to the pagination offset
+			if(!empty($oldValue) && $oldValue != $value){
+				$filters['limitstart']=0;
+			}
+			$filters[$context][$key] = $value;
+		}
+
+		return;
+	}
+	
+	/**
+     * (non-PHPdoc)
+     * @see components/com_paycart/paycart/base/PaycartModelLang::_buildQueryFilter()
+     * 
+     * Overridden it to handle filter other than the main table
+     */
+	protected function _buildQueryFilter(Rb_Query &$query, $key, $value, $tblAlias='`tbl`.')
+    {
+    	// Only add filter if we are working on bulk reocrds
+		if($this->getId()){
+			return $this;
+		}
+		
+    	Rb_Error::assert(isset($this->filterMatchOpeartor[$key]), "OPERATOR FOR $key IS NOT AVAILABLE FOR FILTER");
+    	Rb_Error::assert(is_array($value), JText::_('PLG_SYSTEM_RBSL_VALUE_FOR_FILTERS_MUST_BE_AN_ARRAY'));
+
+    	$cloneOP    = $this->filterMatchOpeartor[$key];
+    	$cloneValue = $value;
+    	
+    	//in case of price
+    	if($key == 'price'){
+    		$condition = array();
+    		
+    		while(!empty($cloneValue) && !empty($cloneOP)){
+	    		$op  = array_shift($cloneOP);
+	    		$val = array_shift($cloneValue);
+	    		
+	    		// discard empty values
+    			if(!isset($val) || '' == trim($val))
+    				continue;
+    				
+    			//trim value before adding it to condition
+    			$val = trim($val);
+    		
+    			$condition[] =  "SUM(cp.`total`) {$op} {$val} ";
+    		}
+    		
+    		if(!empty($condition)){
+    			$query->where(" `tbl`.`cart_id` IN( SELECT cp.cart_id FROM `#__paycart_cartparticular` AS cp GROUP BY cp.cart_id 
+	    											HAVING ".implode(' AND ', $condition).")");
+    		}
+    		return;
+    	}
+    	
+    	while(!empty($cloneValue) && !empty($cloneOP)){
+    		$op  = array_shift($cloneOP);
+    		$val = array_shift($cloneValue);
+
+			// discard empty values
+    		if(!isset($val) || '' == trim($val))
+    			continue;
+    			
+    		//trim value before adding it to condition
+    		$val = trim($val);
+    		
+    		if(strtoupper($op) == 'LIKE'){
+	    	  	$query->where("$tblAlias`$key` $op '%{$val}%'");
+				continue;
+	    	}
+
+    		$query->where("$tblAlias`$key` $op '$val'");
+    	}
+    }
 }
 
 class PaycartModelformCart extends PaycartModelform { }

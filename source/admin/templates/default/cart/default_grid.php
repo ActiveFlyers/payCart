@@ -45,7 +45,7 @@ defined('_JEXEC') OR die();
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_ID", 'cart_id', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_BUYER", 'buyer_id', $filter_order_Dir, $filter_order);?></th>
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_STATUS", 'status', $filter_order_Dir, $filter_order);?></th>
-				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_APPROVED", 'is_approved', $filter_order_Dir, $filter_order);?></th>
+<!--				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_APPROVED", 'is_approved', $filter_order_Dir, $filter_order);?></th>-->
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_DELIVERED", 'is_delivered', $filter_order_Dir, $filter_order);?></th>
 				<th class="hidden-phone"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_LOCKED_DATE');?></th>
 				<th class="hidden-phone"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_PAID_DATE');?></th>			
@@ -78,7 +78,7 @@ defined('_JEXEC') OR die();
     					  ?>
 					</td>
 					<td><?php echo $record->status;?></td>
-					<td><?php echo ($record->is_approved)?'<i class="fa fa-check-circle-o text-success"></i>':'<i class="hasTooltip fa fa-times-circle-o text-error" title="'.JText::_('COM_PAYCART_ADMIN_CART_EDIT_CART_TO_MARK_APPROVED').'"></i>'?></td>
+<!--					<td><?php echo ($record->is_approved)?'<i class="fa fa-check-circle-o text-success"></i>':'<i class="hasTooltip fa fa-times-circle-o text-error" title="'.JText::_('COM_PAYCART_ADMIN_CART_EDIT_CART_TO_MARK_APPROVED').'"></i>'?></td>-->
 					<td><?php echo ($record->is_delivered)?'<i class="fa fa-check-circle-o text-success"></i>':'<i class="hasTooltip fa fa-times-circle-o text-error" title="'.JText::_('COM_PAYCART_ADMIN_CART_EDIT_CART_TO_MARK_DELIVERED').'"></i>'?></td>
 					<td class="hidden-phone"><?php echo $record->locked_date;?></td>
 					<td class="hidden-phone"><?php echo $record->paid_date;?></td>

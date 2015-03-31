@@ -117,6 +117,9 @@ class PaycartModelLang extends PaycartModel
     		if(!isset($val) || '' == trim($val))
     			continue;
 
+    		//trim value before adding it to condition
+    		$val = trim($val);
+    		
     		if(strtoupper($op) == 'LIKE'){
 	    	  	$query->where("$tblAlias`$key` $op '%{$val}%'");
 				continue;

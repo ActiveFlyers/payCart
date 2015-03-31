@@ -121,6 +121,9 @@ class PaycartModelBuyer extends PaycartModel
     		if(!isset($val) || '' == trim($val))
     			continue;
 
+    		//trim value before adding it to condition
+    		$val = trim($val);
+    			
     		if($key == 'country_id'){
     			$query->where(" `tbl`.`buyer_id` IN( SELECT addr.`buyer_id` FROM `#__paycart_buyeraddress` AS addr 
     								                 WHERE addr.`country_id` = '{$val}' )");
