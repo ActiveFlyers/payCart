@@ -115,14 +115,11 @@ class PaycartModelBuyer extends PaycartModel
     	
     	while(!empty($cloneValue) && !empty($cloneOP)){
     		$op  = array_shift($cloneOP);
-    		$val = array_shift($cloneValue);
+    		$val = trim(array_shift($cloneValue));
 
 			// discard empty values
-    		if(!isset($val) || '' == trim($val))
+    		if(!isset($val) || '' == $val)
     			continue;
-
-    		//trim value before adding it to condition
-    		$val = trim($val);
     			
     		if($key == 'country_id'){
     			$query->where(" `tbl`.`buyer_id` IN( SELECT addr.`buyer_id` FROM `#__paycart_buyeraddress` AS addr 

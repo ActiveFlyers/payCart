@@ -14,11 +14,11 @@ defined('_JEXEC') or die( 'Restricted access' );
 
 <div class="well">
 	<div class="row-fluid pc-filter-row">
-		<div class="pc-filter-minwidth-100 span1">
+		<div class="pc-filter-minwidth-100 span2">
 			<label><?php echo JText::_('COM_PAYCART_ADMIN_TITLE')?></label>
 			<?php echo paycartHtml::_('paycarthtml.text.filter', 'title', 'discountrule', $filters, 'filter_paycart', array('class'=>'pc-filter-width'));?>
 		</div>
-		<div class="pc-filter-minwidth-100 span1">
+		<div class="pc-filter-minwidth-100 span2">
 			<label><?php echo JText::_('COM_PAYCART_ADMIN_COUPON_CODE')?></label>
 			<?php echo paycartHtml::_('paycarthtml.text.filter', 'coupon', 'discountrule', $filters, 'filter_paycart', array('class'=>'pc-filter-width'));?>
 		</div>
@@ -32,13 +32,9 @@ defined('_JEXEC') or die( 'Restricted access' );
 			<label><?php echo JText::_('COM_PAYCART_ADMIN_AMOUNT')?></label>
 			<?php echo paycartHtml::_('paycarthtml.range.filter', 'amount', 'discountrule', $filters,'text','filter_paycart');?>
 		</div>
-		<div class="pc-filter-minwidth-150 span2 hidden-phone">
-			<label><?php echo JText::_('COM_PAYCART_ADMIN_START_DATE')?></label>
-			<?php echo paycartHtml::_('paycarthtml.range.filter', 'start_date', 'discountrule', $filters,'date','filter_paycart',array('style'=>'style="width:90px;"'));?>
-		</div>
 		
 		<div class="pc-filter-minwidth-150 span2 hidden-phone">
-			<label><?php echo JText::_('COM_PAYCART_ADMIN_END_DATE')?></label>
+			<label><?php echo JText::_('COM_PAYCART_ADMIN_FILTERS_DATE')?></label>
 			<?php echo paycartHtml::_('paycarthtml.range.filter', 'end_date', 'discountrule', $filters,'date','filter_paycart',array('style'=>'style="width:90px;"'));?>
 		</div>
 		
