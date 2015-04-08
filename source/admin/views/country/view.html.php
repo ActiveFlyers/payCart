@@ -57,4 +57,12 @@ class PaycartAdminHtmlViewCountry extends PaycartAdminBaseViewCountry
 		Rb_HelperToolbar::divider();
 		Rb_HelperToolbar::openPopup('initimport','import','',JText::_('COM_PAYCART_ADMIN_COUNTRY_TOOLBAR_IMPORT'));		
 	}
+	
+	protected function _adminEditToolbar()
+	{
+		Rb_HelperToolbar::apply();
+		Rb_HelperToolbar::save();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::cancel();
+	}
 }
