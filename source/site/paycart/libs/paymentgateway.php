@@ -86,8 +86,10 @@ class PaycartPaymentgateway extends PaycartLib
 	public function getConfigHtml($type)
 	{
 		try {
-			$html	=	'';
-			$xml_file 	= 	PaycartFactory::getHelper('invoice')->getProcessorConfigFile($type);		
+			$html		= '';
+			$helper 	= PaycartFactory::getHelper('invoice');
+			$xml_file 	= $helper->getProcessorConfigFile($type);		
+			$help 		= $helper->getXml($type);
 			
 			$form = $this->getModelform()->getForm();
 			$form->loadFile($xml_file, true, '//config');
@@ -109,8 +111,24 @@ class PaycartPaymentgateway extends PaycartLib
 				}
 			}
 			?>
+			<?php if(!empty($help['help'])): ?>
+				<br />
+				<br />
+				<div class="row-fluid">
+					<legend onClick="paycart.jQuery('.paycart-paymentgateway-help').slideToggle();">
+						<span class="paycart-processor-help">[+]</span>
+						<span> <?php echo JText::_('COM_PAYCART_PAYMENTGATEWAY_HELP_MESSAGE'); ?></span>
+					</legend>
+			
+					<div class="paycart-paymentgateway-help">				
+						<div><?php echo (isset($help['help']) && !empty($help['help'])) ? JText::_($help['help']) : ''; ?></div>
+					</div>
+				</div>
+			<?php endif;?>				
 			<script>
 				paycart.radio.init();
+				paycart.jQuery('.paycart-paymentgateway-help .rb-processor-help').hide();
+				paycart.jQuery('.paycart-paymentgateway-help .rb-processor-help.rb-help-paycart').show();
 			</script>
 			<?php 
 			
