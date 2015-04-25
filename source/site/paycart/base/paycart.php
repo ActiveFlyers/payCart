@@ -98,11 +98,13 @@ class Paycart
 	const WEIGHT_UNIT_KILOGRAM		= 'kg';
 	const WEIGHT_UNIT_GRAM			= 'gm';
 	const WEIGHT_UNIT_PONUD			= 'lb';
-	const WEIGHT_UNIT_OUNCE			= 'oz';
+	const WEIGHT_UNIT_OUNCE			= 'oz';	
+	const DEFAULT_WEIGHT_UNIT 		= 'gm';	
 	
 	const DIMENSION_UNIT_CENTIMETER	= 'cm';
 	const DIMENSION_UNIT_METER		= 'm';
 	const DIMENSION_UNIT_INCH		= 'in';
+	const DEFAULT_DIMENSION_UNIT	= 'cm';
 	
 	
 	const SORTING_OPTION_HITS         = 'hits';

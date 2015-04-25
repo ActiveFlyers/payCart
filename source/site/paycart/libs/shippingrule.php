@@ -181,8 +181,8 @@ class PaycartShippingrule extends PaycartLib
 	public function getGlobalconfigRequestObject()
 	{
 		$config = new PaycartShippingruleRequestGlobalconfig();
-		$config->dimension_unit  = PaycartFactory::getConfig()->get('catalogue_dimension_unit');
-		$config->weight_unit	 = PaycartFactory::getConfig()->get('catalogue_weight_unit');
+		$config->dimension_unit  = Paycart::DEFAULT_DIMENSION_UNIT; // will alway be DEFAULT value : cm
+		$config->weight_unit	 = Paycart::DEFAULT_WEIGHT_UNIT; //  will always be DEFAULT value  : gm
 		$config->origin_address  = PaycartFactory::getConfig()->get('localization_origin_address');
 		return $config;
 	}

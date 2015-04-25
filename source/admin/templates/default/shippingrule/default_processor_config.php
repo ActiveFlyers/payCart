@@ -11,4 +11,9 @@
 
 defined('_JEXEC') or die( 'Restricted access' );
 
-echo $processor_config_html;	
+echo $processor_config_html;
+?>
+<script>
+	paycart.formvalidator.initialize('form.pc-form-validate');
+</script>
+<?php 	

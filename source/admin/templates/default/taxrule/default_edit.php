@@ -16,7 +16,7 @@ paycart.admin.taxrule = {};
 	paycart.admin.taxrule.getProcessorConfig = function(){
 		var processor_classname = $('[data-pc-taxrule="processor"] select').val();
 		if(processor_classname.length > 0){
-			paycart.formvalidator.isValid('form.pc-form-validate');
+			paycart.formvalidator.initialize('form.pc-form-validate');
 			var url  = 'index.php?option=com_paycart&view=taxrule&task=getProcessorConfig&processor_classname='+processor_classname+'&taxrule_id='+<?php echo $form->getValue('taxrule_id');?>;
 			paycart.ajax.go(url);
 		}
