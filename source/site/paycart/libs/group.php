@@ -89,8 +89,15 @@ class PaycartGroup extends PaycartLib
 	public function isAppicable($entity_id)
 	{
 		$rules = (array) $this->params->toArray();
-		foreach($rules as $rule){		
-			$ruleInstance = $this->_helper->getInstance($this->type, $rule['ruleClass'], $rule);
+		foreach($rules as $rule){	
+			try {	
+				$ruleInstance = $this->_helper->getInstance($this->type, $rule['ruleClass'], $rule);
+			}
+			catch (Exception $e){
+				//if any grp rule is disable any it is attached to any discount/tax/shipping rule
+				//then no other rule will be applicable.
+				return false;
+			}
 			if (!$ruleInstance->isApplicable($entity_id)) {
 				return false;
 			}
