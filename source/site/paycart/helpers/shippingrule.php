@@ -27,7 +27,7 @@ class PaycartHelperShippingrule extends PaycartHelper
 	 * 
 	 * @return array array($best_price_shippingrule, $best_grade_shippingrule, $shippingrules_price)
 	 */
-	public function getBestRule($shippingrule_list, $product_list, $delivery_md5_address, $product_details)
+	public function getBestRule($shippingrule_list, $product_list, $delivery_md5_address, $product_details, $cart)
 	{
 		$best_price = null;
 		$best_price_shippingrule = null;
@@ -40,7 +40,10 @@ class PaycartHelperShippingrule extends PaycartHelper
 			$shippingrule_instance = PaycartShippingrule::getInstance($id_shippingrule);
 
 			// TODO : can be combined below two function calls
-			list($price_without_tax, $price_with_tax) = $shippingrule_instance->getPackageShippingCost($product_list, $delivery_md5_address, $product_details);			
+			list($price_without_tax, $price_with_tax) = $shippingrule_instance->getPackageShippingCost($product_list, $delivery_md5_address, $product_details, $cart);			
+			if(!$price_with_tax && !$price_without_tax){
+				continue;
+			}
 			if (is_null($best_price) || $price_with_tax < $best_price){
 				$best_price = $price_with_tax;
 				$best_price_shippingrule = $id_shippingrule;
@@ -104,6 +107,11 @@ class PaycartHelperShippingrule extends PaycartHelper
 			foreach ($best_grade_shippingrules as $id_package => $id_shippingrule)
 			{
 				$key .= $id_shippingrule.',';
+				
+				if(!isset($shippingrules_price[$id_package][$id_shippingrule]['with_tax'])){
+					continue;
+				}
+				
 				if (!isset($best_grade_shippingrule[$id_shippingrule]))
 					$best_grade_shippingrule[$id_shippingrule] = array(
 						'price_with_tax' => 0,
@@ -147,29 +155,33 @@ class PaycartHelperShippingrule extends PaycartHelper
 
 			foreach ($packages as $id_package => $package)
 			{
-				$key .= $id_shippingrule.',';
-				$price_with_tax += $shippingrules_price[$id_package][$id_shippingrule]['with_tax'];
-				$price_without_tax += $shippingrules_price[$id_package][$id_shippingrule]['without_tax'];
-				$package_list[] = $id_package;
-				$product_list = array_merge($product_list, $package['product_list']);
+				if(isset($shippingrules_price[$id_package][$id_shippingrule])){
+					$key .= $id_shippingrule.',';
+					$price_with_tax += $shippingrules_price[$id_package][$id_shippingrule]['with_tax'];
+					$price_without_tax += $shippingrules_price[$id_package][$id_shippingrule]['without_tax'];
+					$package_list[] = $id_package;
+					$product_list = isset($shippingrules_price[$id_package][$id_shippingrule])?array_merge($product_list, $package['product_list']):array();
+				}
 			}
 
-			if (!isset($delivery_option_list[$key]))
-				$delivery_option_list[$key] = array(
-					'is_best_price' => false,
-					'is_best_grade' => false,
-					'unique_shippingrule' => true,
-					'shippingrule_list' => array(
-						$id_shippingrule => array(
-							'price_with_tax' => $price_with_tax,
-							'price_without_tax' => $price_without_tax,
-							'package_list' => $package_list,
-							'product_list' => $product_list,
+			if(!empty($product_list)){
+				if (!isset($delivery_option_list[$key]))
+					$delivery_option_list[$key] = array(
+						'is_best_price' => false,
+						'is_best_grade' => false,
+						'unique_shippingrule' => true,
+						'shippingrule_list' => array(
+							$id_shippingrule => array(
+								'price_with_tax' => $price_with_tax,
+								'price_without_tax' => $price_without_tax,
+								'package_list' => $package_list,
+								'product_list' => $product_list,
+							)
 						)
-					)
-				);
-			else
-				$delivery_option_list[$key]['unique_shippingrule'] = (count($delivery_option_list[$key]['shippingrule_list']) <= 1);
+					);
+				else
+					$delivery_option_list[$key]['unique_shippingrule'] = (count($delivery_option_list[$key]['shippingrule_list']) <= 1);
+				}
 			}
 			
 			return $delivery_option_list;
@@ -207,7 +219,7 @@ class PaycartHelperShippingrule extends PaycartHelper
 		return $shippingrule_counter;		
 	}
 	
-	public function getDeliveryOptionList($product_grouped_by_address, $shippingrules_grouped_by_product)
+	public function getDeliveryOptionList($product_grouped_by_address, $shippingrules_grouped_by_product, $cart)
 	{	
 		$package_list = $this->getPackageList($product_grouped_by_address, $shippingrules_grouped_by_product);
 		// Foreach addresses
@@ -230,7 +242,6 @@ class PaycartHelperShippingrule extends PaycartHelper
 					return $cache;
 				}
 
-				$shippingrules_price[$md5Address][$id_package] = array();
 
 				// Get all common shippingrules for each packages to the same address
 				if (is_null($common_shippingrules))
@@ -238,25 +249,37 @@ class PaycartHelperShippingrule extends PaycartHelper
 				else
 					$common_shippingrules = array_intersect($common_shippingrules, $package['shippingrule_list']);
 
-				$best_price = null;
-				$best_price_shippingrule = null;
-				$best_grade = null;
-				$best_grade_shippingrule = null;
-
+				// IMP : Third argument is for sending details regarding product details	
 				// get best shipping rule according to price and grade
-				list($best_price_shippingrules[$id_package], 
-						$best_grade_shippingrules[$id_package],           // IMP : Third argument is for sending details regarding product details
-						$shippingrules_price[$md5Address][$id_package]) =  $this->getBestRule($package['shippingrule_list'], $package['product_list'], $md5Address, $product_grouped_by_address[$md5Address]);
+				list($best_price, $best_grade, $shippingRules) = $this->getBestRule($package['shippingrule_list'], $package['product_list'], $md5Address, $product_grouped_by_address[$md5Address], $cart);
+
+				if($best_price){
+					$best_price_shippingrules[$id_package] = $best_price;
+				}
+				
+				if($best_grade){
+					$best_grade_shippingrules[$id_package] = $best_grade;
+				}
+				
+				if($shippingRules){
+					$shippingrules_price[$md5Address][$id_package] = $shippingRules;
+				}
 			}
 
 			// LIST TYPE 1: Add the delivery option with best price as best price
-			$delivery_option_list[$md5Address] = $this->getBestPriceDeliveryOption($packages, $delivery_option_list[$md5Address], $best_price_shippingrules, $shippingrules_price[$md5Address]);
+			if(!empty($best_price_shippingrules)){
+				$delivery_option_list[$md5Address] = $this->getBestPriceDeliveryOption($packages, $delivery_option_list[$md5Address], $best_price_shippingrules, $shippingrules_price[$md5Address]);
+			}
 		
 			// LIST TYPE 2: Add the delivery option with best price as best grade
-			$delivery_option_list[$md5Address] = $this->getBestGradeDeliveryOption($packages, $delivery_option_list[$md5Address], $best_grade_shippingrules, $shippingrules_price[$md5Address]);
+			if(!empty($best_grade_shippingrules)){
+				$delivery_option_list[$md5Address] = $this->getBestGradeDeliveryOption($packages, $delivery_option_list[$md5Address], $best_grade_shippingrules, $shippingrules_price[$md5Address]);
+			}
 				
 			// LIST TYPE 3: Get all delivery options with a unique shippingrule
-			$delivery_option_list[$md5Address] = $this->getUniqueDeliveryOption($packages, $delivery_option_list[$md5Address], $common_shippingrules, $shippingrules_price[$md5Address]);
+			 if(!empty($shippingrules_price[$md5Address])){
+					$delivery_option_list[$md5Address] = $this->getUniqueDeliveryOption($packages, $delivery_option_list[$md5Address], $common_shippingrules, $shippingrules_price[$md5Address]);
+			 }
 
 		}
 		

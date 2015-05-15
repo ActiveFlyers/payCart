@@ -174,6 +174,11 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		$('a[href="#pc-account-guest-form"]').on('shown', function (e) {
 			paycart.formvalidator.initialize('.pc-form-validate');
 		});
+
+		$("[data-pc-selector='pc-track-table']").click(function(){
+			  $(this).children('.fa-angle-double-down').toggleClass("fa-flip-vertical");
+			  $(this).parents("[data-pc-selector='shipment-row']").find("[data-pc-selector='track-details']").slideToggle(400);
+		});
 	});
 	
 })(paycart.jQuery);

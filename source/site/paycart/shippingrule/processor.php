@@ -87,5 +87,11 @@ abstract class PaycartShippingruleProcessor
 		return $formatter->convertWeight($value, $inputUnit, $resultantUnit);
 	}
 	
+	public function convertDimension($value, $inputUnit, $resultantUnit)
+	{
+		$formatter = PaycartFactory::getHelper('format');
+		return $formatter->convertDimension($value, $inputUnit, $resultantUnit);
+	}
+	
 	abstract public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response);
 }

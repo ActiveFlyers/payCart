@@ -98,8 +98,10 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 						$productShipments[$product['product_id']] = array();
 					}
 					
+					$notes = json_decode($shipment->notes, true);
 					$productShipments[$product['product_id']][] = array('quantity' => $product['quantity'],
-																		'shipment_id' => $shipment->shipment_id);
+																		'shipment_id' => $shipment->shipment_id,
+																		'notes'=>!empty($notes)?array_reverse($notes):array());
 				}
 			}
 		}

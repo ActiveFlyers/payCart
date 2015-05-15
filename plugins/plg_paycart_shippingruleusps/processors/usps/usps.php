@@ -88,6 +88,13 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 			$response->amount = false;
 			$response->messageType = Paycart::MESSAGE_TYPE_NOTICE;
 			$response->message = $result['error'];
+			
+			static $IsErrorSet = false;
+			if(!$IsErrorSet){
+				//dump the error code and error message in log file of paycart
+				PaycartFactory::getHelper('log')->add($result['error']);
+				$IsErrorSet = true;
+			}
 			return $response;
 		}
 		
@@ -114,7 +121,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 			}
 			
 			if ($product->length && $product->length > $length){ 
-				$height = $product->length;
+				$length = $product->length;
 			}
 				
 			if ($product->weight){
@@ -151,11 +158,12 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 				$req_params['package_list'][] = array(
 					'width' => ($product->width 	? $product->width : 1),
 					'height' => ($product->height 	? $product->height : 1),
-					'depth' => ($product->length 	? $product->length : 1),
+					'length' => ($product->length 	? $product->length : 1),
 					'weight' => ($product->weight > 0 ? $product->weight : 0.5),
 					'packaging_type' => !empty($this->processor_config->packaging_type) ? $this->processor_config->packaging_type : 'VARIABLE',
 					'packaging_size' =>  !empty($this->processor_config->packaging_size)? $this->processor_config->packaging_size : 'REGULAR',
 					'machinable' => isset($this->processor_config->machinable) ? $this->processor_config->machinable :  false,
+					'first_class_mail_type' => isset($this->processor_config->first_class_mail_type)?$this->processor_config->first_class_mail_type:'PARCEL'
 				);
 			}
 		}
@@ -244,7 +252,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 
 			// First class management
 			if (substr($req_params['service'], 0, 11) == 'FIRST CLASS')
-				$req_params['firstclassmailtype'] = '<FirstClassMailType>PARCEL</FirstClassMailType>';
+				$req_params['firstclassmailtype'] = '<FirstClassMailType>'.$p['first_class_mail_type'].'</FirstClassMailType>';
 			else
 				$req_params['firstclassmailtype'] = '';
 
@@ -318,10 +326,20 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 						  2 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_PRIORITY'), 'value' => 'PRIORITY'),
 						  3 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_PRIORITY_COMMERCIAL'), 'value' => 'PRIORITY COMMERCIAL'),
 						  4 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_EXPRESS'), 'value' => 'EXPRESS'),
-						  5 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_EXPRESS_COMMERCIAL'), 'value' => 'EXPRESS COMMERCIAL'),
-						  6 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_PARCEL'), 'value' => 'PARCEL'),
-						  7 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_MEDIA'), 'value' => 'MEDIA'),
-						  8 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_LIBRARY'), 'value' => 'LIBRARY')
+						  5 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_EXPRESS_COMMERCIAL'), 'value' => 'EXPRESS COMMERCIAL'),						 
+						  6 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_MEDIA'), 'value' => 'MEDIA'),
+						  7 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_SERVICE_CODE_LIBRARY'), 'value' => 'LIBRARY')
+					);
+	}
+	
+	protected function _getFirstClassMailType()
+	{
+		return array(
+						 0 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE_PARCEL'), 'value' => 'PARCEL'),
+						 1 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE_LETTER'), 'value' => 'LETTER'),
+						 2 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE_FLAT'), 'value' => 'FLAT'),
+						 3 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE_POSTCARD'), 'value' => 'POSTCARD'),
+						 4 => array('title' => JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE_PACKAGE_SERVICE'), 'value' => 'PACKAGE SERVICE'),
 					);
 	}
 	
@@ -349,6 +367,7 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 		$packagingType	 = $this->_getPackagingTypes();
 		$config 		 = $this->getConfig();
 		$location		 = $this->getLocation();
+		$mailType 		 = $this->_getFirstClassMailType();
 		
 		ob_start();
 		

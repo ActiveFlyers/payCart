@@ -24,10 +24,14 @@ class PaycartHelperRequest extends PaycartHelper
 	{		
 		$object = new PaycartRequestBuyeraddress();
 		
+		$country = PaycartFactory::getModel('country')->loadRecords(array('country_id'=>$buyer_address->getCountryId()));
+		$state   = PaycartFactory::getModel('state')->loadRecords(array('state_id'=>$buyer_address->getStateId()));
+		
 		$object->to			= $buyer_address->getTo();
 		$object->address 	= $buyer_address->getAddress();
-		$object->country	= $buyer_address->getCountryId();
-		$object->state		= $buyer_address->getStateId();
+		//add full details of country and state
+		$object->country	= (!empty($country))?array_shift($country):0;
+		$object->state		= (!empty($state))?array_shift($state):0;
 		$object->city		= $buyer_address->getCity();
 		$object->zipcode	= $buyer_address->getZipcode();
 		$object->phone		= $buyer_address->getPhone();		

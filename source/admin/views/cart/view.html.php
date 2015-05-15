@@ -119,6 +119,10 @@ class PaycartAdminHtmlViewCart extends PaycartAdminBaseViewCart
 		$shipmentModel = PaycartFactory::getModel('shipment');
 		$shipments     = $shipmentModel->loadRecords(array('cart_id' => $cart_id)); 
 		
+		foreach ($shipments as $key => $shipment){
+			$shipments[$key]->notes = json_decode($shipment->notes, true); 
+		}
+		
 		$this->assign('product_particular',		$product_particular);
 		$this->assign('shipping_particular',	$shipping_particular);
 		$this->assign('promotion_particular',	$promotion_particular);

@@ -39,5 +39,44 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	margin-bottom: 10px;
 }
 
+.pc-track-tbl-border{
+	 padding-top: 5px;
+}
+
+.shipment-row .table th, .shipment-row .table td {
+    border-top: medium none;
+}
+
+.pc-track-shipment .table td {
+    width: 50%;
+}
+
+.pc-track-note {
+    padding: 8px;
+}
+
+.pc-track-arrow::after {
+    border-color: #e3e3e3 transparent;
+    border-style: solid;
+    border-width: 0 15px 15px;
+    content: "";
+    display: block;
+    left: 50%;
+    margin-left: -15px;
+    position: absolute;
+    top: -15px;
+    width: 0;
+    z-index: 1;
+}
+
+.pc-track-shipment .well {
+    padding: 10px;
+}
+
+.pc-track-arrow {
+    position: relative;
+}
+
+
 </style>
 <?php 

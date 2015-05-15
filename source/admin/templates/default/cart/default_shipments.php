@@ -26,11 +26,12 @@ PaycartHtml::_('behavior.formvalidation');
 		var pc_shipment_products		= <?php echo json_encode(array_values($product_particular));?>;
 		var pc_shipment_tempArray		= [{}]; // used to store indexes of two shipment to show in one row
 		var pc_shipment_tempStatus		= [];
+		var pc_shipment_notes			= [{}];
 		
 		<?php if($shipments):?>
 			var pc_shipments   = <?php echo json_encode($shipments, true);?>;
 		<?php else :?>
-			var pc_shipments   = [ {'products':[{}]} ];
+			var pc_shipments   = [ {'products':[{}]} , {'notes' :[{}]}];
 		<?php endif;?>
 	</script>
 		
@@ -168,6 +169,40 @@ PaycartHtml::_('behavior.formvalidation');
 								</span>
 								
 							</div>
+						</div>
+						
+						<div class="control-group">
+							<label title="" class="hasTooltip control-label">
+								<?php echo JText::_('COM_PAYCART_ADMIN_SHIPMENT_NOTES');?>
+							</label>
+							<div class="controls" data-ng-init="shipments[value].notes = shipments[value].notes || [{}]">
+								<div data-ng-if="shipments[value].notes">
+									<table class="table table-responsive" data-ng-repeat="note in shipments[value].notes">
+										<tr class="pull-left">
+											<td width="30%">{{note.date}} {{note.time}}</td>
+											<td width="10%">{{note.status}}</td>
+											<td width="55%">{{note.text}}</td>
+											<td width="5%">
+												<a data-ng-show="note.text" href="javascript:void(0);" data-ng-click="removeNote(value, $index)" 
+												   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" >
+													<i class="fa fa-trash-o"></i>
+												</a>
+											</td>
+										</tr>
+									</table>
+								</div>
+								
+								<!-- New note section -->
+								<textarea rows="" cols="" data-ng-model="noteNew.text"></textarea>
+								<select data-ng-model="noteNew.status" data-ng-options="sts.value as sts.title for sts in status" 
+								        required="true" >
+										<option value=""></option>
+								</select>
+								<a href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
+									<i class="fa fa-check"></i>
+								</a>					
+							</div>
+							
 						</div>
 					</div>				
 				</div>
