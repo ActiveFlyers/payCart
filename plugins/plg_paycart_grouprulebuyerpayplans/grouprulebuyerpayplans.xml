@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="paycart" method="upgrade">
+    <name>Paycart Grouprule Payplans Plan</name>
+    <version>1.0.1</version>
+    <creationDate>May 2015</creationDate>
+    <author>Ready Bytes</author>
+    <authorEmail>support+paycart@readybytes.in</authorEmail>
+    <authorUrl>http://www.readybytes.net/paycart</authorUrl>
+    <copyright>2009-15 Ready Bytes Software Labs Pvt. Ltd.</copyright>
+    <license>GNU General Public License v2</license>
+    <description>Used to create grouprule using payplans' plan'</description>
+    <files>
+	<filename plugin="grouprulebuyerpayplans">grouprulebuyerpayplans.php</filename>
+	<folder>rules</folder>
+	<filename>index.html</filename>
+    </files>
+    <config>
+    </config>
+
+    <alias>pc-grouprule-payplans</alias>
+    <version_number>1.0.1</version_number>
+    <version_name>Grouprule Payplans 1.0</version_name>
+</extension>
+
