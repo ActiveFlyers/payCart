@@ -798,41 +798,47 @@ class PaycartCart extends PaycartLib
 	
 	public function loadShippingCartparticulars()
 	{
-		$shippingOptions 			= $this->getShippingOptionList();
+		$shippingOptionLists		= $this->getShippingOptionList();
+		$address					= $this->getShippingAddress(true);
+		$md5Address					= $address->getMD5();
+		$md5Address					= !isset($md5Address)?0:$md5Address;
+		$shippingOptions			= array();
+		
+		// For now, we are asking only 1 shipping address for all the order items
+		// so considering only one address
+		if(isset($shippingOptionLists[$md5Address]) && !empty($shippingOptionLists[$md5Address])){
+			$shippingOptions = $shippingOptionLists[$md5Address];
+		}
+		
 		// No matching Shipping Rules for all or one of the product
 		if(empty($shippingOptions)){
 			return $this;
 		}	
 		
 		$selectedShippingMethods 	= $this->params->get('shipping',null);
-		$address					= $this->getShippingAddress(true);
-		$md5Address					= $address->getMD5();
-		$md5Address					= !isset($md5Address)?0:$md5Address;
 
-		if(empty($selectedShippingMethods) || !isset($shippingOptions[$md5Address][$selectedShippingMethods])) {
+		if(empty($selectedShippingMethods) || !isset($shippingOptions[$selectedShippingMethods])) {
 			// IMP
 			// shipping method is not selected or invalid
 			// so reset the previous selected shipping method or set default shipping method
 			$default = Paycart::SHIPPING_BEST_IN_PRICE; //PCTODO:: Can be fetched from global configuration
 			
-			foreach ($shippingOptions as $addressId => $shippingOption){
-				foreach ($shippingOption as $key => $option){
-					if($default == Paycart::SHIPPING_BEST_IN_PRICE && $option['is_best_price'] == true){
-						$selectedShippingMethods = $key;
-						$this->params->set('shipping', $key);
-						break;
-					}
-					elseif ($default == Paycart::SHIPPING_BEST_IN_TIME && $option['is_best_grade'] == true){
-						$selectedShippingMethods = $key;
-						$this->params->set('shipping', $key);
-						break;
-					}
+			foreach ($shippingOptions as $key => $option){
+				if($default == Paycart::SHIPPING_BEST_IN_PRICE && $option['is_best_price'] == true){
+					$selectedShippingMethods = $key;
+					$this->params->set('shipping', $key);
+					break;
+				}
+				elseif ($default == Paycart::SHIPPING_BEST_IN_TIME && $option['is_best_grade'] == true){
+					$selectedShippingMethods = $key;
+					$this->params->set('shipping', $key);
+					break;
 				}
 			}
 		}
 		
-		if(isset($shippingOptions[$md5Address][$selectedShippingMethods])){
-			foreach($shippingOptions[$md5Address][$selectedShippingMethods]['shippingrule_list'] as $shippingrule_id => $shippingOption){
+		if(isset($shippingOptions[$selectedShippingMethods])){
+			foreach($shippingOptions[$selectedShippingMethods]['shippingrule_list'] as $shippingrule_id => $shippingOption){
 				$productParticulars = $this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
 				$binddata = array();
 				
@@ -887,7 +893,7 @@ class PaycartCart extends PaycartLib
 			return array();
 		}
 		
-		return $shippingruleHelper->getDeliveryOptionList($product_grouped_by_address, $shippingrules_grouped_by_product);
+		return $shippingruleHelper->getDeliveryOptionList($product_grouped_by_address, $shippingrules_grouped_by_product, $this);
 	}
 	
 	/**

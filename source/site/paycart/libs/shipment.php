@@ -26,6 +26,7 @@ class PaycartShipment extends PaycartLib
 	protected $delivered_date	    = '';
 	protected $dispatched_date       = '';
 	protected $est_delivery_date	= '';
+	protected $notes				= '';
 	
 	protected $_products			= array();
 	
@@ -48,6 +49,7 @@ class PaycartShipment extends PaycartLib
 		$this->delivered_date	    = Rb_Date::getInstance();
 		$this->dispatched_date      = Rb_Date::getInstance();
 		$this->est_delivery_date    = Rb_Date::getInstance();
+		$this->notes				= new Rb_Registry();
 		
 		$this->_products			= array();
 		

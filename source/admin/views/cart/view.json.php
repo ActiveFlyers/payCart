@@ -45,6 +45,26 @@ class PaycartAdminJsonViewCart extends PaycartAdminBaseViewCart
 			$data['est_delivery_date'] = $date->toSql(); 
 		}
 		
+		
+		$temp  = array();
+		$notes = $data['notes'];
+		$date  = Rb_Date::getInstance();
+		foreach ($notes as $note){
+			if(empty($note['date'])){
+				$temp[] = array('status'=>$note['status'],
+								'text'=>$note['text'],
+								'date'=>$date->toSql(),
+								'time'=>$date->format('H:i'));
+				continue;
+			}
+			$temp[] = array('status'=>$note['status'],
+							'text'=>$note['text'],
+							'date'=>$note['date'],
+							'time'=>$note['time']);
+		}
+		
+		$data['notes'] = $temp;
+		
 		//save shipment
 		$result = PaycartShipment::getInstance(0,$data)->save();
 		

@@ -16,6 +16,7 @@ $config->service_code = isset($config->service_code)?$config->service_code:'FIRS
 $config->packaging_type = isset($config->packaging_type)?$config->packaging_type:'VARIABLE';
 $config->packaging_size = isset($config->packaging_size)?$config->packaging_size:'REGULAR';
 $config->machinable = isset($config->machinable)?$config->machinable:1;
+$config->first_class_mail_type = isset($config->first_class_mail_type)?$config->first_class_mail_type:'PARCEL'
 ?>
 <br>
 
@@ -85,6 +86,16 @@ $config->machinable = isset($config->machinable)?$config->machinable:1;
 					</fieldset>
 				</div>	
 			</div>
+			
+			<div class="control-group">
+				<label title="" class="hasTooltip control-label">
+					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE');?>
+				</label>
+				<div class="controls">
+					<?php echo PaycartHtml::_('select.genericlist',$mailType,$namePrefix.'[processor_config][first_class_mail_type]','','value','title',$config->first_class_mail_type, 'pc-processor-usps-first_class_mail_type')?>
+				</div>	
+			</div>
+			
 		</div>
 		
 		<div class="span6 well">

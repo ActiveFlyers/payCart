@@ -32,12 +32,17 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		$scope.products		   = pc_shipment_products;
 		$scope.tempArray	   = pc_shipment_tempArray;
 		$scope.tempStatus	   = pc_shipment_tempStatus;
+		$scope.notes		   = pc_shipment_notes;
+		$scope.noteNew		   = {};
+		$scope.noteNew.text   = '';
+		$scope.noteNew.status = '';
 		
 		/*
 	     * save new/existing shipment
 		 */
 		$scope.save = function(index){
 		    //it is required to copy the data, otherwise hash key will also get posted
+		    $scope.addMoreNote(index);
 			var postData = angular.copy($scope.shipments[index]);
 						
 			$http({
@@ -53,6 +58,8 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		            if (!data.valid) {					            	
 		            	// if not successful, bind errors to error variables
 		                $scope.shipments[index].errMessage = data.message;
+		                $scope.noteNew.text='';
+		                $scope.noteNew.status='';
 
 		                //remove message after timeout
 			            $timeout(function() {
@@ -64,6 +71,8 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		               $scope.shipments[index] = data.data;
 		               $scope.shipments[index].message = data.message;
 		               $scope.shipments[index].errMessage = false;
+		               $scope.noteNew.text='';
+		               $scope.noteNew.status='';
    
 					   //update status
 					   $scope.tempStatus[index] = $scope.getStatus(data.data.status, data.data.shipment_id);	
@@ -123,7 +132,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		 */
 		$scope.addNewShipment = function(){
 			var data = {};
-			data = {'products' :[{}]};
+			data = {'products' :[{}], 'notes' : [{}]};
 			$scope.shipments.push(data);
 			$scope.initChosenToolTip();
 			return false;
@@ -145,6 +154,28 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		$scope.removeProduct = function(shipmentIndex,productIndex){
 			var data = {};
 			$scope.shipments[shipmentIndex].products.splice(productIndex,1);
+			return false;
+		};
+
+		/*
+	     * Add elements to attach more product+quantity to a shipment  
+		 */
+		$scope.addMoreNote = function(index){
+			if($scope.noteNew.status && $scope.noteNew.text){
+				var data = {'text':$scope.noteNew.text,'status':$scope.noteNew.status};
+				$scope.shipments[index].notes.push(data);
+				$scope.initChosenToolTip();
+			}
+			return false;
+		};
+
+		/*
+	     * Detach the given product+quantity option from a shipment 
+		 */
+		$scope.removeNote = function(shipmentIndex,noteIndex){
+			var data = {};
+			$scope.shipments[shipmentIndex].notes.splice(noteIndex,1);
+			$scope.save(shipmentIndex);
 			return false;
 		};
 

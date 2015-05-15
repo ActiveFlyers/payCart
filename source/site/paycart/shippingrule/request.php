@@ -30,6 +30,8 @@ class PaycartShippingruleRequest
 	 * @var PaycartRequestBuyeraddress
 	 */
 	public $origin_address;
+	
+	public $currency;
 }
 
 

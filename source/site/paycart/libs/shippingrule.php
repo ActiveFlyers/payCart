@@ -137,7 +137,7 @@ class PaycartShippingrule extends PaycartLib
 	 * @throws InvalidArgumentException if any product in $product_list does not exists in $product_details
 	 * 
 	 */	
-	public function getPackageShippingCost($product_list, $delivery_md5_address, $product_details)
+	public function getPackageShippingCost($product_list, $delivery_md5_address, $product_details, $cart)
 	{		
 		$helperRequest 			= PaycartFactory::getHelper('request');
 		/* @var $helperRequest PaycartHelperRequest */	
@@ -159,6 +159,8 @@ class PaycartShippingrule extends PaycartLib
 		
 		$delivery_address = PaycartFactory::getHelper('shippingrule')->getAddressObject($delivery_md5_address);
 		$request->delivery_address 	= $helperRequest->getBuyeraddressObject(PaycartBuyeraddress::getInstance(0,$delivery_address));
+		
+		$request->currency	= $cart->getCurrency();
 		
 		// get processor instance and set some parameters
 		$processor = $this->getProcessor();
@@ -183,7 +185,9 @@ class PaycartShippingrule extends PaycartLib
 		$config = new PaycartShippingruleRequestGlobalconfig();
 		$config->dimension_unit  = Paycart::DEFAULT_DIMENSION_UNIT; // will alway be DEFAULT value : cm
 		$config->weight_unit	 = Paycart::DEFAULT_WEIGHT_UNIT; //  will always be DEFAULT value  : gm
-		$config->origin_address  = PaycartFactory::getConfig()->get('localization_origin_address');
+
+		$originAddress           = PaycartBuyeraddress::getInstance(0,PaycartFactory::getConfig()->get('localization_origin_address'));
+		$config->origin_address  = PaycartFactory::getHelper('request')->getBuyeraddressObject($originAddress);
 		return $config;
 	}
 	
