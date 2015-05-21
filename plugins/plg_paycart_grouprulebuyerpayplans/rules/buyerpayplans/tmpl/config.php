@@ -18,7 +18,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	</label>
 	<div class="controls">
 		<select class="paycart-grouprule-buyerpayplans-plan" name="<?php echo $namePrefix;?>[plan_assignment]" data-pc-selector="pc-option-manipulator" id="<?php echo $idPrefix;?>plan-assignment">
-			<option value="aboveAll" <?php echo !isset($config['plan_assignment']) || $config['plan_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_ABOVE_ALL');?></option>
+			<option value="aboveAll" <?php echo !isset($config['plan_assignment']) || $config['plan_assignment'] == 'any' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_SELECTED_ALL');?></option>
 			<option value="selected" <?php echo isset($config['plan_assignment']) && $config['plan_assignment'] == 'selected' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_SELECTED');?></option>
 			<option value="except" <?php echo isset($config['plan_assignment']) && $config['plan_assignment'] == 'except' ? 'selected="selected"' : '';?>><?php echo Rb_Text::_('COM_PAYCART_EXCEPT');?></option>
 		</select>

@@ -20,8 +20,8 @@ class PlgPaycartGroupruleBuyerpayplans extends RB_Plugin
 	{
     	parent::__construct($subject, $config);
 
-		//if payplans is not enabled/installed then do not load the plugin.
-    	if(!JComponentHelper::getComponent('com_payplans', true)->enabled){
+        //if payplans is not enabled/installed then do not load the plugin.
+    	if(!Rb_HelperJoomla::getPluginStatus("payplans")){
     		return true;
     	}
     	
