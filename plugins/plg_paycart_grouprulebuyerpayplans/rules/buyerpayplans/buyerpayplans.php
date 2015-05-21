@@ -10,7 +10,7 @@
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
-include_once JPATH_SITE.'components/com_payplans/includes/api.php';
+include_once JPATH_SITE.'/components/com_payplans/includes/api.php';
 /**
  * Buyer Address Group Rule
  *
@@ -53,7 +53,7 @@ class PaycartGroupruleBuyerpayplans extends PaycartGrouprule
 		}
 		
 		if('except' == $config_plan_assignment){
-			if(count($common_plans) > 0){
+			if(count($common_plans) > 0 || count($activeSubscription) == 0){
 				return false;
 			}
 			
