@@ -42,7 +42,7 @@ class PaycartHtmlState
 		}
 			
 		// if there are multiple countries then group states according to country
-		$filter['country_id'] = array('IN', '('.implode(',', $country_id));
+		$filter['country_id'] = array(array('IN', '("'.implode('","', $country_id).'")')); 
 		$states = PaycartFactory::getModel('state')->loadRecords($filter, Array('limit'));
 		
 		foreach ($states as $state_id => $state_detail) {
