@@ -60,20 +60,33 @@ class PaycartModelProduct extends PaycartModelLang
 	 * @param int $productId : product for which to update stock
 	 * @param int $quantity : number that is needed to add in consumed stock
 	 */
-	public function updateStock($productId, $quantity)
+	public function updateStock($productId, $quantity, $fill = false)
 	{
 		$query = new Rb_Query();
 		
-		$query->update($this->getTable()->get('_tbl'))
-			  ->set('quantity_sold = quantity_sold + '.$quantity)
-			  ->where('product_id = '.$productId)
-			  ->dbLoadQuery()
-			  ->query();
-			 
-		return $query->clear('set')
-				 	 ->set('quantity = quantity - '.$quantity)
-				 	 ->dbLoadQuery()
-				 	 ->query();
+		if(!$fill){
+			$query->update($this->getTable()->get('_tbl'))
+				  ->set('quantity_sold = quantity_sold + '.$quantity)
+				  ->where('product_id = '.$productId)
+				  ->dbLoadQuery()
+				  ->query();
+				 
+			return $query->clear('set')
+					 	 ->set('quantity = quantity - '.$quantity)
+					 	 ->dbLoadQuery()
+					 	 ->query();
+		}else{
+			$query->update($this->getTable()->get('_tbl'))
+				  ->set('quantity_sold = quantity_sold - '.$quantity)
+				  ->where('product_id = '.$productId)
+				  ->dbLoadQuery()
+				  ->query();
+				 
+			return $query->clear('set')
+					 	 ->set('quantity = quantity + '.$quantity)
+					 	 ->dbLoadQuery()
+					 	 ->query();
+		}
 	}
 	
 	/**
