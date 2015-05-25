@@ -10,3 +10,6 @@ INSERT INTO `#__paycart_notification` (`notification_id`, `published`, `event_na
 
 INSERT INTO `#__paycart_notification_lang` (`notification_lang_id`, `notification_id`, `lang_code`, `subject`, `body`) VALUES
 (8, 8, 'en-GB', 'Shipment Failed', '[[products]]');
+
+-- Add notes column in shipment table
+ALTER TABLE `#__paycart_shipment` ADD COLUMN `notes` text AFTER `status`;
