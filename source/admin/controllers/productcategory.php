@@ -119,4 +119,71 @@ class PaycartAdminControllerProductcategory extends PaycartController {
 		
 		return true;
 	}
+	
+/**
+	 * 
+	 * Ajax Task
+	 * @return html which contain all products options
+	 */
+	public function getProducts() 
+	{
+		$category_id	=	$this->input->get('category_id', 0, 'array');
+	
+		$default_selected_product_id	=	$this->input->get('default_product', array(), 'Array');
+
+		// get raw strin without any filter
+		$selector	=	$this->input->get('product_selector', NULL, 'RAW');
+		
+		$ajax_response = PaycartFactory::getAjaxResponse();
+		
+		if(!$selector) {
+			$ajax_response->addScriptCall
+					(	'console.log', 
+						Array('message' 		=> 	JText::_('product selector is not available here'),
+							  'message_type'	=>	Paycart::MESSAGE_TYPE_ERROR )
+					);
+			return false;
+		}
+	
+		if(!$category_id) {
+			PaycartFactory::getAjaxResponse()->addScriptCall('paycart.grouprule.product.updateHtml', Array('product_selector' => $selector, 'product_option_html' => ''));
+			return false;
+		}	
+		
+		// limit must be cleaned other wise only specific number of record will fetch
+		if(is_array($category_id)){
+			$filter['productcategory_id'] = array(array('IN', '('.implode(',', $category_id).')')); 
+		}
+		else{
+			$filter['productcategory_id'] = $category_id;
+		}
+		
+		$products = PaycartFactory::getModel('product')->loadRecords($filter, Array('limit'));
+				
+		$category_products = array();		
+		foreach ($products as $product_id => $product_detail) {
+			if(!isset($category_products[$product_detail->productcategory_id])){
+				$category_products[$product_detail->productcategory_id] = '';
+			}
+			
+			$selected = '';
+			if (in_array($product_id, $default_selected_product_id)) {
+				$selected = 'selected="selected"';
+			}
+			$category_products[$product_detail->productcategory_id] .= "<option value='{$product_detail->product_id}'  $selected > {$product_detail->title}($product_detail->alias) </option>";
+		}
+		
+		$html = '';
+		if(count($category_products) >= 1){
+			$formatter = PaycartFactory::getHelper('format');
+			foreach($category_products as $category_id => $productshtml){
+				$html .= $productshtml;
+			}
+		}
+		
+		
+		PaycartFactory::getAjaxResponse()->addScriptCall('paycart.grouprule.product.updateHtml', Array('product_selector' => $selector, 'product_option_html' => $html));
+		
+		return false;
+	}
 }
