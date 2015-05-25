@@ -25,6 +25,8 @@ class PaycartSiteControllerState extends PaycartController
 	 * 
 	 * Ajax Task
 	 * @return html which contain all states options
+	 * 
+	 * similar to PaycartAdminControllerState->getOptions()
 	 */
 	public function getOptions() 
 	{
@@ -35,7 +37,7 @@ class PaycartSiteControllerState extends PaycartController
 		
 		$default_selected_state_id	=	$this->input->get('default_state', array(), 'Array');
 
-		// get raw strin without any filter
+		// get raw string without any filter
 		$selector	=	$this->input->get('state_selector', NULL, 'RAW');
 		
 		$ajax_response = PaycartFactory::getAjaxResponse();
@@ -57,8 +59,8 @@ class PaycartSiteControllerState extends PaycartController
 		//@PCTODO:: Sorting required 
 		// limit must be cleaned other wise only specific number of record will fetch
 		if(is_array($country_id)){
-			$filter['country_id'] = array('IN', '('.implode(',', $country_id)); 
-		}
+			$filter['country_id'] = array(array('IN', '("'.implode('","', $country_id).'")')); 
+					}
 		else{
 			$filter['country_id'] = $country_id;
 		}
