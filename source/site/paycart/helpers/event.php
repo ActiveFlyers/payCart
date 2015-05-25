@@ -101,7 +101,7 @@ class PaycartHelperEvent extends PaycartHelper
             // 1#. update product's quatity
             $cartHelper =  PaycartFactory::getHelper('cart');
             PaycartFactory::getHelper('product')
-                    ->updateProductStock($cartHelper->getCartparticularsData($cart_id, Paycart::CART_PARTICULAR_TYPE_PRODUCT));
+                    ->consumeProductStock($cartHelper->getCartparticularsData($cart_id, Paycart::CART_PARTICULAR_TYPE_PRODUCT));
                     
             // 2# create default Shipments
             $cart->createDefaultShipments();
@@ -187,6 +187,7 @@ class PaycartHelperEvent extends PaycartHelper
      *  Listed all available triggers on Shipment
      *      1#. onPaycart-Shipment-After-Dispatched
      *      2#. onPaycart-Shipment-After-Delivered
+     *      3#. onPaycart-Shipment-After-Failed
 	 * #######################################################################
 	 */
 
@@ -282,6 +283,31 @@ class PaycartHelperEvent extends PaycartHelper
            	}
          }
          
+		/**
+         *
+         * onPaycartShipment Failed
+         * @param 
+         *
+         * @return void
+         */
+        public function onPaycartShipmentAfterFailed(PaycartShipment $shipment)
+        {
+            $params = Array($shipment);
+            $event_name = 'onPaycartShipmentAfterFailed';
+            
+            Rb_HelperPlugin::trigger('onPaycartShipmentAfterFailed', $params, self::$default_plugin_type);
+            
+            //send notification 
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $shipment->getCart()->getLangCode());
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($shipment);
+           	}
+           	
+           	// 1#. increase product's quatity on shipment failed
+            $products   =  $shipment->getProducts();
+            PaycartFactory::getHelper('product')
+                    ->refillProductStock($products);
+        }
                  
     /**
 	 * #######################################################################

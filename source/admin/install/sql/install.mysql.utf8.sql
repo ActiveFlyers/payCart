@@ -760,7 +760,8 @@ INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `e
 (4, 1, 'onpaycartcartafterdelivered', '[[billing_to]]', '', '', '{}'),
 (5, 1, 'onpaycartshipmentafterdispatched', '[[buyer_email]]', '', '', '{}'),
 (6, 1, 'onpaycartshipmentafterdelivered', '[[buyer_email]]', '', '', '{}'),
-(7, 1, 'onorderurlrequest', '[[buyer_email]]', '', '', '{}');
+(7, 1, 'onorderurlrequest', '[[buyer_email]]', '', '', '{}'),
+(8, 0, 'onpaycartshipmentafterfailed', '[[buyer_email]]', '', '', '{}');
 
 
 --
@@ -774,7 +775,8 @@ INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `noti
 (4, 4, 'en-GB', 'Order Successfully Delivered ', 'Your order is successfully delivered on your shipping address.\r\n\r\n[[shipping_to]],\r\n[[shipping_address]] , \r\n[[shipping_city]] , [[shipping_state]]\r\n[[shipping_country]] [[shipping_zip_code]]\r\n\r\n'),
 (5, 5, 'en-GB', '', ''),
 (6, 6, 'en-GB', '', ''),
-(7, 7, 'en-GB', 'Order Details Request of your order (id : [[order_id]])', 'Hello [[buyer_name]], \r\n\r\nYou have requested for the order detail url of your order [[order_id]]. This email contains the order detail url from which you can track your order. \r\n\r\n[[order_url]]\r\n\r\nPlease save or bookmark this url for further tracking. Still you can request this url again anytime at our website.');
+(7, 7, 'en-GB', 'Order Details Request of your order (id : [[order_id]])', 'Hello [[buyer_name]], \r\n\r\nYou have requested for the order detail url of your order [[order_id]]. This email contains the order detail url from which you can track your order. \r\n\r\n[[order_url]]\r\n\r\nPlease save or bookmark this url for further tracking. Still you can request this url again anytime at our website.'),
+(8, 8, 'en-GB', 'Shipment Failed', '[[products]]');
 
 
 

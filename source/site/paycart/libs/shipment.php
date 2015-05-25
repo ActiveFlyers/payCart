@@ -143,6 +143,10 @@ class PaycartShipment extends PaycartLib
   		  	$this->markDelivered();  	
 		}
 		
+		if($prevStatus != $newStatus && $newStatus == Paycart::STATUS_SHIPMENT_FAILED){
+			$triggerName = Paycart::STATUS_SHIPMENT_FAILED;
+		}
+		
 		$prevShipping = (!empty($previousObject))? $previousObject->shippingrule_id : '';
 		
 		//add tracking url only if it is not set
