@@ -117,8 +117,8 @@ PaycartHtml::_('behavior.formvalidation');
 								<?php echo JText::_('COM_PAYCART_ADMIN_STATUS');?>
 							</label>
 							<div class="controls" data-ng-init="shipments[value].status = shipments[value].status || 'pending'">
-								<span data-ng-init="tempStatus[value] = getStatus(shipments[value].status, shipments[value].shipment_id)">
-									<label data-ng-repeat="s in tempStatus[value]"  data-ng-class="{muted : s.disabled}">
+								<div data-ng-init="tempStatus[value] = getStatus(shipments[value].status, shipments[value].shipment_id)">
+									<div data-ng-repeat="s in tempStatus[value]"  data-ng-class="{muted : s.disabled}">
 									    <input ng-if="shipments[value].status != s.value" data-ng-disabled="{{s.disabled}}"
 									        name="status{{value}}"
 									        type="radio"
@@ -131,8 +131,8 @@ PaycartHtml::_('behavior.formvalidation');
 									        value="{{s.value}}"
 									        data-ng-model="shipments[value].status"/>
 									        {{ s.title }} 
-									</label>
-								</span>
+									</div>
+								</div>
 							</div>
 						</div>
 						
@@ -179,9 +179,9 @@ PaycartHtml::_('behavior.formvalidation');
 								<div data-ng-if="shipments[value].notes">
 									<table class="table table-responsive" data-ng-repeat="note in shipments[value].notes">
 										<tr class="pull-left">
-											<td width="30%">{{note.date}} {{note.time}}</td>
+											<td width="40%">{{note.date}}</td>
 											<td width="10%">{{note.status}}</td>
-											<td width="55%">{{note.text}}</td>
+											<td width="45%">{{note.text}}</td>
 											<td width="5%">
 												<a data-ng-show="note.text" href="javascript:void(0);" data-ng-click="removeNote(value, $index)" 
 												   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" >

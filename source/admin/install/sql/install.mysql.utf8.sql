@@ -710,6 +710,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_shipment` (
   `tracking_number` varchar(100),
   `tracking_url` varchar(255),
   `status` enum('pending','dispatched','delivered','failed') not null,
+  `notes` text COMMENT 'Shipment tarcking notes for frontend users',
   `created_date` datetime NOT NULL,
   `delivered_date` datetime NOT NULL,
   `dispatched_date` datetime NOT NULL,
