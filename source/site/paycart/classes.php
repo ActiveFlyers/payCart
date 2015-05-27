@@ -149,6 +149,7 @@ if(defined("_JEXEC")===false) die();
   'paycarthtmllanguageflag' => 'site/paycart/html/html/languageflag.php',
   'paycarthtmlpaymentgateway' => 'site/paycart/html/html/paymentgateway.php',
   'paycarthtmlprocessor' => 'site/paycart/html/html/processor.php',
+  'paycarthtmlproduct' => 'site/paycart/html/html/product.php',
   'paycarthtmlrange' => 'site/paycart/html/html/range.php',
   'paycarthtmlstate' => 'site/paycart/html/html/state.php',
   'paycarthtmltext' => 'site/paycart/html/html/text.php',
