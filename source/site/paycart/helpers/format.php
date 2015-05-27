@@ -117,6 +117,14 @@ class PaycartHelperFormat extends JObject
 			case Paycart::WEIGHT_UNIT_GRAM.'->'.Paycart::WEIGHT_UNIT_KILOGRAM  : return ($value/1000);
 			
 			case Paycart::WEIGHT_UNIT_PONUD.'->'.Paycart::WEIGHT_UNIT_KILOGRAM : return (0.453592*$value);
+			
+			case Paycart::WEIGHT_UNIT_GRAM.'->'.Paycart::WEIGHT_UNIT_PONUD : return (0.00220462*$value);
+
+			case Paycart::WEIGHT_UNIT_PONUD.'->'.Paycart::WEIGHT_UNIT_OUNCE : return ($value*16);
+			
+			case Paycart::WEIGHT_UNIT_GRAM.'->'.Paycart::WEIGHT_UNIT_OUNCE : return (0.00220462*$value*16);
+			
+			Case Paycart::WEIGHT_UNIT_PONUD.'->'.Paycart::WEIGHT_UNIT_GRAM : return ($value*453.592);
 					
 			default	 :  return $value;
 		}
