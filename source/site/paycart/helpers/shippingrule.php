@@ -41,7 +41,10 @@ class PaycartHelperShippingrule extends PaycartHelper
 
 			// TODO : can be combined below two function calls
 			list($price_without_tax, $price_with_tax) = $shippingrule_instance->getPackageShippingCost($product_list, $delivery_md5_address, $product_details, $cart);			
-			if(!$price_with_tax && !$price_without_tax){
+			
+			//if there is any error return by shipping service then processor will return false
+			//and if false then need not to list this option from frontend user
+			if($price_with_tax === false && $price_without_tax === false){
 				continue;
 			}
 			if (is_null($best_price) || $price_with_tax < $best_price){
