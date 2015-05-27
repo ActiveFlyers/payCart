@@ -9,7 +9,17 @@
 */
 
 defined('_JEXEC') or die( 'Restricted access' );
+?>
 
+<script type="text/javascript">
+(function($){
+	$(document).ready(function(){
+	    $(".pc-popover").popover();
+	});
+})(paycart.jQuery);
+</script>
+
+<?php 
 //set default value if not set
 $config->calculation_mode = isset($config->calculation_mode)?$config->calculation_mode:'ONEPACKAGE';
 $config->service_code = isset($config->service_code)?$config->service_code:'FIRST CLASS';
@@ -23,6 +33,15 @@ $config->first_class_mail_type = isset($config->first_class_mail_type)?$config->
 <hr/>
 <div class="row-fluid">
 	<div class="span6">
+			<div class="control-group">
+				<label title="" class="hasTooltip control-label">
+					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_ZIP_ORIGIN');?>
+				</label>
+				<div class="controls">
+					<input type="text" name="<?php echo $namePrefix?>[processor_config][zip_origin]" id="pc-processor-usps-zip-origin" value="<?php echo isset($config->zip_origin)?$config->zip_origin:''?>">
+				</div>	
+			</div>
+			
 			<div class="control-group">
 				<label title="" class="hasTooltip control-label">
 					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_USER_ID');?>
@@ -73,17 +92,14 @@ $config->first_class_mail_type = isset($config->first_class_mail_type)?$config->
 					<?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MACHINABLE');?>
 				</label>
 				<div class="controls">
-					<fieldset class="radio btn-group">
-						<input type="radio" id="pc-processor-usps-machinable-yes" 
-							   name="<?php echo $namePrefix?>[processor_config][machinable]" value="1" 
-									<?php echo $config->machinable == 1 ? 'checked="checked"' : '';?>>
-						<label for="<?php echo $namePrefix?>_machinable" class="btn <?php echo $config->machinable == 1 ? 'active btn-success' : '';?>"><?php echo JText::_("JYES");?></label>
-						
-						<input type="radio" id="pc-processor-usps-machinable-no" 
-							   name="<?php echo $namePrefix?>[processor_config][machinable]" value="0" 
-									<?php echo $config->machinable == 0 ? 'checked="checked"' : '';?>>
-						<label for="<?php echo $namePrefix?>_machinable" class="btn <?php echo $config->machinable == 0 ? 'active btn-danger' : '';?>"><?php echo JText::_("JNO");?></label>
-					</fieldset>
+					<select name="<?php echo $namePrefix?>[processor_config][machinable]">
+						<option value="1" <?php echo $config->machinable == 1 ? 'selected="selected"' : '';?>><?php echo JText::_('JYES')?></option>
+						<option value="0" <?php echo $config->machinable == 0 ? 'selected="selected"' : '';?>><?php echo JText::_('JNO')?></option>
+					</select>
+					<a href="#" data-toggle="popover" class="pc-popover" title="<?php echo JText::_("JHELP")?>"
+							 	data-content="<?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_USPS_MACHINABLE_POPOVER");?>">
+						<i class="fa fa-question-circle"></i>
+					</a>
 				</div>	
 			</div>
 			
@@ -94,12 +110,9 @@ $config->first_class_mail_type = isset($config->first_class_mail_type)?$config->
 				<div class="controls">
 					<?php echo PaycartHtml::_('select.genericlist',$mailType,$namePrefix.'[processor_config][first_class_mail_type]','','value','title',$config->first_class_mail_type, 'pc-processor-usps-first_class_mail_type')?>
 				</div>	
+				<div><small>( <?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE_NOTE')?>)</small></div>
 			</div>
 			
-		</div>
-		
-		<div class="span6 well">
-				<?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_USPS_HELP_MESSAGE")?> <a target="_blank" href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=config')?>"><?php echo JText::_('COM_PAYCART_ADMIN_CONFIGURATION')?></a>.
 		</div>
 </div>
 <?php 
