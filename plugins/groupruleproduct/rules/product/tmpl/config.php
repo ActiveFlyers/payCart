@@ -37,7 +37,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 			</select>
 			<span data-pc-option-manipulator="<?php echo $idPrefix.'products-assignment';?>">
 		  	<?php 
-		  		echo PaycartHtmlProduct::getList($namePrefix.'[products][]', @$config['products'],  "{$idPrefix}products", array('class' => "pc-chosen",'multiple' => "true"),  @$config['categories']);
+		  		echo PaycartHtmlProduct::getList($namePrefix.'[products][]', @$config['products'],  "{$idPrefix}products", array('class' => "pc-chosen",'multiple' => "true"));
 		  	?>
 		  	</span>
 	  </div>
