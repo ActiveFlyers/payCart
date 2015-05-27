@@ -69,10 +69,16 @@ class PaycartShippingruleProcessorUsps extends PaycartShippingruleProcessor
 	
 	public function getPackageShippingCost(PaycartShippingruleRequest $request, PaycartShippingruleResponse $response)
 	{
+		//first check if zipcode of shipper available in config, if not then consider global config data
+		if(isset($this->processor_config->zip_origin) && !empty($this->processor_config->zip_origin)){
+			$origin_zipcode = $this->processor_config->zip_origin;
+		}else{
+			$origin_zipcode = isset($this->global_config->origin_address->zipcode)?$this->global_config->origin_address->zipcode:0;
+		}
 		
 		$req_params = array(			
 			'recipient_postalcode' => $request->delivery_address->zipcode,			
-			'shipper_postalcode'   => isset($this->global_config->origin_address->zipcode)?$this->global_config->origin_address->zipcode:0,
+			'shipper_postalcode'   => $origin_zipcode,
 		);
 		
 		if(empty($this->processor_config->calculation_mode) || $this->processor_config->calculation_mode == 'ONEPACKAGE'){
