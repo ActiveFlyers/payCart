@@ -73,11 +73,11 @@ class PaycartHelperAdminmenu extends PaycartHelper
 //											'url' => 'index.php?option=com_paycart&view=invoice',
 //											'class' => 'fa-inbox'
 //										),
-//										Array(
-//											'title' => JText::_('COM_PAYCART_ADMIN_TRANSATIONS'),
-//											'url' => 'index.php?option=com_paycart&view=transaction',
-//											'class' => 'fa-money'
-//										),
+										Array(
+											'title' => JText::_('COM_PAYCART_ADMIN_TRANSATIONS'),
+											'url' => 'index.php?option=com_paycart&view=transaction',
+											'class' => 'fa-money'
+										),
 //										Array(
 //											'title' => JText::_('COM_PAYCART_ADMIN_SHIPMENTS'),
 //											'url' => 'index.php?option=com_paycart&view=shipments',

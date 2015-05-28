@@ -21,7 +21,7 @@ class PaycartHtmlCountry
 	 * @param $value	:	field value
 	 * @param $attr	:	field attribute
 	 */
-	public static function getList($name, $value='', $idtag = false, $attr = Array())
+	public static function getList($name, $value='', $idtag = false, $attr = Array(), $optionValueField="country_id")
 	{
 		$available_countries = PaycartFactory::getModel('country')->loadRecords(Array('published' => 1));
 		
@@ -31,7 +31,7 @@ class PaycartHtmlCountry
 		}
 		
 		foreach ($available_countries as $key => $country){
-			$options[$key] = array('title' => $country->title, 'value' => $key);
+			$options[$country->$optionValueField] = array('title' => $country->title, 'value' => $country->$optionValueField);
 		}
 		return PaycartHtml::_('select.genericlist', $options, $name, $attr, 'value', 'title', $value, $idtag);
 	}
