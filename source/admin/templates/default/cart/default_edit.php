@@ -278,6 +278,14 @@ echo $this->loadTemplate('edit_ng');
 		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
     <?php endif;?>   
     
+    <?php if(!empty($transactions)):?>
+    	<!--	 Transaction Details Tab		-->
+    	<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'transaction', JText::_('COM_PAYCART_ADMIN_TRANSACTIONS', true)); ?>
+    
+    	<?php echo $this->loadTemplate('transactions');?>	
+    	
+    	<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
+    <?php endif;?>
     
     <?php 
     

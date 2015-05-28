@@ -123,6 +123,8 @@ class PaycartAdminHtmlViewCart extends PaycartAdminBaseViewCart
 			$shipments[$key]->notes = json_decode($shipment->notes, true); 
 		}
 		
+		$transactions = Rb_EcommerceAPI::transaction_get_records(array('invoice_id' => $cart->getInvoiceId()));
+		
 		$this->assign('product_particular',		$product_particular);
 		$this->assign('shipping_particular',	$shipping_particular);
 		$this->assign('promotion_particular',	$promotion_particular);
@@ -133,6 +135,9 @@ class PaycartAdminHtmlViewCart extends PaycartAdminBaseViewCart
 		$this->assign('shippingMethods',$shippingMethods);
 		$this->assign('status',Paycart::getShipmentStatus());
 		$this->assign('usageDetails', $usageDetails);
+		$this->assign('transactions',$transactions);
+		$this->assign('transactionStatusList',Rb_EcommerceAPI::response_get_status_list());
+		
 		return parent::edit($tpl);
 	}
 }
