@@ -983,8 +983,13 @@ class PaycartCart extends PaycartLib
 				$cartparticular->save($this);  
 			}
 		}
+
+		//Step-4# Undate invoice otherwise userid won't get reflect on invoice in case of guest checkout
+		/* @var $invoice_helper PaycartHelperInvoice */
+		$invoice_helper = PaycartFactory::getHelper('invoice');
+		$invoice_helper->updateInvoice($this);
 		
-		// Step-4# Save cart
+		// Step-5# Save cart
 		return $this->save();
 	}
 	
