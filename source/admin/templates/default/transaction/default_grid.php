@@ -52,7 +52,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 					<td class="nowrap hidden-phone"><?php echo ($record->buyer_id)?PaycartHtml::link('index.php?option=com_paycart&view=buyer&task=edit&id='.$record->buyer_id, $record->buyer_id):$record->buyer_id;?></td>
 					<td>
 						<?php $cart_id = $invoices[$record->invoice_id]->object_id?>
-						<?php echo PaycartHtml::link('index.php?option=com_paycart&view=cart&task=edit&id='.$record->invoice_id, $record->invoice_id);?>
+						<?php echo PaycartHtml::link('index.php?option=com_paycart&view=cart&task=edit&id='.$cart_id,$cart_id);?>
 					</td>
 					<td><?php echo $record->amount;?></td>
 					<td><?php echo JText::_($statusList[$record->payment_status]);?></td>
