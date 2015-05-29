@@ -33,9 +33,6 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		$scope.tempArray	   = pc_shipment_tempArray;
 		$scope.tempStatus	   = pc_shipment_tempStatus;
 		$scope.notes		   = pc_shipment_notes;
-		$scope.noteNew		   = {};
-		$scope.noteNew.text   = '';
-		$scope.noteNew.status = '';
 		
 		/*
 	     * save new/existing shipment
@@ -58,9 +55,10 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		            if (!data.valid) {					            	
 		            	// if not successful, bind errors to error variables
 		                $scope.shipments[index].errMessage = data.message;
-		                $scope.noteNew.text='';
-		                $scope.noteNew.status='';
 
+						//empty note creation box
+		                delete $scope.shipments[index].noteNew;
+		                
 		                //remove message after timeout
 			            $timeout(function() {
 			              	 $scope.shipments[index].errMessage = false;
@@ -71,8 +69,9 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		               $scope.shipments[index] = data.data;
 		               $scope.shipments[index].message = data.message;
 		               $scope.shipments[index].errMessage = false;
-		               $scope.noteNew.text='';
-		               $scope.noteNew.status='';
+
+					   //empty note creation box
+		               delete $scope.shipments[index].noteNew;
    
 					   //update status
 					   $scope.tempStatus[index] = $scope.getStatus(data.data.status, data.data.shipment_id);	
@@ -161,10 +160,9 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 	     * Add elements to attach more product+quantity to a shipment  
 		 */
 		$scope.addMoreNote = function(index){
-			if($scope.noteNew.status && $scope.noteNew.text){
-				var data = {'text':$scope.noteNew.text,'status':$scope.noteNew.status};
+			if($scope.shipments[index].noteNew && $scope.shipments[index].noteNew.status && $scope.shipments[index].noteNew.text){
+				var data = {'text':$scope.shipments[index].noteNew.text,'status':$scope.shipments[index].noteNew.status};
 				$scope.shipments[index].notes.push(data);
-				$scope.initChosenToolTip();
 			}
 			return false;
 		};
@@ -190,6 +188,9 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 				    "disable_search_threshold": 10,
 				    "allow_single_deselect": true
 				});
+				
+				//update select choosen
+				paycart.jQuery('select').trigger("liszt:updated");
 			});
 		};
 
