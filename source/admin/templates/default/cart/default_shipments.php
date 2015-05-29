@@ -56,8 +56,8 @@ PaycartHtml::_('behavior.formvalidation');
 							<a href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
 								<i class="fa fa-check"></i>
 							</a>
-							<span >&nbsp; | &nbsp; </span>
-							<a href="javascript:void(0);"  class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-click="remove(value)">
+							<span data-ng-class="{true:'hide'}[shipments[value].status=='failed']">&nbsp; | &nbsp; </span>
+							<a data-ng-class="{true:'hide'}[shipments[value].status=='failed']" href="javascript:void(0);"  class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-click="remove(value)">
 								<i class="fa fa-trash-o"></i>
 							</a>
 						</span>
@@ -158,10 +158,10 @@ PaycartHtml::_('behavior.formvalidation');
 									</select>
 									: <input type="text" class="input-mini" data-ng-model="product.quantity" required="true">
 									<a data-ng-show="$index != 0" href="javascript:void(0);" data-ng-click="removeProduct(value, $index)" 
-									   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-class="{hide:shipments[value].shipment_id}" >
+									   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-class="{false:'hide'}[shipments[value].status=='pending']" >
 										<i class="fa fa-trash-o"></i>
 									</a>
-									<a data-ng-show="$index == 0" href="javascript:void(0);" data-ng-click="addMoreProduct(value)" data-ng-class="{hide:shipments[value].shipment_id}"
+									<a data-ng-show="$index == 0" href="javascript:void(0);" data-ng-click="addMoreProduct(value)" data-ng-class="{false:'hide'}[shipments[value].status=='pending']"
 									   class="hasTooltip" title="<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_ADD_NEW")?>">
 										<i class="fa fa-plus"></i>
 									</a>
@@ -171,38 +171,35 @@ PaycartHtml::_('behavior.formvalidation');
 							</div>
 						</div>
 						
-						<div class="control-group">
-							<label title="" class="hasTooltip control-label">
-								<?php echo JText::_('COM_PAYCART_ADMIN_SHIPMENT_NOTES');?>
-							</label>
-							<div class="controls" data-ng-init="shipments[value].notes = shipments[value].notes || [{}]">
-								<div data-ng-if="shipments[value].notes">
-									<table class="table table-responsive" data-ng-repeat="note in shipments[value].notes">
-										<tr class="pull-left">
-											<td width="40%">{{note.date}}</td>
-											<td width="10%">{{note.status}}</td>
-											<td width="45%">{{note.text}}</td>
-											<td width="5%">
-												<a data-ng-show="note.text" href="javascript:void(0);" data-ng-click="removeNote(value, $index)" 
-												   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" >
-													<i class="fa fa-trash-o"></i>
-												</a>
-											</td>
-										</tr>
-									</table>
-								</div>
-								
-								<!-- New note section -->
-								<textarea rows="" cols="" data-ng-model="noteNew.text"></textarea>
-								<select data-ng-model="noteNew.status" data-ng-options="sts.value as sts.title for sts in status" 
-								        required="true" >
-										<option value=""></option>
-								</select>
-								<a href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
-									<i class="fa fa-check"></i>
-								</a>					
-							</div>
+						<!-- New note section -->
+						<hr>
+						<div class="text-center">
+							<h3><?php echo JText::_('COM_PAYCART_ADMIN_SHIPMENT_TRACKING_NOTES');?></h3>
+							<p><small>(<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_TRACKING_NOTES_DETAIL")?>)</small></p>
 							
+							<textarea data-ng-init="shipments[value].noteNew.text=''" rows="" cols="" data-ng-model="shipments[value].noteNew.text"></textarea>
+							<select data-ng-init="shipments[value].noteNew.status=null" data-ng-model="shipments[value].noteNew.status" data-ng-options="sts.value as sts.title for sts in status">
+									<option value=""></option>
+							</select>
+							<button data-ng-click="save(value);" class="btn btn-small btn-primary"><?php echo JText::_('COM_PAYCART_ADMIN_SHIPMENT_ADD_NEW')?></button>
+						</div>
+						
+						<div data-ng-init="shipments[value].notes = shipments[value].notes || [{}]">
+							<div data-ng-if="shipments[value].notes">
+								<table class="table table-responsive" data-ng-repeat="note in shipments[value].notes">
+									<tr>
+										<td width="25%">{{note.date}}</td>
+										<td width="20%">{{note.status}}</td>
+										<td width="50%">{{note.text}}</td>
+										<td width="5%">
+											<a data-ng-show="note.text" href="javascript:void(0);" data-ng-click="removeNote(value, $index)" 
+											   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" >
+												<i class="fa fa-trash-o"></i>
+											</a>
+										</td>
+									</tr>
+								</table>
+							</div>	
 						</div>
 					</div>				
 				</div>
