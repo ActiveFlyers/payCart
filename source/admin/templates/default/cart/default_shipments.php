@@ -53,13 +53,12 @@ PaycartHtml::_('behavior.formvalidation');
 						<div data-ng-show="shipments[value].errMessage" class="alert alert-danger">{{ shipments[value].errMessage }}</div>
 						
 						<span data-ng-if="shipments[value].status != '<?php echo paycart::STATUS_SHIPMENT_DELIVERED?>'" class="pull-right">
-							<a href="javascript:void(0);" class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>" data-ng-click="save(value);">
-								<i class="fa fa-check"></i>
-							</a>
-							<span data-ng-class="{true:'hide'}[shipments[value].status=='failed']">&nbsp; | &nbsp; </span>
-							<a data-ng-class="{true:'hide'}[shipments[value].status=='failed']" href="javascript:void(0);"  class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-click="remove(value)">
-								<i class="fa fa-trash-o"></i>
-							</a>
+							<button type="button" class="btn btn-small btn-primary" data-ng-click="save(value);">
+								<?php echo JText::_('COM_PAYCART_ADMIN_SAVE')?>
+							</button>
+							<button type="button" class="btn btn-small" data-ng-class="{true:'hide'}[shipments[value].status=='failed']" data-ng-click="remove(value)">
+								<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>
+							</button>
 						</span>
 						
 						<div class="control-group">
@@ -118,7 +117,7 @@ PaycartHtml::_('behavior.formvalidation');
 							</label>
 							<div class="controls" data-ng-init="shipments[value].status = shipments[value].status || 'pending'">
 								<div data-ng-init="tempStatus[value] = getStatus(shipments[value].status, shipments[value].shipment_id)">
-									<div data-ng-repeat="s in tempStatus[value]"  data-ng-class="{muted : s.disabled}">
+									<span data-ng-repeat="s in tempStatus[value]"  data-ng-class="{muted : s.disabled}">
 									    <input ng-if="shipments[value].status != s.value" data-ng-disabled="{{s.disabled}}"
 									        name="status{{value}}"
 									        type="radio"
@@ -131,7 +130,7 @@ PaycartHtml::_('behavior.formvalidation');
 									        value="{{s.value}}"
 									        data-ng-model="shipments[value].status"/>
 									        {{ s.title }} 
-									</div>
+									</span>
 								</div>
 							</div>
 						</div>
@@ -158,11 +157,10 @@ PaycartHtml::_('behavior.formvalidation');
 									</select>
 									: <input type="text" class="input-mini" data-ng-model="product.quantity" required="true">
 									<a data-ng-show="$index != 0" href="javascript:void(0);" data-ng-click="removeProduct(value, $index)" 
-									   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" data-ng-class="{false:'hide'}[shipments[value].status=='pending']" >
+									    data-ng-class="{false:'hide'}[shipments[value].status=='pending']" >
 										<i class="fa fa-trash-o"></i>
 									</a>
-									<a data-ng-show="$index == 0" href="javascript:void(0);" data-ng-click="addMoreProduct(value)" data-ng-class="{false:'hide'}[shipments[value].status=='pending']"
-									   class="hasTooltip" title="<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_ADD_NEW")?>">
+									<a data-ng-show="$index == 0" href="javascript:void(0);" data-ng-click="addMoreProduct(value)" data-ng-class="{false:'hide'}[shipments[value].status=='pending']">
 										<i class="fa fa-plus"></i>
 									</a>
 									<br><br>
@@ -192,8 +190,7 @@ PaycartHtml::_('behavior.formvalidation');
 										<td width="20%">{{note.status}}</td>
 										<td width="50%">{{note.text}}</td>
 										<td width="5%">
-											<a data-ng-show="note.text" href="javascript:void(0);" data-ng-click="removeNote(value, $index)" 
-											   class="hasTooltip" title="<?php echo JText::_('COM_PAYCART_ADMIN_DELETE')?>" >
+											<a data-ng-show="note.text" href="javascript:void(0);" data-ng-click="removeNote(value, $index)">
 												<i class="fa fa-trash-o"></i>
 											</a>
 										</td>
