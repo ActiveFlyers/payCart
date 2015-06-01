@@ -48,7 +48,7 @@ class PaycartAdminJsonViewCart extends PaycartAdminBaseViewCart
 		
 		//if product or quantity is empty
 		foreach ($data['products'] as $product){
-			if(empty($product['product_id']) || $product['quanity'] <= 0 ){
+			if(empty($product['product_id']) || $product['quantity'] <= 0 ){
 				$response->valid   = false;
 				$response->message = JText::_("COM_PAYCART_ADMIN_SHIPMENT_INVALID_PRODUCT_OR_QUANTITY");
 				$this->assign('json', $response);

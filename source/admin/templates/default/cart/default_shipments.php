@@ -179,7 +179,7 @@ PaycartHtml::_('behavior.formvalidation');
 							<select data-ng-init="shipments[value].noteNew.status=null" data-ng-model="shipments[value].noteNew.status" data-ng-options="sts.value as sts.title for sts in status">
 									<option value=""></option>
 							</select>
-							<button data-ng-click="save(value);" class="btn btn-small btn-primary"><?php echo JText::_('COM_PAYCART_ADMIN_SHIPMENT_ADD_NEW')?></button>
+							<button data-ng-click="addMoreNote(value);" class="btn btn-small btn-primary"><?php echo JText::_('COM_PAYCART_ADMIN_SHIPMENT_ADD_NEW')?></button>
 						</div>
 						
 						<div data-ng-init="shipments[value].notes = shipments[value].notes || [{}]">
