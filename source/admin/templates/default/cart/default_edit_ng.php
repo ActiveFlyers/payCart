@@ -39,7 +39,6 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		 */
 		$scope.save = function(index){
 		    //it is required to copy the data, otherwise hash key will also get posted
-		    $scope.addMoreNote(index);
 			var postData = angular.copy($scope.shipments[index]);
 						
 			$http({
@@ -163,6 +162,14 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 			if($scope.shipments[index].noteNew && $scope.shipments[index].noteNew.status && $scope.shipments[index].noteNew.text){
 				var data = {'text':$scope.shipments[index].noteNew.text,'status':$scope.shipments[index].noteNew.status};
 				$scope.shipments[index].notes.push(data);
+				return $scope.save(index);
+			}else{
+				$scope.shipments[index].errMessage = '<?php echo JText::_('COM_PAYCART_ADMIN_SHIPMENT_INVALID_NOTES_DETAILS')?>';
+                
+                //remove message after timeout
+	            $timeout(function() {
+	              	 $scope.shipments[index].errMessage = false;
+	            }, 1500);
 			}
 			return false;
 		};
