@@ -38,6 +38,24 @@ class PaycartAdminJsonViewCart extends PaycartAdminBaseViewCart
 			return true;
 		}
 		
+		//if no product selected
+		if(empty($data['products'])){
+			$response->valid   = false;
+			$response->message = JText::_("COM_PAYCART_ADMIN_SHIPMENT_INVALID_PRODUCT_OR_QUANTITY");
+			$this->assign('json', $response);
+			return true;
+		}
+		
+		//if product or quantity is empty
+		foreach ($data['products'] as $product){
+			if(empty($product['product_id']) || $product['quanity'] <= 0 ){
+				$response->valid   = false;
+				$response->message = JText::_("COM_PAYCART_ADMIN_SHIPMENT_INVALID_PRODUCT_OR_QUANTITY");
+				$this->assign('json', $response);
+				return true;
+			}
+		}
+		
 		if(!isset($data['est_delivery_date'])){
 			$shippingRule = PaycartShippingrule::getInstance($data['shippingrule_id']);
 			$date          = new Rb_Date();

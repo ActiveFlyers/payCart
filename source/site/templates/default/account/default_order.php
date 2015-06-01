@@ -231,23 +231,23 @@ echo $this->loadTemplate('js');
 													
 													<td class="hidden-phone">
 			 											<div class="text-right">
-			  												<span class="lead"><?php echo $formatter->amount($productParticular->total);?></span>
+			  												<span class="lead"><?php echo $formatter->amount($productParticular->total*$shipment['quantity']/$productParticular->quantity);?></span>
 			  												<span>
 			  												<a href="#" onclick="return false;" data-toggle="popover" data-placement="left" data-trigger="click" 
 			  													data-content="	<span class='muted'>			  														
 																	<span class='pull-right'><?php echo JText::_('com_paycart_unit_price').' : '.$formatter->amount($productParticular->unit_price);?></span><br/>
-																	<span class='pull-right'><?php echo JText::_('com_paycart_quantity').' : x'.$productParticular->quantity;?></span>																		
+																	<span class='pull-right'><?php echo JText::_('com_paycart_quantity').' : x'.$shipment['quantity'];?></span>																		
 																	<?php if($productParticular->total !=  $productParticular->price):?>
-																		<hr/><span class='pull-right'><?php echo JText::_('com_paycart_subtotal').' : '.$formatter->amount($productParticular->price);?></span><br/>
+																		<hr/><span class='pull-right'><?php echo JText::_('com_paycart_subtotal').' : '.$formatter->amount($productParticular->price*$shipment['quantity']/$productParticular->quantity);?></span><br/>
 																	<?php endif;?>																		
 																	<?php if($productParticular->discount < 0):?>
-																		<span class='pull-right'><?php echo JText::_('com_paycart_discount').' : '.$formatter->amount($productParticular->discount);?></span><br/>
+																		<span class='pull-right'><?php echo JText::_('com_paycart_discount').' : '.$formatter->amount($productParticular->discount*$shipment['quantity']/$productParticular->quantity);?></span><br/>
 																	<?php endif;?>
 																	<?php if($productParticular->tax > 0):?>
-																		<span class='pull-right'><?php echo JText::_('com_paycart_tax').' : '.$formatter->amount($productParticular->tax);?></span><br/>
+																		<span class='pull-right'><?php echo JText::_('com_paycart_tax').' : '.$formatter->amount($productParticular->tax*$shipment['quantity']/$productParticular->quantity);?></span><br/>
 																	<?php endif;?>
 																	</span>
-																	<hr/><span class='pull-right'><?php echo JText::_('com_paycart_total').' : '.$formatter->amount($productParticular->total);?></span>
+																	<hr/><span class='pull-right'><?php echo JText::_('com_paycart_total').' : '.$formatter->amount($productParticular->total*$shipment['quantity']/$productParticular->quantity);?></span>
 																	">
 			  													<i class="fa fa-question-circle"></i>
 			  												</a>
