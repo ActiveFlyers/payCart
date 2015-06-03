@@ -89,7 +89,8 @@ class PaycartSiteControllerState extends PaycartController
 			}
 		}
 		else{
-			$html = $country_states[$country_id];
+			$html .= '<option value="">'.JText::_('JGLOBAL_SELECT_AN_OPTION'). ' </option>';
+			$html .= $country_states[$country_id];
 		}
 		
 		PaycartFactory::getAjaxResponse()->addScriptCall('paycart.address.state.html', Array('state_selector' => $selector, 'state_option_html' => $html));

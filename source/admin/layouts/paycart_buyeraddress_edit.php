@@ -94,8 +94,9 @@ $id_suffix++;
 	  </label>
 	  <div class="controls">
 	  		<?php
-	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', @$displayData->country_id, "country_id_$id_suffix", array('required' => 'true')); 
+	  			echo PaycartHtmlCountry::getList($prefix.'[country_id]', @$displayData->country_id, "country_id_$id_suffix", array('class'=>'validate-hidden required')); 
 	  		?>
+	  		<div class="pc-error pc-margin-top-0" for="country_id_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 	   
 	  </div>
 	</div>
@@ -110,7 +111,7 @@ $id_suffix++;
 	  </label>
 	  <div class="controls">
 		  	<?php 
-		  		echo PaycartHtmlState::getList($prefix.'[state_id]',@$displayData->state_id,  "state_id_$id_suffix", array('required' => 'true'),  @$displayData->country_id);
+		  		echo PaycartHtmlState::getList($prefix.'[state_id]',@$displayData->state_id,  "state_id_$id_suffix", array( 'class'=>'validate-hidden required'),  @$displayData->country_id);
 		  	?>
 		   	    
 		    <script>
@@ -128,6 +129,7 @@ $id_suffix++;
 					
 				})(paycart.jQuery);
 		   </script>
+		   <div class="pc-error pc-margin-top-0" for="state_id_<?php echo $id_suffix; ?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_REQUIRED');?></div>
 	  </div>
 	</div>
 
