@@ -72,8 +72,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
  			<label id="paycart_billing_country_id-lbl" for="paycart_billing_country_id" class="required"><?php echo JText::_('COM_PAYCART_COUNTRY'); ?></label>
  		</div>
  		<div class="controls">		 			
-			<?php echo PaycartHtmlCountry::getList('paycart_cart_address[billing][country_id]',  @$billing_address->country_id,  'paycart_billing_country_id', Array('class'=>'pc-chozen input-block-level', 'required' => '')); ?>
-			<span class="pc-error" for="paycart_billing_country_id"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>
+			<?php echo PaycartHtmlCountry::getList('paycart_cart_address[billing][country_id]',  @$billing_address->country_id,  'paycart_billing_country_id', Array('class'=>'pc-chozen input-block-level validate-hidden required', 'required' => '')); ?>
+			<span class="pc-error pc-margin-top-0" for="paycart_billing_country_id"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>
 		</div>
 	</div>
 				
@@ -83,8 +83,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
  			<label id="paycart_billing_state_id-lbl" for="paycart_billing_state_id" class="required"><?php echo JText::_('COM_PAYCART_STATE'); ?></label>
  		</div>
  		<div class="controls">		 			
-			<?php echo PaycartHtmlState::getList('paycart_cart_address[billing][state_id]', @$billing_address->state_id,  'paycart_billing_state_id', Array('class'=>'pc-chozen input-block-level', 'required' => ''), @$billing_address->country_id);?>
-			<span class="pc-error" for="paycart_billing_state_id"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>
+			<?php echo PaycartHtmlState::getList('paycart_cart_address[billing][state_id]', @$billing_address->state_id,  'paycart_billing_state_id', Array('class'=>'pc-chozen input-block-level validate-hidden required', 'required' => ''), @$billing_address->country_id);?>
+			<span class="pc-error pc-margin-top-0" for="paycart_billing_state_id"><?php echo JText::_('COM_PAYCART_VALIDATION_ERROR_REQUIRED');?></span>
 		</div>
 	</div>
 	

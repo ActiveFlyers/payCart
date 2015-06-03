@@ -168,7 +168,7 @@ paycart.admin.taxrule = {};
 					<div class="control-group">
 						<div class="controls" data-pc-taxrule="processor">
 							<?php echo $field->input; ?>
-							<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_TAXRULE_PROCESSOR_REQUIRED');?></div>
+							<div class="pc-error pc-margin-top-0" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_TAXRULE_PROCESSOR_REQUIRED');?></div>
 						</div>	
 					</div>
 					

@@ -16,7 +16,8 @@ paycart.admin.shippingrule = {};
 (function($){
 	paycart.admin.shippingrule.getProcessorConfig = function(){
 		var processor_classname = $('[data-pc-shippingrule="processor"] select').val();
-		if(processor_classname.length > 0){			
+		if(processor_classname.length > 0){	
+			paycart.formvalidator.initialize('form.pc-form-validate');		
 			var url  = 'index.php?option=com_paycart&view=shippingrule&task=getProcessorConfig&processor_classname='+processor_classname+'&shippingrule_id='+<?php echo $form->getValue('shippingrule_id');?>;
 			paycart.ajax.go(url);
 		}
@@ -128,7 +129,7 @@ paycart.admin.shippingrule = {};
 							<div class="control-label"><?php echo $field->label; ?> </div>
 							<div class="controls" data-pc-shippingrule="processor">
 								<?php echo $field->input; ?>
-								<div class="pc-error clearfix" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_SHIPPINGRULE_PROCESSOR_REQUIRED');?></div>
+								<div class="pc-error pc-margin-top-0 clearfix" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_SHIPPINGRULE_PROCESSOR_REQUIRED');?></div>
 							</div>	
 						</div>
 						
