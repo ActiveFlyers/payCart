@@ -252,6 +252,10 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 			return shipmentStatus;
 		}
 		
+		$scope.revertStatus = function(index, prevStatus){
+			$scope.shipments[index].status = prevStatus;
+		}
+		
 	});
 	
 	paycart.ng.cart.directive('ngConfirmClick', [
@@ -259,11 +263,17 @@ Rb_HelperTemplate::loadMedia(array('angular'));
               return{
                     link: function (scope, element, attr) {
                            var msg = attr.ngConfirmClick || "<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_STATUS_CHANGE_CONFIRMATION");?>";
-                           var clickAction = attr.confirmedClick;
+                           var clickAction   = attr.confirmedClick;
+                           var prevValue     = angular.copy(scope.shipments[attr.index]); 
+                           var shipmentIndex = attr.index;
+                           
                            element.bind('click',function (event) {
 	                           if ( window.confirm(msg) ) {
-	                              	 scope.$apply(clickAction)
+	                              	 scope.$apply(clickAction);
 	                           }
+	                           else{
+	                        	   scope.$apply('revertStatus('+shipmentIndex+',"'+ prevValue.status+'")');
+		                       }
                            });
                      }
               };
