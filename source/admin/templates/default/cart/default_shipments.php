@@ -122,6 +122,8 @@ PaycartHtml::_('behavior.formvalidation');
 									        name="status{{value}}"
 									        type="radio"
 									        value="{{s.value}}"
+									        data-index="{{value}}"
+									        data-value="{{s.value}}"
 									        data-ng-model="shipments[value].status" data-ng-confirm-click="<?php echo JText::_("COM_PAYCART_ADMIN_SHIPMENT_STATUS_CHANGE_CONFIRMATION");?>" confirmed-click="save(value)" />
 
 									    <input ng-if="shipments[value].status == s.value" data-ng-disabled="{{s.disabled}}"

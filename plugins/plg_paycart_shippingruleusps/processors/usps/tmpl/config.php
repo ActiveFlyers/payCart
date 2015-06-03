@@ -39,7 +39,8 @@ $config->first_class_mail_type = isset($config->first_class_mail_type)?$config->
 				</label>
 				<div class="controls">
 					<input type="text" name="<?php echo $namePrefix?>[processor_config][zip_origin]" id="pc-processor-usps-zip-origin" value="<?php echo isset($config->zip_origin)?$config->zip_origin:''?>">
-				</div>	
+				</div>
+				<p><small><?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_ZIP_ORIGIN_HELP_MESSAGE')?></small></p>	
 			</div>
 			
 			<div class="control-group">
@@ -96,7 +97,7 @@ $config->first_class_mail_type = isset($config->first_class_mail_type)?$config->
 						<option value="1" <?php echo $config->machinable == 1 ? 'selected="selected"' : '';?>><?php echo JText::_('JYES')?></option>
 						<option value="0" <?php echo $config->machinable == 0 ? 'selected="selected"' : '';?>><?php echo JText::_('JNO')?></option>
 					</select>
-					<a href="#" data-toggle="popover" class="pc-popover" title="<?php echo JText::_("JHELP")?>"
+					<a href="javascript:void(0);" data-toggle="popover" class="pc-popover" title="<?php echo JText::_("JHELP")?>"
 							 	data-content="<?php echo JText::_("PLG_PAYCART_SHIPPINGRULE_USPS_MACHINABLE_POPOVER");?>">
 						<i class="fa fa-question-circle"></i>
 					</a>
@@ -110,7 +111,7 @@ $config->first_class_mail_type = isset($config->first_class_mail_type)?$config->
 				<div class="controls">
 					<?php echo PaycartHtml::_('select.genericlist',$mailType,$namePrefix.'[processor_config][first_class_mail_type]','','value','title',$config->first_class_mail_type, 'pc-processor-usps-first_class_mail_type')?>
 				</div>	
-				<div><small>( <?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE_NOTE')?>)</small></div>
+				<div><small><?php echo JText::_('PLG_PAYCART_SHIPPINGRULE_USPS_MAIL_TYPE_NOTE')?></small></div>
 			</div>
 			
 		</div>
