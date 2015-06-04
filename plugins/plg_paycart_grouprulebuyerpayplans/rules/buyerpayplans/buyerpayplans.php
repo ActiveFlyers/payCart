@@ -82,7 +82,7 @@ class PaycartGroupruleBuyerpayplans extends PaycartGrouprule
 		$scripts 	= array();
 		static $scriptAdded = false;
 		if(!$scriptAdded){			
-			$scripts[] 	= 'paycart.jQuery("select.paycart-grouprule-buyerplans").chosen({disable_search_threshold : 10, allow_single_deselect : true, search_contains:true  });';
+			$scripts[] 	= 'paycart.jQuery("select.paycart-grouprule-buyerplans").chosen({disable_search_threshold : 10, allow_single_deselect : true, search_contains:true, search_contains:true  });';
 			$scriptAdded = true;
 		}
 		

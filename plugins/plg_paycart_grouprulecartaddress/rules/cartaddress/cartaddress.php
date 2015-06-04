@@ -142,7 +142,7 @@ class PaycartGroupruleCartaddress extends PaycartGrouprule
 		$scripts 	= array();
 		static $scriptAdded = false;
 		if(!$scriptAdded){			
-			$scripts[] 	= 'paycart.jQuery("select.pc-chosen").chosen({disable_search_threshold : 10, allow_single_deselect : true });';
+			$scripts[] 	= 'paycart.jQuery("select.pc-chosen").chosen({disable_search_threshold : 10, allow_single_deselect : true, search_contains:true });';
 			$scriptAdded = true;
 		}
 		
