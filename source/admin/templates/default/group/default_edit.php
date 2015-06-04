@@ -83,6 +83,12 @@ echo $this->loadTemplate('js');
 			<div class="span9">
 				<div class="control-group">					
 					<div class="controls">
+						<?php $field = $form->getField('operator') ?>
+						<div class="control-group">
+							<div class="control-label"><?php echo $field->label; ?> </div>
+							<div class="controls"><?php echo $field->input; ?></div>
+						</div>
+						<br>
 						<select id="paycart-grouprule-list">
 							<option value=""><?php echo JText::_('COM_PAYCART_ADMIN_SELECT');?></option>
 							<?php foreach($group_rules as $class => $rule):?>

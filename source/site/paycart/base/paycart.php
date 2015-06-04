@@ -106,6 +106,8 @@ class Paycart
 	const DIMENSION_UNIT_INCH		= 'in';
 	const DEFAULT_DIMENSION_UNIT	= 'cm';
 	
+	const OPERATOR_AND				= "AND";
+	const OPERATOR_OR				= "OR";
 	
 	const SORTING_OPTION_HITS         = 'hits';
 	const SORTING_OPTION_CREATED_DATE = 'created_date';

@@ -40,6 +40,18 @@
 			class="input-block-level"
 			readonly="true"
 			label="COM_PAYCART_ADMIN_TYPE"/>
+			
+		<field
+			name="operator"
+			type="list"
+			labelclass="control-label"
+			class="btn-group"
+			label="COM_PAYCART_ADMIN_SELECT_OPERATOR"	
+			description="COM_PAYCART_ADMIN_SELECT_OPERATOR_DESC"		
+			default="AND">
+			<option value="AND">COM_PAYCART_QUERY_OPERATOR_AND</option>
+			<option value="OR">COM_PAYCART_QUERY_OPERATOR_AND</option>
+		</field>
 				
 		<fields name="params">
 		</fields>		
