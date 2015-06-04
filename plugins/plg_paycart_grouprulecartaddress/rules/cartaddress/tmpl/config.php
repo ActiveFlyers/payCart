@@ -77,9 +77,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	
 <script>
 	(function($){
-		paycart.address.state.onCountryChange(<?php echo "'#{$idPrefix}countries'" ?>, <?php echo "'#{$idPrefix}states'" ?>);
+		paycart.address.state.onCountryChange(<?php echo "'#{$idPrefix}countries'" ?>, <?php echo "'#{$idPrefix}states'" ?>,null,null,true);
 		$(<?php echo "'#{$idPrefix}countries'"; ?>).on('change',  function() {
-			paycart.address.state.onCountryChange(<?php echo "'#{$idPrefix}countries'" ?>, <?php echo "'#{$idPrefix}states'" ?>);
+			paycart.address.state.onCountryChange(<?php echo "'#{$idPrefix}countries'" ?>, <?php echo "'#{$idPrefix}states'" ?>,null,null,true);
 		});	
 	})(paycart.jQuery);
 </script>

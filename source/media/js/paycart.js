@@ -194,9 +194,14 @@ if (typeof(paycart.element)=='undefined'){
 			$(state_selector).trigger("liszt:updated");			
 		},
 
-		onCountryChange	:	function(country_selector, state_selector, default_selected_state, success_callback)
+		onCountryChange	:	function(country_selector, state_selector, default_selected_state, success_callback, isbackend)
 		{
-			var link = rb_vars.url.root +'index.php?option=com_paycart&view=state&task=getoptions';
+			
+			var applicationurl = 'index.php?option=com_paycart&view=state&task=getoptions';
+			if(isbackend)
+			 applicationurl = 'administrator/index.php?option=com_paycart&view=state&task=getoptions';
+
+			var link = rb_vars.url.root +applicationurl;
 
 			paycart.ajax.go( link, 
 							{ 	'country_id' : $(country_selector).val(), 'state_selector' : state_selector, 
