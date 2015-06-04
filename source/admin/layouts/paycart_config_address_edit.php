@@ -121,13 +121,13 @@ $id_suffix++;
 					(function($){
 		
 						$(<?php echo "'#country_id_$id_suffix'"; ?>).on('change',  function() {
-							paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
+							paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>,null,null,true);
 						});
 						<?php
 							// if state already available then no need to get states  
 							if (!@$displayData->state_id) :
 						?>
-							paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>);
+							paycart.address.state.onCountryChange(<?php echo "'#country_id_$id_suffix'" ?>, <?php echo "'#state_id_$id_suffix'" ?>,null,null,true);
 						<?php endif; ?>
 						
 					})(paycart.jQuery);
@@ -208,3 +208,4 @@ $id_suffix++;
 </div>
 
 <?php 
+

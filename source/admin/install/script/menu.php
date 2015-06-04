@@ -28,6 +28,22 @@ class PaycartInstallScriptMenu
 	 * 					access = 1 (public), 2 (registered)
 	 * 					published =1
 	 */
+	
+	 protected static $_hidden_menus = 
+	 						array(
+	 								// Product View
+			 								'product_display' =>
+								 				Array (	'title' => 'Product', 'alias'=>'product', 'access'	=>	1, 'level' =>  1,
+								 						'link' => 'index.php?option=com_paycart&view=product&task=display'
+								 					  ),
+			 					  	// Thanks page
+								 			'cart_thanks' =>
+								 				Array (	'title' => 'Thanks Page', 'alias'=>'thanks', 'access' => 1, 'level' =>  1,
+								 						'link' => 'index.php?option=com_paycart&view=cart&task=complete'
+								 					  ),
+	 						);
+	
+	
 	 protected static $_menus = 
 			 			Array(
 			 			// default view 'Store', It will display root category
@@ -37,11 +53,7 @@ class PaycartInstallScriptMenu
 			 						'children'	=>  
 			 							//listed all children menu
 			 							Array(
-			 								// Product View
-			 								'product_display' =>
-								 				Array (	'title' => 'Product', 'alias'=>'product', 'access'	=>	1, 'level' =>  2,
-								 						'link' => 'index.php?option=com_paycart&view=product&task=display'
-								 					  ),
+			 							
 								 			//## Start Cart Menu
 								 			// Display Current cart
 								 			'cart_display' =>
@@ -54,11 +66,7 @@ class PaycartInstallScriptMenu
 												 					Array (	'title' => 'Checkout', 'alias'=>'checkout',	'access' =>	1, 'level' =>  3,
 												 							'link'  => 'index.php?option=com_paycart&view=cart&task=checkout'
 												 					  ),
-												 				// Thanks page
-													 			'cart_thanks' =>
-													 				Array (	'title' => 'Thanks Page', 'alias'=>'thanks', 'access' => 1, 'level' =>  3,
-													 						'link' => 'index.php?option=com_paycart&view=cart&task=complete'
-													 					  ),
+												 			
 													 			// Buy Now task
 													 			'cart_buy' =>
 													 				Array (	'title' => 'Buy Now', 'alias'=>'buy', 'access' => 1, 'level' =>  3,
@@ -111,6 +119,7 @@ class PaycartInstallScriptMenu
 	const 	MENUTYPE 					= 	'paycart';
 	const  	JOOMLA_MENU_DEFAULT_PARENT_ROOT		= 	1;
 	const 	JOOMLA_MENU_DEFAULT_PARENT_LEVEL	=	1;
+	const 	PAYCART_HIDDEN_MENU 				= 	'paycart-hidden';
 	
 	/**
 	 * Create Paycart Menu-Item
@@ -126,14 +135,26 @@ class PaycartInstallScriptMenu
 		if(!self::isMenutypeExist()){
 			self::addDefaultMenuType();
 		}
+		
+		if(!self::isPaycartHiddenMenuExist()){
+			self::addHiddenMenuType();
+		}
 
 		//2# Create Menu
-		if (self::isMenuExist()){
+		if (self::isMenuExist('%option=com_paycart%', self::MENUTYPE)){
 			self::updateMenuItems();
 		} else {
 			// If menu already created then need to update it 
-			self::addMenuItems();
+			self::addMenuItems(self::MENUTYPE);
 		}
+		
+		if (self::isMenuExist('%option=com_paycart%', self::PAYCART_HIDDEN_MENU)){
+			self::updateMenuItems();
+			} else {
+				// If menu already created then need to update it 
+				self::addMenuItems(self::PAYCART_HIDDEN_MENU);
+			}
+
 
 		return true;
 	}
@@ -158,6 +179,20 @@ class PaycartInstallScriptMenu
         return  ( $db->loadResult() >= 1 ) ? true : false;
     }
     
+    protected static function isPaycartHiddenMenuExist()
+    {
+    	 $db		= JFactory::getDBO();
+
+        $query	= '	SELECT COUNT(*) 
+        			FROM ' .  $db->quoteName( '#__menu_types' ) . ' 
+            		WHERE ' . $db->quoteName( 'menutype' ) . ' = ' .  $db->Quote( self::PAYCART_HIDDEN_MENU);
+	
+        $db->setQuery( $query );
+
+        return  ( $db->loadResult() >= 1 ) ? true : false;
+    }
+    
+    
 	/**
 	 * Add Default Menu types
 	 */
@@ -177,17 +212,36 @@ class PaycartInstallScriptMenu
 		return true;
 	}
 	
+	
+	protected static function addHiddenMenuType()
+		{
+			$db		= JFactory::getDBO();
+			
+			$query	= 'INSERT INTO ' . $db->quoteName( '#__menu_types' ) . ' (' . $db->quoteName('menutype') .',' . $db->quoteName('title') .',' . $db->quoteName('description') .') 
+						VALUES '
+			    			. '( ' .  $db->Quote( self::PAYCART_HIDDEN_MENU) . ',' . $db->Quote( 'Paycart hidden menu' ) . ',' . $db->Quote( 'Menu items for your cart that are hidden.Use for routing purpose') . ')';
+			$db->setQuery( $query );
+			$db->execute();
+			if ($db->getErrorNum())
+			{
+				return false;
+			}
+			
+			
+			return true;
+		}
+	
 	/**
 	 * Check if menu exist
 	 * @return [boolean] [return true/false]
 	 */
-	protected static function isMenuExist()
+	protected static function isMenuExist($url, $menuType)
 	{
 		$db		= JFactory::getDBO();
 
 		$query	= 'SELECT COUNT(*) FROM ' . $db->quoteName( '#__menu' ) . ' '
-				. 'WHERE ' . $db->quoteName( 'link' ) . ' LIKE ' .  $db->Quote( '%option=com_paycart%') . ' '
-				. 'AND ' . $db->quoteName('menutype') . ' = ' . $db->Quote(self::MENUTYPE);
+				. 'WHERE ' . $db->quoteName( 'link' ) . ' LIKE ' .  $db->Quote($url ) . ' '
+				. 'AND ' . $db->quoteName('menutype') . ' = ' . $db->Quote($menuType);
 
 		$db->setQuery( $query );
 
@@ -233,7 +287,7 @@ class PaycartInstallScriptMenu
 	/**
 	 * Add Menu items
 	 */
-	protected static function addMenuItems()
+	protected static function addMenuItems($type)
 	{
 		// Get new component id.
 		$component    = JComponentHelper::getComponent('com_paycart');
@@ -244,14 +298,60 @@ class PaycartInstallScriptMenu
 			$component_id = $component->id;
 		}
 		
-		foreach (self::$_menus as $view_task => $menu_item ) 
-		{
-			$menu_item['component_id']	= $component_id;
-			self::_addMenuItem($menu_item);
+		if($type == self::MENUTYPE){
+			foreach (self::$_menus as $view_task => $menu_item ) 
+			{
+				$menu_item['component_id']	= $component_id;
+				$menuType = self::MENUTYPE;
+				self::_addMenuItem($menu_item, self::JOOMLA_MENU_DEFAULT_PARENT_ROOT, $menuType);
+			}
 		}
+		
+		if($type == self::PAYCART_HIDDEN_MENU){
+			foreach (self::$_hidden_menus as $item ) 
+				{
+					$item['component_id']	= $component_id;
+					$menuType = self::PAYCART_HIDDEN_MENU;
+					self::_addMenuItem($item,self::JOOMLA_MENU_DEFAULT_PARENT_ROOT,$menuType);
+				}
+		}
+		
+		//delete the menu of thank you and product page. As we have created it hidden.
+		$menuList = self::getMenuItems('%option=com_paycart&view=product&task=display%', self::MENUTYPE);
+		
+		foreach ($menuList as $menu)
+		{
+			$menu_table = JTable::getInstance('Menu');
+			$menu_table->delete($menu->id);
+			$menu_table->rebuildPath($menu->id);
+		}
+			
+		$menuList = self::getMenuItems('%index.php?option=com_paycart&view=cart&task=complete%', self::MENUTYPE);
+		foreach ($menuList as $menu)
+			{
+				$menu_table = JTable::getInstance('Menu');
+				$menu_table->delete($menu->id);
+				$menu_table->rebuildPath($menu->id);
+			}
 
 
 		return true;
+	}
+	
+	
+	protected static function getMenuItems($url, $menuType)
+	{
+		$db		= JFactory::getDBO();
+
+			
+		$query	= 'SELECT * FROM ' . $db->quoteName( '#__menu' ) . ' '
+				. 'WHERE ' . $db->quoteName( 'link' ) . ' LIKE ' .  $db->Quote($url ) . ' '
+				. 'AND ' . $db->quoteName('menutype') . ' = ' . $db->Quote($menuType);
+	
+			$db->setQuery( $query );
+			$data = $db->loadObjectList();
+			
+			return $data;
 	}
 	
 	/**
@@ -260,13 +360,13 @@ class PaycartInstallScriptMenu
 	 * @param Array $menu, table data for menu 
 	 * @param unknown_type $parent_id
 	 */
-	private static function _addMenuItem(Array $menu, $parent_id = self::JOOMLA_MENU_DEFAULT_PARENT_ROOT)
+	private static function _addMenuItem(Array $menu, $parent_id = self::JOOMLA_MENU_DEFAULT_PARENT_ROOT, $menuType)
 	{
 		$data['title']			= $menu['title'];
 		$data['alias']			= $menu['alias'];			// @PCTODO :: What to do when alias is duplicate 
 		$data['link']			= $menu['link'];
 		$data['access']			= isset($menu['access']) ? $menu['access'] : 1 ;	// default is public access
-		$data['menutype']		= self::MENUTYPE;
+		$data['menutype']		= $menuType;
 		$data['type']			= 'component';
 		$data['published']		= isset($menu['published']) ? $menu['published'] : 1 ;	// default is published menus item
 		$data['parent_id']		= $parent_id; 
@@ -299,10 +399,9 @@ class PaycartInstallScriptMenu
 			foreach ($menu['children'] as $child_item) {
 				$child_item['component_id']	= $menu['component_id'];
 				//recursively invoke
-				self::_addMenuItem( $child_item, $menu_table->id);
+				self::_addMenuItem( $child_item, $menu_table->id, $menuType);
 			}
 		}
-		;
 	}
 	
 	
