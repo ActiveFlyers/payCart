@@ -49,8 +49,8 @@
 			label="COM_PAYCART_ADMIN_SELECT_OPERATOR"	
 			description="COM_PAYCART_ADMIN_SELECT_OPERATOR_DESC"		
 			default="AND">
-			<option value="AND">COM_PAYCART_QUERY_OPERATOR_AND</option>
-			<option value="OR">COM_PAYCART_QUERY_OPERATOR_AND</option>
+			<option value="AND">COM_PAYCART_ADMIN_QUERY_OPERATOR_AND</option>
+			<option value="OR">COM_PAYCART_ADMIN_QUERY_OPERATOR_OR</option>
 		</field>
 				
 		<fields name="params">
