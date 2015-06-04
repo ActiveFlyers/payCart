@@ -122,6 +122,13 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	<?php // @PCTODO : move to proper location?>
 	(function($){
 
+		//PCTODO:: # Handle it properly to copy billing to shipping address
+		//It is needed to copy the data at the time of state change, otherwise
+		//state is not reflected in shipping address when click on continue button
+		$('#paycart_billing_state_id').on('change',  function(event, data) {
+			paycart.cart.address.copy('billing', 'shipping');
+		});
+
 		$('#paycart_billing_country_id').on('change',  function(event, data) {
 			var default_selected_state = 0;
 			var success_callback = null;
