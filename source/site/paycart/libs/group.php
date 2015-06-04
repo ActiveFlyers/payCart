@@ -23,6 +23,7 @@ class PaycartGroup extends PaycartLib
 	protected $type			= '';
 	protected $title		= '';
 	protected $description	= '';
+	protected $operator		= Paycart::OPERATOR_AND;
 	protected $published	= true;
 	protected $ordering		= 0;
 	protected $created_date = null;
@@ -75,7 +76,7 @@ class PaycartGroup extends PaycartLib
 		$this->published 	= 1;
 		$this->ordering 	= 0;
 		$this->params 		= new Rb_Registry();
-		
+		$this->operator		= Paycart::OPERATOR_AND;
 		$this->created_date 	= Rb_Date::getInstance();
 		$this->modified_date 	= Rb_Date::getInstance();
 		return $this;
@@ -89,20 +90,38 @@ class PaycartGroup extends PaycartLib
 	public function isAppicable($entity_id)
 	{
 		$rules = (array) $this->params->toArray();
-		foreach($rules as $rule){	
-			try {	
+		
+		$operator = $this->getOperator();
+		
+		$conditions = array();
+		
+		foreach($rules as $rule){
+			try {
 				$ruleInstance = $this->_helper->getInstance($this->type, $rule['ruleClass'], $rule);
 			}
 			catch (Exception $e){
-				//if any grp rule is disable any it is attached to any discount/tax/shipping rule
-				//then no other rule will be applicable.
-				return false;
-			}
-			if (!$ruleInstance->isApplicable($entity_id)) {
-				return false;
+			//if any grp rule is disable any it is attached to any discount/tax/shipping rule
+			//then no other rule will be applicable.
+			return false;
+		}
+		
+		$conditions[] = $ruleInstance->isApplicable($entity_id);
+		
+		}
+		
+		if(!empty($conditions)){
+			if ($operator == Paycart::OPERATOR_AND){
+				return !in_array(false, $conditions);
+			}else{
+				return in_array(true, $conditions);
 			}
 		}
 		
 		return true;
 	}
+	
+	public function getOperator()
+		{
+			return $this->operator;
+		}
 }
