@@ -25,15 +25,17 @@ class PaycartHtmlCountry
 	{
 		$available_countries = PaycartFactory::getModel('country')->loadRecords(Array('published' => 1));
 		
-		$options    = array();
-		if(!isset($attr['multiple']) || !$attr['multiple']){ 
-			$options[0] = array('title'=>JText::_('JGLOBAL_SELECT_AN_OPTION'), 'value'=>'');
-		}
+		return PaycartHtml::_('select.genericlist', $available_countries, $name, $attr, 'country_id', 'title', $value, $idtag);
 		
-		foreach ($available_countries as $key => $country){
-			$options[$country->$optionValueField] = array('title' => $country->title, 'value' => $country->$optionValueField);
-		}
-		return PaycartHtml::_('select.genericlist', $options, $name, $attr, 'value', 'title', $value, $idtag);
+//		$options    = array();
+//		if(!isset($attr['multiple']) || !$attr['multiple']){ 
+//			$options[0] = array('title'=>JText::_('JGLOBAL_SELECT_AN_OPTION'), 'value'=>'');
+//		}
+//		
+//		foreach ($available_countries as $key => $country){
+//			$options[$country->$optionValueField] = array('title' => $country->title, 'value' => $country->$optionValueField);
+//		}
+//		return PaycartHtml::_('select.genericlist', $options, $name, $attr, 'value', 'title', $value, $idtag);
 	}
 	
 	static function filter($name, $view, Array $filters = array(), $prefix='filter_paycart')

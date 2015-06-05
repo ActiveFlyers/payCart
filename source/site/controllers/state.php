@@ -89,7 +89,7 @@ class PaycartSiteControllerState extends PaycartController
 			}
 		}
 		else{
-			$html .= '<option value="">'.JText::_('JGLOBAL_SELECT_AN_OPTION'). ' </option>';
+			//$html .= '<option value="">'.JText::_('JGLOBAL_SELECT_AN_OPTION'). ' </option>';
 			$html .= $country_states[$country_id];
 		}
 		
