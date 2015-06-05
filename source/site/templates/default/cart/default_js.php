@@ -246,6 +246,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 						if (!selected_address_id) {
 							return true;
 						}
+						
+						//reinitialize the form again
+						paycart.formvalidator.initialize('#pc-checkout-form');
 		
 						var request = [];
 						request['data'] = { 
