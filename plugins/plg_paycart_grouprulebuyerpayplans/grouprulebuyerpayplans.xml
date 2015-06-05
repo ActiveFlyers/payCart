@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="paycart" method="upgrade">
     <name>Paycart Grouprule Payplans Plan</name>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <creationDate>May 2015</creationDate>
     <author>Ready Bytes</author>
     <authorEmail>support+paycart@readybytes.in</authorEmail>
@@ -18,7 +18,7 @@
     </config>
 
     <alias>pc-grouprule-payplans</alias>
-    <version_number>1.0.1</version_number>
+    <version_number>1.0.0</version_number>
     <version_name>Grouprule Payplans 1.0</version_name>
 </extension>
 
