@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="paycart" method="upgrade">
     <name>Paycart GroupRule CartTotal</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <creationDate>Nov 2012</creationDate>
     <author>Ready Bytes</author>
     <authorEmail>support+paycart@readybytes.in</authorEmail>
@@ -18,6 +18,6 @@
     </config>
  
     <alias>pc-grouprule-carttotal</alias>
-    <version_number>1.0.0</version_number>
+    <version_number>1.0.1</version_number>
     <version_name>Cart Total Grouprule 1.0</version_name>
 </extension>
