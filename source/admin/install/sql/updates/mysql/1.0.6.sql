@@ -13,3 +13,6 @@ INSERT INTO `#__paycart_notification_lang` (`notification_id`, `lang_code`, `sub
 
 -- Add notes column in shipment table
 ALTER TABLE `#__paycart_shipment` ADD COLUMN `notes` text AFTER `status`;
+
+-- Add notes column in group table
+ALTER TABLE `#__paycart_group` ADD `operator` VARCHAR(4) NOT NULL DEFAULT 'AND' AFTER `type`;
