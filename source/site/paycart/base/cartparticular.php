@@ -48,6 +48,8 @@ abstract class PaycartCartparticular extends JObject
 	protected $length 	= 0;
 	protected $weight 	= 0;
 	
+	static $tempUsage 	= array();
+	
 	public function __construct($properties = null)
 	{
 		 $this->params = new Rb_Registry();
@@ -340,6 +342,7 @@ abstract class PaycartCartparticular extends JObject
 		$usage->title				= $rule->getTitle();
 		
 		$this->_usage[] = $usage;
+		self::$tempUsage[] = $usage;
 		
 		return $this;
 	}
@@ -621,7 +624,7 @@ abstract class PaycartCartparticular extends JObject
 	 */
 	public function isAnyRuleApplied($rule_type)
 	{
-		foreach ($this->_usage as $usage) {
+		foreach (self::$tempUsage as $usage){
 			if ($usage->rule_type === $rule_type) {
 				return true;
 			}
@@ -647,16 +650,18 @@ abstract class PaycartCartparticular extends JObject
 			return false;
 		}	
 		
+		$isAnyRuleApplied = $this->isAnyRuleApplied($this->getType());
+		
 		// if $discountrule is a first discount which in non-clubbable 
 		// then it should be applied and then say stop further discountrules.
-		if ( !$this->isAnyRuleApplied($this->getType()) && !$discountrule->get('is_clubbable') ) {
+		if ( !$isAnyRuleApplied && !$discountrule->get('is_clubbable') ) {
 			// stop further discountrule processing
 			$this->_stopFurtherDiscounts = true;
 		}
 		 
 		// if few discount is already applied and current discount is non-clubbale
 		// then return false 
-		if ($this->isAnyRuleApplied($discountrule->getType()) && !$discountrule->get('is_clubbable')) {		
+		if ($isAnyRuleApplied && !$discountrule->get('is_clubbable')) {		
 			$cart->addMessage(	$discountrule->getId(), Paycart::MESSAGE_TYPE_MESSAGE, 
 								JText::_('COM_PAYCART_DISCOUNTRULE_NON_CLUBBABLE'), $this);
 			return false;

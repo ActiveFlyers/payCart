@@ -162,6 +162,10 @@ class PaycartHelperFormat extends JObject
 			case Paycart::DIMENSION_UNIT_CENTIMETER.'->'.Paycart::DIMENSION_UNIT_METER  : return ($value/100);
 
 			case Paycart::DIMENSION_UNIT_INCH.'->'.Paycart::DIMENSION_UNIT_METER 		: return (0.0254*$value);
+			
+			case Paycart::DIMENSION_UNIT_INCH.'->'.Paycart::DIMENSION_UNIT_CENTIMETER	: return (2.54*$value);
+			
+			case Paycart::DIMENSION_UNIT_CENTIMETER.'->'.Paycart::DIMENSION_UNIT_INCH   : return (0.393701*$value);
 						
 			default	 :  return $value;
 		}
