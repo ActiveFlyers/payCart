@@ -16,6 +16,12 @@ PaycartHtml::_('behavior.formvalidation');
 echo $this->loadTemplate('edit_ng');
 
 ?>
+<style>
+	/* To load popup in proper position */
+	#paycart div.modal {
+	    margin-left: -40%;
+	}
+</style>
 
 <div class="pc-cart-wrapper clearfix">
 <div class="pc-cart row-fluid">
@@ -297,3 +303,4 @@ echo $this->loadTemplate('edit_ng');
 </div>
 </div>
 </div>
+<?php 

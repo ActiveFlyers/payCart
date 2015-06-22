@@ -32,7 +32,7 @@ $currencyId = $cart->getCurrency();
 	        		<?php echo '('.$productsCount.' '.JText::_($string).')'; ?>
 	        	</span>
         	</span>
-        	<span class="pull-right text-error"><strong> <?php echo JText::_('COM_PAYCART_ESTIMATED_TOTAL').' = '.$formatter->amount($cart->getTotal(),true,$currencyId);?></strong></span>
+        	<span class="pull-right text-error"><?php echo JText::_('COM_PAYCART_ESTIMATED_TOTAL').' = ';?><strong> <?php echo $formatter->amount($cart->getTotal(),true,$currencyId);?></strong></span>
         </h3>
  	</div>
  	

@@ -25,7 +25,7 @@ class PaycartHtmlCountry
 	{
 		$available_countries = PaycartFactory::getModel('country')->loadRecords(Array('published' => 1));
 		
-		return PaycartHtml::_('select.genericlist', $available_countries, $name, $attr, 'country_id', 'title', $value, $idtag);
+		return PaycartHtml::_('select.genericlist', $available_countries, $name, $attr, $optionValueField, 'title', $value, $idtag);
 		
 //		$options    = array();
 //		if(!isset($attr['multiple']) || !$attr['multiple']){ 
