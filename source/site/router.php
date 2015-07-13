@@ -211,7 +211,7 @@ class PaycartRouter extends Rb_Router
 		
 		// if product category deleted or alias changed then return root category id
 		if (empty($productcategory_id_array)) {
-			return JError::raiseError(404, "Category is not found.");
+			return PAYCART_PRODUCTCATEGORY_ROOT_ID;
 		}
 		
 		// if get only one value it means alias duplicacy not exist and return category id
@@ -228,7 +228,7 @@ class PaycartRouter extends Rb_Router
 			}
 		}
 
-		return JError::raiseError(404, "Category is not found.");
+		return PAYCART_PRODUCTCATEGORY_ROOT_ID;
 	}
 	
 	
