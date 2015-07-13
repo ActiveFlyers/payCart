@@ -849,8 +849,7 @@ class PaycartCart extends PaycartLib
 				//calculate delivery date
 				$instance = PaycartShippingrule::getInstance($shippingrule_id);
 				$date     = new Rb_Date();
-				$binddata['params']['delivery_date'] = PaycartFactory::getHelper('format')
-															->date($date->add(new DateInterval('P'.$instance->getDeliveryMaxDays().'D')));
+				$binddata['params']['delivery_date'] = $date->add(new DateInterval('P'.$instance->getDeliveryMaxDays().'D'))->toSql();
 				
 				$binddata['price']	         = $shippingOption['price_without_tax'];
 				$binddata['shippingrule_id'] = $shippingrule_id;
