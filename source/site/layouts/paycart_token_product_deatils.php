@@ -18,7 +18,9 @@ defined('_JEXEC') or die();
  * 
  */
 
-$product_particulars = $displayData->product_particulars;
+$product_particulars  = $displayData->product_particulars;
+$shipping_particulars = $displayData->shipping_particulars;
+$formatter = PaycartFactory::getHelper('format');
 
 if (count($product_particulars) <= 0 ) {
     return ;
@@ -64,13 +66,32 @@ $grand_total = 0;
                 <td> 
                     <?php
                         $grand_total += $particular->total;
-                        echo $particular->total;
+                        echo $formatter->amount($particular->total, true);
                     ?>
                 </td>
             </tr>
     <?php 
         endforeach;
     ?>
+		    <?php $shipping = 0;?>
+		    <?php foreach ($shipping_particulars as $sp):?>
+		    	<?php $shipping += $sp->total;?>	
+		    <?php endforeach;?>
+		    
+		    <?php if($shipping):?>
+		    <tr>
+		    	<td colspan="2"> 
+                    <?php
+                        echo JText::_('COM_PAYCART_SHIPPING');
+                    ?>
+                </td>
+                <td> 
+                    <?php
+                        echo $formatter->amount($shipping,true);
+                    ?>
+                </td>
+             </tr>
+		    <?php endif;?>
             <tr>
                 <td colspan="2"> 
                     <?php
@@ -80,13 +101,10 @@ $grand_total = 0;
                 
                 <td> 
                     <?php
-                        echo $grand_total;
+                        echo $formatter->amount($grand_total+$shipping,true);
                     ?>
                 </td>
                 
             </tr>
 </table>    
-
-
-
-
+<?php 

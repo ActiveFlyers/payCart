@@ -158,14 +158,15 @@ class PaycartHelperToken extends PaycartHelper
         /* @var $cart_helper PaycartHelperCart */
         $cart_helper = PaycartFactory::getHelper('cart');
                 
-        $relative_objects->product_particular_list =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+        $relative_objects->product_particular_list  =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+        $relative_objects->shipping_particular_list =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_SHIPPING);
         
         $tokens = Array();
             
         $tokens = array_merge($tokens, $this->getCartToken($relative_objects->cart));
         $tokens = array_merge($tokens, $this->getConfigToken($relative_objects->config));
         $tokens = array_merge($tokens, $this->getBuyerToken($relative_objects->buyer));
-        $tokens = array_merge($tokens, $this->getProductToken($relative_objects->product_particular_list));
+        $tokens = array_merge($tokens, $this->getProductToken($relative_objects->product_particular_list,$relative_objects->shipping_particular_list));
         $tokens = array_merge($tokens, $this->getBillingToken($relative_objects->billing_address));
         $tokens = array_merge($tokens, $this->getShippingToken($relative_objects->shipping_address));
         
@@ -341,15 +342,17 @@ class PaycartHelperToken extends PaycartHelper
      * 
      * @return array 
      */
-    private  function getProductToken(Array $product_particulars)    
+    private  function getProductToken(Array $product_particulars, Array $shipping_particulars)    
     {
         $tokens =  Array();
        
-        $dispalyData = new stdClass;
-        $dispalyData->product_particulars = $product_particulars;
-        // Create a layout to render all product details
-        $tokens['products_detail'] = Rb_HelperTemplate::renderLayout('paycart_token_product_deatils', $dispalyData, PAYCART_LAYOUTS_PATH);
+        $displayData = new stdClass;
+        $displayData->product_particulars  = $product_particulars;
+        $displayData->shipping_particulars = $shipping_particulars;
         
+        // Create a layout to render all product details
+        $tokens['products_detail'] = Rb_HelperTemplate::renderLayout('paycart_token_product_deatils', $displayData, PAYCART_LAYOUTS_PATH);
+		
         return $tokens;
     }
     
