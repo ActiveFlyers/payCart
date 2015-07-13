@@ -69,7 +69,7 @@ We will use row-fluid to paycart-component to make it independent of bootstrap r
 }
 
 .pc-size-xs #pc-categories[data-columns]::before {
-	content: '3 .pc-grid-4';
+	content: '1 .pc-grid-12';
 }
 
 .pc-size-sm #pc-categories[data-columns]::before {
@@ -110,7 +110,7 @@ Products Display
 }
 
 .pc-size-xs #pc-products[data-columns]::before {
-	content: '2 .pc-grid-6';
+	content: '1 .pc-grid-12';
 }
 
 .pc-size-sm #pc-products[data-columns]::before {
@@ -148,7 +148,7 @@ Products Display
 
 .pc-product:hover, 
 .pc-category-inner:hover{
-	border : 1px solid #0088CC;
+/*	border : 1px solid #0088CC;*/
 	cursor : pointer;
 }
 
