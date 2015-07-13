@@ -329,9 +329,9 @@ class PaycartProduct extends PaycartLib
 		$productId 			 =  $this->getId();
 		
 		//Delete all Custom attribute if exist on Previous object
-		if ($previousObject && !empty($previousObject->_attributeValues) ) {
+		//if ($previousObject && (empty($this->_attributeValues) || !empty($previousObject->_attributeValues))){//!empty($previousObject->_attributeValues) ) {
 			$attributeValueModel->deleteMany(Array('product_id'=>$productId));
-		} 
+		//} 
 		
 		// If any new custom attribute attached with new object then need to save it 
 		if(!empty($this->_attributeValues )){
@@ -379,7 +379,9 @@ class PaycartProduct extends PaycartLib
 		}
 		
 		// if custom Attributes available in data then bind with lib object 
-		$attributes = isset($data['attributes']) ? $data['attributes'] : Array();
+        // if not isset attribute then assign false to identify whether 
+        // the task is save or not
+		$attributes = isset($data['attributes']) ? $data['attributes'] : false;
 		
 		// Bind attributevalue-lib's instance on Product lib  
 		$this->setAttributeValues($attributes);
@@ -394,17 +396,14 @@ class PaycartProduct extends PaycartLib
 	 * 
 	 *  @return void
 	 */
-	protected function setAttributeValues(Array $attributeData = Array())
+	protected function setAttributeValues($attributeData = Array())
 	{
-		// If attribute-data is empty and product exist then load attribute data from database
-		if ($this->getId() && empty($attributeData)) {
+		// If attribute-data is false and product exist 
+		//(it means just the instance of product is being created)
+		//then load attribute data from database
+		if ($this->getId() && $attributeData === false) {
 			$attributeValueModel = PaycartFactory::getModel('productattributevalue');
 			$attributeData 	= $attributeValueModel->loadProductRecords($this->getid());
-		}
-		
-		if(empty($attributeData)) {
-			//throw InvalidArgumentException(Rb_Text::_('COM_PAYCART_PRODUCT_ATTRIBUTEVALUE_INVALID'));
-			return false;
 		}
 		
 		//IMP : should be reset before binding

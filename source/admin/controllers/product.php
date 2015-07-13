@@ -48,6 +48,13 @@ class PaycartAdminControllerProduct extends PaycartController
 			}
 		}
 		
+		//set attributes and position indices in post data,otherwise there would not be any way to 
+        //identify at lib whether saving product or just creating instance
+		if(!isset($data['attributes'])){
+			$data['attributes'] = array();
+			$data['config']     = array('positions'=>array()); 
+		}
+		
 		/*
 		 * Format measurement data into standard format before saving
 		 * 
