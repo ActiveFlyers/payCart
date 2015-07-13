@@ -153,6 +153,15 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 			<?php endif;?>
 		 		</div>
 		 		</div>
+		 		
+		 		 <?php $position = 'pc-product-addons';?>
+		 		 <?php if(isset($plugin_result) && isset($plugin_result[$position])):?>
+				 <div class="row-fluid">
+	                <div class="<?php echo $position;?>">
+	                        <?php echo $plugin_result[$position]; ?>
+	                </div>
+				 </div>
+      			 <?php endif;?>
 		 </div>
 	 </div>
 	 

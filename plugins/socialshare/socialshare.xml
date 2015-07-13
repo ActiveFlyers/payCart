@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="2.5" method="upgrade" group="paycart">
+	<name>Paycart Social Plugin</name>
+	<creationDate>June 2015</creationDate>
+	<version>1.0.0</version>
+	<author>Readybytes Team</author>
+	<authorEmail>support+paycart@readybytes.in</authorEmail>
+	<authorUrl>http://www.readybytes.net</authorUrl>
+	  <copyright>2009-15 Ready Bytes Software Labs Pvt. Ltd.</copyright>
+    <license>GNU General Public License v2</license>
+	<description>This plugin enables you to add social share button</description>
+	<files>
+		<filename plugin="socialshare">socialshare.php</filename>
+	</files>
+	
+	<alias>pc-social-share</alias>
+    <version_number>1.0.0</version_number>
+    <version_name>Social Share 1.0</version_name>
+    
+    <config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="display_fb" type="radio" class="btn-group" default="1" label="PLG_PAYCART_SOCIAL_SHARE_DISPLAY_FACEBOOK" description="PLG_PAYCART_SOCIAL_SHARE_DISPLAY_FACEBOOK_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				
+				<field name="fb_admin" type="text" default="" label="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_ADMIN" description="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_ADMIN_DESC" />
+								
+				<field name="fb_style" type="list" default="1" label="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_DISPLAY_STYLE" description="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_DISPLAY_STYLE_DESC">
+					<option value="0">PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_DISPLAY_STANDARD</option>
+					<option value="1">PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_DISPLAY_BUTTON_COUNT</option>
+					<option value="2">PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_DISPLAY_BOX_COUNT</option>
+					<option value="3">PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_DISPLAY_BUTTON</option>
+				</field>
+				
+				<field name="fb_faces" type="radio" default="1" class="btn-group" label="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_SHOW_FACES" description="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_SHOW_FACES_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="fb_send" type="radio" default="0" class="btn-group" label="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_SHOW_SEND_BUTTON" description="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_SHOW_SEND_BUTTON_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="fb_verb" type="list" default="0" label="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_VERB_TO_DISPLAY" description="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_VERB_TO_DISPLAY_DESC">
+					<option value="0">Like</option>
+					<option value="1">Recommend</option>
+				</field>
+				<field name="fb_theme" type="list" default="0" label="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_COLOR_THEME" description="PLG_PAYCART_SOCIAL_SHARE_FACEBOOK_COLOR_THEME_DESC">
+					<option value="0">Light</option>
+					<option value="1">Dark</option>
+				</field>
+				
+<!--				<field name="fb_tag" type="radio" default="xfbml" class="btn-group" label="Tag type" description="Coding language used for implementing the Facebook button">-->
+<!--					<option value="xfbml">XFBML</option>-->
+<!--					<option value="iframe">IFRAME</option>-->
+<!--				</field>-->
+				
+				<field name="spacer1" type="spacer"	hr="true"/>
+				
+				<field name="display_twitter" type="radio" class="btn-group" default="1" label="PLG_PAYCART_SOCIAL_SHARE_DISPLAY_TWITTER" description="PLG_PAYCART_SOCIAL_SHARE_DISPLAY_TWITTER_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="twitter_count" type="list" default="horizontal" label="PLG_PAYCART_SOCIAL_SHARE_TWITTER_COUNT_DISPLAY" description="PLG_PAYCART_SOCIAL_SHARE_TWITTER_COUNT_DISPLAY_DESC">
+					<option value="horizontal">PLG_PAYCART_SOCIAL_SHARE_COUNT_HORIZONTAL</option>
+					<option value="vertical">PLG_PAYCART_SOCIAL_SHARE_COUNT_VERTICAL</option>
+					<option value="none">PLG_PAYCART_SOCIAL_SHARE_COUNT_NONE</option>
+				</field>
+				<field name="twitter_text" type="text" default="" label="PLG_PAYCART_SOCIAL_SHARE_TWEET_TEXT" description="PLG_PAYCART_SOCIAL_SHARE_TWEET_TEXT_DESC" />
+				<field name="twitter_mention" type="text" default="" label="PLG_PAYCART_SOCIAL_SHARE_TWITTER_MENTION_TO" description="PLG_PAYCART_SOCIAL_SHARE_TWITTER_MENTION_TO_DESC" />
+				
+				<field name="spacer2" type="spacer"	hr="true"/>
+				
+				<field name="display_google" type="radio" class="btn-group" default="1" label="PLG_PAYCART_SOCIAL_SHARE_DISPLAY_GOOGLE_PLUS_SHARE_BUTTON" description="PLG_PAYCART_SOCIAL_SHARE_DISPLAY_GOOGLE_PLUS_SHARE_BUTTON_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="google_count" type="list" default="bubble" label="PLG_PAYCART_SOCIAL_SHARE_GOOGLE_COUNT_POSITION" description="PLG_PAYCART_SOCIAL_SHARE_GOOGLE_COUNT_POSITION_DESC">
+					<option value="bubble">PLG_PAYCART_SOCIAL_SHARE_COUNT_HORIZONTAL</option>
+					<option value="vertical-bubble">PLG_PAYCART_SOCIAL_SHARE_COUNT_VERTICAL</option>
+					<option value="inline">PLG_PAYCART_SOCIAL_SHARE_GOOGLE_COUNT_INLINE</option>
+					<option value="none">PLG_PAYCART_SOCIAL_SHARE_COUNT_NONE</option>
+				</field>
+				
+				<field name="spacer3" type="spacer"	hr="true"/>
+				
+				<field name="display_pinterest" type="radio" class="btn-group" default="1" label="PLG_PAYCART_SOCIAL_SHARE_DISPLAY_PINTEREST_BUTTON" description="PLG_PAYCART_SOCIAL_SHARE_DISPLAY_PINTEREST_BUTTON_DESC">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+<!--				<field name="pinterest_count" type="list" default="vertical" label="Pinterest count display" description="Choose the style of the Pinterest count display">-->
+<!--					<option value="horizontal">Horizontal</option>-->
+<!--					<option value="vertical">Vertical</option>-->
+<!--					<option value="none">None</option>-->
+<!--				</field>			-->
+			</fieldset>
+    	</fields>
+    </config>
+</extension>

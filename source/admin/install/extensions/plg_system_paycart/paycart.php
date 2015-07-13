@@ -18,6 +18,15 @@ if (!JFile::exists($fileName)) {
 	return true;
 }
 
+// load paycart plugin language everywhere in backend, 
+// otherwise langauge will not be loaded for plugins and modules
+if(JFactory::getApplication()->isAdmin()){
+	//Load language file for plugins
+	$filename = 'com_paycart_plugins';
+	$language = JFactory::getLanguage();
+	$language->load($filename, JPATH_SITE);
+}
+
 //include paycart joomla event handler
 require_once $fileName;
 
