@@ -328,4 +328,22 @@ class PaycartHelperEvent extends PaycartHelper
          	$args = array();
          	return Rb_HelperPlugin::trigger('onPaycartCron', $args , self::$default_plugin_type);
          }
+         
+		/**
+         *
+         * onPaycartImageBeforeLoad 
+         * @param 
+         *
+         * @return void
+         */
+        public function onPaycartImageBeforeLoad(PaycartProduct $product)
+        {
+            $params = Array($product);
+            $event_name = 'onPayplansImageBeforeLoad';
+            $result = array();
+            $result = Rb_HelperPlugin::trigger('onPaycartImageBeforeLoad', $params, self::$default_plugin_type);
+            
+            return $result;
+            
+        }
 }

@@ -14,7 +14,10 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 
 <?php 
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.min.js');
+Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/jquery.fancybox.min.js');
+
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
+Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/jquery.fancybox.css');
 
 echo $this->loadTemplate('js');
 
@@ -46,15 +49,25 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				Left Layout
 		 =========================== -->
 		 <div class="span6">
-		 	<div id="pc-screenshots-carousel" class="owl-carousel pc-screenshots center">
-			 	<?php $counter = 0; ?>
+	 		<?php 
+	 		 $eventHelper = PaycartFactory::getHelper('event');
+	 		 $html = $eventHelper->onPaycartImageBeforeLoad($product);
+         	 $additionalImageHtml =  array_shift($html);
+	 		 if (!empty($additionalImageHtml)):
+	 		 	echo $additionalImageHtml;
+	 		 else:
+	 		?>
+
+	 		<div id="pc-screenshots-carousel" class="owl-carousel pc-screenshots center" >
+			 
 			    <?php foreach($product->getImages() as $mediaId => $detail):?>
-				    <div>
-				    	<img class="lazyOwl" data-src="<?php echo $detail['original'];?>" />
-				    </div>
-				    <?php $counter++; ?>
+				    <a class="pc-fancybox" rel="gallery1" href="<?php echo $detail['original'];?>">
+				    	<img class="lazyOwl" data-src="<?php echo $detail['optimized'];?>" />
+				    </a>
 				<?php endforeach;?>
 	 		</div>
+	 		<?php endif;?>
+	 		
 		 </div>
 	
 		 <!-- ======================

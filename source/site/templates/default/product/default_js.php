@@ -12,6 +12,7 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 
+<?php echo $this->loadTemplate('css');?>
 <script type="text/javascript">
 (function($){
 	//Specific to Safari bowser, it diplays cached data when back button is clicked
@@ -26,7 +27,20 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 		$("#pc-screenshots-carousel").owlCarousel({ 
 			lazyLoad : true, singleItem:true, 
-			autoHeight : true, pagination:true 
+			autoHeight : true, pagination:true ,
+			navigation:true,
+		    navigationText: [
+		      "<i class='fa fa-chevron-left fa-2 '></i>",
+		      "<i class='fa fa-chevron-right fa-2'></i>"
+		      ],
+		});
+
+
+		$(".pc-fancybox").fancybox({
+			openEffect	: 'none',
+			closeEffect	: 'none',
+			arrows      : true,
+			width: "auto"
 		});
 
 		$('div.accordion-body').on('shown', function () {
