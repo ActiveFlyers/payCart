@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="paycart" method="upgrade">
+    <name>Paycart zoom images plugin</name>
+    <version>1.0.0</version>
+    <creationDate>June 2015</creationDate>
+    <author>Ready Bytes</author>
+    <authorEmail>support+paycart@readybytes.in</authorEmail>
+    <authorUrl>http://www.readybytes.net/paycart</authorUrl>
+    <copyright>2009-15 Ready Bytes Software Labs Pvt. Ltd.</copyright>
+    <license>GNU General Public License v2</license>
+    <description>Plugin to provide option to Zoom images</description>
+    <files>
+	<filename plugin="zoomimages">zoomimages.php</filename>
+	<folder>zoomimages</folder>
+	<filename>index.html</filename>
+    </files>
+   	<config>
+		<fields name="params">
+		
+			<fieldset name="basic">
+				<field name="zoomType" type="radio"
+						default="window"
+						description="PLG_PAYCART_ZOOMIMAGES_ZOOM_TYPE_DESC"
+						label="PLG_PAYCART_ZOOMIMAGES_ZOOM_TYPE"
+						class="btn-group"
+						>
+						<option value="window">PLG_PAYCART_ZOOMIMAGES_OUTER_ZOOM</option>
+						<option value="inner">PLG_PAYCART_ZOOMIMAGES_INNER_ZOOM</option>
+				</field>	
+				<field type="spacer" name="myspacer" label="PLG_PAYCART_ZOOMIMAGES_MSG" />				
+				<field name="windowWidth" size="30" type="text"  label="PLG_PAYCART_ZOOMIMAGES_WIDTH_WINDOW_ZOOM" default="600" description="PLG_PAYCART_WIDTH_WINDOW_ZOOM_DESC"/>
+				<field name="windowHeight" size="30" type="text"  label="PLG_PAYCART_ZOOMIMAGES_HEIGHT_INNER_ZOOM" default="600" description="PLG_PAYCART_HEIGHT_INNER_ZOOM_DESC"/>			
+			
+				</fieldset>			
+		</fields>
+	
+	</config>
+
+	<!-- Media files -->
+	<media destination="plg_paycart_zoomimage" folder="zoomimages">		
+		<folder>js</folder>		
+	</media>
+	
+    <alias>pc-zoomimages</alias>
+    <version_number>1.0.0</version_number>
+    <version_name>Zoom Images 1.0</version_name>
+</extension>
