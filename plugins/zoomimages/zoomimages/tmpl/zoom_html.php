@@ -25,9 +25,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 				</a>
 			<?php endforeach;?>
 		</div>
-<?php 
-Rb_Html::script('plg_paycart_zoomimage/jquery.elevateZoom.min.js');
-?>
 <script>
 
 		paycart.jQuery("#zoomImages").elevateZoom({ zoomType : "<?php echo $zoomType;?>", zoomWindowWidth : <?php echo $zoomWidth;?>, zoomWindowHeight : <?php echo $zoomHeight;?> , gallery: 'pc-gallery',cursor: 'pointer', galleryActiveClass: "active", imageCrossfade: true, responsive: true, easing : true}); 	
