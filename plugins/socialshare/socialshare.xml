@@ -68,6 +68,7 @@
 					<option value="none">PLG_PAYCART_SOCIAL_SHARE_COUNT_NONE</option>
 				</field>
 				<field name="twitter_text" type="text" default="" label="PLG_PAYCART_SOCIAL_SHARE_TWEET_TEXT" description="PLG_PAYCART_SOCIAL_SHARE_TWEET_TEXT_DESC" />
+				<field name="twitter_hashtags" type="text" default="" label="PLG_PAYCART_SOCIAL_SHARE_TWITTER_HASHTAGS" description="PLG_PAYCART_SOCIAL_SHARE_TWITTER_HASHTAGS_DESC" />
 				<field name="twitter_mention" type="text" default="" label="PLG_PAYCART_SOCIAL_SHARE_TWITTER_MENTION_TO" description="PLG_PAYCART_SOCIAL_SHARE_TWITTER_MENTION_TO_DESC" />
 				
 				<field name="spacer2" type="spacer"	hr="true"/>

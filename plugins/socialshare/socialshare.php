@@ -39,6 +39,7 @@ class plgPaycartsocialshare extends Rb_Plugin
 			$html = '<style>
 						.pc-social-buttons > div, .pc-social-buttons > iframe, .pc-social-buttons > a {margin-right: 4px !important;}
 						.fb-like-btn {display: inline-block; vertical-align : super !important;}
+						.fb-like-btn iframe{ max-width:none !important; }
 					</style>
 					<div class="pc-social-buttons">';
 			
@@ -60,7 +61,7 @@ class plgPaycartsocialshare extends Rb_Plugin
 			$js = ob_get_contents();
 			ob_end_clean();
 			
-			//comment
+			//Add meta details like open graph of fb etc in head
 			$document = Rb_Factory::getDocument();
 			$meta = '';						
 			if(!empty($this->meta)){
@@ -153,10 +154,10 @@ class plgPaycartsocialshare extends Rb_Plugin
 					}(document, \'script\', \'facebook-jssdk\'));';
 //		}
 		
-		$this->meta['property="og:title"']='<meta property="og:title" content="'.htmlspecialchars($productDetails['title'], ENT_COMPAT,'UTF-8').'"/> ';
+		$this->meta['property="og:title"']='<meta property="og:title" content="'.htmlspecialchars(Rb_Factory::getDocument()->getTitle(), ENT_COMPAT,'UTF-8').'"/> ';
 		$this->meta['property="og:type"']='<meta property="og:type" content="product"/> ';
 		$this->meta['property="og:url"']='<meta property="og:url" content="'.$url.'" />';
-		$this->meta['property="og:description"']='<meta property="og:description" content="'.htmlspecialchars(strip_tags($productDetails['description']), ENT_COMPAT,'UTF-8').'"/> ';
+		$this->meta['property="og:description"']='<meta property="og:description" content="'.htmlspecialchars(Rb_Factory::getDocument()->getDescription(), ENT_COMPAT,'UTF-8').'"/> ';
 		$this->meta['property="og:site_name"']='<meta property="og:site_name" content="'.htmlspecialchars(JFactory::getConfig()->get('sitename'), ENT_COMPAT,'UTF-8').'"/> ';
 		if(!empty($productDetails['image'])){
 			$this->meta['property="og:image"']='<meta property="og:image" content="'.$productDetails['image'].'" /> ';
@@ -176,20 +177,16 @@ class plgPaycartsocialshare extends Rb_Plugin
 			return array($html,$script);
 		}
 
-		$message	 = '';
-		$mention     = '';
 		$twitterText = $this->params->get('twitter_text');
-		$mention     = $this->params->get('twitter_mention');
-		if(!empty($twitterText)){
-			$message='data-text="'.JText::_($twitterText).'"';
-		}
-		
-		if(!empty($mention)){
-			$mention='data-via="'.$mention.'"';
-		}
+		$mention     = $this->params->get('twitter_mention','');
+		$hashtags    = $this->params->get('twitter_hashtags','');
 
-		$html   .= '<a href="http://twitter.com/share" class="twitter-share-button" '.$message.' data-url="'.JURI::current().'"
-					   data-count="'.$this->params->get('twitter_count').'" '.$mention.'></a>';
+		$html   .= '<a href="http://twitter.com/share" class="twitter-share-button" 
+					   data-text="'.Rb_Factory::getDocument()->getTitle().' '.JText::_($twitterText).'"
+		               data-url="'.JURI::current().'"
+					   data-count="'.$this->params->get('twitter_count').'" 
+					   data-via="'.$mention.'" 
+					   data-hashtags="'.$hashtags.'"></a>';
 		
 		$script .= "!function(d,s,id){
 						 var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
@@ -239,7 +236,7 @@ class plgPaycartsocialshare extends Rb_Plugin
 		}
 		
 		$html .= '<a href="https://pinterest.com/pin/create/button/?url='.urlencode(JURI::current()).'&media='.urlencode($productDetails['image']).
-		         '&description='.htmlspecialchars(strip_tags($productDetails['description']), ENT_COMPAT,'UTF-8').'" 
+		         '&description='.htmlspecialchars(Rb_Factory::getDocument()->getTitle(), ENT_COMPAT,'UTF-8').'" 
 		         class="pin-it-button" count-layout="'.$this->params->get('pinterest_count','none').'"><img border="0" src="http://assets.pinterest.com/images/PinExt.png" title="'.JText::_('PLG_PAYCART_SOCIAL_SHARE_PIN_IT').'" /></a>';
 		
 		$script .= "(function(d){

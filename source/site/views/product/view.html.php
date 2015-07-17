@@ -85,6 +85,10 @@ class PaycartSiteHtmlViewProduct extends PaycartSiteBaseViewProduct
 		
 		//set meta details
 		$metaTitle       = $product->getMetadataTitle();
+		if(empty($metaTitle)){
+			$metaTitle = $product->getTitle();
+		}
+		
 		$metaDescription = $product->getMetadataDescription();
 		$metaKeywords    = $product->getMetadataKeywords();
 		
