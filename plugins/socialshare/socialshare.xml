@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" version="2.5" method="upgrade" group="paycart">
-	<name>Paycart Social Plugin</name>
+	<name>Paycart Social Sharing</name>
 	<creationDate>June 2015</creationDate>
 	<version>1.0.0</version>
 	<author>Readybytes Team</author>
