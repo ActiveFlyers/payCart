@@ -50,11 +50,12 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 		 =========================== -->
 		 <div class="span6">
 	 		<?php 
-	 		 $eventHelper = PaycartFactory::getHelper('event');
-	 		 $html = $eventHelper->onPaycartImageBeforeLoad($product);
-         	 $additionalImageHtml =  array_shift($html);
-	 		 if (!empty($additionalImageHtml)):
-	 		 	echo $additionalImageHtml;
+	 		 $position = 'pc-product-media-gallery';?>
+		 		 <?php if(isset($plugin_result) && isset($plugin_result[$position]) && !empty($plugin_result[$position])):?>
+	                <div class="<?php echo $position;?>">
+	                        <?php echo $plugin_result[$position]; ?>
+	                </div>
+      			<?php 
 	 		 else:
 	 		?>
 
