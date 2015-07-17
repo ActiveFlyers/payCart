@@ -151,7 +151,17 @@ class plgPaycartsocialshare extends Rb_Plugin
 						js = d.createElement(s); js.id = id;
 						js.src = "//connect.facebook.net/'.$langTag.'/all.js#xfbml=1";
 						fjs.parentNode.insertBefore(js, fjs);
-					}(document, \'script\', \'facebook-jssdk\'));';
+					}(document, \'script\', \'facebook-jssdk\'));
+					//to fetch the new image rather than cached image
+					jQuery.post("https://graph.facebook.com",
+					    {
+					        id: "'.$url.'",
+					        scrape: true
+					    },
+					    function(response){
+					        console.log(response);
+					    }
+					);';
 //		}
 		
 		$this->meta['property="og:title"']='<meta property="og:title" content="'.htmlspecialchars(Rb_Factory::getDocument()->getTitle(), ENT_COMPAT,'UTF-8').'"/> ';
@@ -159,6 +169,10 @@ class plgPaycartsocialshare extends Rb_Plugin
 		$this->meta['property="og:url"']='<meta property="og:url" content="'.$url.'" />';
 		$this->meta['property="og:description"']='<meta property="og:description" content="'.htmlspecialchars(Rb_Factory::getDocument()->getDescription(), ENT_COMPAT,'UTF-8').'"/> ';
 		$this->meta['property="og:site_name"']='<meta property="og:site_name" content="'.htmlspecialchars(JFactory::getConfig()->get('sitename'), ENT_COMPAT,'UTF-8').'"/> ';
+		//required to mention these paramteres otherwise first time image isn't displayed on share
+		$this->meta['property="og:image:width"']='<meta property="og:image:width" content="200"/>';
+		$this->meta['property="og:image:height"']='<meta property="og:image:height" content="200"/>';
+		
 		if(!empty($productDetails['image'])){
 			$this->meta['property="og:image"']='<meta property="og:image" content="'.$productDetails['image'].'" /> ';
 		}
