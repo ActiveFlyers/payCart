@@ -28,11 +28,32 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	  border-radius: 0px;
 	}
 	
-.paycart .fancybox-nav span {
+ .fancybox-nav span {
  		visibility: visible;
+ 		background: #869791 none repeat scroll 0 0;
+ 		color: #fff;
+	    display: inline-block;
+	    font-size: 20px;
+	    margin: 5px;
+	    opacity: 0.5;
+	    padding: 7px 0px;
+	    position: absolute;
  		
 	}
-
+	
+	.fancybox-prev span{
+		left: -6%;
+	}
+	
+	.fancybox-next span{
+		right: -6%;
+	}
+	
+	.fancybox-nav span {
+		text-align: center;
+	}
+	
+	
 </style>
 
 <?php 
