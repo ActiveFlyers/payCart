@@ -12,27 +12,27 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 ?>
 
 <style> 
-	.owl-theme .owl-controls .owl-buttons div {
+.paycart .owl-theme .owl-controls .owl-buttons div {
 	  position: absolute;
 	}
 	 
-	.owl-theme .owl-controls .owl-buttons .owl-prev{
+.paycart .owl-theme .owl-controls .owl-buttons .owl-prev{
 	  left: 0px;
-	  top: 50%; 
+	  top: 45%; 
+	   border-radius: 0px;
 	}
 	 
-	.owl-theme .owl-controls .owl-buttons .owl-next{
+.paycart .owl-theme .owl-controls .owl-buttons .owl-next{
 	  right: 0px;
-	  top: 50%;
+	  top: 45%;
+	  border-radius: 0px;
 	}
 	
-	.fancybox-nav span {
+.paycart .fancybox-nav span {
  		visibility: visible;
+ 		
 	}
-	
-	.pc-fancybox{
-	border: 1px solid #e5e5e5;
-    padding: 2px;
-    cursor: pointer;
-}
+
 </style>
+
+<?php 
