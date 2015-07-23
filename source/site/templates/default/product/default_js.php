@@ -37,10 +37,15 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 
 		$(".pc-fancybox").fancybox({
-			openEffect	: 'none',
-			closeEffect	: 'none',
-			arrows      : true,
-			width: "auto"
+		  type        : 'iframe', 
+		  fitToView   : false,
+		  autoSize    : false,
+		  openEffect  : 'elastic',
+          closeEffect : 'elastic',
+		  live : false,
+		  afterLoad : function() {
+			  $('.fancybox-iframe').contents().find('head').append('<style type="text/css">img{max-width:100%!important;max-height:100%!important;margin: auto;position: absolute;top: 0; left: 0; bottom: 0; right: 0;}</style>');
+			  }
 		});
 
 		$('div.accordion-body').on('shown', function () {

@@ -48,9 +48,9 @@
   );
 
   /* IE 8 support */
-  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(
     startColorstr=#BB000000, endColorstr=#BB000000
-  )";
+  );
   
  /* height & width should be setup to cover complete div*/
  height: 100%;
