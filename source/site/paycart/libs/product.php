@@ -264,11 +264,11 @@ class PaycartProduct extends PaycartLib
 				$media = PaycartMedia::getInstance();
 				$data = array();
 				$data['lang_code'] = $this->lang_code;
-				$data['title'] = $image['name'];
+				$data['title'] = JFile::getName($image['name']);
 				$media->bind($data);
 				$media->save();
 
-				$media->moveUploadedFile($image['tmp_name'], JFile::getExt($image['name']));
+                $media->moveUploadedFile($image['tmp_name'], JFile::getName($image['name']), JFile::getExt($image['name']));
 				$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'), PaycartFactory::getConfig()->get('catalogue_image_thumb_height'));
 				$media->createOptimized(PaycartFactory::getConfig()->get('catalogue_image_optimized_width'),PaycartFactory::getConfig()->get('catalogue_image_optimized_height'));
 
@@ -628,3 +628,4 @@ class PaycartProduct extends PaycartLib
 		return $this->quantity_sold;
 	}
 }
+
