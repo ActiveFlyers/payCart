@@ -108,25 +108,29 @@ class PaycartMedia extends PaycartLib
 		return $this->title;
 	}
 	
-	function moveUploadedFile($source, $ext)
-	{
-		$dest = $this->_basepath;
-		if(!JFolder::exists($dest)){
-			if(!JFolder::create($dest)){
-				throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_PERMISSION_DENIED', $dest));
-			}
-		}
-		
-		$dest = $dest.$this->getId().'.'.$ext;
-		if(!JFile::copy($source, $dest)){
-			throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
-		}
-		
-		$this->filename = $this->getId().'.'.$ext;
-		$properties = JImage::getImageFileProperties($this->_basepath.$this->filename);
-		$this->mime_type = $properties->mime;
-		return $this->save();
-	}
+	function moveUploadedFile($source, $name, $ext)
+    {
+        $dest = $this->_basepath;
+        if(!JFolder::exists($dest)){
+            if(!JFolder::create($dest)){
+                throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_PERMISSION_DENIED', $dest));
+            }
+        }
+        
+        $dest = $dest.$name.'-'.$this->getId().'.'.$ext;
+        if(!JFile::copy($source, $dest)){
+            throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
+        }
+        
+        $this->filename = $name.'-'.$this->getId().'.'.$ext;
+        
+    //    $properties = JImage::getImageFileProperties($this->_basepath.$this->filename);
+        
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $this->mime_type = finfo_file($finfo, $this->_basepath.$this->filename);
+        
+        return $this->save();
+    }
 	
 	public function toArray()
 	{		
