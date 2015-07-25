@@ -84,7 +84,7 @@ if ( typeof Object.create !== 'function' ) {
 				
 				// pc changes start
 				//Create the image swap from the gallery 
-				$('#'+self.options.gallery + ' a').hover( function(e) { 
+				$('#'+self.options.gallery + ' a').mouseenter( function(e) { 
 					
 					//Set a class on the currently active gallery image
 					if(self.options.galleryActiveClass){
