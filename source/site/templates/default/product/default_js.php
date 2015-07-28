@@ -24,28 +24,28 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 	});
 	
 	$(document).ready(function(){
-
+<?php if(!$showMediaGallery): ?>
 		$("#pc-screenshots-carousel").owlCarousel({ 
 			lazyLoad : true, singleItem:true, 
 			autoHeight : true, pagination:true ,
 			navigation:true,
 		    navigationText: [
-		      "<i class='fa fa-chevron-left fa-2 '></i>",
-		      "<i class='fa fa-chevron-right fa-2'></i>"
+		      "<i class='fa fa-chevron-left fa-3 '></i>",
+		      "<i class='fa fa-chevron-right fa-3'></i>"
 		      ],
 		});
 
-
+<?php endif;?>
 		$(".pc-fancybox").fancybox({
-		  type        : 'iframe', 
-		  fitToView   : false,
-		  autoSize    : false,
-		  openEffect  : 'elastic',
-          closeEffect : 'elastic',
-		  live : false,
-		  afterLoad : function() {
-			  $('.fancybox-iframe').contents().find('head').append('<style type="text/css">img{max-width:100%!important;max-height:100%!important;margin: auto;position: absolute;top: 0; left: 0; bottom: 0; right: 0;}</style>');
-			  }
+			 'type': 'iframe', 
+			  fitToView : false,
+			  autoSize  : false,
+			  openEffect  : 'elastic',
+             closeEffect : 'elastic',
+			 live : false,
+			  afterLoad : function() {
+				  $('.fancybox-iframe').contents().find('head').append('<style type="text/css">img{max-width:100%!important;max-height:100%!important;margin: auto;position: absolute;top: 0; left: 0; bottom: 0; right: 0;}</style>');
+				  }
 		});
 
 		$('div.accordion-body').on('shown', function () {

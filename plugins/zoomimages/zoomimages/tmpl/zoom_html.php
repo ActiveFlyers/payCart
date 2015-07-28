@@ -60,7 +60,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 					<?php list($width, $height, $type, $attr) =   getimagesize($detail['optimized']);?>
 			
 				 <a  href="#" data-height="<?php echo $height;?>"  data-image="<?php echo $detail['optimized'];?>" data-zoom-image="<?php echo $detail['original'];?>" class="outer"> 
-					<img class="pc-fancybox" src="<?php echo $detail['thumbnail'];?>" data-fancybox-group ="gallery" data-fancybox-href="<?php echo $detail['original'];?>" />
+					<img class="pc-fancybox" src="<?php echo $detail['thumbnail'];?>" data-fancybox-group ="pc-gallery" data-fancybox-href="<?php echo $detail['original'];?>" />
 				</a>
 			<?php endforeach;?>
 		</div>
@@ -108,7 +108,8 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 				  autoSize    : false,
 				  openEffect  : 'elastic',
 	              closeEffect : 'elastic',
-				  live: false,
+				  live		  : false,
+				  topratio	  :0,
 				  afterLoad : function() {
 					  $('.fancybox-iframe').contents().find('head').append('<style type="text/css">img{max-width:100%!important;max-height:100%!important;margin: auto;position: absolute;top: 0; left: 0; bottom: 0; right: 0;}</style>');
 				  }
