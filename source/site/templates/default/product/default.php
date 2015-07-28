@@ -13,13 +13,10 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );?>
 
 <?php 
-Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.min.js');
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/jquery.fancybox.min.js');
 
-Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
 Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/jquery.fancybox.css');
 
-echo $this->loadTemplate('js');
 
 /**
  * Template Parameters
@@ -29,15 +26,28 @@ echo $this->loadTemplate('js');
  * 
  */
 
+ $position = 'pc-product-media-gallery';
 $attributes = $product->getAttributes();
 $postionedAttributes = (array)$product->getPositionedAttributes();
 
+$showMediaGallery = false;
+  if(isset($plugin_result) && isset($plugin_result[$position]) && !empty($plugin_result[$position])):
+  	$showMediaGallery = true;
+  	
+  else :
+  	Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.min.js');
+	Rb_Html::stylesheet(PAYCART_PATH_CORE_MEDIA.'/owl.carousel.css');
+	?>
+	<script>
+				paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');
+	</script><?php 
+  endif;
+ $this->assign('showMediaGallery', $showMediaGallery);
+ echo $this->loadTemplate('js');
  echo  Rb_HelperTemplate::renderLayout('paycart_spinner'); 
 
 ?>
-<script>
-paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true, singleItem:true, autoHeight : true, pagination:true });');
-</script>
+
 
 <div class='pc-product-fullview-wrapper row-fluid clearfix'>
 
@@ -49,16 +59,14 @@ paycart.queue.push('$("#pc-screenshots-carousel").owlCarousel({ lazyLoad : true,
 				Left Layout
 		 =========================== -->
 		 <div class="span6">
-	 		<?php 
-	 		 $position = 'pc-product-media-gallery';?>
-		 		 <?php if(isset($plugin_result) && isset($plugin_result[$position]) && !empty($plugin_result[$position])):?>
-	                <div class="<?php echo $position;?>">
-	                        <?php echo $plugin_result[$position]; ?>
-	                </div>
+	 		
+	   <?php if($showMediaGallery):?>
+                <div class="<?php echo $position;?>">
+                        <?php echo $plugin_result[$position]; ?>
+                </div>
       			<?php 
 	 		 else:
 	 		?>
-
 	 		<div id="pc-screenshots-carousel" class="owl-carousel pc-screenshots center" >
 			 
 			    <?php foreach($product->getImages() as $mediaId => $detail):?>
