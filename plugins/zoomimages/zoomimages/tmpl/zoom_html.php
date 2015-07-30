@@ -28,7 +28,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
     display: none;
     left: 0;
     overflow: hidden;
-    position: absolute;
     top: 0;
     z-index: 8010;
 }
@@ -70,11 +69,10 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 	$(document).ready(function(){
 		
 		var zoom_type="<?php echo $zoomType;?>";
-		var zoom_tint=true;
 		var zoom_tint_color='#CDCDCD';
 		var zoom_tint_opacity=0.4;
-		var zoomWindowWidth = 400;
-		var zoomWindowHeight = 400;
+		var zoomWindowWidth = 600;
+		var zoomWindowHeight = 600;
 		var borderSize = 1;
 
 		if(zoom_type == 'window'){
@@ -85,7 +83,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 			if(zoomWindowHeight == ''){
 				 var max_height = 0;
 					
-			$('#'+self.options.gallery + ' a').each(function() {
+			$('#'+'pc-gallery' + ' a').each(function() {
 				cur_height = $(this).data("height");
 				if (cur_height > max_height) {
 				   max_height = cur_height;
@@ -96,7 +94,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 			}
 		}
 
-		$("#pc-zoomImages").elevateZoom({ zoomType : zoom_type, cursor:"crosshair", borderSize : borderSize, tint:zoom_tint,tintColour:zoom_tint_color,tintOpacity:zoom_tint_opacity,zoomWindowHeight:zoomWindowHeight, gallery: 'pc-gallery',cursor: 'pointer', galleryActiveClass: "active", imageCrossfade: true, responsive: true, easing : true}); 	
+		$("#pc-zoomImages").elevateZoom({ zoomType : zoom_type, cursor:"crosshair", borderSize : borderSize,tintColour:zoom_tint_color,tintOpacity:zoom_tint_opacity,zoomWindowHeight:zoomWindowHeight, gallery: 'pc-gallery',cursor: 'pointer', galleryActiveClass: "active", imageCrossfade: true, responsive: true, easing : true}); 	
 	
 		$("#pc-zoomImages").bind("click", function(e) {	
 
@@ -109,7 +107,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 				  openEffect  : 'elastic',
 	              closeEffect : 'elastic',
 				  live		  : false,
-				  topratio	  :0,
 				  afterLoad : function() {
 					  $('.fancybox-iframe').contents().find('head').append('<style type="text/css">img{max-width:100%!important;max-height:100%!important;margin: auto;position: absolute;top: 0; left: 0; bottom: 0; right: 0;}</style>');
 				  }
