@@ -74,9 +74,10 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 		var zoomWindowWidth = 600;
 		var zoomWindowHeight = 600;
 		var borderSize = 1;
+		var zoomTint = false;
 
 		if(zoom_type == 'window'){
-
+			zoomTint = true;
 			var zoomWindowWidth = <?php echo $zoomWidth;?>;
 			var zoomWindowHeight = <?php echo $zoomHeight;?>;
 			
@@ -94,7 +95,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 			}
 		}
 
-		$("#pc-zoomImages").elevateZoom({ zoomType : zoom_type, cursor:"crosshair", borderSize : borderSize,tintColour:zoom_tint_color,tintOpacity:zoom_tint_opacity,zoomWindowHeight:zoomWindowHeight, gallery: 'pc-gallery',cursor: 'pointer', galleryActiveClass: "active", imageCrossfade: true, responsive: true, easing : true}); 	
+		$("#pc-zoomImages").elevateZoom({ zoomType : zoom_type, cursor:"crosshair", tint:zoomTint,borderSize : borderSize,tintColour:zoom_tint_color,tintOpacity:zoom_tint_opacity,zoomWindowHeight:zoomWindowHeight, gallery: 'pc-gallery',cursor: 'pointer', galleryActiveClass: "active", imageCrossfade: true, responsive: true, easing : true}); 	
 	
 		$("#pc-zoomImages").bind("click", function(e) {	
 
@@ -106,7 +107,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 				  autoSize    : false,
 				  openEffect  : 'elastic',
 	              closeEffect : 'elastic',
-				  live		  : false,
 				  afterLoad : function() {
 					  $('.fancybox-iframe').contents().find('head').append('<style type="text/css">img{max-width:100%!important;max-height:100%!important;margin: auto;position: absolute;top: 0; left: 0; bottom: 0; right: 0;}</style>');
 				  }

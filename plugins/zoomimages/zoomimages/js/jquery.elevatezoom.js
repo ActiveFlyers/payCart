@@ -1221,8 +1221,7 @@ if ( typeof Object.create !== 'function' ) {
 							self.zoomWrap.parent().css("height", max_height);
 							self.zoomWrap.parent().css("width", self.$elem.width());
 
-							// pc changes
-							self.zoomWindow.css("height", max_height);
+							self.zoomWindow.css("height", self.$elem.height());
 							self.zoomWindow.css("width", self.$elem.width());
 						}
 					} 
