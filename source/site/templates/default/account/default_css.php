@@ -77,6 +77,12 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
     position: relative;
 }
 
+.pc-account-order-productdetails-header .heading {
+    line-height: 2;
+    font-weight: 600;
+    color: #777;
+}
+.shipment-row .dwn-icon{font-size: 16px;color: #333;}
 
 </style>
 <?php 

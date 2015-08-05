@@ -209,7 +209,10 @@ echo $this->loadTemplate('js');
 														<?php foreach ($digitalContent as $data):?>
 															<?php $mainId=base64_encode('file-'.$data['main']['media_id']);?>
 															<?php $extension = Jfile::getExt($data['main']['filename'])?>
-															<div><a href="javascript:void(0);" onClick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=serveFile&file_id='.$mainId.'&cart_id='.$cart->cart_id.'&key='.$secureKey.'&returnUrl='.base64_encode($currentUrl))?>')"><?php echo $data['main']['title']?><?php echo ' ('.$extension.')';?></a></div>
+															<p>
+																<a href="javascript:void(0);" onClick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=serveFile&file_id='.$mainId.'&cart_id='.$cart->cart_id.'&key='.$secureKey.'&returnUrl='.base64_encode($currentUrl))?>')"><i class="fa fa-download dwn-icon"></i> <?php echo $data['main']['title']?></a>
+																<span class="muted"><?php echo ' ('.$extension.')';?></span>
+															</p>
 														<?php endforeach;?>
 													<?php else:?>
 														<?php echo JText::_('COM_PAYCART_DOWNLOADS_NOT_AVAILABLE')?>

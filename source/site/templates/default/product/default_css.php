@@ -53,6 +53,9 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 		text-align: center;
 	}
 	
+	.paycart .teaser-download .pc-product-teaser {padding-top:10px;}
+    .paycart .teaser-download .pc-product-teaser li {padding-bottom: 2px;}
+	.paycart .teaser-download .pc-product-teaser .dwn-icon{font-size: 14px;color: #333;}
 	
 </style>
 

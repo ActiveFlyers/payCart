@@ -251,3 +251,7 @@ Products Display
 .pc-product-fullview-wrapper .accordion-toggle.collapsed .accordian-icon:before{
 	content: "\f0fe";
 }
+
+.pc-product .pc-discount .label-important{
+	background-color : #fc2400;
+}
