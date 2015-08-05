@@ -36,7 +36,7 @@ var $_name = 'pdfdownload';
 		{
 			if($controller === 'pdfdownload' )
 			{
-				$dir = dirname(__FILE__).DS.'pdfdownload';
+				$dir = dirname(__FILE__).'/pdfdownload';
 		     	$this->__loadFiles();
 			}
 			else{
@@ -47,17 +47,17 @@ var $_name = 'pdfdownload';
 				$controller = "cart";
 				$task		= "complete";
 				// load class of mpdf
-				require_once dirname(__FILE__).DS.'pdfdownload'.DS.'mpdf'.DS.'mpdf.php';
+				require_once dirname(__FILE__).'/pdfdownload/mpdf/mpdf.php';
 				$this->doSitePdf();
 			}
 		}
 		
 	protected function __loadFiles($format = 'pdf')
 		{
-			$dir = dirname(__FILE__).DS.'pdfdownload';
-			Rb_HelperLoader::addAutoLoadFile($dir.DS.'view'.DS.'view.'.$format.'.php', 'PaycartAdminViewPdfdownload');
-			Rb_HelperLoader::addAutoLoadFile($dir.DS.'pdfdownloadcontroller.php', 'PaycartadminControllerPdfdownload');	
-			Rb_HelperLoader::addAutoLoadFile($dir.DS.'helper.php', 'PaycartHelperPdfdownload');			
+			$dir = dirname(__FILE__).'/pdfdownload';
+			Rb_HelperLoader::addAutoLoadFile($dir.'/view/view.'.$format.'.php', 'PaycartAdminViewPdfdownload');
+			Rb_HelperLoader::addAutoLoadFile($dir.'/pdfdownloadcontroller.php', 'PaycartadminControllerPdfdownload');	
+			Rb_HelperLoader::addAutoLoadFile($dir.'/helper.php', 'PaycartHelperPdfdownload');			
 		}
 	
 	
