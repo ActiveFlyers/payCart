@@ -54,7 +54,8 @@ class PaycartSiteHtmlViewProductcategory extends PaycartSiteBaseViewProductcateg
 			foreach ($products as $productId => $data){
 				$instance = PaycartProduct::getInstance($productId);
 				$product  = (object)$instance->toArray();
-				$product->price 			   = $formatter->amount($instance->getPrice(), true);
+				$product->formatted_price	           = $formatter->amount($instance->getPrice(), true);
+				$product->formatted_retail_price 	   = $formatter->amount($instance->getRetailPrice(), true);
 				$result->$productId 		   = $product;
 				$result->$productId->inStock   = PaycartFactory::getHelper('product')->isProductInStock($productId);
 				$result->$productId->media     = $instance->getCoverMedia();

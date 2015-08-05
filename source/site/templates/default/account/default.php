@@ -44,25 +44,32 @@ echo $this->loadTemplate('js');
 							<tr class="pc-account-orders" data-pc-cart-url="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$cart_id);?>">
 								<td><?php echo $counter++;?></td>
 								<td> 
-									<div><h3><a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$cart_id);?>"><?php echo JText::_('COM_PAYCART_ORDER_ID');?> : <?php echo $cart->cart_id;?></a></h3></div>
+									<div>
+										<h3 class="clearfix">
+											<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$cart_id);?>"><?php echo JText::_('COM_PAYCART_ORDER_ID');?> : <?php echo $cart->cart_id;?></a>
+											<?php if($cart->status === Paycart::STATUS_CART_PAID):?>
+												<span class="label label-success pull-right"><i class="fa fa-check-circle"></i> <?php echo JText::_('COM_PAYCART_CART_STATUS_PAID');?></span>
+											<?php endif;?>
+										</h3>
+									</div>
 									<div>
 										<h4>
-											<?php echo JText::_('COM_PAYCART_AMOUNT');?> : <?php echo $formatter->amount($invoices[$cart->invoice_id]['total']);?>
-											<?php if($cart->status === Paycart::STATUS_CART_PAID):?>
-												<i class="fa fa-check-circle text-success" title="<?php echo JText::_('COM_PAYCART_CART_STATUS_PAID');?>"></i>
-											<?php endif;?>
+											<?php echo JText::_('COM_PAYCART_AMOUNT');?> : <?php echo $formatter->amount($invoices[$cart->invoice_id]['total']);?>											
 										</h4>										
 									</div>
 									<div><?php echo JText::_('COM_PAYCART_CREATED_DATE');?> : <?php echo $formatter->date(new Rb_Date($cart->created_date));?></div>
-									<div><?php echo JText::_('COM_PAYCART_STATUS');?> :
-										<?php if($cart->is_delivered) :?>
-												<span class="label label-success"><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></span>
-												<?php echo strtolower(JText::_('COM_PAYCART_ON'));?>
-												<?php echo $formatter->date(new Rb_Date($cart->delivered_date));?>
-										<?php else :?>
-												<span class="label label-warning"><?php echo JText::_('COM_PAYCART_CART_STATUS_PENDING');?></span>												
-										<?php endif;?>
-									</div>
+									
+									<?php if($cart->isShippableProductExist):?>
+										<div><?php echo JText::_('COM_PAYCART_DELIVERY_STATUS');?> :
+											<?php if($cart->is_delivered) :?>
+													<span class="label label-success"><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></span>
+													<?php echo strtolower(JText::_('COM_PAYCART_ON'));?>
+													<?php echo $formatter->date(new Rb_Date($cart->delivered_date));?>
+											<?php else :?>
+													<span class="label label-warning"><?php echo JText::_('COM_PAYCART_CART_STATUS_PENDING');?></span>												
+											<?php endif;?>
+										</div>
+									<?php endif;?>
 								</td>
 							</tr>
 						<?php endforeach;?>
@@ -82,3 +89,4 @@ echo $this->loadTemplate('js');
 		</div>      	
 	</div>
 </div>
+<?php 

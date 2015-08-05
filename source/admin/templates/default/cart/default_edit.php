@@ -160,23 +160,25 @@ echo $this->loadTemplate('edit_ng');
 							</div>
 						</div>
 						<div class="span6">
-							<div class="control-group">
-								<?php $field = $form->getField('shipping_address_id')?>
-								<div class="control-label"><?php echo $field->label; ?> </div>
-								<div class="controls">&nbsp;
-									<?php $shippingAddress = $cart->getShippingAddress(true)->toArray() ;
-									
-											if (count(array_filter($shippingAddress))) :
-												$billingAddress = (object) $shippingAddress;
-												echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $shippingAddress, PAYCART_LAYOUTS_PATH);
-										  		
-										  	else : 
-										  		echo JText::_('COM_PAYCART_BUYERADDRESS_NOT_EXIT');
-										  endif;
-									
-									?> 
-								</div>								
-							</div>
+							<?php if($isShippableProductExist):?>
+								<div class="control-group">
+									<?php $field = $form->getField('shipping_address_id')?>
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls">&nbsp;
+										<?php $shippingAddress = $cart->getShippingAddress(true)->toArray() ;
+										
+												if (count(array_filter($shippingAddress))) :
+													$billingAddress = (object) $shippingAddress;
+													echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $shippingAddress, PAYCART_LAYOUTS_PATH);
+											  		
+											  	else : 
+											  		echo JText::_('COM_PAYCART_BUYERADDRESS_NOT_EXIT');
+											  endif;
+										
+										?> 
+									</div>								
+								</div>
+							<?php endif;?>
 						</div>
 					</div>
 				</fieldset>
@@ -275,7 +277,7 @@ echo $this->loadTemplate('edit_ng');
 	
 		<?php echo PaycartHtml::_('bootstrap.endTab'); ?>
 	
-	<?php if($cart->isApproved()):?>
+	<?php if($cart->isApproved() && $isShippableProductExist):?>
 		<!--	 Shipment Details Tab		-->
 		<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'shipment', JText::_('COM_PAYCART_ADMIN_SHIPMENTS', true)); ?>
 			

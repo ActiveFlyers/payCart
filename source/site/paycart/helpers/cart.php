@@ -439,4 +439,38 @@ class PaycartHelperCart extends PaycartHelper
 		
 		return $data;
 	}
+
+    /**
+     * Check if any shippable product exist in cart or not
+     * @return Boolean true/false
+     */
+	function isShippableProductExist(PaycartCart $cart)
+	{
+		static $result = array();
+		
+		//return cached result if exist
+		if(isset($result[$cart->getId()])){
+			return $result[$cart->getId()];
+		}
+		
+		$products = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		if(empty($products)){
+			$products = $this->getCartParticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		}
+		
+		foreach ($products as $data){
+			if($data instanceof PaycartCartparticularProduct){
+				$productId = $data->get('particular_id');
+			}else{
+				$productId = $data->particular_id;
+			}
+			if(Paycart::PRODUCT_TYPE_PHYSICAL == PaycartProduct::getInstance($productId)->getType()){
+				$result[$cart->getId()] = true;
+				return $result[$cart->getId()];
+			}
+		}
+		
+		$result[$cart->getId()] = false;
+		return $result[$cart->getId()];		
+	}
 }

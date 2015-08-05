@@ -23,6 +23,8 @@ class PaycartProduct extends PaycartLib
 	protected $visible			= 1;
 	protected $type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
 	protected $price		 	= null;
+	protected $retail_price		= null;
+	protected $cost_price		= null;
 	protected $quantity		 	= null;
 	protected $quantity_sold 	= null;
 	protected $sku			 	= '';	
@@ -42,6 +44,7 @@ class PaycartProduct extends PaycartLib
 	protected $stockout_limit	= 0;
 	protected $hits				= 0;
 	protected $config			= '';
+	protected $config_digital	= '';
 	
 	//Extra fields (not related to columm) 
 	protected $_uploaded_files   = array();
@@ -73,6 +76,8 @@ class PaycartProduct extends PaycartLib
 		$this->visible			= 1;
 		$this->type			 	= Paycart::PRODUCT_TYPE_PHYSICAL;
 		$this->price		 	= null;
+		$this->retail_price		= null;
+		$this->cost_price		= null;
 		$this->quantity		 	= null;
 		$this->quantity_sold	= null;
 		$this->sku			 	= '';	
@@ -90,6 +95,7 @@ class PaycartProduct extends PaycartLib
 		$this->stockout_limit	= 0;
 		$this->hits				= 0;
 		$this->config			= new Rb_Registry();
+		$this->config_digital   = new Rb_Registry();
 		$this->created_date  	= Rb_Date::getInstance();	
 		$this->modified_date 	= Rb_Date::getInstance(); 
 		
@@ -202,6 +208,22 @@ class PaycartProduct extends PaycartLib
 		return $this->price;
 	}
 	
+	/**
+	 * 
+	 * @return Product's Retail price
+	 */
+	public function getRetailPrice() {
+		return $this->retail_price;
+	}
+	
+	/**
+	 * 
+	 * @return Product's cost price
+	 */
+	public function getCostPrice() {
+		return $this->cost_price;
+	}
+	
 	public function getMetadataTitle()
 	{
 		return $this->metadata_title;
@@ -227,6 +249,11 @@ class PaycartProduct extends PaycartLib
 		return $this->sku;	
 	}
 	
+	public function getType()
+	{
+		return $this->type;
+	}
+	
 	/**
 	 * We required media/image processing after Product save
 	 * 
@@ -234,6 +261,11 @@ class PaycartProduct extends PaycartLib
 	 */
 	protected function _save($previousObject)
 	{
+		//set digital files if any
+		if(!empty($this->_digital_files)){
+			$this->setDigitalFiles($this->_digital_files);
+		}
+		
 		$id = parent::_save($previousObject);
 		
 		// if save fail
@@ -378,6 +410,10 @@ class PaycartProduct extends PaycartLib
 			$this->config->set('positions', $data['config']['positions']);
 		}
 		
+		if( isset($data['digital'])) {
+			$this->_digital_files = $data['digital'];
+		}
+		
 		// if custom Attributes available in data then bind with lib object 
         // if not isset attribute then assign false to identify whether 
         // the task is save or not
@@ -434,6 +470,13 @@ class PaycartProduct extends PaycartLib
 			return false;
 		}
 
+		//delete digital content
+		$digitalContent = $this->getDigitalContent();
+		foreach ($digitalContent as $data){
+			$teaserId = (!empty($data['teaser']) && isset($data['teaser']['media_id']))?$data['teaser']['media_id']:0;
+			$this->deleteDigitalContent($data['main']['media_id'], $teaserId);
+		}
+		
 		//update base product of all the variants i.e variation_of property
 		if(!PaycartFactory::getHelper('product')->updateVariationOf($this->getVariants())){
 			return false;
@@ -485,6 +528,24 @@ class PaycartProduct extends PaycartLib
 		}
 		
 		return $images;
+	}
+	
+	public function getDigitalContent($requireArrayData = true)
+	{
+		$digitalData = $this->config_digital;
+		if(!$requireArrayData){
+			return $digitalData;
+		}
+		
+		$digitalMedia   = array();
+		if(!empty($digitalData)){
+			foreach ($digitalData as $media_id => $data){				
+				$digitalMedia[$media_id]['main']   = PaycartMedia::getInstance($data->main)->toArray(); 
+				$digitalMedia[$media_id]['teaser'] = isset($data->teaser)?PaycartMedia::getInstance($data->teaser)->toArray():array(); 
+			}
+		}
+		
+		return $digitalMedia;
 	}
 	
 	/**
@@ -627,5 +688,36 @@ class PaycartProduct extends PaycartLib
 	{
 		return $this->quantity_sold;
 	}
+	
+	public function setDigitalFiles($files)
+	{
+		$this->config_digital->bind($files);
+		
+		return $this;
+	}
+	
+	/**
+	 * Delete a particular digital file content
+	 */
+	public function deleteDigitalContent($mainMediaId, $teaserMediaId = 0)
+	{
+		$allDigital = $this->get('config_digital')->toObject();
+		
+		if($mainMediaId){
+			$media = PaycartMedia::getInstance($mainMediaId);
+			$media->setBasePath(PAYCART_PATH_MEDIA_DIGITAL_MAIN);
+			$media->delete();
+		}
+		
+		if($teaserMediaId){
+			$teaserMedia = PaycartMedia::getInstance($teaserMediaId);
+			$teaserMedia->setBasePath(PAYCART_PATH_MEDIA_DIGITAL_TEASER);
+			$teaserMedia->delete();
+		}
+		
+		//update existing digital of product
+		unset($allDigital->$mainMediaId);
+		
+		return $this->setDigitalFiles($allDigital);
+	}
 }
-

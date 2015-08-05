@@ -36,4 +36,28 @@ class PaycartSiteControllerProduct extends PaycartController
 		// if product doesn't exist or unpublished then show error
 		JError::raiseError(404, "Product was not found.");
 	}
+	
+	/**
+     * Serve teaser file to download
+     */
+	function serveTeaser()
+	{
+		$productId = $this->input->get('product_id',0,'INT');
+		$teaser    = $this->input->get('file_id',0,'STRING');
+		if(!$productId || !$teaser){
+			JError::raiseError(404,"File doesn't exist");
+		}
+		
+		$teaserId = (int)str_ireplace('file-', '', base64_decode($teaser));
+		
+		if(!$teaserId){
+			JError::raiseError(404,"File doesn't exist");
+		}
+		
+		$media = PaycartMedia::getInstance($teaserId);
+		
+		/* @var $helper PaycartHelperMedia */
+		$helper = PaycartFactory::getHelper('media');
+		$helper->download($media, false);		
+	}
 }

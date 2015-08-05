@@ -46,7 +46,21 @@ defined('_JEXEC') or die();
 					<p class="pc-product-title pc-break-word"><?php echo $product->title;?></p>
 				</div>
 			</a>
-			<h4><span class="amount"><?php echo $product->price?></span></h4>
+			<?php $mrp = '';
+				 if($product->retail_price > $product->price){
+				 	$mrp = $product->formatted_retail_price;
+				 	$percentage = (($product->retail_price-$product->price)*100)/$product->retail_price;
+				 }
+			?>
+			
+			<h4>
+				<span class="amount"><?php echo ($mrp)?'<strike class="muted"><small>'.$mrp.'</small></strike>&nbsp;':$mrp?></span>
+				<span class="amount"><?php echo $product->formatted_price?></span>
+				
+				<?php if($mrp):?>
+					<span class="label label-important"><?php echo '- '.$percentage.'%';?></span>
+				<?php endif;?>
+			</h4>
 		</div>
 	</div>
 <?php endforeach;?>

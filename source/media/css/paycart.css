@@ -292,3 +292,7 @@
 .pc-margin-top-0{
 	margin-top:0px;
 }
+
+.pc-break-word {
+    word-wrap : break-word;
+}

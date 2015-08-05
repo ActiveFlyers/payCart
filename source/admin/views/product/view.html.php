@@ -92,6 +92,9 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		//set images
 		$this->assign('images', $product->getImages());
 		
+		//set digital content
+		$this->assign('digital', $product->getDigitalContent());
+		
 		// @PCTODO:: Set availble variants
 		$this->assign('variants',  Array());
 		$this->assign('global_config', PaycartFactory::getConfig());

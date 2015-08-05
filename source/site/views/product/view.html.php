@@ -99,6 +99,7 @@ class PaycartSiteHtmlViewProduct extends PaycartSiteBaseViewProduct
 		$helper = PaycartFactory::getHelper('product');
 		$this->assign('positions', $helper->getPositions()); 	
 		
+		$this->assign('digital_teasers', $helper->getTeaserDigitalContent($productId));		
 		$this->assign('isAvailableInStock',$isAvailableInStock);
 		$this->assign('isExistInCart', $isExist);
 		$this->assign('baseAttrId',$baseAttrId);		

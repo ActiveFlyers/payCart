@@ -242,10 +242,24 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		}
 		
 		$applied_promotion_code = PaycartFactory::getHelper('cart')->getAppliedPromotionCode($promotion_particular_ids, $promotions);	
+		$shippingOptions  = array();
+		$default_shipping = 0;
+		$condition 		  = false;
+		if(PaycartFactory::getHelper('cart')->isShippableProductExist($this->cart)){
+			//get available shipping options
+			$shippingOptions  = $this->_getShippingOptions();
+			$default_shipping = $this->cart->getParam('shipping');
+			
+			//set click action on proceed to payment button
+			$shipping  = $this->cart->getParam('shipping',null);
+			$condition = ( empty($shipping) || empty($shippingOptions) || !array_key_exists($shipping, $shippingOptions));
+		}
+			
+		$this->assign('shipping_options', $shippingOptions);
+		$this->assign('default_shipping', $default_shipping);
 		
-		//get available shipping options
-		$shippingOptions  = $this->_getShippingOptions();
-		$default_shipping = $this->cart->getParam('shipping');
+		$this->assign('clickActionOnProceed',$condition?'onClick="return false"':'onClick="return paycart.cart.confirm.do();"');
+		$this->assign('isDisabled',$condition?'disabled':'');
 		
 		// set all particular details
 		$this->assign('product_total',			$product_total);
@@ -261,14 +275,7 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		$this->assign('duties_particular',		$duties_particular);
 		
 		$this->assign('usageDetails', 	$usageDetails);
-		$this->assign('shipping_options', $shippingOptions);
-		$this->assign('default_shipping', $default_shipping);
 		
-		//set click action on proceed to payment button
-		$shipping  = $this->cart->getParam('shipping',null);
-		$condition = ( empty($shipping) || empty($shippingOptions) || !array_key_exists($shipping, $shippingOptions));
-		$this->assign('clickActionOnProceed',$condition?'onClick="return false"':'onClick="return paycart.cart.confirm.do();"');
-		$this->assign('isDisabled',$condition?'disabled':'');
 		
 		// applied promotion code
 		$this->assign('applied_promotion_code', $applied_promotion_code);
