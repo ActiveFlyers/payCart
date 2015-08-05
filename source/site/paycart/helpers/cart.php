@@ -333,4 +333,110 @@ class PaycartHelperCart extends PaycartHelper
 			PaycartShipment::getInstance(0,$data)->save();
 		}
 	}
+	
+	function getDetailedCartData($cart_id)
+	{
+		$cart		  =  PaycartCart::getInstance($cart_id);
+		$data		  = array();
+		$data['cart'] = $cart;
+		$data['product_particular']		= array();
+		$data['promotion_particular']	= array();
+		$data['duties_particular']		= array();
+		$data['shipping_particular']	= array();
+		
+		if($cart->isLocked()){
+			// collect all particular details		
+			$data['product_particular']	  = $this->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+			$data['promotion_particular'] = $this->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+			$data['duties_particular']	  = $this->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_DUTIES);
+			$data['shipping_particular']  = $this->getCartparticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+			
+			$cartparticulars = array();
+			$particulars = array_merge($data['product_particular'], $data['promotion_particular'], $data['duties_particular'], $data['shipping_particular']);
+			foreach($particulars as $particular){
+					$cartparticulars[$particular->cartparticular_id] = $particular;
+			}
+					
+			//collect usage of tax, discount and shipping
+			$usage = PaycartFactory::getModel('usage')->loadRecords(array('cart_id' => $cart_id));
+					
+			$usageDetails = array();
+			foreach ($usage as $id => $use){
+				// this will always be unique, cartparticular_type and particular id
+				$key = $cartparticulars[$use->cartparticular_id]->type.'-'.$cartparticulars[$use->cartparticular_id]->particular_id;
+				if(!isset($usageDetails[$key])){
+					$usageDetails[$key] 		=  array();
+				}
+				
+				if(!isset($usageDetails[$key][$use->rule_type])){
+					$usageDetails[$key][$use->rule_type] = array();
+				}
+					 
+				$usageDetails[$key][$use->rule_type][] = $use->message;
+			}
+			$data['usageDetails'] = $usageDetails;
+		}
+		else{
+			// calculate the cart
+			$cart->calculate();
+			// collect all particular details		
+			$carparticulars['product_particular'] 		= $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+			$carparticulars['promotion_particular'] 	= $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+			$carparticulars['duties_particular'] 		= $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_DUTIES);
+			$carparticulars['shipping_particular']  	= $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+			
+			foreach ($carparticulars as $name => $particulars){
+				
+				$tmppraticulars =$usageDetails = array();
+				foreach($particulars as $particular){
+					$usage = $particular->getUsage();
+					
+					// IMP :: This is patch for promotion and duties type processors
+					// as we need to pass true to get actual total
+					$total = $particular->getTotal(true);
+					$particular = $particular->toObject();
+					$particular->total = $total;
+					 
+					
+					foreach($usage as $use){
+						$key = $particular->type.'-'.$particular->particular_id;
+						if(!isset($usageDetails[$key])){
+							$usageDetails[$key] 		=  array();
+						}
+						
+						if(!isset($usageDetails[$key][$use->rule_type])){
+							$usageDetails[$key][$use->rule_type] = array();
+						}
+							 
+						$usageDetails[$key][$use->rule_type][] = $use->message;
+					}					
+				
+					$tmppraticulars[$particular->particular_id] = $particular;
+				}
+				
+				${$name} = $tmppraticulars;
+			}
+			$data['usageDetails'] = $usageDetails;
+		}
+
+		
+		$shippingMethods = array();
+		foreach ($data['shipping_particular'] as $particular){
+			$shippingMethods[$particular->particular_id] = PaycartShippingrule::getInstance($particular->particular_id)->getTitle();
+		}
+		
+		$data['shippingMethods'] = $shippingMethods;
+		//load shipments
+		$shipmentModel = PaycartFactory::getModel('shipment');
+		$shipments    = $shipmentModel->loadRecords(array('cart_id' => $cart_id)); 
+		
+		foreach ($shipments as $key => $shipment){
+			$shipments[$key]->notes = json_decode($shipment->notes, true); 
+		}
+		
+		$data['shipments'] = 
+		$data['transactions'] = Rb_EcommerceAPI::transaction_get_records(array('invoice_id' => $cart->getInvoiceId()));
+		
+		return $data;
+	}
 }
