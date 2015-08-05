@@ -161,7 +161,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		$filesToZip 	   = array();
 		//create file data required for zip_adapter
 		foreach ($files as $file){
-			$data 		   = JFile::read($dir_path.DS.$file);
+			$data 		   = JFile::read($dir_path.'/'.$file);
 			$filesToZip[]  = array('name'=> $file, 'data'=>$data);
 		}
 		
@@ -217,14 +217,19 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		$cartId = Rb_Factory::getApplication()->input->get('pdfdownload_cartId',0);
 	
 		if($cartId){
+			try{
 				$cart = PaycartCart::getInstance($cartId);
-       			 if(!$cart){
-        			Rb_Factory::getApplication()->enqueueMessage(JText::_('PLG_PAYCART_PDFDOWNLOAD_NO_RESULT_FOUND'), 'warning');
-        			return;
-       			}
+			}
+			catch (Exception $e) {
+			{
+				Rb_Factory::getApplication()->enqueueMessage(JText::_('PLG_PAYCART_PDFDOWNLOAD_NO_RESULT_FOUND'), 'warning');
+				Rb_Factory::getApplication()->redirect("index.php?option=com_paycart&view=pdfdownload");
+				return ;
+			}
 				$this->_streamPdf($this->doSiteAction($cart), $cartId);
 				return;
 			}
+		}
 			
 		
 		$pdf_helper = $this->getHelper('pdfdownload');
@@ -235,6 +240,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 			$this->createFolder($this->getContentForPdf($result['result']), $count);
 		}else {
 			Rb_Factory::getApplication()->enqueueMessage(JText::_('PLG_PAYCART_PDFDOWNLOAD_NO_RESULT_FOUND'), 'warning');
+			Rb_Factory::getApplication()->redirect("index.php?option=com_paycart&view=pdfdownload");
 			return;
 		}
 
@@ -264,7 +270,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	 */
 	function getContentForPdf($result)
 	{
-	   require_once dirname(dirname(__FILE__)).DS.'mpdf'.DS.'mpdf.php';
+	   require_once dirname(dirname(__FILE__)).'/mpdf'.'/mpdf.php';
 	   $mpdf     = new mPDF("en-GB-x","A4","","",10,10,10,10,6,3);
 	   
 	  	// $mpdf->SetDirectionality('rtl');

@@ -31,6 +31,6 @@ class PaycartAdminBaseViewPdfdownload extends PaycartView
 	
 	function _getTemplatePath($layout = 'default')
 		{
-			return array_merge(parent::_getTemplatePath($layout),array(dirname(dirname(__FILE__)).DS.'tmpl'));
+			return array_merge(parent::_getTemplatePath($layout),array(dirname(dirname(__FILE__)).'/tmpl'));
 		}
 }
