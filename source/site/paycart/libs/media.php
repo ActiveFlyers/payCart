@@ -272,4 +272,9 @@ class PaycartMedia extends PaycartLib
 	
 		return $this;
 	}
+	
+	public function getOriginal()
+	{
+		return $this->_baseurl.$this->filename;
+	}
 }

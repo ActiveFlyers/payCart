@@ -920,6 +920,10 @@ class PaycartCart extends PaycartLib
 		//register user, if guest checkout  
 		if ($this->isGuestcheckout()) {
 			$this->guestRegistration();
+			
+			//save the user id of guest, so that it can be used further to check whether user is viewing its own cart or not.
+			$session = PaycartFactory::getSession();
+			$session->set('pc_userid', $this->buyer_id);
 		}
 		
 		// Step-1# Set buyer on cart

@@ -18,6 +18,13 @@ defined('_JEXEC') or die( 'Restricted access' );
 class PaycartController extends Rb_Controller
 {
 	public $_component = PAYCART_COMPONENT_NAME;	
+		
+	function __construct($options = array())
+	{
+		parent::__construct($options);
+		
+		$this->_session = PaycartFactory::getSession();
+	}
 	
 	/**
 	 * Saves an item (new or old)

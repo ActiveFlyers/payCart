@@ -109,6 +109,12 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				<div class="alert alert-warning"><?php echo JText::_('COM_PAYCART_DELIVERY_STATUS');?> : <i class="fa fa-spinner"></i> <strong><?php echo JText::_('COM_PAYCART_SHIPMENT_STATUS_PENDING');?></strong></div>
 			</div>
  		</div>
+ 		
+ 		<?php 
+        $position = 'pc-invoice-thanks-action';
+        if(isset($plugin_result) && isset($plugin_result[$position])):?>
+        <?php echo $plugin_result[$position]; ?>
+        <?php endif;?>
  	</div>
  	
  	<div class="row-fluid">

@@ -590,11 +590,20 @@ class PaycartSiteControllerCart extends PaycartController
 		else{
 			$cart = PaycartCart::getInstance($itemid);
 			$invoice_id = $cart->getInvoiceId();
-		}	
+		}
+			
+		//don not allow user to show other's cart data from frontend
+		if(!Rb_Factory::getUser()->get('id')){
+			$session = PaycartFactory::getSession();
+			$user_id = $session->get('pc_userid', 0);
+		}
+		else{
+			$user_id = Rb_Factory::getUser()->get('id');
+		}
 		
 		/* @var $cart_helper PaycartHelperCart */
 		$cart_helper = PaycartFactory::getHelper('cart');
-		if(!$cart_helper->isSessionCart($cart->getId())) { //cart is exist into session or not
+		if(!$cart_helper->isSessionCart($cart->getId()) || $user_id != $cart->getBuyer()) { //cart is exist into session or not
 			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
 			return false;
 		}
