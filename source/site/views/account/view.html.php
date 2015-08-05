@@ -41,8 +41,9 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 		/* @var $invoiceHelper PaycartHelperInvoice */ 
 		$invoiceHelper = PaycartFactory::getHelper('invoice');
 		$invoices = array();
-		foreach($carts as $cart){
+		foreach($carts as $key=>$cart){
 			$invoices[$cart->invoice_id] = $invoiceHelper->getInvoiceData($cart->invoice_id);
+			$carts[$key]->isShippableProductExist = PaycartFactory::getHelper('cart')->isShippableProductExist(PaycartCart::getInstance($cart->cart_id,$cart));
 		}		
 		
 		$this->assign('limitstart', $model->getState('limitstart'));
@@ -108,8 +109,16 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 		
 		$cartObject->subtotal 	= 0;
 		$products = array();
+		$digitalProducts = array();
 		foreach($productCartParticulars as $particular){
 			$cartObject->subtotal += $particular->total;
+			
+			$item = PaycartProduct::getInstance($particular->particular_id);
+			if($item->getType() == Paycart::PRODUCT_TYPE_DIGITAL){
+				$digitalProducts[$particular->particular_id] = $item;
+				continue;
+			}
+			
 			$products[$particular->particular_id] = PaycartProduct::getInstance($particular->particular_id);
 			
 			// if shipment is not created for any product, then create a dummy record		
@@ -166,6 +175,12 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 		$this->assign('dutiesCartParticulars', $dutiesCartParticulars);		
 		$this->assign('shippingCartParticulars', $shippingCartParticulars);		
 		$this->assign('task', $this->getTask());
+		$this->assign('isShippableProductExist',$cartHelper->isShippableProductExist($cart));
+		$this->assign('billingAddress', (object)$cart->getBillingAddress(true)->toArray());
+		$this->assign('digitalProducts',$digitalProducts);
+		$this->assign('secureKey',$this->input->get('key', 0, 'STRING'));
+		$this->assign('currentUrl', JUri::current());
+		
 		return true;
 	}
 	

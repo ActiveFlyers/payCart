@@ -767,22 +767,24 @@ class PaycartCart extends PaycartLib
 		
 		$this->updateTotal();
 		
-		// STEP 4 : calculate shipping cartparticular
-		$this->loadShippingCartparticulars();
-		// reinitialize the cart total
-		$this->updateTotal();
-		
-		$shippingCartparticulars = $this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_SHIPPING);
-		if(count($shippingCartparticulars) > 0){
-			foreach ($shippingCartparticulars as $product_id => $shippingCartparticular){
-				/* @var $productCartparticular PaycartCartparticularProduct */
-				$shippingCartparticular->calculate($this);					
-			}
-			
+		// STEP 4 : calculate shipping cartparticular only if any shippable product exist
+		if($this->_helper->isShippableProductExist($this)){
+			$this->loadShippingCartparticulars();
+			// reinitialize the cart total
 			$this->updateTotal();
-		}
-		else{
-			// No shipping rules
+			
+			$shippingCartparticulars = $this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+			if(count($shippingCartparticulars) > 0){
+				foreach ($shippingCartparticulars as $product_id => $shippingCartparticular){
+					/* @var $productCartparticular PaycartCartparticularProduct */
+					$shippingCartparticular->calculate($this);					
+				}
+				
+				$this->updateTotal();
+			}
+			else{
+				// No shipping rules
+			}
 		}
 	
 		/**
@@ -884,8 +886,19 @@ class PaycartCart extends PaycartLib
 		$shippingruleHelper 	= PaycartFactory::getHelper('shippingrule'); 
 		$productCartparticulars = $this->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
 		
+		//remove digital products if any
+		$products = array();
+		foreach ($productCartparticulars as $key=>$product){
+			$product_id = $product->get('particular_id');
+			if(paycart::PRODUCT_TYPE_DIGITAL == PaycartProduct::getInstance($product_id)->getType()){
+				unset($productCartparticulars[$key]);
+				continue;
+			}
+			$products[] = $product_id;
+		}
+		
 		$product_grouped_by_address[$md5Address] = $productCartparticulars;
-		$shippingrules_grouped_by_product = $shippingruleHelper->getRulesGroupedByProducts($this);
+		$shippingrules_grouped_by_product = $shippingruleHelper->getRulesGroupedByProducts($this,$products);
 		
 		//if no shipping rule available for any of the cart product then just return and stop calculation
 		if(empty($shippingrules_grouped_by_product)){

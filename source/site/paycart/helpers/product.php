@@ -82,7 +82,7 @@ class PaycartHelperProduct extends PaycartHelper
 			$media->bind($image);
 			$media->save();			
 			
-			$media->moveUploadedFile($image['path_original'], JFile::getExt($image['path_original']));
+			$media->moveUploadedFile($image['path_original'], JFile::stripExt($image['path_original']),JFile::getExt($image['path_original']));
 			$media->createThumb($config->get('catalogue_image_thumb_width'), $config->get('catalogue_image_thumb_height'));
 			$media->createOptimized($config->get('catalogue_image_optimized_width'),$config->get('catalogue_image_optimized_height'));
 			
@@ -235,4 +235,45 @@ class PaycartHelperProduct extends PaycartHelper
 	{
 		return array('product-overview', 'product-addons', 'product-details', 'product-specifications');
 	}
+	
+	/**
+	 * invoke to get detail about all teaser digital files of a product
+	 */
+	public function getTeaserDigitalContent($productId)
+	{
+		$digitalData = PaycartProduct::getInstance($productId)->getDigitalContent();
+
+		$teaserData = array();
+		foreach ($digitalData as $data){
+			if(empty($data['teaser']['filename'])){
+				continue;
+			}
+			$teaserData[$data['teaser']['media_id']] = $data['teaser'];
+		}
+		return $teaserData;
+	}
+	
+	/**
+	 * invoke to get detail about all main digital files of a product
+	 */
+	public function getMainDigitalContent($productId)
+	{
+		$digitalData = PaycartProduct::getInstance($productId)->getDigitalContent();
+
+		$mainData = array();
+		foreach ($digitalData as $data){
+			$mainData[$data['main']['media_id']] = $data['main'];
+		}
+		return $mainData;
+	}
+	
+	/**
+	 * delete the given digital content row from product
+	 */
+	function deleteDigitalContent(PaycartProduct $product, $mainId, $teaserId)
+	{
+		$result = $product->deleteDigitalContent($mainId,$teaserId)->save();
+		return $result;
+	}
+	
 }

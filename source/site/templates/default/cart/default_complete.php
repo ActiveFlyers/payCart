@@ -99,14 +99,18 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				<hr />
 			</div>
 			<div>
+			<?php if(!$isShippableProductExist):?>				
+				<h4><?php echo JText::_('COM_PAYCART_ADDRESS_BILLING');?></h4>
+				<div>
+					<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $billingAddress);?>
+				</div>					
+			<?php else:?>
 				<h4><?php echo JText::_('COM_PAYCART_ADDRESS_SHIPPING');?></h4>
 				<div>
 					<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $shippingAddress);?>
 				</div>
+			<?php endif;?>	
 				<hr />
-			</div> 		
-			<div>
-				<div class="alert alert-warning"><?php echo JText::_('COM_PAYCART_DELIVERY_STATUS');?> : <i class="fa fa-spinner"></i> <strong><?php echo JText::_('COM_PAYCART_SHIPMENT_STATUS_PENDING');?></strong></div>
 			</div>
  		</div>
  		

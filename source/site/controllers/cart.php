@@ -258,6 +258,10 @@ class PaycartSiteControllerCart extends PaycartController
 		if(!$isCartValid){			
 			return true;
 		}
+		
+		/* @var $cartHelper PaycartHelperCart */		
+		$cartHelper = PaycartFactory::getHelper('cart');
+		$this->getView()->assign('isShippableProductExist', $cartHelper->isShippableProductExist($this->cart);
 
 		// If user is logged in, execute next task
 		if (!PaycartFactory::getUser()->id && !($this->cart->isGuestcheckout()))  {
@@ -392,6 +396,10 @@ class PaycartSiteControllerCart extends PaycartController
 		if(!$isCartValid){			
 			return true;
 		}
+		
+		/* @var $cartHelper PaycartHelperCart */		
+		$cartHelper = PaycartFactory::getHelper('cart');
+		$this->getView()->assign('isShippableProductExist', $cartHelper->isShippableProductExist($this->cart);
 
 		// If user is logged in, execute next task
 		if (!PaycartFactory::getUser()->id && !($this->cart->isGuestcheckout()))  {

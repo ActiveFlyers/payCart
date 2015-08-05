@@ -31,7 +31,7 @@ PaycartHtml::_('behavior.formvalidation');
 		<?php if($shipments):?>
 			var pc_shipments   = <?php echo json_encode($shipments, true);?>;
 		<?php else :?>
-			var pc_shipments   = [ {'products':[{}]} , {'notes' :[{}]}];
+			var pc_shipments   = [ {'products':[{}],'notes' :[{}]}];
 		<?php endif;?>
 	</script>
 		

@@ -84,8 +84,20 @@ $showMediaGallery = false;
 		 =========================== -->
 		 <div class="span6">
 				<h1 class="hidden-phone pc-break-word pc-product-detail-title"><?php echo $product->getTitle(); ?></h1>	
-		 		<h2><?php echo JText::_("COM_PAYCART_PRICE");?> : 
-		 			<span><?php echo $formatter->amount($product->getPrice(),true);?></span>	
+			
+				<div class="row-fluid">
+					<?php $retail_price = $product->getRetailPrice();?>
+		 			<?php $price = $product->getPrice();?>
+		 			<?php if($retail_price > $price):?>
+			 			<h4>
+				 			<strike class="muted"><?php echo $formatter->amount($retail_price,true);?></strike>
+				 			<span class="label label-important"><?php echo JText::_('COM_PAYCART_SAVE').' '.(($retail_price-$price)*100)/$retail_price.'%'?></span>
+				 		</h4>
+			 		<?php endif;?>
+				</div>
+				
+		 		<h2>
+		 			<span><?php echo $formatter->amount($price,true);?></span>	
 		 		</h2>
 		 		
 		 		<!-- ======================
@@ -160,30 +172,49 @@ $showMediaGallery = false;
                 <!-- ======================
 				Position == product-addons	
 		 		=========================== -->		 		
-		 		<div class="row-fluid">		 		
-		 		<div class="pc-product-addons"> 			
-		 			<?php if(isset($postionedAttributes['product-addons']) && !empty($postionedAttributes['product-addons'])) : ?>
-		 				<ul>
-		 				<?php foreach($postionedAttributes['product-addons'] as $attributeId) : ?>
-		 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
-		 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
-								<?php $options 	= $instance->getOptions();?> 
-								<li><?php echo $options[$attributes[$attributeId]]->title;?></li>
-							<?php endif?>	                         
-		 				<?php endforeach;?>
-		 				</ul>
-		 			<?php endif;?>
-		 		</div>
+		 		<div class="row-fluid">		
+					<?php $position = 'pc-product-addons';?> 		
+			 		<div class="<?php echo $position;?>"> 			
+			 			<?php if(isset($postionedAttributes['product-addons']) && !empty($postionedAttributes['product-addons'])) : ?>
+			 				<ul>
+			 				<?php foreach($postionedAttributes['product-addons'] as $attributeId) : ?>
+			 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
+			 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+									<?php $options 	= $instance->getOptions();?> 
+									<li><?php echo $options[$attributes[$attributeId]]->title;?></li>
+								<?php endif?>	                         
+			 				<?php endforeach;?>
+			 				</ul>
+			 			<?php endif;?>
+			 			
+				 		 <?php if(isset($plugin_result) && isset($plugin_result[$position])):?>
+						 <div class="row-fluid">
+			                  <?php echo $plugin_result[$position]; ?>
+						 </div>
+		      			 <?php endif;?>
+			 		</div>
 		 		</div>
 		 		
-		 		 <?php $position = 'pc-product-addons';?>
-		 		 <?php if(isset($plugin_result) && isset($plugin_result[$position])):?>
-				 <div class="row-fluid">
-	                <div class="<?php echo $position;?>">
-	                        <?php echo $plugin_result[$position]; ?>
-	                </div>
-				 </div>
-      			 <?php endif;?>
+		 		 <!-- ======================
+				Position == product-teaser	
+		 		=========================== -->	
+		 		<?php if(!empty($digital_teasers) && $product->getType() == Paycart::PRODUCT_TYPE_DIGITAL):?>
+			 		<div class="row-fluid">
+				 		<div class="pc-product-teaser">
+				 			<ul>
+				 			<?php foreach ($digital_teasers as $id => $data):?>
+				 				 <li>
+				 				 	<?php $fileName  = base64_encode('file-'.$id);?>
+				 				 	<?php $extension = JFile::getExt($data['filename']);?>
+				 				 	<a href="javascript:void(0);" onClick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&task=serveTeaser&product_id='.$product->getId().'&file_id='.$fileName)?>')">
+				 				 		<?php echo $data['title']?><?php echo ' ('.$extension.')';?>
+				 				 	</a>
+				 				 </li>
+				 			<?php endforeach;?>
+				 			</ul>
+				 		</div>
+				 	</div>
+			 	<?php endif;?>
 		 </div>
 	 </div>
 	 

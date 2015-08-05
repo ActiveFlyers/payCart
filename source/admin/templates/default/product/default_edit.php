@@ -125,7 +125,17 @@ echo $this->loadTemplate('edit_css');
 										<div class="controls "><?php echo $field->input; ?></div>
 									</div>
 								</div>
-							</div>						
+							</div>	
+							
+							<div class="row-fluid">
+								<div class="span6">
+									<?php $field = $form->getField('type') ?>
+									<div class="control-group">
+										<div class="control-label"><?php echo $field->label; ?> </div>
+										<div class="controls "><?php echo $field->input; ?></div>
+									</div>
+								</div>
+							</div>					
 						</fieldset>
 					</div>					
 				</div>
@@ -152,12 +162,27 @@ echo $this->loadTemplate('edit_css');
 										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>								
 									</div>
 								</div>
-								<div class="span6">
-									<?php $field = $form->getField('sku') ?>
+								<div class="span6">									
+									<?php $field = $form->getField('retail_price') ?>
 									<div class="control-group">
-										<div class="control-label"><?php echo $field->label; ?> </div>
-										<div class="controls"><?php echo $field->input; ?></div>																		
+										<div class="control-label label-left"><?php echo $field->label; ?>&nbsp; ( <?php echo $currency;?> )</div>										
+										<div class="controls"><?php echo $field->input; ?></div>
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>								
 									</div>
+								</div>
+							</div>
+							
+							<div class="row-fluid">
+								<div class="span6">
+									<?php $field = $form->getField('cost_price') ?>
+									<div class="control-group">
+										<div class="control-label label-left"><?php echo $field->label; ?>&nbsp; ( <?php echo $currency;?> )</div>										
+										<div class="controls"><?php echo $field->input; ?></div>
+										<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_NUMERIC');?></div>								
+									</div>
+								</div>
+								<div class="span6">
+									&nbsp;
 								</div>
 							</div>
 							<div class="row-fluid">
@@ -189,8 +214,8 @@ echo $this->loadTemplate('edit_css');
 									</div>
 								</div>
 								</div>
-								<?php if($record_id):?>
-									<div class="span6">
+								<div class="span6">
+								<?php if($record_id):?>									
 										<?php $field = $form->getField('quantity_sold') ?>
 										<div class="control-group">
 											<div class="control-label"><?php echo $field->label; ?> </div>
@@ -199,7 +224,6 @@ echo $this->loadTemplate('edit_css');
 											</div>	
 											<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 										</div>
-									</div>
 									<!--<div class="span6">
 										<?php $field = $form->getField('stockout_limit') ?>
 										<div class="control-group">
@@ -207,9 +231,23 @@ echo $this->loadTemplate('edit_css');
 											<div class="controls"><?php echo $field->input; ?></div>	
 											<div class="pc-error" for="<?php echo $field->id;?>"><?php echo JText::_('COM_PAYCART_ADMIN_VALIDATION_ERROR_INTEGER');?></div>							
 										</div>
-									</div>
-								--></div>
-							<?php endif;?>
+									</div>-->
+								<?php endif;?>&nbsp;
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<?php $field = $form->getField('sku') ?>
+								<div class="control-group">
+									<div class="control-label"><?php echo $field->label; ?> </div>
+									<div class="controls"><?php echo $field->input; ?></div>																		
+								</div>
+							</div>
+							
+							<div class="span6">
+								&nbsp;
+							</div>
+						</div>
 						</fieldset>
 					</div>					
 				</div>
@@ -304,6 +342,61 @@ echo $this->loadTemplate('edit_css');
 				
 				<hr />
 				
+				<!--	Product files		-->
+				<?php $fieldType = $form->getField('type') ?>
+				<div class="<?php echo ($fieldType->value == Paycart::PRODUCT_TYPE_DIGITAL)?'show':'hide'?>" data-pc-selector="downloadable_files">
+					<div class="row-fluid ">
+						<div class="span3">
+							<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_DIGITAL_FILES_HEADER');?></h2>
+							<div>
+								<?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_DIGITAL_FILES_MSG');?>
+							</div>
+						</div>
+						<div class="span9">
+							<div class="row-fluid">
+								<div data-pc-selector="digital-help-save">
+								</div><br>
+								<a href="#" class="btn btn-success" onClick="paycart.admin.product.digital.window(0,0);" >
+									<i class="icon-plus-sign icon-white"></i>&nbsp; <?php echo JText::_('COM_PAYCART_ADMIN_ADD_FILE');?>
+								</a>
+													
+								<div data-pc-selector="pc-product-digital-files">
+										<table class="table table-stripped" data-pc-selector="digital-content-table">
+											<thead>
+												<tr>
+													<th><?php echo JText::_("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_FILE_TITLE");?></th>
+													<th><?php echo JText::_("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_MAIN_FILENAME");?></th>
+													<th><?php echo JText::_("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_TEASER_FILENAME");?></th>
+													<th><?php echo JText::_("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_EDIT_OR_REMOVE");?></th>
+												</tr>
+											</thead>
+										<?php foreach ($digital as $id => $data):?>
+											<tr data-pc-selector="row-<?php echo $id;?>">
+												<td><?php echo $data['main']['title']?></td>
+												<td><?php echo $data['main']['filename']?></td>
+												<td><?php if(empty($data['teaser'])): ?>
+														<?php $data['teaser']['media_id'] = 0;?>
+													<?php else : ?>
+														<?php echo $data['teaser']['filename'];?>
+													<?php endif;?></td>
+												<td>
+													<a href="#" onClick="paycart.admin.product.digital.window(<?php echo $id?>,<?php echo $data['teaser']['media_id'];?>)"><i class="fa fa-pencil-square-o"></i></a>
+													<a href="#" onClick="paycart.admin.product.deleteDigitalData(<?php echo $record_id;?>,<?php echo $id?>,<?php echo $data['teaser']['media_id'];?>)"><i class="fa fa-trash-o"></i></a>
+													
+													<input type="hidden" name="paycart_product_form[digital][<?php echo $id;?>][main]" value="<?php echo $id?>"/>
+													<input type="hidden" name="paycart_product_form[digital][<?php echo $id;?>][teaser]" value="<?php echo $data['teaser']['media_id']?>"/>
+												</td>
+											</tr>	
+										<?php endforeach;?>
+										</table>
+									
+								</div>
+						</div>					
+					</div>
+					</div>				
+					<hr/>
+				</div>
+				
 				<!--	Product Meta Data			-->
 				<div class="row-fluid">
 					<div class="span3">
@@ -339,7 +432,7 @@ echo $this->loadTemplate('edit_css');
 				
 				<hr />
 				<!--	Dimenssions 	-->
-				<div class="row-fluid">
+				<div class="row-fluid <?php echo ($fieldType->value == Paycart::PRODUCT_TYPE_DIGITAL)?'hide':'show'?>" data-pc-selector="measurement-details">
 					<div class="span3">
 						<h2><?php echo JText::_('COM_PAYCART_ADMIN_PRODUCT_WEIGHT_AND_DIMENSION_HEADER');?></h2>
 						<div>

@@ -30,6 +30,9 @@ define('PAYCART_PATH_CORE_MEDIA',			'com_paycart');
 define('PAYCART_PATH_ADMIN_MEDIA',			'com_paycart/admin');
 define('PAYCART_PATH_CORE_FORM',			PAYCART_PATH_CORE.'/form');
 define('PAYCART_PATH_CORE_IMAGES',  		'images/cart');
+define('PAYCART_PATH_MEDIA_DIGITAL_TEASER', JPATH_ROOT.'/media/com_paycart/digital/teaser/');
+define('PAYCART_PATH_MEDIA_DIGITAL_MAIN',   JPATH_ROOT.'/media/com_paycart/digital/main/');
+
 
 // front-end
 define('PAYCART_PATH_SITE', 				JPATH_SITE.'/components/com_paycart');

@@ -221,4 +221,160 @@ class PaycartAdminControllerProduct extends PaycartController
 	
 		return true;
 	}
+	
+	function editDigitalContent()
+	{
+		return true;
+	}
+	
+    /**
+     * validate digital content 
+     */
+	protected function _validateBeforeUpload($title, $media_id, $main, $teaser)
+	{
+		$response = new stdClass();
+		$ajax     = PaycartFactory::getAjaxResponse();
+		
+		// 1. Check for the total size of post back data.
+		$contentLength = (int) $_SERVER['CONTENT_LENGTH'];
+		if( $contentLength > PaycartFactory::getHelper('media')->getUploadLimit())
+		{
+			$response->errorMsg = JText::_("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_MAX_UPLOAD_LIMIT_EXCEEDED");
+			$ajax->addScriptCall('paycart.admin.product.digital.save.error',$response);
+			$ajax->sendResponse();
+		}
+		
+		//2. check if title or main file doesn't exist
+		if((empty($title) || (!$media_id && !isset($main['name']) && empty($main['name'])))){
+			$response->errorMsg = JText::_("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_MAIN_FILE_CANT_BE_LEFT_BLANK");
+			$ajax->addScriptCall('paycart.admin.product.digital.save.error',$response);
+			$ajax->sendResponse();
+		}
+		
+		$allowed   = PaycartFactory::getConfig()->get('catalogue_allowed_files');
+		
+		//3. check supported filetype to be uploaded both for main and teaser files
+		$mainfile  = strtolower(JFile::makeSafe($main['name']));		
+		if(isset($main['name']) && !empty($main['name']) && 
+		   (!preg_match('#\.('.str_replace(array(',','.'),array('|','\.'),$allowed).')$#Ui',$mainfile,$extension) || preg_match('#\.(php.?|.?htm.?|pl|py|jsp|asp|sh|cgi)$#Ui',$mainfile))){
+			$response->errorMsg = JText::sprintf("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_INVALID_MAIN_FILE_TYPE",$allowed);
+			$ajax->addScriptCall('paycart.admin.product.digital.save.error',$response);
+			$ajax->sendResponse();
+		}
+		
+		$teaserfile  = strtolower(JFile::makeSafe($teaser['name']));
+		if(isset($teaser['name']) && !empty($teaser['name']) && 
+		   (!preg_match('#\.('.str_replace(array(',','.'),array('|','\.'),$allowed).')$#Ui',$teaserfile,$extension) || preg_match('#\.(php.?|.?htm.?|pl|py|jsp|asp|sh|cgi)$#Ui',$teaserfile))){
+			$response->errorMsg = JText::sprintf("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_INVALID_TEASER_FILE_TYPE",$allowed);
+		   	$ajax->addScriptCall('paycart.admin.product.digital.save.error',$response);
+			$ajax->sendResponse();
+		}	
+		
+		return true;
+	}
+	
+	/**
+     * Ajaxified task to save digital content i.e teaser and main files
+     */
+	function saveDigitalContent()
+	{
+		$data 	   = array();
+		$ajax      = PaycartFactory::getAjaxResponse();
+		$response  = new stdClass();
+		$title 	   = $this->input->post->get('title','','STRING');
+		$lang_code = $this->input->get('lang_code','','STRING');		
+		$media_id  = $this->input->get('media_id',0,'INT');
+		$media_lang_id         = $this->input->get('media_lang_id',0,'INT');
+		$teaser_media_id       = $this->input->get('teaser_media_id',0,'INT');
+		$teaser_media_lang_id  = $this->input->get('teaser_media_lang_id',0,'INT');			
+		
+		$main   = $this->input->files->get('main',false,'raw');
+		$teaser = $this->input->files->get('teaser',false,'raw');
+
+		// 1. Validate uploaded data before proceeding		
+		$this->_validateBeforeUpload($title,$media_id, $main,$teaser);
+		
+		// 2. save main file
+		$media 				   = PaycartMedia::getInstance($media_id);
+		$data['media_id']      = $media_id;
+		$data['media_lang_id'] = $media_lang_id;
+		$data['lang_code']     = $lang_code;
+		$data['title'] 	       = $title;
+		$main_id               = $media->setBasePath(PAYCART_PATH_MEDIA_DIGITAL_MAIN)->bind($data)->save()->getId();
+		$prevFilePath          = PAYCART_PATH_MEDIA_DIGITAL_MAIN.$media->getFilename();
+		$mainFilename		   = ''; 
+		$teaserFilename		   = '';
+		
+		try{
+			if(isset($main['name']) && !empty($main['name'])){
+				$media->moveUploadedFile($main['tmp_name'], JFile::stripExt(JFile::makeSafe($main['name'])),JFile::getExt($main['name']));
+			}
+			
+			//delete previous file if exist
+			$newFilePath = PAYCART_PATH_MEDIA_DIGITAL_MAIN.$media->getFilename();
+			if($media_id && $prevFilePath != $newFilePath && JFile::exists($prevFilePath)){ 
+				JFile::delete($prevFilePath);
+			}
+			
+			$mainFilename = $media->getFilename();
+					
+			// 3. save teaser file 
+			if($teaser_media_id || (isset($teaser['name']) && !empty($teaser['name']))){
+				$media 				   = PaycartMedia::getInstance($teaser_media_id);			
+				$data['media_id']      = $teaser_media_id;
+				$data['media_lang_id'] = $teaser_media_lang_id;
+				$teaser_id             = $media->setBasePath(PAYCART_PATH_MEDIA_DIGITAL_TEASER)->bind($data)->save()->getId();
+				$prevFilePath          = PAYCART_PATH_MEDIA_DIGITAL_TEASER.$media->getFilename();
+				
+				if(isset($teaser['name']) && !empty($teaser['name'])){
+					$media->moveUploadedFile($teaser['tmp_name'], JFile::stripExt(JFile::makeSafe($teaser['name'])),JFile::getExt($teaser['name']));
+				}
+				
+				//delete previous file if exist
+				$newFilePath = PAYCART_PATH_MEDIA_DIGITAL_TEASER.$media->getFilename();
+				if($teaser_media_id && $prevFilePath != $newFilePath && JFile::exists($prevFilePath)){ 
+					JFile::delete($prevFilePath);
+				}
+				
+				$teaserFilename = $media->getFilename();
+				
+			}
+		}
+		catch (Exception $ex){
+			$response->errorMsg = JText::_("COM_PAYCART_ADMIN_PRODUCT_DIGITAL_CANT_MOVE_FILE");
+			$ajax->addScriptCall('paycart.admin.product.digital.save.error',$response);
+			$ajax->sendResponse();
+		}
+		
+		// 4. set media details of main and teaser file in response
+		$response->files = array('main' => $main_id, 'teaser' => $teaser_id, 'main_filename' => $mainFilename, 'teaser_filename' => $teaserFilename, 'title' => $title);		
+		$ajax->addScriptCall('paycart.admin.product.digital.save.success',$response);
+		$ajax->sendResponse();
+	}
+	
+    /**
+     * Ajaxified task to delete any Digital content row
+     */
+	function deleteDigitalContent()
+	{
+		$mediaId 	   = $this->input->get('main_id',0,'INT');
+		$teaserMediaId = $this->input->get('teaser_id',0,'INT');
+		$productId     = $this->input->get('product_id',0);
+
+		$ajax = PaycartFactory::getAjaxResponse();
+		if(!($mediaId && $productId)){
+			$result = false;
+			$ajax->addScriptCall('paycart.admin.product.deleteDigitalData.error',$response);
+		}else{
+			$product = PaycartProduct::getInstance($productId);
+			$id = PaycartFactory::getHelper('product')->deleteDigitalContent($product,$mediaId,$teaserMediaId);
+			$result = ($id)?true:false;
+			
+			$response = new stdClass();
+			$response->main_id = $mediaId;
+			$ajax->addScriptCall('paycart.admin.product.deleteDigitalData.success',$response);
+		}
+		$ajax->sendResponse();
+	}
+	
 }

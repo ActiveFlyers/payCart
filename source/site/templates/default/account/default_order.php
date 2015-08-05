@@ -42,28 +42,41 @@ echo $this->loadTemplate('js');
 								<legend><?php echo JText::_('COM_PAYCART_ORDER_DETAILS');?></legend>
 								<div><?php echo JText::_('COM_PAYCART_ORDER_ID');?> : <span class="heading"><?php echo $cart->cart_id;?></span> <span class="pc-lowercase">(<?php echo count($productCartParticulars).' '.JText::_('COM_PAYCART_ITEM'.((count($productCartParticulars) > 1 ) ? 'S' : ''));?>)</span></div>
 								<div><?php echo JText::_('COM_PAYCART_ORDER_PLACED');?> : <span class="heading"><?php echo $formatter->date(new Rb_Date($cart->locked_date));?></span></div>
-								<div>
-									<?php if($cart->is_delivered) :?>
-										<span class="text-success"><strong><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></strong></span>
-										<span class="pc-lowercase"><?php echo JText::_('COM_PAYCART_ON');?></span>
-										<?php echo $formatter->date(new Rb_Date($cart->delivered_date));?>
-									<?php else :?>
-										<span class="text-warning"><strong><?php echo JText::_('COM_PAYCART_CART_STATUS_PENDING');?></strong></span>												
-									<?php endif;?>
-								</div> 
+								<?php if($isShippableProductExist):?>
+									<div>
+										<?php if($cart->is_delivered) :?>
+												<span class="text-success"><strong><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></strong></span>
+												<span class="pc-lowercase"><?php echo JText::_('COM_PAYCART_ON');?></span>
+												<?php echo $formatter->date(new Rb_Date($cart->delivered_date));?>
+										<?php else :?>
+											<span class="text-warning"><strong><?php echo JText::_('COM_PAYCART_CART_STATUS_PENDING');?></strong></span>												
+										<?php endif;?>
+									</div>
+								<?php endif;?>
 							</fieldset>
 						</div>
 					</div>
 					<br class="visible-xs-block visible-phone" />
 					<div class="span6">
-						<div class="pc-account-order-shipping-address">
-							<fieldset>
-								<legend><?php echo JText::_('COM_PAYCART_ADDRESS_SHIPPING');?></legend>
-								<div>
-									<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $shippingAddress);?>
-								</div>
-							</fieldset>
-						</div>
+						<?php if($isShippableProductExist):?>
+							<div class="pc-account-order-shipping-address">
+								<fieldset>
+									<legend><?php echo JText::_('COM_PAYCART_ADDRESS_SHIPPING');?></legend>
+									<div>
+										<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $shippingAddress);?>
+									</div>
+								</fieldset>
+							</div>
+						<?php else:?>
+							<div class="pc-account-order-billing-address">
+								<fieldset>
+									<legend><?php echo JText::_('COM_PAYCART_ADDRESS_BILLING');?></legend>
+									<div>
+										<?php echo Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $billingAddress);?>
+									</div>
+								</fieldset>
+							</div>
+						<?php endif;?>
 					</div>
 				</div>
 				
@@ -128,7 +141,121 @@ echo $this->loadTemplate('js');
 				</div>
 			</div>
 		</div>
+		
+		<?php if(!empty($digitalProducts)):?>
+		<div class="row-fluid">
+			<div class="pc-account-order-productdetails">
+				<div class="pc-account-order-productdetails-header well well-small muted">
+					<div class="row-fluid">
+						<div class="span6">
+							<span class="heading pc-uppercase"><?php echo JText::_('COM_PAYCART_PRODUCT_DETAILS');?></span>
+						</div>
+						<div class="span6 hidden-phone">
+							<span class="heading pc-uppercase">
+								<span class="pull-left"><?php echo JText::_('COM_PAYCART_DOWNLOADS')?></span>
+								<span class="pull-right pc-uppercase"><?php echo JText::_('COM_PAYCART_SUBTOTAL')?></span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="pc-account-order-product">
+						<?php foreach($digitalProducts as $product) :?>
+							<?php $digitalContent = $product->getDigitalContent();?>
+							<?php $product_id = $product->getId();?>
+				  			<?php $productParticular = $productCartParticulars[$product_id];?>
+				  			<div class="shipment-row" data-pc-selector="shipment-row">
+								<div class="row-fluid">
+									<div class="span6">
+										<table class="table">
+	              							<thead>
+	                							<tr>
+							                  		<td>
+											  			<div class="text-center">
+											  			<?php $image = $product->getCoverMedia(); ?>
+											  			<img class="img-polaroid" src="<?php echo !empty($image) ? $image['thumbnail'] : '';?>" title="<?php echo !empty($image) ? $image['title'] : '';?>" alt="<?php echo !empty($image) ? $image['title'] : '';?>">
+											  			</div>
+											  		</td>
+											  		<td>
+			  											<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$product_id);?>"><?php echo $product->getTitle();?></a>
+			  											<div class="muted">
+			  												<ul class="inline">
+				  												<?php $postionedAttributes = (array)$product->getPositionedAttributes();?>
+																<?php $attributes = $product->getAttributes();?>								 
+													 			<?php if(isset($postionedAttributes['product-overview']) && !empty($postionedAttributes['product-overview'])) : ?>			 			
+													 				<?php foreach($postionedAttributes['product-overview'] as $attributeId) : ?>
+													 					<?php if(isset($attributes[$attributeId]) && !empty($attributes[$attributeId])) :?>
+													 						<?php $instance = PaycartProductAttribute::getInstance($attributeId);?>
+																 			<li><small><?php echo $instance->getTitle();?>&nbsp;:&nbsp;<?php $options = $instance->getOptions(); echo $options[$attributes[$attributeId]]->title;?>,</small></li>
+																		<?php endif?>	                         
+													 				<?php endforeach;?>			 				
+													 			<?php endif;?>
+						 										<li><small><?php echo JText::_('COM_PAYCART_QUANTITY');?>: <?php echo $productParticular->quantity;?></small></li>
+					 										</ul>
+					 									</div>
+					 									<strong class="visible-phone"><?php echo JText::_('COM_PAYCART_SUBTOTAL')?> : <?php echo $formatter->amount($productParticular->total);?></strong>
+					 								</td>
+		 										</tr>
+		 									</thead>
+		 								</table>
+		 							</div>
+		 							
+		 							<div class="span6">
+										<table class="table">
+											<thead>
+												<tr>
+													<td>
+													<?php if($cart->status == paycart::STATUS_CART_PAID):?>
+														<?php foreach ($digitalContent as $data):?>
+															<?php $mainId=base64_encode('file-'.$data['main']['media_id']);?>
+															<?php $extension = Jfile::getExt($data['main']['filename'])?>
+															<div><a href="javascript:void(0);" onClick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=account&task=serveFile&file_id='.$mainId.'&cart_id='.$cart->cart_id.'&key='.$secureKey.'&returnUrl='.base64_encode($currentUrl))?>')"><?php echo $data['main']['title']?><?php echo ' ('.$extension.')';?></a></div>
+														<?php endforeach;?>
+													<?php else:?>
+														<?php echo JText::_('COM_PAYCART_DOWNLOADS_NOT_AVAILABLE')?>
+													<?php endif;?>
+													</td>
+													
+													<td class="hidden-phone">
+			 											<div class="text-right">
+			  												<span class="lead"><?php echo $formatter->amount($productParticular->total);?></span>
+			  												<span>
+			  												<a href="#" onclick="return false;" data-toggle="popover" data-placement="left" data-trigger="click" 
+			  													data-content="	<span class='muted'>			  														
+																	<span class='pull-right'><?php echo JText::_('com_paycart_unit_price').' : '.$formatter->amount($productParticular->unit_price);?></span><br/>
+																	<span class='pull-right'><?php echo JText::_('com_paycart_quantity').' : x'.$productParticular->quantity;?></span>																		
+																	<?php if($productParticular->total !=  $productParticular->price):?>
+																		<hr/><span class='pull-right'><?php echo JText::_('com_paycart_subtotal').' : '.$formatter->amount($productParticular->price);?></span><br/>
+																	<?php endif;?>																		
+																	<?php if($productParticular->discount < 0):?>
+																		<span class='pull-right'><?php echo JText::_('com_paycart_discount').' : '.$formatter->amount($productParticular->discount);?></span><br/>
+																	<?php endif;?>
+																	<?php if($productParticular->tax > 0):?>
+																		<span class='pull-right'><?php echo JText::_('com_paycart_tax').' : '.$formatter->amount($productParticular->tax);?></span><br/>
+																	<?php endif;?>
+																	</span>
+																	<hr/><span class='pull-right'><?php echo JText::_('com_paycart_total').' : '.$formatter->amount($productParticular->total);?></span>
+																	">
+			  													<i class="fa fa-question-circle"></i>
+			  												</a>
+			  												</span>
+			  											</div>
+			  										</td>
+			  									</tr>
+			  								</thead>
+			  							</table>
+			  						</div>
+		  						</div>
+		  					</div>
+							<?php endforeach;?>
+							<hr />
+						</div>
+				</div>			
+			</div>
+		</div>
+		<?php endif;?>
 			
+		<?php if(!empty($productShipments)):?>
 		<div class="row-fluid">
 			<div class="pc-account-order-productdetails">
 				<div class="pc-account-order-productdetails-header well well-small muted">
@@ -310,6 +437,7 @@ echo $this->loadTemplate('js');
 				</div>			
 			</div>
 		</div>
+		<?php endif;?>
 		
 		<div class="row-fluid">
 			<div class="span6">

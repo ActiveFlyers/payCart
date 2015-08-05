@@ -126,12 +126,13 @@ class PaycartProductcategory extends PaycartLib
 				$media = PaycartMedia::getInstance();
 				$data = array();
 				$data['lang_code'] = $this->lang_code;
-				$data['language']['title'] = $this->_uploaded_files['cover_media']['name'];
+				$filename = JFile::stripExt($this->_uploaded_files['cover_media']['name']);
+				$data['language']['title'] = $filename;
 				$media->bind($data);
 				$media->save();
 			}
 			
-			$media->moveUploadedFile($this->_uploaded_files['cover_media']['tmp_name'], JFile::getExt($this->_uploaded_files['cover_media']['name']));
+			$media->moveUploadedFile($this->_uploaded_files['cover_media']['tmp_name'], $filename, JFile::getExt($this->_uploaded_files['cover_media']['name']));
 			$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'),PaycartFactory::getConfig()->get('catalogue_image_thumb_height'));
 			$media->createOptimized(PaycartFactory::getConfig()->get('catalogue_image_optimized_width'),PaycartFactory::getConfig()->get('catalogue_image_optimized_height'));
 			$media->createSquared(PaycartFactory::getConfig()->get('catalogue_image_squared_size'));

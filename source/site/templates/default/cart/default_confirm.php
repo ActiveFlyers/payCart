@@ -49,9 +49,9 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			
 			<!-- Addresses Block		 	-->
 		 	<div class="row-fluid">
-		 	
+		 	<?php $class=($isShippableProductExist)?'span6':'span12'?>
 		 	<!--	Billing Address	 		-->
-		 		<div class="span6">				
+		 		<div class="<?php echo $class?>">				
 		 			<div class="accordion-group">
 		 				<div class="accordion-heading">
 		 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-parent" href="#pc-confirm-billing-address">
@@ -75,6 +75,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 		 			</div>
 		 		</div>
 		 		
+		 		<?php if($isShippableProductExist):?>
 		 		<!-- Shipping Address 		-->
 		 		<div class="span6">
 		 			<div class="accordion-group">
@@ -102,9 +103,11 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 				 		</div>
 		 			</div>
 		 		</div>
+		 		<?php endif;?>
 		 	</div>
 			
 			<!-- Shipping Options		 	-->
+			<?php if($isShippableProductExist):?>
 		 	<div class="row-fluid">
 		 		<div class="accordion-group">
 		 			<div class="accordion-heading">
@@ -144,7 +147,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 		</div>
 	 			</div>
 		 	</div>
-		 	
+		 	<?php endif;?>
 			<!-- Product Summary		 	-->
 		 	<?php echo $this->loadTemplate('confirm_product_summary')?>	 	
 	 		
@@ -178,10 +181,12 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			 							<td><?php echo $formatter->amount($product_total, true, $currency_id); ?></td>
 			 						</tr>
 			 						
-			 						<tr>
-			 							<td><?php echo JText::_('COM_PAYCART_SHIPPING'); ?></td>
-			 							<td><?php echo $formatter->amount($shipping_total, true, $currency_id); ?></td>
-			 						</tr>
+			 						<?php if($isShippableProductExist):?>
+				 						<tr>
+				 							<td><?php echo JText::_('COM_PAYCART_SHIPPING'); ?></td>
+				 							<td><?php echo $formatter->amount($shipping_total, true, $currency_id); ?></td>
+			 							</tr>
+			 						<?php endif;?>
 			 						
 			 						<?php if(!empty($duties_particular) && floatval($duties_total) != 0):?>
 				 						<tr>

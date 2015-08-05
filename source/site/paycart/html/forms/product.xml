@@ -10,9 +10,23 @@
 			<field 	name="price"
 					type="text"
 					class="input-block-level validate-numeric"
-					label="COM_PAYCART_ADMIN_PRICE"
+					label="COM_PAYCART_ADMIN_SALE_PRICE"
 					validate="numeric"
 					required="true"/>
+					
+			<field 	name="retail_price"
+					type="text"
+					default="0"
+					class="input-block-level validate-numeric"
+					label="COM_PAYCART_ADMIN_RETAIL_PRICE"
+					validate="numeric"/>
+					
+			<field 	name="cost_price"
+					type="text"
+					default="0"
+					class="input-block-level validate-numeric"
+					label="COM_PAYCART_ADMIN_COST_PRICE"
+					validate="numeric"/>
 			
 			<field 	name="quantity" 
 					type="text"
@@ -42,7 +56,6 @@
 					default="0"/>
 					
 			<field 	name="type" 
-					class="input-block-level"
 					type="paycart.producttype"
 					label="COM_PAYCART_ADMIN_PRODUCT_TYPE"/>
 			

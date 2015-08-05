@@ -30,11 +30,12 @@ class PaycartAdminControllerConfig extends PaycartController
 			
 			$media = PaycartMedia::getInstance();
 			$data = array();
-			$data['language']['title'] = $image['company_logo']['name'];
+			$filename = JFile::stripExt($image['company_logo']['name']);
+			$data['language']['title'] = $filename;
 			$media->bind($data);
 			$media->save();
 			
-			$media->moveUploadedFile($image['company_logo']['tmp_name'], JFile::getExt($image['company_logo']['name']));
+			$media->moveUploadedFile($image['company_logo']['tmp_name'], $filename,JFile::getExt($image['company_logo']['name']));
 			
 			$post['company_logo'] = $media->getId();
 		}

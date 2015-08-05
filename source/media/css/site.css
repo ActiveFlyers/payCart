@@ -230,10 +230,6 @@ Products Display
 .pc-product-stockout-image{
 	opacity: 0.2;
 }
-	
-.pc-break-word {
-    word-wrap : break-word;
-}
 
 .pc-product-attribute-header{
 	background-color : #F5F5F5;

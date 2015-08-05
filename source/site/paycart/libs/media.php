@@ -109,28 +109,26 @@ class PaycartMedia extends PaycartLib
 	}
 	
 	function moveUploadedFile($source, $name, $ext)
-    {
-        $dest = $this->_basepath;
-        if(!JFolder::exists($dest)){
-            if(!JFolder::create($dest)){
-                throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_PERMISSION_DENIED', $dest));
-            }
-        }
-        
-        $dest = $dest.$name.'-'.$this->getId().'.'.$ext;
-        if(!JFile::copy($source, $dest)){
-            throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
-        }
-        
-        $this->filename = $name.'-'.$this->getId().'.'.$ext;
-        
-    //    $properties = JImage::getImageFileProperties($this->_basepath.$this->filename);
-        
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $this->mime_type = finfo_file($finfo, $this->_basepath.$this->filename);
-        
-        return $this->save();
-    }
+	{
+		$dest = $this->_basepath;
+		if(!JFolder::exists($dest)){
+			if(!JFolder::create($dest)){
+				throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_PERMISSION_DENIED', $dest));
+			}
+		}
+		
+		$dest = $dest.$name.'-'.$this->getId().'.'.$ext;
+		if(!JFile::upload($source, $dest, false, false, PaycartFactory::getConfig()->get('catalogue_allowed_files'))){
+			throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
+		}
+		
+		$this->filename = $name.'-'.$this->getId().'.'.$ext;
+		
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$this->mime_type = finfo_file($finfo, $this->_basepath.$this->filename);
+		
+		return $this->save();
+	}
 	
 	public function toArray()
 	{		
@@ -276,5 +274,22 @@ class PaycartMedia extends PaycartLib
 	public function getOriginal()
 	{
 		return $this->_baseurl.$this->filename;
+	}
+
+	function setBasePath($path)
+	{
+		$this->_basepath = $path;
+		return $this;
+	}
+	
+	function setBaseUrl($url)
+	{
+		$this->_baseurl = $url;
+		return $this;
+	}
+	
+	function getFilename()
+	{
+		return $this->filename;
 	}
 }

@@ -234,7 +234,8 @@ class PaycartSiteControllerSearch extends PaycartController
 		foreach ($result as $productId){
 			$instance = PaycartProduct::getInstance($productId);
 			$product  = (object)$instance->toArray();
-			$product->price 			   = $formatter->amount($instance->getPrice(), true);
+			$product->formatted_price 			   = $formatter->amount($instance->getPrice(), true);
+			$product->formatted_retail_price 	   = $formatter->amount($instance->getRetailPrice(), true);
 			$products->$productId 		   = $product;
 			$products->$productId->inStock = PaycartFactory::getHelper('product')->isProductInStock($productId);
 			$products->$productId->media   = $instance->getCoverMedia();

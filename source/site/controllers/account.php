@@ -373,4 +373,54 @@ class PaycartSiteControllerAccount extends PaycartController
 		$ajax = PaycartFactory::getAjaxResponse();
 		$ajax->sendResponse();
 	}
+	
+	/**
+     * Serve any file to download
+     */
+	function serveFile()
+	{
+		$cartId = $this->input->get('cart_id',0,'INT');
+		$main    = $this->input->get('file_id',0,'STRING');
+		
+		if(!$cartId || !$main){
+			JError::raiseError(404,"File doesn't exist");
+		}
+		$returnUrl = base64_decode($this->input->get('returnUrl'));
+		$cart = PaycartCart::getInstance($cartId);
+		if(!$cart->isLocked()){
+			$this->setRedirect($returnUrl, JText::_('COM_PAYCART_ACCOUNT_ORDER_UNAUTHORIZED'), 'error');
+			return false;
+		}
+		
+		$user = JFactory::getUser();
+		if(!$user->id){				
+			$cart_key = $cart->getSecureKey();
+			$key = $this->input->get('key', 0, 'STRING');
+	
+			if($key !== $cart_key){
+				$this->setRedirect($returnUrl, JText::_('COM_PAYCART_ACCOUNT_ORDER_UNAUTHORIZED'), 'error');
+				return false;			
+			}
+		}
+		else{
+			if($cart->getBuyer() != $user->id){
+				$msg = JText::_('COM_PAYCART_ACCOUNT_ORDER_UNAUTHORIZED');
+				$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=account&task=display'), $msg, 'error');
+				return false;
+			}
+		}
+		
+		$mainId = (int)str_ireplace('file-', '', base64_decode($main));
+		
+		if(!$mainId){
+			$this->setRedirect($returnUrl,  JText::_('COM_PAYCART_ACCOUNT_ORDER_UNAUTHORIZED'), 'error');
+			return false;		
+		}
+		
+		$media = PaycartMedia::getInstance($mainId);
+		
+		/* @var $helper PaycartHelperMedia */
+		$helper = PaycartFactory::getHelper('media');
+		$helper->download($media);		
+	}
 }

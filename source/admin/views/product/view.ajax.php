@@ -42,4 +42,23 @@ class PaycartAdminAjaxViewProduct extends PaycartAdminBaseViewProduct
 		$this->_response->addRawData('row',$alias);
 		$this->_response->sendResponse();	
 	}
+	
+	/**
+     * edit or create a new digiital content row
+     */
+	function editDigitalContent()
+	{
+		$mediaId	= $this->input->get('main_id',0,'INT');
+		$teaserMediaId	= $this->input->get('teaser_id',0,'INT');
+		$media		= PaycartMedia::getInstance($mediaId);
+		$media      = $media->toArray();
+		
+		$teaserMedia = PaycartMedia::getInstance($teaserMediaId);
+		$teaserMedia = $teaserMedia->toArray();
+		
+		$this->assign('media', $media);
+		$this->assign('teaserMedia', $teaserMedia);
+		$this->setTpl('edit_digital');
+		return true;
+	}
 }

@@ -134,6 +134,8 @@ class PaycartsiteHtmlViewcart extends PaycartSiteBaseViewcart
 		$this->assign('shippingAddress', (object)$cart->getShippingAddress(true)->toArray());			
 		$this->assign('transaction_details', $transaction_details);
 		$this->assign('payment_status', $payment_status);
+		$this->assign('billingAddress', (object)$cart->getBillingAddress(true)->toArray());			
+		$this->assign('isShippableProductExist', $cartHelper->isShippableProductExist($cart));		
 
 		$this->setTpl('complete');
 		return true;

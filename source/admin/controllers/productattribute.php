@@ -23,7 +23,7 @@ class PaycartAdminControllerProductAttribute extends PaycartController
 		if($this->input->get('format', 'html') == 'json'){
 			$data 	= $this->input->post->get($this->getControlNamePrefix(), array(), 'array');		
 			$itemId = $this->_getId();		
-			$ret 	= $this::_save($data, $itemId);
+			$ret 	= $this->_save($data, $itemId);
 			
 			$view = $this->getView();
 			if($ret){

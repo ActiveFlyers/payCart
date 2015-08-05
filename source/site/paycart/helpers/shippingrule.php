@@ -409,15 +409,13 @@ class PaycartHelperShippingrule extends PaycartHelper
 		return $final_packaging_list;
 	}
 	
-	public function getRulesGroupedByProducts($cart)
+	public function getRulesGroupedByProducts($cart, $products)
 	{
 		//PCTODO : Do caching of result 
 		
 		$groupHelper = PaycartFactory::getHelper('group');
-		$productCartparticulars = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
 		$shippingRules = array();
 		
-		$products = $cart->getParam('products');
 		$productGroupMapping = $this->getApplicableGrouprules($cart,$products);
 		
 		foreach($productGroupMapping as $productId => $mapping){
@@ -444,10 +442,10 @@ class PaycartHelperShippingrule extends PaycartHelper
 
 		$groupsCart  =  $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_CART, $cart->getId());
 		
-		foreach($products as $product){
-			$productGroupMapping[$product->product_id]['groups'][Paycart::GROUPRULE_TYPE_BUYER]   = $groupsBuyer; 
-			$productGroupMapping[$product->product_id]['groups'][Paycart::GROUPRULE_TYPE_CART]    = $groupsCart;
-			$productGroupMapping[$product->product_id]['groups'][Paycart::GROUPRULE_TYPE_PRODUCT] = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT,$product->product_id);
+		foreach($products as $product_id){
+			$productGroupMapping[$product_id]['groups'][Paycart::GROUPRULE_TYPE_BUYER]   = $groupsBuyer; 
+			$productGroupMapping[$product_id]['groups'][Paycart::GROUPRULE_TYPE_CART]    = $groupsCart;
+			$productGroupMapping[$product_id]['groups'][Paycart::GROUPRULE_TYPE_PRODUCT] = $groupHelper->getApplicableRules(Paycart::GROUPRULE_TYPE_PRODUCT,$product_id);
 		}
 		
 		return $productGroupMapping;	
