@@ -15,7 +15,7 @@ if(defined('_JEXEC')===false) die();
 body {
 	padding: 1em;
 	font-family: dejavusans;
-	font-size: 14px;
+	font-size: 16px;
 }
 </style>
 <?php 
@@ -208,7 +208,7 @@ foreach ($transactions as $transaction){
 				<tr>
 					<?php $product =  PaycartProduct::getInstance($particular->particular_id);
 					$sku 		   = $product->getSKU();
-					$sku		   = isset($sku)?"(".$sku.")":"";
+					$sku		   = !empty($sku)?"(".$sku.")":"";
 					?>
 					<td><?php echo $particular->title.$sku; ?></td>
 					<td><?php echo $formatter->amount($particular->unit_price, true, $currencyId); ?></td>

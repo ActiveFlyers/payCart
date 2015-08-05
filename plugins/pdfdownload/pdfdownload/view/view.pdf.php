@@ -54,7 +54,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 						return ;
 					}
 					$cart 			= PaycartCart::getInstance($cart_id);
-				$this->_streamPdf($this->doSiteAction($cart, $cart_id));
+				$this->_streamPdf($this->doSiteAction($cart),$cart_id);
 				return ;
 			}
 	}
@@ -69,7 +69,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
        	$app->redirect($currentUrl);
 	}
 	
-		function getTemplate($record,$resultCount)
+		function getTemplate($obj,$resultCount)
 	{
 
 		//get instances
@@ -109,7 +109,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	/**
 	 *  Creating folder of given pdf files
 	 */
-	function createFolder($pdf, $count = 0 , $buyerId = null)
+	function createFolder($pdf, $count = 0 )
 	{
 		$buyer	  = Rb_Factory::getUser($buyerId);
 		$dir_path = dirname(dirname(dirname(__FILE__))).'/pdfexport'.$buyer->id;
@@ -118,7 +118,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		} 
 		ob_clean();	
 		
-		$content = $pdf->output('order_'.$cart_id.'.pdf', 'S');
+		$content = $pdf->output('order_'.$count.'.pdf', 'S');
 		file_put_contents($dir_path.'/order'.$count.'.pdf', $content);
 		return ;
 	}	
@@ -261,7 +261,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	protected function _streamPdf($pdf, $cart_id)
 	{
 		ob_clean();
-		$pdf->output('invoice_'.$cart_id.'.pdf', 'D');
+		$pdf->output('order_'.$cart_id.'.pdf', 'D');
 		exit;
 	}
 	

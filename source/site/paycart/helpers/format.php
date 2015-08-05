@@ -194,7 +194,7 @@ class PaycartHelperFormat extends JObject
          * @param type $country_id 
          * @return country name
          */
-        public function country($country_id)
+        public function country($country_id, $whatToGet = 'title')
         {
             if ( !isset(static::$_country_data[$country_id]) ) {
                 static::$_country_data = PaycartFactory::getModel('country')
@@ -205,8 +205,8 @@ class PaycartHelperFormat extends JObject
             if ( !isset(static::$_country_data[$country_id]) ) {
                 return JText::_('COM_PAYCART_ERROR_UNKNOWN_COUNTRY');
             }     
-            
-            return static::$_country_data[$country_id]->title;             
+                    
+            return static::$_country_data[$country_id]->$whatToGet;             
         }
         
         
