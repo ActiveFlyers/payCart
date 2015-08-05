@@ -301,6 +301,48 @@ class PaycartHelperInvoice
 		$build_data['cancel_url'] = $url_string.'&task=cancel';
 		$build_data['return_url'] = $url_string.'&task=complete';
 		
+		
+        $shippingAddress = $cart->getShippingAddress(true);
+        $billingAddress  = $cart->getBillingAddress(true);
+        
+        $formatter  = PaycartFactory::getHelper('format');
+        
+        
+ 		if(!empty($billingAddress)){
+		        $build_data['billing_address']['to'] 						= $billingAddress->getTo();
+		        $build_data['billing_address']['phone_number'] 				= $billingAddress->getPhone();
+		        $build_data['billing_address']['address'] 					= $billingAddress->getAddress();
+		        $build_data['billing_address']['zipcode']					= $billingAddress->getZipcode();
+		        $build_data['billing_address']['state'] 					= $formatter->state($billingAddress->getStateId());
+		        
+		        $billingCountryId = $billingAddress->getCountryId();
+		        if(!empty($billingCountryId)){
+			        $build_data['billing_address']['country']['isocode2'] 	= $formatter->country($billingCountryId,'isocode2');
+			        $build_data['billing_address']['country']['isocode3'] 	= $formatter->country($billingCountryId,'isocode3');
+		        }
+		                
+		        $build_data['billing_address']['city'] 						= $billingAddress->getCity();
+		        $build_data['billing_address']['vat_number']				= $billingAddress->getVatnumber();
+ 		}
+        
+ 		if(!empty($shippingAddress)){
+	        $build_data['shipping_address']['to'] 						= $shippingAddress->getTo();
+	        $build_data['shipping_address']['phone_number'] 			= $shippingAddress->getPhone();
+	        $build_data['shipping_address']['address'] 					= $shippingAddress->getAddress();
+	        $build_data['shipping_address']['zipcode'] 					= $shippingAddress->getZipcode();
+	        $build_data['shipping_address']['state'] 					= $formatter->state($shippingAddress->getStateId());
+	        
+	        $shippingCountryId = $shippingAddress->getCountryId();
+	        if(!empty($shippingCountryId)){
+		        $build_data['shipping_address']['country']['isocode2'] 	= $formatter->country($shippingCountryId,'isocode2');
+		        $build_data['shipping_address']['country']['isocode3'] 	= $formatter->country($shippingCountryId,'isocode3');
+	        }
+	        $build_data['shipping_address']['city']						= $shippingAddress->getCity();
+	        $build_data['shipping_address']['vat_number'] 				= $shippingAddress->getVatnumber();
+ 		}
+        
+      
+		
 		$processResponseData = Rb_EcommerceApi::invoice_request('build', $cart->getInvoiceId(), $build_data);
 		
 		//Create new response and set required cart's stuff. 
