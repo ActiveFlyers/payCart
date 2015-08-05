@@ -58,7 +58,7 @@ defined('_JEXEC') or die();
 				<span class="amount"><?php echo $product->formatted_price?></span>
 				
 				<?php if($mrp):?>
-					<span class="label label-important"><?php echo '- '.$percentage.'%';?></span>
+					<span class="pc-discount label label-important"><?php echo '- '.$formatter->amount($percentage).'%';?></span>
 				<?php endif;?>
 			</h4>
 		</div>

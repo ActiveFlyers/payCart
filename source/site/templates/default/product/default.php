@@ -89,9 +89,10 @@ $showMediaGallery = false;
 					<?php $retail_price = $product->getRetailPrice();?>
 		 			<?php $price = $product->getPrice();?>
 		 			<?php if($retail_price > $price):?>
+						<?php $percentage = (($retail_price-$price)*100)/$retail_price;?>
 			 			<h4>
 				 			<strike class="muted"><?php echo $formatter->amount($retail_price,true);?></strike>
-				 			<span class="label label-important"><?php echo JText::_('COM_PAYCART_SAVE').' '.(($retail_price-$price)*100)/$retail_price.'%'?></span>
+				 			<span class="pc-discount label label-important"><?php echo JText::_('COM_PAYCART_SAVE').' '.$formatter->amount($percentage).'%'?></span>
 				 		</h4>
 			 		<?php endif;?>
 				</div>
@@ -167,7 +168,6 @@ $showMediaGallery = false;
                     	<h2 class="text-error"><?php echo JText::_("COM_PAYCART_PRODUCT_IS_OUT_OF_STOCK");?></h2>
                     </div>
                 <?php endif;?>
-                <hr/>
                 
                 <!-- ======================
 				Position == product-addons	
@@ -199,22 +199,25 @@ $showMediaGallery = false;
 				Position == product-teaser	
 		 		=========================== -->	
 		 		<?php if(!empty($digital_teasers) && $product->getType() == Paycart::PRODUCT_TYPE_DIGITAL):?>
-			 		<div class="row-fluid">
+			 		<div class="row-fluid teaser-download">
 				 		<div class="pc-product-teaser">
-				 			<ul>
+				 			<h4><span class="muted"><?php echo JText::_("COM_PAYCART_PRODUCT_DIGITAL_GET_SAMPLE")?></span></h4>
+				 			<ul class="unstyled">
 				 			<?php foreach ($digital_teasers as $id => $data):?>
 				 				 <li>
 				 				 	<?php $fileName  = base64_encode('file-'.$id);?>
 				 				 	<?php $extension = JFile::getExt($data['filename']);?>
 				 				 	<a href="javascript:void(0);" onClick="rb.url.redirect('<?php echo PaycartRoute::_('index.php?option=com_paycart&view=product&task=serveTeaser&product_id='.$product->getId().'&file_id='.$fileName)?>')">
-				 				 		<?php echo $data['title']?><?php echo ' ('.$extension.')';?>
+				 				 		<i class="fa fa-download dwn-icon"></i> <?php echo $data['title']?>
 				 				 	</a>
+									<span class="muted"><?php echo ' ('.$extension.')';?></span>
 				 				 </li>
 				 			<?php endforeach;?>
 				 			</ul>
 				 		</div>
 				 	</div>
 			 	<?php endif;?>
+			 	<hr/>
 		 </div>
 	 </div>
 	 

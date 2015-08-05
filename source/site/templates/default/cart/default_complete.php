@@ -175,7 +175,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
  		</div>
  		<div class="span5">
  			<?php if($payment_status == PaycartHelperInvoice::STATUS_TRANSACTION_PAYMENT_COMPLETE || $payment_status == PaycartHelperInvoice::STATUS_TRANSACTION_PAYMENT_PENDING) :?>
-				<a href="<?php echo $track_url;?>" class="btn btn-large input-block-level btn-default"><?php echo JText::_('COM_PAYCART_TRACK_ORDER');?></a>
+				<?php $text = (!$isShippableProductExist)?JText::_('COM_PAYCART_GET_DOWNLOADS'):JText::_('COM_PAYCART_TRACK_ORDER')?>
+				<a href="<?php echo $track_url;?>" class="btn btn-large input-block-level btn-default"><?php echo $text;?></a>
 			<?php else:?>
 			 	<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=cart&task=unlock&cart_id='.$cart->cart_id.'&'.JSession::getFormToken().'=1');?>" class="btn btn-large input-block-level btn-default"><?php echo JText::_('COM_PAYCART_PAY_AGAIN');?></a>
 			<?php endif;?>
