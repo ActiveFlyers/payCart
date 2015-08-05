@@ -434,7 +434,7 @@ class PaycartHelperCart extends PaycartHelper
 			$shipments[$key]->notes = json_decode($shipment->notes, true); 
 		}
 		
-		$data['shipments'] = 
+		$data['shipments']    = $shipments;
 		$data['transactions'] = Rb_EcommerceAPI::transaction_get_records(array('invoice_id' => $cart->getInvoiceId()));
 		
 		return $data;

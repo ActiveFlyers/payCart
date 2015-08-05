@@ -118,7 +118,7 @@ class PaycartProductcategory extends PaycartLib
 	public function save()
 	{		
 		// Process If images exist
-		if(isset($this->_uploaded_files['cover_media'])  && isset($this->_uploaded_files['cover_media']['tmp_name']) && !empty($this->_uploaded_files['cover_media']['tmp_name'])){
+		if(!self::$isTreeCreationRunning && isset($this->_uploaded_files['cover_media'])  && isset($this->_uploaded_files['cover_media']['tmp_name']) && !empty($this->_uploaded_files['cover_media']['tmp_name'])){
 			if($this->cover_media){
 				$media = PaycartMedia::getInstance($this->cover_media);
 			}
@@ -132,7 +132,7 @@ class PaycartProductcategory extends PaycartLib
 				$media->save();
 			}
 			
-			$media->moveUploadedFile($this->_uploaded_files['cover_media']['tmp_name'], $filename, JFile::getExt($this->_uploaded_files['cover_media']['name']));
+			$media->moveUploadedFile($this->_uploaded_files['cover_media']['tmp_name'],JFile::stripExt($this->_uploaded_files['cover_media']['name']), JFile::getExt($this->_uploaded_files['cover_media']['name']));
 			$media->createThumb(PaycartFactory::getConfig()->get('catalogue_image_thumb_width'),PaycartFactory::getConfig()->get('catalogue_image_thumb_height'));
 			$media->createOptimized(PaycartFactory::getConfig()->get('catalogue_image_optimized_width'),PaycartFactory::getConfig()->get('catalogue_image_optimized_height'));
 			$media->createSquared(PaycartFactory::getConfig()->get('catalogue_image_squared_size'));
