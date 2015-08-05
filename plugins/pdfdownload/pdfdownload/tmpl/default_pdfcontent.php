@@ -27,7 +27,7 @@ foreach ($transactions as $transaction){
 	}
 }
 ?>
-<div style="page-break-before:always"> 
+<div <?php echo ($resultCount > 1)?'style="page-break-before:always"': ''?>> 
 <div> 
 	<!-- 
 	--------------------------------------------------------------------------------------------------------
@@ -362,7 +362,7 @@ foreach ($transactions as $transaction){
 	<p><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_NOTE"); ?>:-</p>
 	<p><?php echo $note;?></p>
 
-	
 </div>
 </div>
 <?php 
+

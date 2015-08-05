@@ -69,7 +69,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
        	$app->redirect($currentUrl);
 	}
 	
-	public function getTemplate($obj)
+		function getTemplate($record,$resultCount)
 	{
 
 		//get instances
@@ -98,6 +98,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		$this->assign('shippingAddress' , $shippingAddress);
 		$this->assign('config_data',$config);
 		$this->assign('buyer', 				$buyer);
+		$this->assign('resultCount', $resultCount);
 		$this->assign('rb_invoice', $obj->invoice);
 		
 		return $this->loadTemplate('pdfcontent');
