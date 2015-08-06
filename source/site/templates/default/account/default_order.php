@@ -444,6 +444,13 @@ echo $this->loadTemplate('js');
 		
 		<div class="row-fluid">
 			<div class="span6">
+				<?php 			    
+				$position = 'pc-order-pdf-action';
+			    if(isset($plugin_result) && isset($plugin_result[$position])):?>
+					<div class=<?php echo $position;?>>
+					<?php echo $plugin_result[$position]; ?>
+					</div>
+			    <?php endif;?>
 			</div>
 			<div class="span6">
 				<table class="table">

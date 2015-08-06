@@ -221,14 +221,13 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 				$cart = PaycartCart::getInstance($cartId);
 			}
 			catch (Exception $e) {
-			{
 				Rb_Factory::getApplication()->enqueueMessage(JText::_('PLG_PAYCART_PDFDOWNLOAD_NO_RESULT_FOUND'), 'warning');
 				Rb_Factory::getApplication()->redirect("index.php?option=com_paycart&view=pdfdownload");
 				return ;
 			}
 				$this->_streamPdf($this->doSiteAction($cart), $cartId);
 				return;
-			}
+			
 		}
 			
 		
