@@ -23,7 +23,7 @@ PaycartHtml::_('behavior.formvalidation');
 		var pc_shipment_cartId    		= <?php echo $cart->getId();?>;
 		var pc_shipment_shippingMethods = <?php echo json_encode($shippingMethods)?>;
 		var pc_shipment_status 			= <?php echo json_encode($status);?>;
-		var pc_shipment_products		= <?php echo json_encode(array_values($product_particular));?>;
+		var pc_shipment_products		= <?php echo json_encode(array_values($shippable_product_particular));?>;
 		var pc_shipment_tempArray		= [{}]; // used to store indexes of two shipment to show in one row
 		var pc_shipment_tempStatus		= [];
 		var pc_shipment_notes			= [{}];
