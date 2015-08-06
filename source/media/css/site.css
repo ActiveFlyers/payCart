@@ -252,6 +252,6 @@ Products Display
 	content: "\f0fe";
 }
 
-.pc-product .pc-discount .label-important{
+.pc-discount.label-important{
 	background-color : #fc2400;
 }

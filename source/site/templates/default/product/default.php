@@ -92,7 +92,8 @@ $showMediaGallery = false;
 						<?php $percentage = (($retail_price-$price)*100)/$retail_price;?>
 			 			<h4>
 				 			<strike class="muted"><?php echo $formatter->amount($retail_price,true);?></strike>
-				 			<span class="pc-discount label label-important"><?php echo JText::_('COM_PAYCART_SAVE').' '.$formatter->amount($percentage).'%'?></span>
+				 			<?php $percentage = floatval(PaycartFactory::getHelper('format')->amount($percentage,false));?>
+				 			<span class="pc-discount label label-important"><?php echo JText::_('COM_PAYCART_SAVE').' '.$percentage.'%'?></span>
 				 		</h4>
 			 		<?php endif;?>
 				</div>
