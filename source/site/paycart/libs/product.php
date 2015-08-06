@@ -532,7 +532,7 @@ class PaycartProduct extends PaycartLib
 	
 	public function getDigitalContent($requireArrayData = true)
 	{
-		$digitalData = $this->config_digital;
+		$digitalData = $this->config_digital->toObject();
 		if(!$requireArrayData){
 			return $digitalData;
 		}
