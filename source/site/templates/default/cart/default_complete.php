@@ -112,13 +112,15 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 			<?php endif;?>	
 				<hr />
 			</div>
+			<?php 			    
+			$position = 'pc-order-pdf-action';
+		    	if(isset($plugin_result) && isset($plugin_result[$position])):?>
+				<div class=<?php echo $position;?>>
+				<?php echo $plugin_result[$position]; ?>
+				</div>
+		   	<?php endif;?>
  		</div>
- 		
- 		<?php 
-        $position = 'pc-invoice-thanks-action';
-        if(isset($plugin_result) && isset($plugin_result[$position])):?>
-        <?php echo $plugin_result[$position]; ?>
-        <?php endif;?>
+
  	</div>
  	
  	<div class="row-fluid">

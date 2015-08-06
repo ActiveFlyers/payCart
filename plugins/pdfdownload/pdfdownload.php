@@ -27,6 +27,7 @@ var $_name = 'pdfdownload';
 			// set some required variables in instance of plugin ($this)
 			$this->app 		= JFactory::getApplication();
 			$this->input 	= $this->app->input;
+			$this->_session	= JFactory::getSession();
 			
 			// load language file also
 			$this->loadLanguage();	
@@ -38,6 +39,7 @@ var $_name = 'pdfdownload';
 			{
 				$dir = dirname(__FILE__).'/pdfdownload';
 		     	$this->__loadFiles();
+		     	require_once dirname(__FILE__).'/pdfdownload/mpdf/mpdf.php';
 			}
 			else{
 				return true;
@@ -47,7 +49,7 @@ var $_name = 'pdfdownload';
 				$controller = "cart";
 				$task		= "complete";
 				// load class of mpdf
-				require_once dirname(__FILE__).'/pdfdownload/mpdf/mpdf.php';
+				
 				$this->doSitePdf();
 			}
 		}
@@ -80,13 +82,17 @@ var $_name = 'pdfdownload';
 		$menu->addMenu($adminMenu);
 		
 		
-	if(($view instanceof PaycartsiteHtmlViewcart) && ($task == 'complete')){
+	if(($view instanceof PaycartsiteHtmlViewcart && $task == 'complete') ||
+		($view instanceof PaycartSiteHtmlViewAccount && $task == 'order')){
 				$cartId 	= $view->getModel()->getId();
+				if(empty($cartId)){
+					$cartId	= $this->input->get('order_id',0);
+				}
 				$cart 		= PaycartCart::getInstance($cartId);
 				$this->_assign('cartId', $cartId);
 				
 				$html 	  	= $this->_loadTemplate("download_pdfhtml",null,'','default');
-				return array("pc-invoice-thanks-action" => $html);
+				return array("pc-order-pdf-action" => $html);
 			}
 	}
 
