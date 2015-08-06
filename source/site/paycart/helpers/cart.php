@@ -433,7 +433,7 @@ class PaycartHelperCart extends PaycartHelper
 		foreach ($shipments as $key => $shipment){
 			$shipments[$key]->notes = json_decode($shipment->notes, true); 
 		}
-		
+		$data['shippable_product_particular'] = $this->filterProductParticulars($data['product_particular']);
 		$data['shipments']    = $shipments;
 		$data['transactions'] = Rb_EcommerceAPI::transaction_get_records(array('invoice_id' => $cart->getInvoiceId()));
 		
@@ -472,5 +472,28 @@ class PaycartHelperCart extends PaycartHelper
 		
 		$result[$cart->getId()] = false;
 		return $result[$cart->getId()];		
+	}
+	
+	/**
+     * Filter the given product particulars as per the type
+     * @return array
+     */
+	function filterProductParticulars($productParticulars,$type=Paycart::PRODUCT_TYPE_PHYSICAL)
+	{
+		$result = array();
+		
+		foreach ($productParticulars as $key=>$product){
+			if($product instanceof PaycartCartparticularProduct){
+				$productId = $product->get('particular_id');
+			}else{
+				$productId = $product->particular_id;
+			}
+			
+			if($type == PaycartProduct::getInstance($productId)->getType()){
+				$result[$key] = $product;
+			}
+		}
+		
+		return $result;
 	}
 }

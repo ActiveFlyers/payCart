@@ -51,6 +51,7 @@ class PaycartAdminHtmlViewCart extends PaycartAdminBaseViewCart
 		$this->assign('transactions',$data['transactions']);
 		$this->assign('transactionStatusList',Rb_EcommerceAPI::response_get_status_list());
 		$this->assign('isShippableProductExist',$cartHelper->isShippableProductExist($data['cart']));
+		$this->assign('shippable_product_particular',$data['shippable_product_particular']);
 		
 		return parent::edit($tpl);
 	}
