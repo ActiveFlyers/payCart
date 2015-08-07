@@ -17,8 +17,6 @@ if(defined('_JEXEC')===false) die();
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <style type="text/css">
 <?php $mpdf->WriteHTML(file_get_contents(JPATH_ROOT.'/media/jui/css/bootstrap.css'), 1);?>
-<?php $mpdf->WriteHTML(file_get_contents(JPATH_ROOT.'/media/jui/css/bootstrap-responsive.css'), 1);?>
-
 </style>
 </head>
 <body>

@@ -24,6 +24,11 @@ class PaycartAdminBaseViewPdfdownload extends PaycartView
 		parent::__construct($config);
 	}
 	
+	protected function _adminGridToolbar()
+			{
+				return true;
+			}
+	
 	public function getModel($anme = '')
 	{
 		return null;
