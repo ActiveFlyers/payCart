@@ -63,12 +63,16 @@
 		        <option value='m'>Meter</option>
 		 </field>
 		
-		<field name="invoice_serial_prefix"
-			   type="text"  
-			   required="true"
-			   label="COM_PAYCART_ADMIN_CONFIG_INVOICE_SERIAL_PREFIX"
-			   default="paycart">
-		</field>
+		<field	name="invoice_serial_number_format"	
+					label="COM_PAYCART_INVOICE_INVOICE_SERIAL_FORMAT" 
+					description="COM_PAYCART_INVOICE_INVOICE_SERIAL_FORMAT_DESC"
+					type="text" 
+					default="[[number]]" 
+					required="true"/>
+		
+		<field	name="paid_invoice_last_serial"	
+					type="hidden" 
+					default="0" />
 		
 		<field  name="localization_default_language" 
 				type="paycart.supportedlanguage"

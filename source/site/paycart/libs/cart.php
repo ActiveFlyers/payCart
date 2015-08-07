@@ -29,6 +29,7 @@ class PaycartCart extends PaycartLib
 	protected $billing_address_id;				// for invoicing
 	protected $shipping_address_id;	
 	protected $invoice_id;
+	protected $invoice_serial;				// Order of paid invoices
 	protected $secure_key;
 	
 	protected $locked_date;					// Checkout/refund  Request date (Request for Payment)
@@ -101,6 +102,7 @@ class PaycartCart extends PaycartLib
 		$this->cart_id	 		= 0; 
 		$this->buyer_id 		= 0;
 		$this->invoice_id		= 0;
+		$this->invoice_serial	= 0;
 		
 		$this->status			= Paycart::STATUS_CART_DRAFTED;
 		$this->currency			= PaycartFactory::getConfig()->get('localization_currency');
@@ -136,6 +138,14 @@ class PaycartCart extends PaycartLib
 		$this->clearCartParticulars();
 		
 		return $this;
+	}
+	
+	/**
+	 * Return Cart-Id
+	 */	
+	public function getCartId()
+	{
+		return $this->cart_id;
 	}
 	
 	/**
@@ -196,11 +206,6 @@ class PaycartCart extends PaycartLib
 	{
 		return $this->currency;
 	}
-
-	public function getPaymentDate()
-	{
-		return $this->payment_date;
-	}
 	
 	public function getReversalFor()
 	{
@@ -209,6 +214,11 @@ class PaycartCart extends PaycartLib
 	public function getStatus()
     {
            return $this->status;
+    }
+    
+	public function getInvoiceSerial()
+    {
+    	return $this->invoice_serial;
     }
     
 	public function isGuestcheckout() 
@@ -375,8 +385,14 @@ class PaycartCart extends PaycartLib
 	public function setInvoiceId($invoice_id)
 	{
 		$this->invoice_id	=	$invoice_id; 
+		return $this;
 	}
 	
+	public function setInvoiceSerial($invoice_serial)
+	{
+		$this->invoice_serial = $invoice_serial;
+		return $this;
+	}
 	/**
 	 * 
 	 * Get Cart particular

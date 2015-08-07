@@ -169,6 +169,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `buyer_id` int(11) DEFAULT '0',
   `session_id` varchar(200) DEFAULT '',
   `invoice_id` int(11) DEFAULT '0' COMMENT 'mapped invoice id with rb_ecommerce_invoice table',
+  `invoice_serial` varchar(255) DEFAULT '0' COMMENT 'order of paid invoices',
   `lang_code` char(7) NOT NULL,
   `status` enum('drafted','paid','cancelled') NOT NULL,
   `is_locked` int(4) NOT NULL DEFAULT '0' COMMENT 'after cart lock, Buyer can''t change into cart',

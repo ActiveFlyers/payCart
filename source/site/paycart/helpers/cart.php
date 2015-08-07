@@ -496,4 +496,46 @@ class PaycartHelperCart extends PaycartHelper
 		
 		return $result;
 	}
+	
+	/**
+	 * Invoke to set Invoice Serial on paid carts
+	 * @param int $cart_id 
+	 */
+	// Set invoice serial number to paid invoices
+	public function setInvoiceSerial($cart)
+	{
+		$serialFormat	 = PaycartFactory::getConfig()->get('invoice_serial_number_format');
+		$lastCounter	 = PaycartFactory::getConfig()->get('paid_invoice_last_serial');
+					
+		if (empty($lastCounter)) {
+			$lastCounter = 0;
+		}
+		
+		$lastCounter++;
+		$cartPaidOn 	= $cart->getPaidDate();
+		
+		$paidDate 		= $paidMonth = $paidYear = $paidDay = '';
+		
+		$paidDate		= PaycartHelperFormat::date($cartPaidOn,  'd');
+		$paidMonth	   	= PaycartHelperFormat::date($cartPaidOn,  'm');
+		$paidYear 		= PaycartHelperFormat::date($cartPaidOn,  'Y');
+		$paidDay 		= PaycartHelperFormat::date($cartPaidOn,  'A');
+		
+		$search  		= array('[[number]]', '[[date]]', '[[month]]', '[[year]]','[[day]]');
+		$replace 		= array($lastCounter, $paidDate, $paidMonth, $paidYear, $paidDay);
+		
+		$invoice_serial = str_replace($search, $replace, $serialFormat);
+		
+		// Updating the invoice serial
+		$db 			= JFactory::getDbo();
+		$query 			= "UPDATE `#__paycart_cart` SET `invoice_serial` = '$invoice_serial' WHERE `cart_id` = ".$cart->getCartId();
+		$db->setQuery($query);
+		
+		// If data saved successfully, update the invoice counter if serial format contains number		
+		if($db->execute() && strstr( $serialFormat , '[[number]]' ))
+		{
+			PaycartFactory::saveConfig(array('invoice_serial_number_format' => $lastCounter));
+			return $invoice_serial; 	
+		}
+	}
 }
