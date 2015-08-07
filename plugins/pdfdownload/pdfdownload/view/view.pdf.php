@@ -63,8 +63,8 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	{
 		$app 		 = PaycartFactory::getApplication();
 		$currentUrl  = JURI::getInstance();
-		// set task for generate pdf files for next slote
-		$currentUrl->setVar('task', 'download');
+		// set task for generate pdf files for next slot
+		$currentUrl->delVar('pdfdownload_deleteFiles');
 		$redirectUrl = $currentUrl->toString();
        	$app->redirect($currentUrl);
 	}
@@ -173,7 +173,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	    //then send the headers to force download the zip file
 	    if(file_exists($archive_file_name)){
 		    header("Content-type: application/zip");
-		    header("Content-Disposition: attachment; filename=pdfInvoices.zip");
+		    header("Content-Disposition: attachment; filename=pdfDownloads.zip");
 		    header("Pragma: no-cache");
 		    header("Expires: 0");
 		    readfile("$archive_file_name");
@@ -269,11 +269,8 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	 */
 	function getContentForPdf($result)
 	{
-	   require_once dirname(dirname(__FILE__)).'/mpdf'.'/mpdf.php';
-	   $mpdf     = new mPDF("en-GB-x","A4","","",10,10,10,10,6,3);
-	   
-	  	// $mpdf->SetDirectionality('rtl');
-	   $mpdf->autoScriptToLang = true;
+	   	$mpdf=new mPDF('s'); 
+	 	$mpdf->autoLangToFont = true;
 	   $this->assign('mpdf' , $mpdf);
 		$contents = $this->includeHeader();
 		if($result){

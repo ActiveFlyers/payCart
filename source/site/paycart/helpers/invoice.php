@@ -315,10 +315,13 @@ class PaycartHelperInvoice
 		        $build_data['billing_address']['zipcode']					= $billingAddress->getZipcode();
 		        $build_data['billing_address']['state'] 					= $formatter->state($billingAddress->getStateId());
 		        
+			$build_data['billing_address']['country']['isocode2'] ="";
+			$build_data['billing_address']['country']['isocode3'] = "";
+
 		        $billingCountryId = $billingAddress->getCountryId();
 		        if(!empty($billingCountryId)){
 			        $build_data['billing_address']['country']['isocode2'] 	= $formatter->country($billingCountryId,'isocode2');
-			        $build_data['billing_address']['country']['isocode3'] 	= $formatter->country($billingCountryId,'isocode3');
+			        $build_data['billing_address']['country']['isocode3'] 	= $billingCountryId;
 		        }
 		                
 		        $build_data['billing_address']['city'] 						= $billingAddress->getCity();
@@ -333,9 +336,11 @@ class PaycartHelperInvoice
 	        $build_data['shipping_address']['state'] 					= $formatter->state($shippingAddress->getStateId());
 	        
 	        $shippingCountryId = $shippingAddress->getCountryId();
+		$build_data['shipping_address']['country']['isocode2'] = "";
+		$build_data['shipping_address']['country']['isocode3'] = "";
 	        if(!empty($shippingCountryId)){
 		        $build_data['shipping_address']['country']['isocode2'] 	= $formatter->country($shippingCountryId,'isocode2');
-		        $build_data['shipping_address']['country']['isocode3'] 	= $formatter->country($shippingCountryId,'isocode3');
+		        $build_data['shipping_address']['country']['isocode3'] 	= $shippingCountryId;
 	        }
 	        $build_data['shipping_address']['city']						= $shippingAddress->getCity();
 	        $build_data['shipping_address']['vat_number'] 				= $shippingAddress->getVatnumber();
