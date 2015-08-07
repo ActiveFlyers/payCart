@@ -122,7 +122,12 @@ class PaycartHelperEvent extends PaycartHelper
             //trigger
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
-           //send notification 
+            //1. set invoice_serial
+           	$helper					= PaycartFactory::getInstance('cart' , 'helper');
+           	$invoice_serial 		= $helper->setInvoiceSerial($cart);
+           	$cart->setInvoiceSerial($invoice_serial);
+            
+           	//2. send notification 
             $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($cart);

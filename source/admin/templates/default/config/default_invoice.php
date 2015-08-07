@@ -29,7 +29,7 @@ defined('_JEXEC') or die( 'Restricted access' );
 	<div class="span9">
 		<div class="row-fluid">
 				<div class="span6">
-					<?php $field = $form->getField('invoice_serial_prefix') ?>
+					<?php $field = $form->getField('invoice_serial_number_format') ?>
 					<div class="control-group">
 						<div class="control-label"><?php echo $field->label; ?> </div>
 						<div class="controls">
