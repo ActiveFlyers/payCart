@@ -13,17 +13,18 @@ defined('_JEXEC') or die('Restricted access'); ?>
 <script type="text/javascript">
 	function resetVariables(event)
 	{
-		var pdfdownload_cartId =  document.getElementById('pdfdownload_cartId').value;
-		var pdfdownload_txnDateFrm =  document.getElementById('pdfdownload_txnDateFrm').value;
-		var pdfdownload_txnDateTo  =  document.getElementById('pdfdownload_txnDateTo').value;
+		var pdfdownload_cartId =  paycart.jQuery('#pdfdownload_cartId').val();
+		var pdfdownload_txnDateFrm =  paycart.jQuery('#pdfdownload_txnDateFrm').val();
+		var pdfdownload_txnDateTo  =  paycart.jQuery('#pdfdownload_txnDateTo').val();
+		var pdfdownload_status =  paycart.jQuery('#pdfdownload_status').val();
 
 		//if all fields are left blank
-		if(pdfdownload_cartId == "" && pdfdownload_txnDateFrm == "" && pdfdownload_txnDateTo == ""){
+		if(pdfdownload_cartId == "" && pdfdownload_txnDateFrm == "" && pdfdownload_txnDateTo == "" && pdfdownload_status == ""){
 			alert("<?php echo JText::_('PLG_PAYCART_PDFDOWNLOAD_ENTER_EITHER_KEY_OR_DATES');?>");
 			event.preventDefault();
 			return false;
 		}
-		document.getElementById("invoiceForm").submit();
+		paycart.jQuery("#invoiceForm").submit();
 	}
 </script>
 <div id="pdfdownload">
@@ -39,16 +40,25 @@ defined('_JEXEC') or die('Restricted access'); ?>
 <div class="row-fluid form-horizontal">	
 
 		<div class="control-group">
-			<div class="control-label">Cart Id:</div>
+			<div class="control-label"><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_CARTID"); ?></div>
 			<div class="controls">
 				<input type="text" value="" size="20" name="pdfdownload_cartId" id="pdfdownload_cartId">
+			</div>
+		</div>
+		  
+		<div class="control-group">
+			<div class="control-label"><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_STATUS"); ?></div>
+			<div class="controls">
+				<?php $status = Paycart::getCartStatus();?>
+				<?php unset($status[Paycart::STATUS_CART_DRAFTED])?>
+				<?php echo JHtml::_('select.genericlist', $status, "pdfdownload_status");?>
 			</div>
 		</div>
 		
 		<h6>Transaction Date</h6>
 				
 		<div class="control-group">
-			<div class="control-label">From:</div>
+			<div class="control-label"><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_FROM"); ?></div>
 				
 			<div class="controls">
 				<?php 
@@ -60,7 +70,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 		</div>
 		
 		<div class="control-group">
-			<div class="control-label">To:</div>
+			<div class="control-label"><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_TO"); ?></div>
 				
 			<div class="controls">
 				<?php 

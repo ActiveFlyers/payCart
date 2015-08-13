@@ -10,14 +10,7 @@
 // no direct access
 if(defined('_JEXEC')===false) die();
 ?>
-<style>
 
-body {
-	padding: 1em;
-	font-family: dejavusans;
-	font-size: 16px;
-}
-</style>
 <?php 
 $formatter  = PaycartFactory::getHelper('format');	
 $paid_transaction = new stdClass();
@@ -26,6 +19,7 @@ foreach ($transactions as $transaction){
 		$paid_transaction = $transaction;
 	}
 }
+$currency = $cart->getCurrency();
 ?>
 <div <?php echo ($resultCount > 1)?'style="page-break-before:always"': ''?>> 
 <div> 
@@ -45,7 +39,7 @@ foreach ($transactions as $transaction){
 				</h4>
 				<p>
 					<?php if(!empty($config_data['company_address'])):?>
-					<?php echo $config_data['company_address'];?><br />
+					<?php echo nl2br($config_data['company_address']);?><br />
 					<?php endif;?>
 					<?php if(!empty($config_data['company_phone'])):?>
 					<?php echo $config_data['company_phone'];?><br />
@@ -54,20 +48,20 @@ foreach ($transactions as $transaction){
 			</td>
 			
 			<td align="center">
-			<div class="media">
-				<div  style="max-width:150px; width:150px;">
+			<div >
+				<div>
 				
 					<?php if(!empty($config_data['company_logo'])):?>
 							<?php $media = PaycartMedia::getInstance($config_data['company_logo']);?>
 							
-						<img class="media-object" alt="" src="<?php echo $media->getOriginal();?>">												
+						<img  style="max-width:150px; width:150px; height:150px" alt="" src="<?php echo $media->getOriginal();?>">												
 					 <?php endif;?>
 				</div>
 			</div>		
 			</td>
 			
 		</tr>
-				<tr><td><h3>&nbsp;</h3></td></tr>		
+				<tr><td>&nbsp;</td></tr>		
 		<tr>
 		<?php 
 		
@@ -81,18 +75,6 @@ foreach ($transactions as $transaction){
 				$phone		= $billingAddress->getPhone();
 				
 		?>
-		
-			<?php 
-		
-				$shipTo			= $shippingAddress->getTo();
-				$shipAddress    = $shippingAddress->getAddress();
-				$shipCity       = $shippingAddress->getCity();
-				$shipState      = $shippingAddress->getStateId();
-				$shipCountry	= $shippingAddress->getCountryId();
-				$shipZip_code	= $shippingAddress->getZipcode();
-				$shipPhone		= $shippingAddress->getPhone();	
-		?>
-		
 			<td class="pull-left span6">
 				<p><b><?php echo JText::_('COM_PAYCART_ADDRESS_BILLING');?></b><br/>
 				<?php echo $to; ?><br/>
@@ -106,16 +88,28 @@ foreach ($transactions as $transaction){
 				</p>
 			</td>
 			
-			<td class="pull-right span6" >
-				<p><b><?php echo JText::_('COM_PAYCART_ADDRESS_SHIPPING');?></b><br/>
-				<?php echo $shipto; ?><br/>
-				<?php echo $shipAddress;?><br />
-				<?php echo $shipCity. ''. $shipState;?><br />
-				<?php echo $shipCountry.'-'.$shipZip_code;?><br />
-				<?php echo JText::_('COM_PAYCART_PHONE_NUMBER');?>-<?php echo $shipPhone;?>
-				</p>
-			</td>
-			
+			<?php  if($cartHelper->isShippableProductExist($cart)):?>
+				<?php 
+		
+					$shipTo			= $shippingAddress->getTo();
+					$shipAddress    = $shippingAddress->getAddress();
+					$shipCity       = $shippingAddress->getCity();
+					$shipState      = $shippingAddress->getStateId();
+					$shipCountry	= $shippingAddress->getCountryId();
+					$shipZip_code	= $shippingAddress->getZipcode();
+					$shipPhone		= $shippingAddress->getPhone();	
+				?>
+		
+				<td class="pull-right span6" >
+					<p><b><?php echo JText::_('COM_PAYCART_ADDRESS_SHIPPING');?></b><br/>
+					<?php echo $shipto; ?><br/>
+					<?php echo $shipAddress;?><br />
+					<?php echo $shipCity. ''. $shipState;?><br />
+					<?php echo $shipCountry.'-'.$shipZip_code;?><br />
+					<?php echo JText::_('COM_PAYCART_PHONE_NUMBER');?>-<?php echo $shipPhone;?>
+					</p>
+				</td>
+		<?php  endif;?>	
 		</tr>
 		<tr><td><h3>&nbsp;</h3></td></tr>
 	</table>
@@ -166,7 +160,7 @@ foreach ($transactions as $transaction){
 				
 	    		<td class="span6">
 	    			<b><?php echo JText::_('PLG_PAYCART_PDFDOWNLOAD_TOTAL'); ?>:</b>
-					<?php echo $currency_symbol." ".number_format($rb_invoice['total'], 2);?>
+					<?php echo $formatter->amount($rb_invoice['total'],true,$currency);?>
 					
 	    		</td>
 	    	</tr>
@@ -182,13 +176,13 @@ foreach ($transactions as $transaction){
 		
 		<thead>
 			<tr style="background: #ccc;">
-				<th><?php echo JText::_("COM_PAYCART_PRODUCT")?></th>
-				<th><?php echo JText::_("COM_PAYCART_UNIT_PRICE")?></th>
-				<th><?php echo JText::_("COM_PAYCART_QUANTITY")?></th>
-				<th><?php echo JText::_("COM_PAYCART_PRICE")?></th>
-				<th><?php echo JText::_("COM_PAYCART_TAX")?></th>
-				<th><?php echo JText::_("COM_PAYCART_DISCOUNT")?></th>
-				<th><?php echo JText::_("COM_PAYCART_TOTAL")?></th>
+				<th class="span2"><?php echo JText::_("COM_PAYCART_PRODUCT")?></th>
+				<th class="span1"><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_BUYER_UNIT_COST")?></th>
+				<th class="span1"><?php echo JText::_("COM_PAYCART_QUANTITY")?></th>
+				<th class="span2"><?php echo JText::_("COM_PAYCART_PRICE")?>(<?php echo $formatter->currency($currency); ?>)</th>
+				<th class="span1"><?php echo JText::_("COM_PAYCART_TAX")?>(<?php echo $formatter->currency($currency); ?>)</th>
+				<th class="span2"><?php echo JText::_("COM_PAYCART_DISCOUNT")?>(<?php echo $formatter->currency($currency); ?>)</th>
+				<th class="span2"><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_LINE_TOTAL")?>(<?php echo $formatter->currency($currency); ?>)</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -210,12 +204,12 @@ foreach ($transactions as $transaction){
 					$sku 		   = $product->getSKU();
 					$sku		   = !empty($sku)?"(".$sku.")":"";
 					?>
-					<td><?php echo $particular->title.$sku; ?></td>
-					<td><?php echo $formatter->amount($particular->unit_price, true, $currencyId); ?></td>
-					<td><?php echo $particular->quantity; ?></td>
-					<td><?php echo $formatter->amount($particular->price, true, $currencyId); ?></td>
-					<td>
-						<?php echo $formatter->amount($particular->tax, true, $currencyId); ?>
+					<td ><?php echo $particular->title.$sku; ?></td>
+					<td ><?php echo $formatter->amount($particular->unit_price,false); ?></td>
+					<td ><?php echo $particular->quantity; ?></td>
+					<td ><?php echo $formatter->amount($particular->price,false); ?></td>
+					<td >
+						<?php echo $formatter->amount($particular->tax,false); ?>
 						&nbsp;
 							<?php $key = $particular->type.'-'.$particular->particular_id;?>
 							<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_TAXRULE])):?>
@@ -225,8 +219,8 @@ foreach ($transactions as $transaction){
 							  </a>
 							<?php endif;?>
 					</td>
-					<td>
-						<?php echo $formatter->amount($particular->discount, true, $currencyId); ?>
+					<td >
+						<?php echo $formatter->amount($particular->discount,false); ?>
 						&nbsp;
 						<?php $key = $particular->type.'-'.$particular->particular_id;?>
 						<?php if(isset($usageDetails[$key]) && isset($usageDetails[$key][Paycart::PROCESSOR_TYPE_DISCOUNTRULE])):?>
@@ -236,7 +230,7 @@ foreach ($transactions as $transaction){
 							  </a>
 						<?php endif;?>
 					</td>
-					<td><?php echo $formatter->amount($particular->total, true, $currencyId); ?></td>
+					<td class="span2"><?php echo $formatter->amount($particular->total,false); ?></td>
 				</tr>
 			<?php endforeach;?>
 				
@@ -263,7 +257,7 @@ foreach ($transactions as $transaction){
 							<?php endif;?>
 						</small>
 					</td>
-					<td><?php echo $formatter->amount($promotion_particular->total, true, $currencyId);?></td>
+					<td><?php echo $formatter->amount($promotion_particular->total);?></td>
 					
 					<?php $finalTotal += $promotion_particular->total;?>
 				</tr>
@@ -282,26 +276,24 @@ foreach ($transactions as $transaction){
 							<?php endif;?>
 						</small>
 					</td>
-					<td><?php echo $formatter->amount($duties_particular->total, true, $currencyId);?></td>
+					<td><?php echo $formatter->amount($duties_particular->total);?></td>
 				
 					<?php $finalTotal += $duties_particular->total;?>
 				</tr>
-			<?php endif;?>
-				
-				
+			<?php endif;?>	
+				<tr><td colspan="7">&nbsp;</td></tr>	
 				<!--=========================================
 	           			 	Products total 
 				===========================================-->
 			
 				<tr>
-				
-					<td colspan="5">
+					<td colspan="4">
 						&nbsp;
 					</td>
-					<td>
-						<b><strong><?php echo JText::_("COM_PAYCART_TOTAL")?></strong>
+					<td colspan="2">
+						<b><strong><?php echo JText::_("COM_PAYCART_TOTAL")?>:</strong>
 					</td>
-					<td><?php echo $formatter->amount($total, true, $currencyId); ?></b></td>
+					<td><?php echo $formatter->amount($total,false); ?></b></td>
 				</tr>
 						
 				
@@ -311,46 +303,35 @@ foreach ($transactions as $transaction){
 			<?php $shippingTotal = 0; ?>
 			<?php if(!empty($shipping_particular)):?>
 			
-				<?php foreach ($shipping_particular as $id => $particular):?>
+					<?php foreach ($shipping_particular as $id => $particular):?>
 					
-						<?php // if cart is locked then $particular->params is stdclass object, else it will object of JRegistry?>
-						<?php if($cart->isLocked()):?>
-							<?php $params = $particular->params;?>
-						<?php else:?>
-							<?php $params = new stdClass();?>
-							<?php $params->product_list = $particular->params->get('product_list');?>
-							<?php $params->delivery_date = $particular->params->get('delivery_date');?>
-						<?php endif;?>
+							<?php $finalTotal += $particular->total;?>
+							<?php $shippingTotal += $particular->total;?>
 						
-						
-						<?php echo $formatter->amount($particular->unit_price, true, $currencyId);?>
-				
-						<?php $finalTotal += $particular->total;?>
-						<?php $shippingTotal += $particular->total;?>
-					
-				<?php endforeach;?>
-				
-				<tr>
-					<td colspan="5">
-						&nbsp;
-					</td>
-					<td>
-						<b><strong><?php echo JText::_('COM_PAYCART_SHIPPING_DETAILS')?></strong>
-					</td>
-					<td><?php echo $formatter->amount($shippingTotal, true, $currencyId);?></b></td>
-				</tr>
+					<?php endforeach;?>
+					<?php  if($cartHelper->isShippableProductExist($cart)):?>
+						<tr>
+							<td colspan="4">
+								&nbsp;
+							</td>
+							<td colspan="2">
+								<b><strong><?php echo JText::_('PLG_PAYCART_PDFDOWNLOAD_SHIPPING_AMOUNT')?>:</strong>
+							</td>
+							<td>&nbsp;<?php echo $formatter->amount($shippingTotal,false);?></b></td>
+						</tr>
+					<?php endif;?>
 			
-			<?php endif;?>
+			<?php  endif;?>
 			
 			<!-- ======================================== 
 				   		Final total
 			==========================================-->
 				<tr>
-					<td colspan="5">
+					<td colspan="4">
 						&nbsp;
 					</td>
-					<td><b><?php echo JText::_('COM_PAYCART_PAYABLE_AMOUNT')?></b></td>
-					<td><strong><?php echo $formatter->amount($finalTotal, true, $currencyId);?></strong></td>
+					<td colspan="2"><b><?php echo JText::_('COM_PAYCART_PAYABLE_AMOUNT')?>:</b></td>
+					<td><strong><?php echo $formatter->amount($finalTotal,true,$currency);?></strong></td>
 				</tr>
 		</tbody>
 	</table>
@@ -359,8 +340,10 @@ foreach ($transactions as $transaction){
 	<!-- ======================================== 
 				   		Note
 	==========================================-->
+	<?php if(!empty($note)):?>
 	<p><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_NOTE"); ?>:-</p>
 	<p><?php echo $note;?></p>
+	<?php endif;?>
 
 </div>
 </div>
