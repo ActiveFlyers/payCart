@@ -10,8 +10,8 @@ if(defined('_JEXEC')===false) die();
 
 $downloadUrl = JRoute::_('index.php?option=com_paycart&view=pdfdownload&task=sitedownload&action=sitePdfDownload&cart_id='.$cartId); ?>
 <div class="text-center">
-<a class="btn btn-primary "  onclick="rb.url.redirect('<?php echo $downloadUrl; ?>'); return false;" >
-	<h5><?php echo JText::_('PLG_PAYCART_PDFDOWNLOAD_FRONT_INVOICE_DOWNLOAD_LINK');?></h5>
+<a class="btn btn-info "  onclick="rb.url.redirect('<?php echo $downloadUrl; ?>'); return false;" >
+	<h5><i class="fa fa-download"></i> <?php echo JText::_('PLG_PAYCART_PDFDOWNLOAD_FRONT_INVOICE_DOWNLOAD_LINK');?></h5>
 </a> 
 </div>
 <?php  

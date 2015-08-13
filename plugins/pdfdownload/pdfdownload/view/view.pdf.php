@@ -100,6 +100,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		$this->assign('buyer', 				$buyer);
 		$this->assign('resultCount', $resultCount);
 		$this->assign('rb_invoice', $obj->invoice);
+		$this->assign('cartHelper', $cartHelper);
 		
 		return $this->loadTemplate('pdfcontent');
 		//return $this->_render('pdfcontent',null,'default');
@@ -215,8 +216,15 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		
 		//if invoice key is given then use site side's function
 		$cartId = Rb_Factory::getApplication()->input->get('pdfdownload_cartId',0);
+		
 	
-		if($cartId){
+		if($cartId ){
+			if(!is_numeric($cartId))
+			{
+				Rb_Factory::getApplication()->enqueueMessage(JText::_('PLG_PAYCART_PDFDOWNLOAD_NO_RESULT_FOUND'), 'warning');
+				Rb_Factory::getApplication()->redirect("index.php?option=com_paycart&view=pdfdownload");
+				return ;
+			}
 			try{
 				$cart = PaycartCart::getInstance($cartId);
 			}
@@ -229,12 +237,13 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 				return;
 			
 		}
-			
+		
+		$status = Rb_Factory::getApplication()->input->get('pdfdownload_status',Paycart::STATUS_CART_PAID);
 		
 		$pdf_helper = $this->getHelper('pdfdownload');
 		
 		//else get result for in between given dates
-		$result 	= $pdf_helper->getResultForInvoices();
+		$result 	= $pdf_helper->getResultForInvoices($status);
 		if(isset($result['result']) && !empty($result['result'])){
 			$this->createFolder($this->getContentForPdf($result['result']), $count);
 		}else {
