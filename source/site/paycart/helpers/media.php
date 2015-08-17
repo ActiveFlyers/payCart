@@ -179,7 +179,7 @@ class PaycartHelperMedia extends PaycartHelper
 		}
 		header("Content-Length: ". $resultLength);
 		header("Content-Range: bytes " . $resultRange . '/' . $fileSize);
-		header("Content-Type: " . (string)$matchedAllowedMimeType);
+		header("Content-Type: " . (string)$media->get('mime_type'));
 		header('Content-Disposition: attachment; filename="'.$fileWithoutPath.'"');
 		header("Content-Transfer-Encoding: binary\n");
 		
