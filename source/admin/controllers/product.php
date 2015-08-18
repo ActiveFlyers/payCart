@@ -125,6 +125,28 @@ class PaycartAdminControllerProduct extends PaycartController
 		}
 		return true;
 	}
+	
+	public function _copy($itemId)
+	{ 	
+		try{
+		 	$product = PaycartProduct::getInstance($itemId);
+		}catch(Exception $ex){
+ 			//Validate product exist or not
+			$this->setError(JText::_('COM_PAYCART_ADMIN_PRODUCT_PRODUCT_NOT_EXIST'));
+			return false;
+		} 
+		
+		// if everything is ok then create new variant
+		$productHelper = PaycartFactory::getHelper('product');
+		$copy          = $productHelper->addVariant($product,false);
+		if(!$copy) {
+			$this->setError(JText::_('COM_PAYCART_ADMIN_PRODUCT_COPY_CREATION_FAIL'));
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/**
 	* Add New Product Variant
 	*/
