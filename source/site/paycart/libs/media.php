@@ -108,7 +108,7 @@ class PaycartMedia extends PaycartLib
 		return $this->title;
 	}
 	
-	function moveUploadedFile($source, $name, $ext)
+	function moveUploadedFile($source, $name, $ext , $isUploadUsingPost = true)
 	{
 		$dest = $this->_basepath;
 		if(!JFolder::exists($dest)){
@@ -118,8 +118,14 @@ class PaycartMedia extends PaycartLib
 		}
 		
 		$dest = $dest.$name.'-'.$this->getId().'.'.$ext;
-		if(!JFile::upload($source, $dest, false, false, PaycartFactory::getConfig()->get('catalogue_allowed_files'))){
-			throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
+		if($isUploadUsingPost){
+			if(!JFile::upload($source, $dest, false, false, PaycartFactory::getConfig()->get('catalogue_allowed_files'))){
+				throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
+			}
+		}else{
+			if(!JFile::copy($source, $dest)){
+				throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_MOVE_PERMISSION_DENIED', $source, $dest));
+			}
 		}
 		
 		$this->filename = $name.'-'.$this->getId().'.'.$ext;

@@ -32,16 +32,19 @@ class PaycartHelperProduct extends PaycartHelper
 	/**
 	 * Create new variation of Product. 
 	 */
-	public function addVariant(PaycartProduct $product)
+	public function addVariant(PaycartProduct $product, $isLinkingRequired = true)
 	{
 		$newProduct = PaycartProduct::getInstance();
 		
 		// prepare bind data
 		$data = $product->toArray();
-		foreach(array('product_id', 'variation_of', 'created_date', 'modified_date', 'cover_media' , 'alias', 'product_lang_id') as $key){
+		foreach(array('product_id', 'variation_of', 'created_date', 'modified_date', 'cover_media' , 'alias', 'product_lang_id','config_digital') as $key){
 			unset($data[$key]);
 		}		
-		$data['variation_of'] = $product->getVariationOf();		
+		
+		if($isLinkingRequired){
+			$data['variation_of'] = $product->getVariationOf();
+		}		
 		$newProduct->bind($data);
 		
 		
@@ -75,14 +78,15 @@ class PaycartHelperProduct extends PaycartHelper
 			$image_id = $image['media_id'];
 			
 			$media = PaycartMedia::getInstance();
-			$data = array();
-			foreach(array('media_id', 'filename', 'media_lang_id' ) as $key){
+			$data  = array();
+			$filename =  Jfile::stripExt(JString::str_ireplace('-'.$image_id.'.'.JFile::getExt($image['path_original']), '.'.JFile::getExt($image['path_original']),$image['filename']));
+			foreach(array('media_id', 'media_lang_id' ) as $key){
 				unset($image[$key]);
 			}
 			$media->bind($image);
 			$media->save();			
 			
-			$media->moveUploadedFile($image['path_original'], JFile::stripExt($image['path_original']),JFile::getExt($image['path_original']));
+			$media->moveUploadedFile($image['path_original'],$filename,JFile::getExt($image['path_original']),false);
 			$media->createThumb($config->get('catalogue_image_thumb_width'), $config->get('catalogue_image_thumb_height'));
 			$media->createOptimized($config->get('catalogue_image_optimized_width'),$config->get('catalogue_image_optimized_height'));
 			
@@ -91,6 +95,47 @@ class PaycartHelperProduct extends PaycartHelper
 			}
 						
 			$media_ids[] = $media->getId();
+		}
+		
+		//copy all digital files 
+		if($product->getType() == Paycart::PRODUCT_TYPE_DIGITAL){
+			$digital = $product->getDigitalContent();
+			
+			if(!empty($digital)){
+				$digitalIds = array();
+				foreach ($digital as $digital){
+					//main file
+					$media = PaycartMedia::getInstance();
+					$data  = array();
+					$filename =  Jfile::stripExt(JString::str_ireplace('-'.$digital['main']['media_id'].'.'.JFile::getExt($digital['main']['filename']), '.'.JFile::getExt($digital['main']['filename']),$digital['main']['filename']));
+					foreach(array('media_id', 'media_lang_id' ) as $key){
+						unset($digital['main'][$key]);
+					}
+					$media->bind($digital['main']);
+					$media->setBasePath(PAYCART_PATH_MEDIA_DIGITAL_MAIN);
+					$media->save();	
+					$media->moveUploadedFile(PAYCART_PATH_MEDIA_DIGITAL_MAIN.$digital['main']['filename'],$filename,JFile::getExt($digital['main']['filename']),false);
+					$mainId = $media->getId();
+					$digitalIds[$mainId]['main'] = $mainId;
+					
+					//teaser file
+					if(!empty($digital['teaser'])){
+						$media = PaycartMedia::getInstance();
+						$data  = array();
+						$filename =  Jfile::stripExt(JString::str_ireplace('-'.$digital['teaser']['media_id'].'.'.JFile::getExt($digital['teaser']['filename']), '.'.JFile::getExt($digital['teaser']['filename']),$digital['teaser']['filename']));
+						foreach(array('media_id', 'media_lang_id' ) as $key){
+							unset($digital['teaser'][$key]);
+						}
+						$media->bind($digital['teaser']);
+						$media->setBasePath(PAYCART_PATH_MEDIA_DIGITAL_TEASER);
+						$media->save();	
+						$media->moveUploadedFile(PAYCART_PATH_MEDIA_DIGITAL_TEASER.$digital['teaser']['filename'],$filename,JFile::getExt($digital['teaser']['filename']),false);
+						$digitalIds[$mainId]['teaser'] = $media->getId();
+					}
+					
+				} 
+			}			
+			$newProduct->setDigitalFiles($digitalIds);
 		}
 		
 		$newProduct->set('cover_media', $newCoverMedia);

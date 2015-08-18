@@ -27,6 +27,7 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		Rb_HelperToolbar::unpublish();
 		Rb_HelperToolbar::publish('visible',JText::_('COM_PAYCART_ADMIN_VISIBLE'));
 		Rb_HelperToolbar::unpublish('invisible',JText::_('COM_PAYCART_ADMIN_INVISIBLE'));
+		Rb_HelperToolbar::custom( 'copy', 'copy.png', 'copy_f2.png', 'COM_PAYCART_ADMIN_TOOLBAR_COPY', true );
 	}
 	
 	protected function _adminEditToolbar()
