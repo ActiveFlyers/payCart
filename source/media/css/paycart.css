@@ -296,3 +296,7 @@
 .pc-break-word {
     word-wrap : break-word;
 }
+
+.pc-word-break{
+    word-break: break-all;
+}
