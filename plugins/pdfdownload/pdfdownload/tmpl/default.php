@@ -16,10 +16,11 @@ defined('_JEXEC') or die('Restricted access'); ?>
 		var pdfdownload_cartId =  paycart.jQuery('#pdfdownload_cartId').val();
 		var pdfdownload_txnDateFrm =  paycart.jQuery('#pdfdownload_txnDateFrm').val();
 		var pdfdownload_txnDateTo  =  paycart.jQuery('#pdfdownload_txnDateTo').val();
-		var pdfdownload_status =  paycart.jQuery('#pdfdownload_status').val();
+		//var pdfdownload_status =  paycart.jQuery('#pdfdownload_status').val();
 
 		//if all fields are left blank
-		if(pdfdownload_cartId == "" && pdfdownload_txnDateFrm == "" && pdfdownload_txnDateTo == "" && pdfdownload_status == ""){
+//		if(pdfdownload_cartId == "" && pdfdownload_txnDateFrm == "" && pdfdownload_txnDateTo == "" && pdfdownload_status == ""){
+		if(pdfdownload_cartId == "" && pdfdownload_txnDateFrm == "" && pdfdownload_txnDateTo == ""){
 			alert("<?php echo JText::_('PLG_PAYCART_PDFDOWNLOAD_ENTER_EITHER_KEY_OR_DATES');?>");
 			event.preventDefault();
 			return false;
@@ -46,14 +47,14 @@ defined('_JEXEC') or die('Restricted access'); ?>
 			</div>
 		</div>
 		  
-		<div class="control-group">
-			<div class="control-label"><?php echo JText::_("PLG_PAYCART_PDFDOWNLOAD_STATUS"); ?></div>
+<!--		<div class="control-group">
+			<div class="control-label"><?php // echo JText::_("PLG_PAYCART_PDFDOWNLOAD_STATUS"); ?></div>
 			<div class="controls">
-				<?php $status = Paycart::getCartStatus();?>
-				<?php unset($status[Paycart::STATUS_CART_DRAFTED])?>
-				<?php echo JHtml::_('select.genericlist', $status, "pdfdownload_status");?>
+				<?php //$status = Paycart::getCartStatus();?>
+				<?php //unset($status[Paycart::STATUS_CART_DRAFTED])?>
+				<?php // echo JHtml::_('select.genericlist', $status, "pdfdownload_status");?>
 			</div>
-		</div>
+		</div> -->
 		
 		<h6>Transaction Date</h6>
 				
