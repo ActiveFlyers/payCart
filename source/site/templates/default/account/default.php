@@ -54,7 +54,15 @@ echo $this->loadTemplate('js');
 									</div>
 									<div>
 										<h4>
-											<?php echo JText::_('COM_PAYCART_AMOUNT');?> : <?php echo $formatter->amount($invoices[$cart->invoice_id]['total']);?>											
+											<?php echo JText::_('COM_PAYCART_AMOUNT');?> : <?php echo $formatter->amount($invoices[$cart->invoice_id]['total']);?>	
+											
+											<?php 		
+											$downloadUrl = JRoute::_('index.php?option=com_paycart&view=pdfdownload&task=sitedownload&action=sitePdfDownload&cart_id='.$cart_id);
+											if(Rb_HelperPlugin::getStatus('pdfdownload','paycart')):?>
+												<div class="pull-right" onclick="rb.url.redirect('<?php echo $downloadUrl; ?>');">
+													 <i class="fa fa-1x fa-download"></i>
+												</div>
+											<?php endif;?>										
 										</h4>										
 									</div>
 									<div><?php echo JText::_('COM_PAYCART_CREATED_DATE');?> : <?php echo $formatter->date(new Rb_Date($cart->created_date));?></div>

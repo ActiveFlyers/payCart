@@ -99,7 +99,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		$this->assign('config_data',$config);
 		$this->assign('buyer', 				$buyer);
 		$this->assign('resultCount', $resultCount);
-		$this->assign('rb_invoice', $obj->invoice);
+		$this->assign('rb_invoice', $cart->getInvoiceData());
 		$this->assign('cartHelper', $cartHelper);
 		
 		return $this->loadTemplate('pdfcontent');
@@ -110,7 +110,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	/**
 	 *  Creating folder of given pdf files
 	 */
-	function createFolder($pdf, $count = 0 )
+	function createFolder($pdf, $name = 0 )
 	{
 		$buyer	  = Rb_Factory::getUser($buyerId);
 		$dir_path = dirname(dirname(dirname(__FILE__))).'/pdfexport'.$buyer->id;
@@ -119,8 +119,8 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		} 
 		ob_clean();	
 		
-		$content = $pdf->output('order_'.$count.'.pdf', 'S');
-		file_put_contents($dir_path.'/order'.$count.'.pdf', $content);
+		$content = $pdf->output('order_'.$name.'.pdf', 'S');
+		file_put_contents($dir_path.'/order'.$name.'.pdf', $content);
 		return ;
 	}	
 
@@ -238,14 +238,16 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 			
 		}
 		
-		$status = Rb_Factory::getApplication()->input->get('pdfdownload_status',Paycart::STATUS_CART_PAID);
+		//$status = Rb_Factory::getApplication()->input->get('pdfdownload_status',Paycart::STATUS_CART_PAID);
 		
 		$pdf_helper = $this->getHelper('pdfdownload');
 		
 		//else get result for in between given dates
-		$result 	= $pdf_helper->getResultForInvoices($status);
+		$result 	= $pdf_helper->getResultForInvoices();
 		if(isset($result['result']) && !empty($result['result'])){
-			$this->createFolder($this->getContentForPdf($result['result']), $count);
+			
+			list($pdfContent, $pdfName) = $this->getContentForPdf($result['result']);
+			$this->createFolder($pdfContent, $pdfName);
 		}else {
 			Rb_Factory::getApplication()->enqueueMessage(JText::_('PLG_PAYCART_PDFDOWNLOAD_NO_RESULT_FOUND'), 'warning');
 			Rb_Factory::getApplication()->redirect("index.php?option=com_paycart&view=pdfdownload");
@@ -278,7 +280,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	 */
 	function getContentForPdf($result)
 	{
-	   	$mpdf=new mPDF('s'); 
+	   	$mpdf=new mPDF(); 
 	 	$mpdf->autoLangToFont = true;
 	   $this->assign('mpdf' , $mpdf);
 		$contents = $this->includeHeader();
@@ -290,8 +292,11 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 					continue;
 				}
 				$contents .= $content;
+				$name 	  .= $row->cart_id.'-';
 			}
 		}
+		
+		$name = trim($name,'-');
 		
 		//create pdf file
 		$contents.= "</body></html>";
@@ -300,7 +305,7 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 		if(count($result)>1){
 			$mpdf->DeletePages(1,1);
 		}
-		return $mpdf;
+		return array($mpdf, $name);
 	}
 	
 	/**
@@ -309,14 +314,11 @@ class PaycartAdminViewPdfDownload extends PaycartAdminBaseViewPdfdownload
 	function doSiteAction($cart)
 	{	
 		$record 				= new stdClass();
-		$record->cart_id   	= $cart->getId();
+		$record->cart_id   		= $cart->getId();
 		$record->created_date 	= null;        
 		$record->created_date 	= $cart->getPaidDate();
-		$record->invoice     =  $cart->getInvoiceData();
 		
-		
-		
-		$pdf = $this->getContentForPdf($result = array($record) , 1);
+		list($pdf, $name) = $this->getContentForPdf($result = array($record) , 1);
 		return $pdf;
 	}
 	

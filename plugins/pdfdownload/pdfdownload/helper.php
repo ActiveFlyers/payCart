@@ -6,7 +6,6 @@
  * @package 	PAYCART
  * @subpackage	Front-end
  * @contact		support+paycart@readybytes.in
- * @author 		Puneet Singhal, mManishTrivedi
 */
 
 // no direct access
@@ -68,14 +67,14 @@ class PaycartHelperPdfdownload extends PaycartHelper
 	    Rb_Factory::getSession()->set('pdfdownload_lock',Rb_Factory::getSession()->get('pdfdownload_lock',0)+1);
 		$query  = new Rb_Query();
 		
-		if(!empty($txnDateFrm) && !empty($txnDateTo)){
+		if(!empty($txn_from) && !empty($txn_to)){
 					 $query->where('Date(`paid_date`) >= "'.$txn_from.'"')
 				           ->where('Date(`paid_date`) <= "'.$txn_to.'"');
 				}
 		
 		return  count($query->select('DISTINCT `cart_id`')
 		                ->from('`#__paycart_cart`')
-		               ->where('`status` = "'.$status.'"')
+		               	->where('`status` = "'.$status.'"')
 		                ->dbLoadQuery()
 		                ->loadAssocList());
 	}
@@ -98,9 +97,9 @@ class PaycartHelperPdfdownload extends PaycartHelper
 		{
 			$query = new Rb_Query();
 			
-			if(!empty($txnDateFrm) && !empty($txnDateTo)){
-				 $query->where('Date(`paid_date`) >= "'.$txn_from.'"')
-			           ->where('Date(`paid_date`) <= "'.$txn_to.'"');
+			if(!empty($startDate) && !empty($endDate)){
+				 $query->where('Date(`paid_date`) >= "'.$startDate.'"')
+			           ->where('Date(`paid_date`) <= "'.$endDate.'"');
 			}
 			
 			$query->select('*')

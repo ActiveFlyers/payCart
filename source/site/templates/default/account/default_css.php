@@ -82,6 +82,12 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
     font-weight: 600;
     color: #777;
 }
+
+.pc-account-order-productdetails {
+	border-color: -moz-use-text-color #eee #eee;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
+}
 .shipment-row .dwn-icon{font-size: 16px;color: #333;}
 
 </style>
