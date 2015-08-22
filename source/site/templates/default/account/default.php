@@ -59,9 +59,9 @@ echo $this->loadTemplate('js');
 											<?php 		
 											$downloadUrl = JRoute::_('index.php?option=com_paycart&view=pdfdownload&task=sitedownload&action=sitePdfDownload&cart_id='.$cart_id);
 											if(Rb_HelperPlugin::getStatus('pdfdownload','paycart')):?>
-												<div class="pull-right" onclick="rb.url.redirect('<?php echo $downloadUrl; ?>');">
+												<span class="pull-right" onclick="rb.url.redirect('<?php echo $downloadUrl; ?>');  event.stopPropagation(); ">
 													 <i class="fa fa-1x fa-download"></i>
-												</div>
+												</span>
 											<?php endif;?>										
 										</h4>										
 									</div>
