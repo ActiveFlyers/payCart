@@ -534,7 +534,7 @@ class PaycartHelperCart extends PaycartHelper
 		// If data saved successfully, update the invoice counter if serial format contains number		
 		if($db->execute() && strstr( $serialFormat , '[[number]]' ))
 		{
-			PaycartFactory::saveConfig(array('invoice_serial_number_format' => $lastCounter));
+			PaycartFactory::saveConfig(array('paid_invoice_last_serial' => $lastCounter));
 			return $invoice_serial; 	
 		}
 	}
