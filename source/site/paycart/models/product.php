@@ -56,6 +56,24 @@ class PaycartModelProduct extends PaycartModelLang
 //	}
 
 	/**
+     * Builds a generic ORDER BY clasue based on the model's state
+     */
+    protected function _buildQueryOrder(Rb_Query &$query)
+    {
+		$order      = $this->getState('filter_order');
+       	$direction  = strtoupper($this->getState('filter_order_Dir'));
+       	
+    	if($order){
+    		$query->order("$order $direction");
+    	}
+    	
+		if (array_key_exists('ordering', $this->getTable()->getFields()))
+			$query->order('ordering ASC');
+			
+		$query->order('variation_of');
+    }
+
+	/**
 	 * Update the quantity of product that is consumed
 	 * @param int $productId : product for which to update stock
 	 * @param int $quantity : number that is needed to add in consumed stock
