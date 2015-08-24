@@ -30,7 +30,7 @@ defined('_JEXEC') OR die();
 
 	<?php echo $this->loadTemplate('filter'); ?>
 	
-	<table class="table table-striped ">
+	<table class="table">
 		<thead>
 		<!-- TABLE HEADER START -->
 			<tr>
@@ -59,12 +59,20 @@ defined('_JEXEC') OR die();
 			<?php $count= $limitstart;
 			$cbCount = 0;
 			foreach ($records as $record):?>
-				<tr class="<?php echo "row".$count%2; ?>">								
+				<?php $style='';?>
+				<?php if($record->product_id != $record->variation_of):?>
+					<?php $style='style="background-color:#f5f5f5"';?>
+				<?php endif;?>
+				<tr class="<?php echo "row".$count%2; ?>" <?php echo $style;?>>								
 					<th>
 				    	<?php echo PaycartHtml::_('grid.id', $cbCount, $record->{$record_key} ); ?>
 				    </th>				
 					<td class="hidden-phone"><?php echo $record->product_id;?></td>
-					<td><?php echo PaycartHtml::link(JUri::base().'index.php?option=com_paycart&view=product&task=edit&product_id='.$record->{$record_key}, $record->title);?>
+					<td>
+						<?php if($record->product_id != $record->variation_of):?>
+							<i class="fa fa-level-up fa-rotate-90"></i>
+						<?php endif;?>
+						<?php echo PaycartHtml::link(JUri::base().'index.php?option=com_paycart&view=product&task=edit&product_id='.$record->{$record_key}, $record->title);?>
 					</td>
 					<td><?php echo $record->sku;?></td>
 					<td><?php echo $formatter->amount($record->price, false);?></td>

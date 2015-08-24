@@ -38,7 +38,7 @@ class PaycartHelperProduct extends PaycartHelper
 		
 		// prepare bind data
 		$data = $product->toArray();
-		foreach(array('product_id', 'variation_of', 'created_date', 'modified_date', 'cover_media' , 'alias', 'product_lang_id','config_digital') as $key){
+		foreach(array('product_id', 'variation_of', 'created_date', 'modified_date', 'cover_media' , 'alias', 'product_lang_id','config_digital','quantity_sold','hits') as $key){
 			unset($data[$key]);
 		}		
 		
