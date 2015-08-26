@@ -116,14 +116,16 @@ class PaycartHelperEvent extends PaycartHelper
          */
         public function onPaycartCartAfterPaid(PaycartCart $cart)
         {
-            $params     =   Array($cart);
+            
             $event_name =   'onPaycartCartAfterPaid';
-
+			$helper		= PaycartFactory::getInstance('cart' , 'helper');
+          	$product_categoryId = $helper->getCategoryOfCartProducts($cart);
+            
+            $params     =   Array($cart, $product_categoryId);
             //trigger
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
             //1. set invoice_serial
-           	$helper					= PaycartFactory::getInstance('cart' , 'helper');
            	$invoice_serial 		= $helper->setInvoiceSerial($cart);
            	$cart->setInvoiceSerial($invoice_serial);
             
@@ -334,21 +336,4 @@ class PaycartHelperEvent extends PaycartHelper
          	return Rb_HelperPlugin::trigger('onPaycartCron', $args , self::$default_plugin_type);
          }
          
-		/**
-         *
-         * onPaycartImageBeforeLoad 
-         * @param 
-         *
-         * @return void
-         */
-        public function onPaycartImageBeforeLoad(PaycartProduct $product)
-        {
-            $params = Array($product);
-            $event_name = 'onPayplansImageBeforeLoad';
-            $result = array();
-            $result = Rb_HelperPlugin::trigger('onPaycartImageBeforeLoad', $params, self::$default_plugin_type);
-            
-            return $result;
-            
-        }
 }

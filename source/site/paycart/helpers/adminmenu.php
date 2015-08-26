@@ -155,6 +155,12 @@ class PaycartHelperAdminmenu extends PaycartHelper
 									'url' => 'index.php?option=com_paycart&view=appstore',
 									'class' => 'fa-th'
 								);
+		
+		$adminMenus['Apps'] =	Array(
+									'title' => JText::_('COM_PAYCART_ADMIN_APPS'),
+									'url' => '#',
+									'class' => 'fa-newspaper-o'
+								);
 //		$adminMenus['history'] = Array(
 //									'title' => JText::_('COM_PAYCART_ADMIN_HISTORY'),
 //									'url' => '#',

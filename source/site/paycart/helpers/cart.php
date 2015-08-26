@@ -538,4 +538,21 @@ class PaycartHelperCart extends PaycartHelper
 			return $invoice_serial; 	
 		}
 	}
+	
+		public function getCategoryOfCartProducts($cart)
+		{
+			  static $product_categoryId = array();
+			  
+			  //return cached result if exist
+			  if(!empty($product_categoryId)){
+				return $product_categoryId;
+			  }
+			  
+			  $cart_products = $cart->getParam('products', new stdClass());   
+			  foreach ($cart_products as $product){
+				    $product_categoryId[] = PaycartProduct::getInstance($product->product_id)->getProductCategory();
+			  }
+			  
+      	return $product_categoryId;
+	    }
 }
