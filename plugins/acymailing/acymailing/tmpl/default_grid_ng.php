@@ -26,7 +26,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		$scope.errMessage		= [];
 		$scope.message 			= [];
 		$scope.state 			= [];
-		$scope.list =  angular.copy(listData);   
+		$scope.list =  			  [];   
 
 		//if any index is undefined, the first define with empty variable
 		//this function will push the checked value in the temporary variable
@@ -35,14 +35,12 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 			$scope.listData[$scope.selectedIndex] = [];
 		}
 
-		if(angular.isUndefined($scope.list[$scope.selectedIndex])){
-			$scope.list[$scope.selectedIndex] = [];
-		}
+		
 			
         if(check){
-            $scope.list[$scope.selectedIndex].push(value);
+            $scope.list.push(value);
         }else{
-             $scope.list[$scope.selectedIndex].splice($scope.list[$scope.selectedIndex].indexOf(value), 1);
+             $scope.list.splice($scope.list.indexOf(value), 1);
         }
 		};
 
@@ -52,11 +50,6 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		// 3. It everything is OK, it will update the listData variable, which get show list in frontend
 		$scope.showSelectedAcyList = function(){
 
-		   //1.
-		   if(angular.isUndefined($scope.state[$scope.selectedIndex])){
-				alert("<?php echo JText::_("PLG_PAYCART_ACYMAILING_SELECT_LIST_OR_CATEGORY");?>");
-				return;
-		   }
 
 		   //2.
 		   angular.forEach($scope.state, function(value, key) {
@@ -72,7 +65,7 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 			}
 
 			//3.
-		 angular.forEach($scope.list[$scope.selectedIndex], function(value, key) {
+		 angular.forEach($scope.list, function(value, key) {
 			if ($scope.listData[$scope.selectedIndex].indexOf(value)  == -1){
 					$scope.listData[$scope.selectedIndex].push(value);
 		 	}
@@ -84,6 +77,8 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 
 		//this function set the current active index category and also define the state of category block.
 		//whether it is in open or close state. 
+		 $scope.selectedIndex = 1;
+		 $scope.state[1]      = true
 		 $scope.select= function(index) {
 		       if(angular.isUndefined($scope.state[index]) || $scope.selectedIndex != index){
 		      		 $scope.state[index] = false;

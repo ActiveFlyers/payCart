@@ -50,7 +50,7 @@ var listData	      = <?php  echo json_encode($categoryAcymailingMapData);?>;
                   
                   <div data-ng-show="message[category.productcategory_id]" class="alert alert-success">{{ message[category.productcategory_id] }}</div>
                   <div data-ng-show="errMessage[category.productcategory_id]" class="alert alert-danger">{{ errMessage[category.productcategory_id] }}</div>
-                  <div class="accordion-body collapse"  ng-attr-id="collapse{{category.productcategory_id}}" >
+                  <div class="accordion-body collapse"  ng-attr-id="collapse{{category.productcategory_id}}" ng-class="($index==0) ? 'in' : ''">
                   
                     <div class="accordion-inner"  >
                        <ul>
