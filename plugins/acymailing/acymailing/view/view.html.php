@@ -23,6 +23,7 @@ class PaycartAdminHtmlViewAcymailing extends PaycartAdminBaseViewAcymailing
 		$list = $this->getAcymailingList();
 		$categories = PaycartAPI::getCategories();
 		$categories	= array_values($categories);
+		$data       = array();
 		foreach ($categories as $id => $category){
 			$categories[$id]->htmlToShow =  str_repeat(html_entity_decode('&mdash; '), ($category->level - 1)<0?0:($category->level - 1)); 
 		}

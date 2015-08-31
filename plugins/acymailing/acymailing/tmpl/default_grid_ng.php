@@ -31,24 +31,21 @@ Rb_HelperTemplate::loadMedia(array('angular'));
 		//if any index is undefined, the first define with empty variable
 		//this function will push the checked value in the temporary variable
 		$scope.change = function(check,value){
-		if(angular.isUndefined($scope.listData[$scope.selectedIndex])){
-			$scope.listData[$scope.selectedIndex] = [];
-		}
-
-		
-			
-        if(check){
-            $scope.list.push(value);
-        }else{
-             $scope.list.splice($scope.list.indexOf(value), 1);
-        }
+			if(check){
+			    $scope.list.push(value);
+			}else{
+			     $scope.list.splice($scope.list.indexOf(value), 1);
+			}
 		};
 
 		//when click on the click to add button.
-		// 1. It will check whether any acymailing list is selected or not.
+		// 1. It will check whether array is empty or not.
 		// 2. It will check whether any category block is open or not
 		// 3. It everything is OK, it will update the listData variable, which get show list in frontend
 		$scope.showSelectedAcyList = function(){
+		   if(angular.isUndefined($scope.listData[$scope.selectedIndex])){
+			$scope.listData[$scope.selectedIndex] = [];
+		   }
 
 
 		   //2.
