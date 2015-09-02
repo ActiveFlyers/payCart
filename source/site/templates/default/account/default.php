@@ -54,7 +54,7 @@ echo $this->loadTemplate('js');
 									</div>
 									<div>
 										<h4>
-											<?php echo JText::_('COM_PAYCART_AMOUNT');?> : <?php echo $formatter->amount($invoices[$cart->invoice_id]['total']);?>	
+											<?php echo JText::_('COM_PAYCART_AMOUNT');?> : <?php echo $formatter->amount($cart_total[$cart->cart_id]);?>	
 											
 											<?php 		
 											$downloadUrl = JRoute::_('index.php?option=com_paycart&view=pdfdownload&task=sitedownload&action=sitePdfDownload&cart_id='.$cart_id);

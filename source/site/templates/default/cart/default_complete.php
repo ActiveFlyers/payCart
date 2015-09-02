@@ -43,7 +43,7 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 	 					</tr>	 					
 	 					<tr>
 	 						<td><?php echo JText::_('COM_PAYCART_PAYMENT_METHOD');?> :</td>
-	 						<td><?php echo $cart->params['payment_gateway']['title'];?></td>
+	 						<td><?php echo isset($cart->params['payment_gateway'])?$cart->params['payment_gateway']['title']:JText::_('COM_PAYCART_NOT_AVAILABLE');?></td>
 	 					</tr>
 	 					<tr>
 							<td><?php echo JText::_('COM_PAYCART_SUBTOTAL')?> :</td>
