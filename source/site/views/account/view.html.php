@@ -42,14 +42,15 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 		$invoiceHelper = PaycartFactory::getHelper('invoice');
 		$invoices = array();
 		foreach($carts as $key=>$cart){
-			$invoices[$cart->invoice_id] = $invoiceHelper->getInvoiceData($cart->invoice_id);
+			$instance = PaycartCart::getInstance($cart->cart_id,$cart);
+			$cartTotal[$cart->cart_id] = $instance->getTotal();
 			$carts[$key]->isShippableProductExist = PaycartFactory::getHelper('cart')->isShippableProductExist(PaycartCart::getInstance($cart->cart_id,$cart));
 		}		
 		
 		$this->assign('limitstart', $model->getState('limitstart'));
 		$this->assign('pagination', $model->getPagination());
 		$this->assign('total_orders', count($totalCarts));
-		$this->assign('invoices', $invoices);
+		$this->assign('cart_total', $cartTotal);
 		$this->assign('carts', $carts);
 		$this->assign('buyer', $buyer);
 		$this->assign('task', $this->getTask());
