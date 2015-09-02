@@ -424,7 +424,7 @@ class PaycartSiteControllerCart extends PaycartController
 						}
 					}
 					// store all params data, then paid nd save 
-					$this->cart->order()->markPaid()->save();
+					$this->cart->setInvoiceId(0)->order()->markPaid()->save();
 					$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=cart&task=complete&cart_id='.$this->cart->getId()));
 					return false;
 				} else {
@@ -638,7 +638,7 @@ class PaycartSiteControllerCart extends PaycartController
 		}		
 		
 		$invoice = $cart->getInvoiceData();
-		if(empty($invoice)){
+		if(empty($invoice) && !(0 == $cart->getTotal())){
 			$this->setRedirect(PaycartRoute::_('index.php?option=com_paycart&view=productcategory&task=display'), JText::_('COM_PAYCART_ACCESS_DENIED'), 'error');
 			return false;
 		}

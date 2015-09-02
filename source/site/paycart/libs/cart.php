@@ -1169,6 +1169,8 @@ class PaycartCart extends PaycartLib
         		$this->secure_key =  md5($now->toUnix().'.'.$this->ip_address);
         	}
         	
+        	$this->_triggerBeforeSave($previousObject);
+        	 
             // save to data to table
             $id =  parent::_save($previousObject);
             
@@ -1189,6 +1191,53 @@ class PaycartCart extends PaycartLib
             $this->_triggerAfterSave($previousObject);
             
             return $id;
+        }
+        
+		/**
+         * Invoke to trigger all cart before save events
+         * @param $previousObject PaycartCart type or might be null 
+         * @return int id
+         *  
+         */
+        private function _triggerBeforeSave($previousObject) 
+        {
+            /*  @var $event_helper PaycartHelperEvent   */
+            $event_helper = PaycartFactory::getHelper('event');
+            
+            //trigger-1 :: onPaycartCartDraft
+//            if ( empty($previousObject) ||  
+//                 ( Paycart::STATUS_CART_DRAFTED != $previousObject->status && Paycart::STATUS_CART_DRAFTED == $this->status ) 
+//                ){
+//                $event_helper->onPaycartCartAfterDrafted($this);
+//            }
+            
+            //trigger-2 :: onPaycartCartLocked
+//            if ( !empty($previousObject) &&
+//                 (!$previousObject->is_locked && $this->is_locked ) ) {
+//                $event_helper->onPaycartCartAfterLocked($this);
+//            }
+            
+            //trigger-3 :: onPaycartCartApproved
+            if ( !empty($previousObject) &&
+                 (!$previousObject->is_approved && $this->is_approved ) 
+                ) {
+                $event_helper->onPaycartCartBeforeApproved($this);
+            }
+            
+            //trigger-4 :: onPaycartPaid
+            if ( !empty($previousObject) &&
+                  ( Paycart::STATUS_CART_PAID != $previousObject->status && Paycart::STATUS_CART_PAID == $this->status )
+               ) {
+                $event_helper->onPaycartCartBeforePaid($this);
+            }
+            
+            //trigger-5 :: onPaycartCart Delivered
+            if ( !empty($previousObject) &&
+                 ( !$previousObject->is_delivered && $this->is_delivered ) 
+               ) {
+                $event_helper->onPaycartCartBeforeDelivered($this);
+            }
+
         }
         
         

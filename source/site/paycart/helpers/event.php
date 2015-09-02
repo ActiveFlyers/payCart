@@ -26,15 +26,66 @@ class PaycartHelperEvent extends PaycartHelper
 	 * #######################################################################
 	 *
      *  Listed all available triggers on cart
-     *      1#. onPaycart-Cart-After-Drafted 
-     *      2#. onPaycart-Cart-After-Locked
-     *      3#. onPaycart-Cart-After-Approved
-     *      4#. onPaycart-Cart-After-Paid
-     *      5#. onPaycartCart-After-Delivered
-     *      6#. onPaycart-Cart-Before-Calculate
-     *      7#. onPaycart-Cart-After-Calculate
+     *   	1#. onPaycart-Cart-Before-Approved 
+     *      2#. onPaycart-Cart-Before-Paid
+     *      3#. onPaycart-Cart-Before-Delivered
+     *      4#. onPaycart-Cart-After-Drafted 
+     *      5#. onPaycart-Cart-After-Locked
+     *      6#. onPaycart-Cart-After-Approved
+     *      7#. onPaycart-Cart-After-Paid
+     *      8#. onPaycartCart-After-Delivered
+     *      9#. onPaycart-Cart-Before-Calculate
+     *      10#. onPaycart-Cart-After-Calculate
 	 * #######################################################################
 	 */
+    
+		/**
+         *
+         * onPaycartCart Before Approved
+         * @param PaycartCart $cart
+         * 
+         * @return void
+         */
+        public function onPaycartCartBeforeApproved(PaycartCart $cart)
+        {
+            $params     =   Array($cart);
+            $event_name =   'onPaycartCartBeforeApproved';
+            
+            // trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+        }
+        
+		/**
+         *
+         * onPaycartCart Before Paid
+         * @param PaycartCart $cart
+         * 
+         * @return void
+         */
+        public function onPaycartCartBeforePaid(PaycartCart $cart)
+        {
+            $params     =   Array($cart);
+            $event_name =   'onPaycartCartBeforePaid';
+            
+            // trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+        }
+        
+		/**
+         *
+         * onPaycartCart Before Delivered
+         * @param PaycartCart $cart
+         * 
+         * @return void
+         */
+        public function onPaycartCartBeforeDelivered(PaycartCart $cart)
+        {
+            $params     =   Array($cart);
+            $event_name =   'onPaycartCartBeforeDelivered';
+            
+            // trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+        }
         
         /**
          *
