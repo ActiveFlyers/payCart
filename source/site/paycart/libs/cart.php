@@ -639,7 +639,14 @@ class PaycartCart extends PaycartLib
 		{
 			$bind_data->cart_id = $this->getId();
 			/* @var $cartparticular PaycartCartparticularProduct */
-			$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_PRODUCT][$product_id] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_PRODUCT, $bind_data); 
+			try{
+				$this->_cartparticulars[Paycart::CART_PARTICULAR_TYPE_PRODUCT][$product_id] = PaycartCartparticular::getInstance(Paycart::CART_PARTICULAR_TYPE_PRODUCT, $bind_data);
+			}catch(Exception $ex){
+				unset($products->$product_id);
+				$this->params->set('products',$products);
+				$this->save();
+				continue;
+			}
 		}
 		
 		return $this;
