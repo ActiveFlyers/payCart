@@ -255,3 +255,10 @@ Products Display
 .pc-discount.label-important{
 	background-color : #fc2400;
 }
+
+/** required to override otherwise it can create conflict with template css sometimes*/
+#paycart .owl-carousel .owl-wrapper-outer{
+	overflow:hidden;
+ 	position:relative;
+	width:100%;
+}
