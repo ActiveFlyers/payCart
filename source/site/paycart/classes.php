@@ -141,6 +141,8 @@ if(defined("_JEXEC")===false) die();
   'paycarthelperproductindex' => 'site/paycart/helpers/productindex.php',
   'paycarthelperrequest' => 'site/paycart/helpers/request.php',
   'paycarthelpershippingrule' => 'site/paycart/helpers/shippingrule.php',
+  'paycarthelperexporttocsv' => 'site/paycart/helpers/export.php',
+  'paycarthelperimportfromcsv' => 'site/paycart/helpers/import.php',
   'paycarthelpertaxrule' => 'site/paycart/helpers/taxrule.php',
   'paycarthelpertoken' => 'site/paycart/helpers/token.php',
   'paycarthtml' => 'site/paycart/base/html.php',

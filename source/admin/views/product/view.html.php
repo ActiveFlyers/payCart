@@ -17,6 +17,22 @@ defined('_JEXEC') or die( 'Restricted access' );
 require_once dirname(__FILE__).'/view.php';
 class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 {	
+	protected function _adminToolbar()
+	{
+		$this->_adminToolbarTitle();
+		
+		if($this->getTask() == 'edit' || $this->getTask() == 'new'){
+			$this->_adminEditToolbar();
+		}
+		else if($this->getTask() == 'import'){
+			$this->_adminImportToolbar();
+		}
+		else{
+			$this->_adminGridToolbar();
+		}
+	}
+	
+	
 	protected function _adminGridToolbar()
 	{
 		Rb_HelperToolbar::addNew('new');
@@ -28,6 +44,8 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		Rb_HelperToolbar::publish('visible',JText::_('COM_PAYCART_ADMIN_VISIBLE'));
 		Rb_HelperToolbar::unpublish('invisible',JText::_('COM_PAYCART_ADMIN_INVISIBLE'));
 		Rb_HelperToolbar::custom( 'copy', 'copy.png', 'copy_f2.png', 'COM_PAYCART_ADMIN_TOOLBAR_COPY', true );
+		Rb_HelperToolbar::custom('export' , 'download.png' , null ,'COM_PAYCART_ADMIN_EXPORT' , false);
+		Rb_HelperToolbar::custom('import' , 'upload.png' , null ,'COM_PAYCART_ADMIN_IMPORT' , false);
 	}
 	
 	protected function _adminEditToolbar()
@@ -35,6 +53,11 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		Rb_HelperToolbar::apply();
 		Rb_HelperToolbar::save();
 		Rb_HelperToolbar::cancel();
+	}
+	
+	protected function _adminImportToolbar()
+	{
+		Rb_HelperToolbar::divider();
 	}
 	
 	/**
@@ -117,6 +140,16 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 			$record->quantity_available = ($total)?$record->quantity/$total*100:100;
 		}
 		
+		return true;
+	}
+	
+	public function import($tpl = null)
+	{
+		$this->setTpl('import');
+		$this->setTask('import');
+		
+		$summary	= PaycartFactory::getConfig()->get('product_import_summary');
+		$this->assign('summary' , $summary);
 		return true;
 	}
 }
