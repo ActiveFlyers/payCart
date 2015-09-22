@@ -55,4 +55,10 @@ class PaycartAdminHtmlViewCart extends PaycartAdminBaseViewCart
 		
 		return parent::edit($tpl);
 	}
+	
+	
+	public function refund()
+	{
+		return true;
+	}
 }

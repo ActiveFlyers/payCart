@@ -40,10 +40,20 @@ class PaycartSiteHtmlViewAccount extends PaycartSiteBaseViewAccount
 		
 		/* @var $invoiceHelper PaycartHelperInvoice */ 
 		$invoiceHelper = PaycartFactory::getHelper('invoice');
+		$cartHelper    = PaycartFactory::getHelper('cart');
 		$invoices = array();
 		foreach($carts as $key=>$cart){
 			$invoices[$cart->invoice_id] = $invoiceHelper->getInvoiceData($cart->invoice_id);
-			$carts[$key]->isShippableProductExist = PaycartFactory::getHelper('cart')->isShippableProductExist(PaycartCart::getInstance($cart->cart_id,$cart));
+			$carts[$key]->isShippableProductExist = $cartHelper->isShippableProductExist(PaycartCart::getInstance($cart->cart_id,$cart));
+			$shipments = $cartHelper->getShipments($id);
+			
+			$carts[$key]->allowCancel = true;
+			foreach ($shipments as $shipment){
+				if($shipment->status != Paycart::STATUS_SHIPMENT_PENDING){
+					$carts[$key]->allowCancel   = false;
+					break;
+				}
+			}
 		}		
 		
 		$this->assign('limitstart', $model->getState('limitstart'));

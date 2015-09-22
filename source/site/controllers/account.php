@@ -423,4 +423,19 @@ class PaycartSiteControllerAccount extends PaycartController
 		$helper = PaycartFactory::getHelper('media');
 		$helper->download($media);		
 	}
+	
+	public function cancelorder()
+	{
+		return true;
+	}
+	
+	public function initiateCancel()
+	{
+		$cart_id = $this->input->get('cart_id');
+		$cart = PaycartCart::getInstance($cart_id);
+		$cart->markCancel()->save();
+		Rb_Factory::getApplication()->enqueueMessage(JText::_("COM_PAYCART_CART_CANCEL_SUCCESSFULLY"));
+		Rb_Factory::getApplication()->redirect('index.php?option=com_paycart&view=account&task=order');
+		return false;
+	}
 }

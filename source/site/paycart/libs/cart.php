@@ -53,6 +53,7 @@ class PaycartCart extends PaycartLib
     protected $is_locked;           // Stop Cart calculation
     protected $is_approved;         // Cart is valid for paid 
     protected $is_delivered;        // All shipment 
+    protected $is_refunded;
     
     protected $note;
     protected $lang_code = '';
@@ -120,7 +121,8 @@ class PaycartCart extends PaycartLib
 		$this->delivered_date	= Rb_Date::getInstance('0000-00-00 00:00:00'); 
 		
 		$this->reversal_for		= 0; 
-		$this->cancelled_date	= Rb_Date::getInstance('0000-00-00 00:00:00');  
+		$this->cancelled_date	= Rb_Date::getInstance('0000-00-00 00:00:00'); 
+		$this->refunded_date	= Rb_Date::getInstance('0000-00-00 00:00:00');  
 		
 		$this->created_date		= Rb_Date::getInstance();
 		$this->modified_date	= Rb_Date::getInstance();
@@ -244,6 +246,11 @@ class PaycartCart extends PaycartLib
     public function isDelivered() 
 	{
 		return (bool)$this->is_delivered;
+	}
+	
+	public function isRefunded() 
+	{
+			return (bool)$this->is_refunded;
 	}
 	
 	public function setIsGuestCheckout($isGuestCheckout =false)
@@ -559,6 +566,20 @@ class PaycartCart extends PaycartLib
         { 
             $this->is_delivered     = 1;
             $this->delivered_date   = Rb_Date::getInstance();
+   
+            return $this;
+        }
+        
+        
+		/**
+         * Invoke to Refund cart
+         * 
+         * @return PaycartCart 
+         */
+        public function markRefunded()
+        { 
+            $this->is_refunded     = 1;
+            $this->refunded_date   = Rb_Date::getInstance();
    
             return $this;
         }
@@ -1236,6 +1257,20 @@ class PaycartCart extends PaycartLib
                ) {
                 $event_helper->onPaycartCartAfterDelivered($this);
             }
+            
+        	 //trigger-6 :: onPaycartCart order cancelled
+            if ( !empty($previousObject) &&
+                 (  Paycart::STATUS_CART_CANCELLED != $previousObject->status && Paycart::STATUS_CART_CANCELLED == $this->status  ) 
+               ) {
+                $event_helper->onPaycartCartAfterCancel($this);
+            }
+            
+         	 //trigger-7 :: onPaycartCart mark refunded 
+            if ( !empty($previousObject) &&
+                 ( !$previousObject->is_refunded && $this->is_refunded ) 
+               ) {
+                $event_helper->onPaycartCartAfterRefund($this);
+            }
 
         }
 
@@ -1309,16 +1344,12 @@ class PaycartCart extends PaycartLib
 	 */
 	protected function onInvoiceRefund(Array $data_beforeSave, Array $data_afterSave)
 	{
-		// @PCTODO :: Create new cart  
-		// 1#. change stuff which are depends on invoice
-		// change cart status, payment date (its a reversal cart so same treatment will apply like OnInvoicePaid)
-		//$this->setStatus(Paycart::STATUS_CART_PAID);	
-		//$this->set('paid_date', Rb_Date::getInstance());
-		
-		// 2#. save cart
-		//$cart->save();
-		
-		return true;
+			if($this->getStatus() != Paycart::STATUS_CART_CANCELLED){
+					$this->markCancel()->save();
+			}
+			
+			$this->markRefunded()->save();
+	        return true;
 	}
 
 	/**
@@ -1555,6 +1586,23 @@ class PaycartCart extends PaycartLib
         return $this;
 	}	
 	
+	/**
+	 * 
+	 * Invoke to mark paid cart
+	 * 	- would not process/invoke any payment-stuff 
+	 * 
+	 * @return PaycartCart
+	 */
+	public function markCancel()
+	{
+		if (Paycart::STATUS_CART_CANCELLED != $this->status) {
+        	$this->status       =   Paycart::STATUS_CART_CANCELLED;
+            $this->cancelled_date  =   Rb_Date::getInstance();
+        }
+
+        return $this;
+	}	
+	
 	public function getOrderUrl($external = false)
 	{
 		if($external){
@@ -1573,3 +1621,4 @@ class PaycartCart extends PaycartLib
 		PaycartFactory::getHelper('cart')->createDefaultShipments($this);
 	}
 }
+

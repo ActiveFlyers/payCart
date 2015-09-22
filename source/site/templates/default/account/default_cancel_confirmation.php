@@ -11,19 +11,21 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 ?>
+
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	<h3 id="myModalLabel"><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_DEFAULT_LANGUAGE');?></h3>
+	<h3 id="myModalLabel"><?php echo JText::_('COM_PAYCART_ORDER_CONFIRMATION');?></h3>
 </div>
 
 <div class="modal-body">
-	<div class="center">
-		<span><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_DEFAULT_LANGUAGE_CHANGED');?></span>		
-	</div>	
+	<div>
+		<?php echo JText::_("COM_PAYCART_ORDER_CANCEL_CONFIRMATION");?>
+	</div>
+	<p>&nbsp;</p>
 </div>
 
 <div class="modal-footer text-center">
-	<button class="btn" onclick="return false;" data-dismiss="modal"><?php echo JText::_('COM_PAYCART_ADMIN_CLOSE')?></button>													
+	<button class="btn" onclick="return false;" data-dismiss="modal"><?php echo JText::_('JNO')?></button>
+	<button class="btn btn-primary" onclick="rb.url.redirect('index.php?option=com_paycart&view=account&task=initiateCancel&cart_id=<?php echo $cart_id; ?>')"><?php echo JText::_('JYES')?></button>												
 </div>
-
 <?php 

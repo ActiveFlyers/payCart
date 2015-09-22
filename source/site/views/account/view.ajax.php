@@ -38,4 +38,13 @@ class PaycartSiteAjaxViewAccount extends PaycartSiteBaseViewAccount
 		$this->setTpl('address_new');
 		return true;
 	}
+	
+	public function cancelorder()
+	{
+		$cart_id = $this->input->get('cart_id','0');
+		$this->assign('cart_id', $cart_id);
+		$this->setTpl('cancel_confirmation');
+		$this->_renderOptions = array('domObject'=>'pc-account-confirmation','domProperty'=>'innerHTML');
+		return true;
+	}
 }

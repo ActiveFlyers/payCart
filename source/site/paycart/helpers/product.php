@@ -210,10 +210,20 @@ class PaycartHelperProduct extends PaycartHelper
 	 * Increase the quanity of given products 
 	 * @param array $productParticulars : array of stdclass of products having id and quantity
 	 */
-	public function refillProductStock(Array $products = array())
+	public function refillProductStock($products)
 	{
-		foreach ($products as $product){
-			if(!PaycartFactory::getModel('product')->updateStock($product['product_id'], $product['quantity'],true)){
+		foreach ($products as $id => $product){
+			
+			if(is_object($product))
+			{
+				$product_id = $product->product_id;
+				$quantity   = $product->quantity;
+			}
+			else {
+				$product_id = $product['product_id'];
+				$quantity   = $product['quantity'];
+			}
+			if(!PaycartFactory::getModel('product')->updateStock($product_id, $quantity,true)){
 				return false;
 			}
 		}

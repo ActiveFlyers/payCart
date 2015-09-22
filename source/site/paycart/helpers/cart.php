@@ -474,6 +474,54 @@ class PaycartHelperCart extends PaycartHelper
 		return $result[$cart->getId()];		
 	}
 	
+	
+ 	/**
+     * Check if any shippable product exist in cart or not
+     * @return Boolean true/false
+     */
+	function arrangeProductByType($cartId)
+	{
+		static $result = array();
+		
+		$cart = PaycartCart::getInstance($cartId);
+		
+		//return cached result if exist
+		if(isset($result[$cart->getId()])){
+			return $result[$cart->getId()];
+		}
+		
+		$products = $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		if(empty($products)){
+			$products = $this->getCartParticularsData($cart->getId(),Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		}
+		
+		$result[$cart->getId()] = array();
+		foreach ($products as $data){
+			if($data instanceof PaycartCartparticularProduct){
+				$productId = $data->get('particular_id');
+			}else{
+				$productId = $data->particular_id;
+			}
+			
+			$product = PaycartProduct::getInstance($productId);
+			
+			$result[$cart->getId()]['physical'] = array();
+			$result[$cart->getId()]['digital']  = array();
+			if(Paycart::PRODUCT_TYPE_PHYSICAL ==$product->getType()){
+				$result[$cart->getId()]['physical'][] = $product->getId();
+			}
+			
+			if(Paycart::PRODUCT_TYPE_DIGITAL == $product->getType()){
+				$result[$cart->getId()]['digital'][] = $product->getId();
+			}
+		}
+		
+		return $result[$cart->getId()];		
+	}
+	
+	
+	
+	
 	/**
      * Filter the given product particulars as per the type
      * @return array

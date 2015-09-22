@@ -14,6 +14,8 @@ defined( '_JEXEC' ) OR die( 'Restricted access' );
 
 PaycartHtml::_('behavior.formvalidation');
 echo $this->loadTemplate('edit_ng');
+echo Rb_HelperTemplate::renderLayout('paycart_spinner','',PAYCART_LAYOUTS_PATH);
+
 
 ?>
 <style>
@@ -42,7 +44,14 @@ echo $this->loadTemplate('edit_ng');
 	<?php echo PaycartHtml::_('bootstrap.startTabSet', 'cart', array('active' => 'basic')); ?>
 	<!--	 Account Details Tab		-->
 	<?php echo PaycartHtml::_('bootstrap.addTab', 'cart', 'basic', JText::_('COM_PAYCART_ADMIN_BASIC', true)); ?>
-	
+		<?php if(in_array($cart->getStatus(), array(Paycart::STATUS_CART_PAID, Paycart::STATUS_CART_CANCELLED)) && !$cart->isRefunded()):?>
+		<?php $url = 'index.php?option=com_paycart&view=cart&task=cancelCart&cart_id='.$record_id;?>
+			<div class="row-fluid">
+			<div><a href="#pc-cancel-confirmation" class="pull-right btn btn-info muted" data-toggle="modal" onClick="paycart.ajax.go('<?php echo $url; ?>'); return false;"> <?php echo JText::_("COM_PAYCART_CANCEL");?></a></div>
+								<div id="pc-cancel-confirmation" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:500px; margin-left:-400px;" data-backdrop="static" data-keyboard="false">
+									&nbsp;
+		</div></div>
+		<?php endif;?>
 	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
 
 		<div class="row-fluid">

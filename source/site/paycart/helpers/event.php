@@ -116,16 +116,14 @@ class PaycartHelperEvent extends PaycartHelper
          */
         public function onPaycartCartAfterPaid(PaycartCart $cart)
         {
-            
+            $params     =   Array($cart);
             $event_name =   'onPaycartCartAfterPaid';
-			$helper		= PaycartFactory::getInstance('cart' , 'helper');
-          	$product_categoryId = $helper->getCategoryOfCartProducts($cart);
-            
-            $params     =   Array($cart, $product_categoryId);
+
             //trigger
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
             //1. set invoice_serial
+           	$helper					= PaycartFactory::getInstance('cart' , 'helper');
            	$invoice_serial 		= $helper->setInvoiceSerial($cart);
            	$cart->setInvoiceSerial($invoice_serial);
             
@@ -152,6 +150,59 @@ class PaycartHelperEvent extends PaycartHelper
             Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
             
             //send notification 
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($cart);
+           	}
+        }
+        
+        
+        
+ 		/**
+         *
+         * onPaycartCart Delivered
+         * @param PaycartCart $cart
+         * 
+         * @return void
+         */
+        public function onPaycartCartAfterRefund(PaycartCart $cart)
+        {
+            $params     =   Array($cart);
+            $event_name =   'onPaycartCartAfterRefund';
+
+            //trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+            
+            //send notification 
+            $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
+            if($instance instanceof PaycartNotification){
+            	$instance->sendNotification($cart);
+           	}
+        }
+        
+        
+         /**
+         *
+         * onPaycartCart Cancelled
+         * @param PaycartCart $cart
+         * 
+         * @return void
+         */ 
+        public function onPaycartCartAfterCancel(PaycartCart $cart)
+        {
+        	$params     =   Array($cart);
+            $event_name =   'onPaycartCartAfterCancel';
+
+            //trigger
+            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
+            
+              	// 1#. increase product's quatity on shipment failed
+            $cart_products = $cart->getParam('products');
+                        
+           	PaycartFactory::getHelper('product')
+                    ->refillProductStock($cart_products);
+                    
+             //send notification 
             $instance = PaycartNotification::getInstanceByEventname($event_name, $cart->getLangCode());
             if($instance instanceof PaycartNotification){
             	$instance->sendNotification($cart);
@@ -336,4 +387,21 @@ class PaycartHelperEvent extends PaycartHelper
          	return Rb_HelperPlugin::trigger('onPaycartCron', $args , self::$default_plugin_type);
          }
          
+		/**
+         *
+         * onPaycartImageBeforeLoad 
+         * @param 
+         *
+         * @return void
+         */
+        public function onPaycartImageBeforeLoad(PaycartProduct $product)
+        {
+            $params = Array($product);
+            $event_name = 'onPayplansImageBeforeLoad';
+            $result = array();
+            $result = Rb_HelperPlugin::trigger('onPaycartImageBeforeLoad', $params, self::$default_plugin_type);
+            
+            return $result;
+            
+        }
 }

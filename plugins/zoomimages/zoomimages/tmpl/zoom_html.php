@@ -16,13 +16,14 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 .paycart .outer{
 	display: inline-block;
     border: 1px solid #e5e5e5;
-    height: 65px;
+    height: 60px;
     padding: 2px;
-    width: 55px;
+    width: 60px;
     text-align:center;
     position: relative;
+    margin-bottom: 10px;
 }
-
+.zoomWrapper {padding-left:1%;}
 .fancybox-overlay {
     background: rgba(0, 0, 0, 0.8) ;
     display: none;
@@ -49,20 +50,27 @@ defined( '_JEXEC' ) or die( 'Restricted access' );?>
 </style>
 
 
-	<?php $current = current($images);?>
-		<img id="pc-zoomImages"  src="<?php echo $current['optimized'];?>" data-zoom-image="<?php echo $current['original'];?>"/>
-		
-		<div id="pc-gallery">
+<?php $current = current($images);?>
+<div class="clearfix">
+	<div id="pc-gallery" class="pull-left">
+			<ul class="unstyled">
 			<?php 
 			
 			foreach ($images as $mediaId => $detail):?>
 					<?php list($width, $height, $type, $attr) =   getimagesize($detail['optimized']);?>
-			
+				<li>
 				 <a  href="#" data-height="<?php echo $height;?>"  data-image="<?php echo $detail['optimized'];?>" data-zoom-image="<?php echo $detail['original'];?>" class="outer"> 
 					<img class="pc-fancybox" src="<?php echo $detail['thumbnail'];?>" data-fancybox-group ="pc-gallery" data-fancybox-href="<?php echo $detail['original'];?>" />
 				</a>
+				</li>
 			<?php endforeach;?>
+			</ul>
 		</div>
+		<div class="pull-left">
+		<img id="pc-zoomImages"  src="<?php echo $current['optimized'];?>" data-zoom-image="<?php echo $current['original'];?>"/>
+		</div>
+</div>	
+	
 <script>
 (function($){
 

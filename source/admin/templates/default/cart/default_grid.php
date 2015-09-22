@@ -49,7 +49,10 @@ defined('_JEXEC') OR die();
 <!--				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_APPROVED", 'is_approved', $filter_order_Dir, $filter_order);?></th>-->
 				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_DELIVERED", 'is_delivered', $filter_order_Dir, $filter_order);?></th>
 				<th class="hidden-phone"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_LOCKED_DATE');?></th>
-				<th class="hidden-phone"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_PAID_DATE');?></th>			
+				<th class="hidden-phone"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_PAID_DATE');?></th>
+				<th class="hidden-phone"><?php echo Rb_Text::_('COM_PAYCART_ADMIN_CART_CANCELLED_DATE');?></th>			
+				<th><?php echo Rb_Html::_('grid.sort', "COM_PAYCART_ADMIN_CART_REFUNDED", 'is_refunded', $filter_order_Dir, $filter_order);?></th>
+				
 			</tr>
 		<!-- TABLE HEADER END -->
 		</thead>
@@ -97,7 +100,35 @@ defined('_JEXEC') OR die();
 						
 					</td>
 					<td class="hidden-phone"><?php echo $record->locked_date;?></td>
-					<td class="hidden-phone"><?php echo $record->paid_date;?></td>
+					<td class="hidden-phone">
+					<?php if($record->status != 'cancelled'):?>
+						<?php echo $record->paid_date;?>
+						<?php else: 
+							echo "-";
+							endif;
+						?>
+					</td>
+					<td class="hidden-phone">
+					<?php if($record->status == 'cancelled'):?>
+						<?php echo $record->cancelled_date;?>
+						<?php else: 
+							echo "-";
+							endif;
+						?>
+					</td>
+					
+						<td>
+						<?php if($record->is_refunded):?>
+							<i class="fa fa-times-circle text-error"></i>
+						<?php elseif($record->status == 'cancelled'):?>
+								<i class="fa fa-check-circle text-success"></i>
+								<?php //echo PaycartHtml::_("rb_html.boolean.grid", $record, 'is_refunded', $cbCount, 'icon-16-allow.png', 'icon-16-notice-note.png', '', $langPrefix='COM_PAYCART');?>
+						<?php else :
+								echo "-";
+								
+						endif;?>
+						
+					</td>
 				</tr>
 			<?php $count++;?>
 			<?php $cbCount++;?>
@@ -107,7 +138,7 @@ defined('_JEXEC') OR die();
 		
 		<tfoot>
 			<tr>
-				<td colspan="7">
+				<td colspan="10">
 					<?php echo $pagination->getListFooter(); ?>
 				</td>
 			</tr>

@@ -167,6 +167,22 @@ paycart.admin.attribute = {
 	};
 
 
+paycart.admin.transaction = {
+		refund : {	
+			confirm : function(invoice_id){
+				var url 	= 'index.php?option=com_paycart&view=transaction&task=refund&invoice_id='+invoice_id;
+				paycart.url.modal(url);
+			},
+	
+			request : function(invoice_id){
+				// XITODO : use bootstarp to disable the button click
+				$('#payinvoice-invoice-refund-confirm-button').attr('disabled', 'disabled');
+				var url 	= 'index.php?option=com_paycart&view=transaction&task=refund&confirmed=1&invoice_id='+invoice_id;
+				paycart.ajax.go(url);
+			}
+		}
+};
+
 paycart.admin.buyeraddress =
 {
 	//open modal window to create new buyer-address

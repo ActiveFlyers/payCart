@@ -41,16 +41,39 @@ echo $this->loadTemplate('js');
 					<tbody>
 						<?php $counter = $limitstart+1;?>
 						<?php foreach($carts as $cart_id => $cart): ?>
-							<tr class="pc-account-orders" data-pc-cart-url="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$cart_id);?>">
-								<td><?php echo $counter++;?></td>
-								<td> 
-									<div>
-										<h3 class="clearfix">
+							<tr >
+								<td><?php echo $counter++;?></td>						
+								<td> 							
+									<div>									
+										<h3 class="clearfix">										
 											<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$cart_id);?>"><?php echo JText::_('COM_PAYCART_ORDER_ID');?> : <?php echo $cart->cart_id;?></a>
-											<?php if($cart->status === Paycart::STATUS_CART_PAID):?>
-												<span class="label label-success pull-right"><i class="fa fa-check-circle"></i> <?php echo JText::_('COM_PAYCART_CART_STATUS_PAID');?></span>
-											<?php endif;?>
+											<?php switch ($cart->status):
+											
+													case Paycart::STATUS_CART_PAID:
+														$class = "label-success";
+														break;
+													
+													case Paycart::STATUS_CART_CANCELLED:
+														$class = "label-info";
+														break;
+													
+													case Paycart::STATUS_CART_DRAFTED:
+														$class = "label-warning";
+														break;
+												?>
+											<?php endswitch;?>
+												<span class="label pull-right <?php echo $class;?>"><i class="fa fa-check-circle"></i> <?php echo JText::_('COM_PAYCART_CART_STATUS_'.$cart->status);?></span>
 										</h3>
+										<?php $getProductByType  = PaycartFactory::getHelper('cart')->arrangeProductByType($cart_id);?>
+										<?php if(($cart->status == Paycart::STATUS_CART_PAID || ($cart->status == Paycart::STATUS_CART_DRAFTED && $cart->is_approved == 1)) 
+												  && count($getProductByType['digital']) == 0  && $cart->allowCancel):?>
+										<?php $url = "index.php?option=com_paycart&view=account&task=cancelOrder&cart_id=".$cart_id;?>
+										<div><a href="#pc-account-confirmation" class="pull-right btn muted" data-toggle="modal" onClick="paycart.ajax.go('<?php echo $url; ?>'); return false;"> <?php echo JText::_("COM_PAYCART_ORDER_CANCEL");?></a></div>
+										<div id="pc-account-confirmation" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:500px; margin-left:-400px;" data-backdrop="static" data-keyboard="false">
+											&nbsp;
+										</div>	
+										<?php endif;?>
+										
 									</div>
 									<div>
 										<h4>
@@ -67,7 +90,7 @@ echo $this->loadTemplate('js');
 									</div>
 									<div><?php echo JText::_('COM_PAYCART_CREATED_DATE');?> : <?php echo $formatter->date(new Rb_Date($cart->created_date));?></div>
 									
-									<?php if($cart->isShippableProductExist):?>
+									<?php if($cart->isShippableProductExist && $cart->status == Paycart::STATUS_CART_PAID):?>
 										<div><?php echo JText::_('COM_PAYCART_DELIVERY_STATUS');?> :
 											<?php if($cart->is_delivered) :?>
 													<span class="label label-success"><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></span>

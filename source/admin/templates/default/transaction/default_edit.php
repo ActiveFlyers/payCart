@@ -30,15 +30,33 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 <form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="form-validate">
      
 <fieldset class="form-horizontal">
-	<!--<div class="row-fluid">
-		<?php //if($refundable): ?>
+	<div class="row-fluid"><?php 
+		 if($refundable): ?>
 					<div class="pull-right">
-						<a href="#" onclick="payinvoice.admin.transaction.refund.confirm('<?php echo $transaction['invoice_id']?>')" class="btn btn-large btn-success"><?php echo JText::_('COM_PAYINVOICE_TRANSACTION_REFUND');?></a>			
+						<a href="#" onclick="paycart.admin.transaction.refund.confirm('<?php echo $transaction['invoice_id']?>')" class="btn btn-success"><?php echo JText::_('COM_PAYCART_TRANSACTION_REFUND');?></a>			
 					</div>
-		<?php //endif;?>
+		<!--<?php // else :?>
+		     Button to trigger modal 
+			    <a href="#pc-refund-not-supported" role="button" class="btn pull-right" data-toggle="modal"><?php // echo JText::_('COM_PAYCART_TRANSACTION_REFUND');?></a>
+			     
+			     Modal 
+			    <div id="pc-refund-not-supported" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 500px; margin-left: -400px; display: block;">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			        <h3 id="myModalLabel">Refund not supported</h3>
+			      </div>
+			      <div class="modal-body">
+			        <p>Refund is not supported by the payment gateway. You need to manually transfer money or check whether payment gateway support refund on their end.</p>
+			      </div>
+			        <div class="modal-footer">
+					    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					</div>
+			    </div>
+		
+		--><?php endif;?>
 	</div>
 	
-  	--><div class="row-fluid"> 
+  	<div class="row-fluid"> 
 	    	<div class="span6">
 			     <h2><?php echo JText::_('COM_PAYCART_ADMIN_TRANSACTION_DETAILS' ); ?></h2><hr>
 		      	<div class="control-group">

@@ -143,15 +143,7 @@ $showMediaGallery = false;
 		 		<!-- buy now -->
                 <?php if($isAvailableInStock):?>                     
 				<div class="row-fluid clearfix">
-                	<div class="span6 help-block">                 
-                    	<?php if(!$isExistInCart):?>
-                        	<button class="btn btn-block btn-large btn-primary pc-btn-buynow" onClick='rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=buy&product_id='.$product->getId()); ?>"); return false;'>
-                            		<?php echo JText::_("COM_PAYCART_PRODUCT_BUY_NOW");?>
-                            </button>
-                        <?php else:?>
-                        	<h3 class='text-center text-info'><?php echo JText::_('COM_PAYCART_PRODUCT_ADDED_TO_CART')?></h3>
-                        <?php endif;?>
-                    </div>
+             
                     <div class="span6 help-block">    
                     	<?php if(!$isExistInCart):?>            
                         	<button class="btn btn-block btn-large pc-btn-addtocart" onClick="paycart.product.addtocart(<?php echo $product->getId();?>);">
@@ -162,6 +154,14 @@ $showMediaGallery = false;
                         		<?php echo JText::_('COM_PAYCART_CART_VIEW')?>&nbsp;&nbsp; <i class='fa fa-chevron-right'></i>
                         	</button>
                         <?php endif;?>
+                    </div>
+                    
+                    <div class="span6 help-block ">                 
+                        	<button class="pc-btn-buynow btn btn-block btn-large btn-primary" style="<?php echo $isExistInCart ?'display:block':'display:none';?>" onClick='rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>"); return false;'>
+                            		<?php echo JText::_("Checkout");?>
+                            </button>
+                 
+                      
                     </div>
               	</div>
               	<?php else :?>

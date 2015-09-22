@@ -58,10 +58,10 @@ class PaycartAPI
 		}
 		$catModel->set('_query', $query);
 		
-		$categories = $catModel->loadRecords($categoryFilters);
-		
 		$catModel->setState('filter_order', $pre_order_by);
 		$catModel->setState('filter_order_Dir', $pre_order_in);
+		
+		$categories = $catModel->loadRecords($categoryFilters);
 		
 		$catModel->lang_code = null;
 		return $categories;

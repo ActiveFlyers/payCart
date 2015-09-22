@@ -11,14 +11,15 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 ?>
+
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	<h3 id="myModalLabel"><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_DEFAULT_LANGUAGE');?></h3>
+	<h3 id="myModalLabel"><?php echo JText::_('COM_PAYCART_ADMIN_CART_CANCEL');?></h3>
 </div>
 
 <div class="modal-body">
 	<div class="center">
-		<span><?php echo JText::_('COM_PAYCART_ADMIN_CONFIG_LOCALIZATION_DEFAULT_LANGUAGE_CHANGED');?></span>		
+		<span><?php echo $msg;?></span>		
 	</div>	
 </div>
 
@@ -27,3 +28,4 @@ defined('_JEXEC') or die( 'Restricted access' );
 </div>
 
 <?php 
+

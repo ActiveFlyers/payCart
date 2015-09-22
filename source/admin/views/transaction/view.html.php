@@ -90,20 +90,20 @@ class PaycartAdminHtmlViewTransaction extends PaycartAdminBaseViewTransaction
 		$cart			= PaycartCart::getInstance($invoiceData['object_id']);
 		$buyer			= PaycartBuyer::getInstance($transaction['buyer_id']);
 		
-//		// Show or hide refund button
-//		$refundable 		= false;
-//		if($transaction['payment_status'] == 'payment_complete'){ 
-//			if($invoice[$transaction['invoice_id']]->status == PayInvoiceInvoice::STATUS_PAID || $invoice[$transaction['invoice_id']]->status != PayInvoiceInvoice::STATUS_REFUNDED){
-//				$processor		= Rb_EcommerceAPI::get_processor_instance($invoice[$transaction['invoice_id']]->processor_type);
-//				$refundable 	= $processor->supportForRefund();
-//			}
-//		}
+		// Show or hide refund button
+		$refundable 		= false;
+		if($transaction['payment_status'] == 'payment_complete'){ 
+			if($invoiceData['status'] != Rb_EcommerceInvoice::STATUS_REFUNDED){
+				$processor		= Rb_EcommerceAPI::get_processor_instance($invoiceData['processor_type']);
+				$refundable 	= $processor->supportForRefund();
+			}
+		}
 		
 		$this->assign('transaction',$transaction);	
 		$this->assign('cart', 		$cart);	
 		$this->assign('buyer', 		$buyer);	
 		$this->assign('statusList',	Rb_EcommerceAPI::response_get_status_list());
-//		$this->assign('refundable', 	$refundable);
+		$this->assign('refundable', $refundable);
 		
 		return true;	
 	}
