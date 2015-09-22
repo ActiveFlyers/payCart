@@ -22,6 +22,9 @@ class PaycartAdminHtmlViewGroup extends PaycartAdminBaseViewGroup
 {	
 	public function display($tpl=null) 
 	{
+		// Enqueue warning message if set up screen is not clean
+		PaycartHelperSetupchecklist::setWarningMessage();
+		
 		$availableGroupRules = $this->_helper->getList();	
 		$this->assign('availableGroupRules', $availableGroupRules);
 		

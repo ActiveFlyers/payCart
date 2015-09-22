@@ -103,7 +103,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 				<?php foreach ($transaction['params'] as $key => $value):?>
 					 <div class="control-group">
 						<div class="control-label"><?php echo $key;?> </div>
-						<div class="controls pc-word-break" ><?php echo is_array($value)?print_r($value):$value; ?></div>	
+						<div class="controls"><?php echo is_array($value)?print_r($value):$value; ?></div>	
 					 </div>
 				<?php endforeach;?>
 			</div> 

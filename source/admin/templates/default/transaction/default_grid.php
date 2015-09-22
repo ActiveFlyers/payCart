@@ -23,6 +23,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 <div class="span10">
 
 <form action="<?php echo $uri; ?>" method="post" id="adminForm" name="adminForm">
+	<?php echo $this->loadTemplate('filter'); ?>
 	<table class="table table-hover">
 		<thead>
 			<!-- TABLE HEADER START -->

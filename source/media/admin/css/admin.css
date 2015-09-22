@@ -96,3 +96,34 @@
 .paycart .pc-filter-minwidth-50{
 	min-width: 50px;
 }
+
+.paycart .pc-setUpChecklist{
+	font-size: 14px;
+	line-height: 35px;
+	border: 1px solid #ddd;
+	-webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.paycart .pc-setUpChecklist .row-fluid{
+	margin-left:15px;
+}
+
+.paycart .pc-setUpChecklist .span11{
+	margin-left:-20px;
+}
+
+.paycart .pc-setUpChecklist p{
+	line-height: 25px;
+	font-size: 13px;
+}
+
+.paycart .pc-setchecklist-helpMsg{
+	margin-top:-5px;
+}
+
+.paycart .pc-setUpChecklist-header p{
+	font-size: 14px;
+	margin-top:-2px; 
+}

@@ -46,4 +46,28 @@ class PaycartHelperCron
 		
 		return false;
 	}
+	
+	/**
+	 * check whether the Set Up Checklist is clear or not
+	 */
+	public static function checkSetUpChecklist()
+	{
+		// Get the setup rules with their status and help message
+		$helper	= PaycartFactory::getInstance('setupchecklist', 'helper');
+		$rules  = $helper->getSetupRules();
+		
+		$status = false;
+		foreach ($rules as $rule) {
+			if(!$rule['setupStatus']) {				
+				$status = true;
+				break;			
+			}
+		}
+		
+		// Save the status value in config table
+		PaycartFactory::saveConfig(array('show_set_up_checklist_warning' => $status));
+		if($status){
+			JFactory::getApplication()->enqueueMessage(JText::_("COM_PAYCART_ADMIN_SETUP_CHECKLIST_WARNING") , 'error');
+		}
+	}
 }

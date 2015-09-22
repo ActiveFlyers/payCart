@@ -56,6 +56,9 @@ class PaycartAdminHtmlViewTransaction extends PaycartAdminBaseViewTransaction
 	
 	function _displayGrid($records)
 	{
+		// Enqueue warning message if set up screen is not clean
+		PaycartHelperSetupchecklist::setWarningMessage();
+		
 		$this->setTpl('grid');
 		
 		//do processing for default display page

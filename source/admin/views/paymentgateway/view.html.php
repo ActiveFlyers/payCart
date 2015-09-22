@@ -30,5 +30,11 @@ class PaycartAdminHtmlViewPaymentgateway extends PaycartAdminBaseViewPaymentgate
 		return parent::edit($tpl);
 	}
 	
-	
+	function display($tpl=null)
+	{
+		// Enqueue warning message if set up screen is not clean
+		PaycartHelperSetupchecklist::setWarningMessage();
+		
+		return parent::display($tpl);
+	}
 }

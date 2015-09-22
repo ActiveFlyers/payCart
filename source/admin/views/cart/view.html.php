@@ -55,4 +55,12 @@ class PaycartAdminHtmlViewCart extends PaycartAdminBaseViewCart
 		
 		return parent::edit($tpl);
 	}
+	
+	public function _displayGrid($records)
+	{
+		// Enqueue warning message if set up screen is not clean
+		PaycartHelperSetupchecklist::setWarningMessage();
+		
+		return parent::_displayGrid($records);
+	}
 }

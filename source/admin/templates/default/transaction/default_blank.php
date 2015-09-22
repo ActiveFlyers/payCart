@@ -35,7 +35,7 @@ defined('_JEXEC') or die();
 	<div class="span10">
 
 		<form action="<?php echo $uri; ?>" method="post" name="adminForm">
-			<?php //echo $this->loadTemplate('filter'); ?>
+			<?php echo $this->loadTemplate('filter'); ?>
 	
 			<div class="row-fluid">
 				<div class="center muted">

@@ -109,6 +109,9 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 	 */
 	function _displayGrid($records)
 	{
+		// Store or update the show_set_up_checklist_warning parameter in config table
+		PaycartHelperCron::checkSetUpChecklist();
+		
 		parent::_displayGrid($records);
 		
 		foreach ($records as $record){

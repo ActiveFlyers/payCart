@@ -20,6 +20,9 @@ class PaycartAdminHtmlViewConfig extends PaycartAdminBaseViewConfig
 {
 	function display($tpl=null)
 	{
+		// Enqueue warning message if set up screen is not clean
+		PaycartHelperSetupchecklist::setWarningMessage();
+		
 		//now record is always an array, pick all records
 		$modelform  = PaycartFactory::getInstance('config', 'Modelform');
 		$form		= $modelform->getForm();

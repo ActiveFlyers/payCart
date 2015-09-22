@@ -38,54 +38,6 @@ class PaycartHelperEvent extends PaycartHelper
      *      10#. onPaycart-Cart-After-Calculate
 	 * #######################################################################
 	 */
-    
-		/**
-         *
-         * onPaycartCart Before Approved
-         * @param PaycartCart $cart
-         * 
-         * @return void
-         */
-        public function onPaycartCartBeforeApproved(PaycartCart $cart)
-        {
-            $params     =   Array($cart);
-            $event_name =   'onPaycartCartBeforeApproved';
-            
-            // trigger
-            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
-        }
-        
-		/**
-         *
-         * onPaycartCart Before Paid
-         * @param PaycartCart $cart
-         * 
-         * @return void
-         */
-        public function onPaycartCartBeforePaid(PaycartCart $cart)
-        {
-            $params     =   Array($cart);
-            $event_name =   'onPaycartCartBeforePaid';
-            
-            // trigger
-            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
-        }
-        
-		/**
-         *
-         * onPaycartCart Before Delivered
-         * @param PaycartCart $cart
-         * 
-         * @return void
-         */
-        public function onPaycartCartBeforeDelivered(PaycartCart $cart)
-        {
-            $params     =   Array($cart);
-            $event_name =   'onPaycartCartBeforeDelivered';
-            
-            // trigger
-            Rb_HelperPlugin::trigger($event_name, $params, self::$default_plugin_type);
-        }
         
         /**
          *
@@ -387,4 +339,42 @@ class PaycartHelperEvent extends PaycartHelper
          	return Rb_HelperPlugin::trigger('onPaycartCron', $args , self::$default_plugin_type);
          }
          
+		/**
+         *
+         * onPaycartImageBeforeLoad 
+         * @param 
+         *
+         * @return void
+         */
+        public function onPaycartImageBeforeLoad(PaycartProduct $product)
+        {
+            $params = Array($product);
+            $event_name = 'onPayplansImageBeforeLoad';
+            $result = array();
+            $result = Rb_HelperPlugin::trigger('onPaycartImageBeforeLoad', $params, self::$default_plugin_type);
+            
+            return $result;
+            
+        }
+        
+        /**
+         *
+         * onPaycartGetPluginChecklist 
+         * @param void
+         *
+         * @return $rules as a key-value based array containing values for 'desc', 'setupStatus', 'helpMsg'
+         */
+        public function onPaycartGetPluginChecklist()
+        {
+        	// Plugins can bind their set-up rules as key-value pairs in $rules
+        	
+            $event_name	 =   'onPaycartGetPluginChecklist';
+            $args 		 = array();
+            $rules		 =   array();
+            
+        	//trigger
+            $rules = Rb_HelperPlugin::trigger($event_name, $args, self::$default_plugin_type);
+            
+            return $rules;
+        }
 }

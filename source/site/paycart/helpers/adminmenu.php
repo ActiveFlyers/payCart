@@ -97,6 +97,11 @@ class PaycartHelperAdminmenu extends PaycartHelper
 									'class' => 'fa-wrench',
 									'children' => Array(
 										Array(
+											'title' => JText::_('COM_PAYCART_ADMIN_SETUP_CHECKLIST'),
+											'url' => 'index.php?option=com_paycart&view=setupchecklist',
+											'class' => 'fa-check-square-o'
+										),
+										Array(
 											'title' => JText::_('COM_PAYCART_ADMIN_CONFIGURATION'),
 											'url' => 'index.php?option=com_paycart&view=config',
 											'class' => 'fa-gear'

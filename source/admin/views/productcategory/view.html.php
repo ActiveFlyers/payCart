@@ -63,6 +63,9 @@ class PaycartAdminHtmlViewProductcategory extends PaycartAdminBaseViewProductcat
 	
 	function _displayGrid($records)
 	{
+		// Enqueue warning message if set up screen is not clean
+		PaycartHelperSetupchecklist::setWarningMessage();
+		
 		//unset root category from records, so that root won't be listed on grid
 		unset($records[Paycart::PRODUCTCATEGORY_ROOT_ID]);
 		
