@@ -55,13 +55,14 @@ class PaycartsiteControllerCron extends paycartController
 			// trigger plugin and actions
 			/*  @var $event_helper PaycartHelperEvent   */
 	        $eventHelper = PaycartFactory::getHelper('event');
+	        $date = new Rb_Date();
+			$now  = $date->toUnix();
+			
 	        $eventHelper->onPaycartCron();
 	        
 			// Mark exit
 			Paycart::markExit(JText::_('COM_PAYCART_CRON_EXECUTED'));
 			
-			$date = new Rb_Date();
-			$now = $date->toUnix();
 			PaycartFactory::saveConfig(array('cron_access_time'=>$now));
 			return true;
 		}

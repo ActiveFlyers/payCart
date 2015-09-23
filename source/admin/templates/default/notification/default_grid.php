@@ -51,7 +51,8 @@ echo $this->loadTemplate('js');
 							<th><?php echo PaycartHtml::_('grid.id', $cbCount, $record->notification_id ); ?></th>				
 							<td class="hidden-phone"> <?php echo $record->notification_id;?></td>
 							<td>
-								<a href="#" class="edit-notification" onClick="paycart.admin.notification.window(<?php echo $record->notification_id; ?>);" >
+								
+								<a href="<?php echo PaycartRoute::_('index.php?option=com_paycart&view=notification&task=edit&id='.$record->notification_id)?>" class="edit-notification" >
                                 	<?php  echo JText::_('COM_PAYCART_ADMIN_EVENT_'.$record->event_name);     ?>
                                 </a>
                             </td>

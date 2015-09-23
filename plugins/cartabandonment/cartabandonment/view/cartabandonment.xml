@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <form>
-	<fieldset name="notification">
+	<fieldset name="cartabandonment">
 		<field 	
-			name="notification_id" 
+			name="cartabandonment_id" 
 			type="hidden"
 			default="0"/>
 
@@ -19,13 +19,23 @@
 		</field>
 		
 		<field
-			name="event_name"
-			type="text"
+			name="when_to_email"
+			type="paycart.timer"
+			month='true'
+			hour='true'
+			day='true'
+			default="000000000000"		 
 			labelclass="control-label"
 			class="input-block-level"
-			readonly="true"
-			label="COM_PAYCART_ADMIN_TYPE"
+			label="PLG_PAYCART_CART_ABANDONMENT_WHEN_TO_EMAIL"
 			 />
+			 
+		<field
+            name="title"  
+        	type="text"	required="true"
+            class="input-block-level"
+			labelclass="control-label"			
+			label="COM_PAYCART_ADMIN_TITLE"/>
                 
 <!--  Make sure field type is not email otherwise validation will be stop to save it               -->
         <field
@@ -34,12 +44,6 @@
             class="input-block-level paycart-token-container"
 			labelclass="control-label"			
 			label="COM_PAYCART_ADMIN_NOTIFICATION_TO"/>
-		<field 
-			name="cc" 
-			type="text"	
-			class="input-block-level paycart-token-container"
-			labelclass="control-label"			
-			label="COM_PAYCART_ADMIN_NOTIFICATION_CC"/>
 
 		<field 
 			name="bcc" 
@@ -50,7 +54,7 @@
 	</fieldset>
 	
 	<fieldset name='language'>
-		<field 	name="notification_lang_id" 
+		<field 	name="cartabandonment_lang_id" 
 				type="hidden"
 				default="0"/>
 				
@@ -71,31 +75,6 @@
 				labelclass="control-label"			
 				label="COM_PAYCART_ADMIN_NOTIFICATION_BODY"
             	rows="10" 
-				filter="JComponentHelper::filterText"/>	
-		
-		<field 	name="admin_subject"  
-				type="text"
-				class="input-block-level paycart-token-container"
-				labelclass="control-label"			
-				label="COM_PAYCART_ADMIN_NOTIFICATION_SUBJECT"/>
-            
-		<field 	name="admin_body" 
-				type="editor"	
-                class="input-block-level paycart-token-container"
-				labelclass="control-label"			
-				label="COM_PAYCART_ADMIN_NOTIFICATION_BODY"
-            	rows="10" 
 				filter="JComponentHelper::filterText"/>			
-	</fieldset>	
-	
-	<fields name="params">
-		<fieldset name="params">
-			<field 	name="send_same_copy" 
-				type="checkbox" 
-				default="0"
-				label="COM_PAYCART_ADMIN_NOTIFICATION_SEND_SAME_COPY" 
-				description="COM_PAYCART_ADMIN_NOTIFICATION_SEND_SAME_COPY_DESC" />
-				   
-		</fieldset>
-	</fields>
+	</fieldset>
 </form>

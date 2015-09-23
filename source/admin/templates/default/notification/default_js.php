@@ -10,11 +10,51 @@
 defined('_JEXEC') or die( 'Restricted access' );
 ?>	
 <script>
+var inFocus = false;
 (function($) {
 /**
 * Notification specific Javascript
 */
+ $(document).ready(function(){
+	if($('[name="paycart_notification_form[params][send_same_copy]"]').prop( "checked")){
+		$('[data-pc-selector="admin-notification-config"]').addClass('hide').removeClass('show');	
+	}else{
+		$('[data-pc-selector="admin-notification-config"]').addClass('show').removeClass('hide');
+	}
+
+	$('[name="paycart_notification_form[params][send_same_copy]"]').on('change',function(){
+		if($(this).prop( "checked")){
+			$('[data-pc-selector="admin-notification-config"]').addClass('hide').removeClass('show');	
+			if(!$('#collapseCustomer.accordion-body').hasClass('in')){
+				$('#collapseCustomer').collapse('show');
+			}
+		}else{
+			$('[data-pc-selector="admin-notification-config"]').addClass('show').removeClass('hide');
+			$('#collapseCustomer').collapse('hide');
+			$('#collapseAdmin').collapse('show');
+		}
+	});
+
+	//copy its template html to body
+	$('[data-pc-selector="notification_template"]').on('change',function(){
+		if($(this).prop( "checked")){
+			var id = $('[name="paycart_notification_form[notification_id]"]').val();
+			var iframeId = $(this).parent().next('div').find('iframe').attr('id');
+			var link = 'index.php?option=com_paycart&view=notification&task=getTemplate&notification_id='+id+'&iframeId='+iframeId;
+			paycart.ajax.go(link);
+		}
+	});
+	
+ });
+ 
+
 paycart.admin.notification = {};
+
+paycart.admin.notification.fetchTemplateSuccess = function(data){
+	var html = data.html;
+	$('#'+data.iframeId).contents().find('body').html(html);	 
+};
+
 paycart.admin.notification.window = function(notification_id){
 		var link  = 'index.php?option=com_paycart&task=edit&view=notification&id='+notification_id+'&lang_code='+pc_current_language;
 		paycart.url.modal(link, null, '800px');
@@ -85,19 +125,25 @@ paycart.token =  (function(){
 		};
                        
                         
-		callable_methods.insert_at_cursor = function(token){ 
+		callable_methods.insert_at_cursor = function(tokenElement){ 
+			var token = $(tokenElement).data('pc-selector');
 			var input = $(current_cursor.selector),     // Element selector
             start = current_cursor.pointer_at,      // where token will be inserted 
             val = input.val();                      // get input selector value
-                                    
-            // write new string with token replacement
-			input.val(val.substring(0, start) + token + val.substring(start, val.length));
-                                
-            // reset cursor pointer
-            current_cursor.pointer_at = start + token.length;
-                                
-            //focus element
-            input.focus();
+
+			if(inFocus){
+				// write new string with token replacement
+				input.val(val.substring(0, start) + token + val.substring(start, val.length));
+	                                
+	            // reset cursor pointer
+	            current_cursor.pointer_at = start + token.length;
+	                                
+	            //focus element
+	            input.focus();
+		    }else{
+	            //check if not in to cc bcc and subject
+	            jInsertEditorText(token,'body');
+		    }
 		} ;
                       
         return callable_methods;                            

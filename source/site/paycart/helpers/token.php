@@ -79,7 +79,7 @@ class PaycartHelperToken extends PaycartHelper
         
         //buyer specific
         static::$_tokens['buyer'] =
-                Array('buyer_email' , 'buyer_name');
+                Array('buyer_email' , 'buyer_name', 'buyer_orders', 'buyer_account');
                     
         // billing specific
         static::$_tokens['billing'] =
@@ -103,11 +103,11 @@ class PaycartHelperToken extends PaycartHelper
         
         //config specific
         static::$_tokens['config']   =
-                Array('store_address', 'store_name');
+                Array('store_address', 'store_name','company_logo', 'store_url');
         
         //Product Tokens
         static::$_tokens['product']   =
-                Array('products_detail');
+                Array('products_detail', 'products_name');
                 
         static::$_tokens['shipment']  = 
         		Array('tracking_number','tracking_url','products');
@@ -146,29 +146,36 @@ class PaycartHelperToken extends PaycartHelper
      * 
      */
     public function buildCartTokens( PaycartCart $cart )
-    {
-        $relative_objects = new stdClass();
-        
+    {        
         // fetch all relative objects
-        $relative_objects->buyer                = $cart->getBuyer(true);
-        $relative_objects->billing_address      = $cart->getBillingAddress(true);
-        $relative_objects->shipping_address     = $cart->getShippingAddress(true);
-        $relative_objects->config               = PaycartFactory::getConfig();
-        $relative_objects->cart                 = $cart;
-        /* @var $cart_helper PaycartHelperCart */
-        $cart_helper = PaycartFactory::getHelper('cart');
-                
-        $relative_objects->product_particular_list  =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_PRODUCT);
-        $relative_objects->shipping_particular_list =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+        $buyer                = $cart->getBuyer(true);
+        $billing_address      = $cart->getBillingAddress(true);
+        $shipping_address     = $cart->getShippingAddress(true);
+        $config               = PaycartFactory::getConfig();
+        $cart                 = $cart;
+
+        if($cart->isLocked()){
+        	/* @var $cart_helper PaycartHelperCart */
+        	$cart_helper = PaycartFactory::getHelper('cart');
+        
+	        $product_particular_list   =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+	        $shipping_particular_list  =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+	        $promotion_particular_list =  $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+        }else{
+        	$cart->calculate();
+        	$product_particular_list   =  $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+	        $shipping_particular_list  =  $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_SHIPPING);
+	        $promotion_particular_list =  $cart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PROMOTION);
+        }
         
         $tokens = Array();
             
-        $tokens = array_merge($tokens, $this->getCartToken($relative_objects->cart));
-        $tokens = array_merge($tokens, $this->getConfigToken($relative_objects->config));
-        $tokens = array_merge($tokens, $this->getBuyerToken($relative_objects->buyer));
-        $tokens = array_merge($tokens, $this->getProductToken($relative_objects->product_particular_list,$relative_objects->shipping_particular_list));
-        $tokens = array_merge($tokens, $this->getBillingToken($relative_objects->billing_address));
-        $tokens = array_merge($tokens, $this->getShippingToken($relative_objects->shipping_address));
+        $tokens = array_merge($tokens, $this->getCartToken($cart));
+        $tokens = array_merge($tokens, $this->getConfigToken($config));
+        $tokens = array_merge($tokens, $this->getBuyerToken($buyer));
+        $tokens = array_merge($tokens, $this->getProductToken($product_particular_list,$shipping_particular_list,$promotion_particular_list));
+        $tokens = array_merge($tokens, $this->getBillingToken($billing_address));
+        $tokens = array_merge($tokens, $this->getShippingToken($shipping_address));
         
         
         //@PCTODO :: Trigger to add new tokens
@@ -291,6 +298,7 @@ class PaycartHelperToken extends PaycartHelper
         $tokens['cart_created_date']       =   $this->_formatter->date($cart->getCreatedDate());
         // @PCTOD :: date formating here
         $tokens['cart_paid_date']          =   $this->_formatter->date($cart->getPaidDate());
+        $tokens['current_cart']		       =   JUri::root().'index.php?option=com_paycart&view=cart';
         $tokens['order_url']               =   $cart->getOrderUrl(true);
         $tokens['order_id']            	   =   $cart->getId();
         
@@ -307,9 +315,10 @@ class PaycartHelperToken extends PaycartHelper
     {
        $tokens =  Array();
        
-       $tokens['buyer_email']      =   $buyer->getEmail();
-       $tokens['buyer_name']       =   $buyer->getRealName();
-        
+       $tokens['buyer_email']      = $buyer->getEmail();
+       $tokens['buyer_name']       = $buyer->getRealName();
+       $tokens['buyer_orders']     = '<a href="'.JUri::root().'index.php?option=com_paycart&view=account&task=order'.'" target="_blank">'.JText::_('COM_PAYCART_NOTIFICATION_LINK_YOUR_ORDERS').'</a>';
+       $tokens['buyer_account']    = '<a href="'.JUri::root().'index.php?option=com_paycart&view=account&task=display'.'" target="_blank">'.JText::_('COM_PAYCART_NOTIFICATION_LINK_MY_ACCOUNT').'</a>';        
        return $tokens;
     }
     
@@ -325,12 +334,19 @@ class PaycartHelperToken extends PaycartHelper
        //@PCTODO :: origin address, Company logo
        $config = PaycartFactory::getConfig();
        
-       $tokens['store_name'] = $config->get('company_name', $config->get('sitename'));
+       $tokens['store_name']   = rtrim($config->get('company_name', $config->get('sitename')),'/');
        
-       //$tokens['store_logo'] = $config->get('company_logo');
+       $tokens['company_logo'] = '';
+       $media_id 			   =  $config->get('company_logo');
+       if($media_id){
+       	$media = PaycartMedia::getInstance($media_id);
+       	$tokens['company_logo'] = $media->getOriginal();
+       }      
        
        $displayData = $config->get('localization_origin_address');
        $tokens['store_address'] =  Rb_HelperTemplate::renderLayout('paycart_buyeraddress_display', $displayData, PAYCART_LAYOUTS_PATH);
+       
+       $tokens['store_url'] = '<a href="'.JUri::root().'" target="_blank">'.$tokens['store_name'].'</a>';
            
        return $tokens;
     }
@@ -342,17 +358,22 @@ class PaycartHelperToken extends PaycartHelper
      * 
      * @return array 
      */
-    private  function getProductToken(Array $product_particulars, Array $shipping_particulars)    
+    private  function getProductToken(Array $product_particulars, Array $shipping_particulars, Array $promotion_particulars)    
     {
         $tokens =  Array();
        
         $displayData = new stdClass;
-        $displayData->product_particulars  = $product_particulars;
-        $displayData->shipping_particulars = $shipping_particulars;
+        $displayData->product_particulars   = $product_particulars;
+        $displayData->shipping_particulars  = $shipping_particulars;
+        $displayData->promotion_particulars = $promotion_particulars;
         
         // Create a layout to render all product details
         $tokens['products_detail'] = Rb_HelperTemplate::renderLayout('paycart_token_product_deatils', $displayData, PAYCART_LAYOUTS_PATH);
-		
+        
+        $displayData = new stdClass;
+        $displayData->product_particulars   = $product_particulars;
+        
+		$tokens['products_name']   = Rb_HelperTemplate::renderLayout('paycart_token_product_names', $displayData, PAYCART_LAYOUTS_PATH);
         return $tokens;
     }
     
@@ -368,10 +389,31 @@ class PaycartHelperToken extends PaycartHelper
     	
     	$tokens['tracking_number'] = $shipment->getTrackingNumber();
     	$tokens['tracking_url']	   = $shipment->getTrackingUrl();
-    	
-    	$products     = $shipment->getProducts();
+    	$cart         			   = $shipment->getCart();
+    	$cart_helper			   = PaycartFactory::getHelper('cart');  
+        $product_particular_list   = $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+       	$promotion_particular_list = $cart_helper->getCartparticularsData($cart->getId(), Paycart::CART_PARTICULAR_TYPE_PROMOTION);        
+        	        
+       	$promotion = 0;
+       	
+       	foreach ($promotion_particular_list as $pp){
+			if(!$pp instanceof stdClass){
+				$pp = $pp->toObject();
+			}
+			$promotion += $pp->total;	
+       	}
+       	
+       	if(!empty($promotion)){
+       		$promotion = round($promotion/count($cart_helper->getShipments($cart->getId())));
+       	}
+       	       	
+       	$shipmentArray = $shipment->toArray();
+        $products      = $shipment->getProducts();
     	$display_data = new stdClass();
     	$display_data->products = $products;
+    	$display_data->product_particulars   = $product_particular_list;
+    	$display_data->promotion = $promotion;
+    	$display_data->shipping_charge = $shipmentArray['actual_shipping_cost'];
     	
         $tokens['products'] = Rb_HelperTemplate::renderLayout('paycart_token_shipment_products',$display_data, PAYCART_LAYOUTS_PATH);
         

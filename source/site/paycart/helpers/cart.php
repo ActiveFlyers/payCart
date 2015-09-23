@@ -36,27 +36,46 @@ class PaycartHelperCart extends PaycartHelper
 		}
 		
 		// get current session id
-		$session_id =	PaycartFactory::getSession()->getId();
+		$session_id = PaycartFactory::getSession()->getId();
+		$userId     = PaycartFactory::getUser()->id;
+		$cart_data  = array();
 		
-		// get cart data
-		$cart_data =	PaycartFactory::getModel('cart')
-							->loadRecords( Array( 'session_id' => $session_id,
-											  	  'status' => Paycart::STATUS_CART_DRAFTED,
-												  'is_locked'=>0 )
-										  );
-
+		if($userId){			
+			//if user is logged-in then get collect his last unpaid/unlocked cart
+			$cart_data = $this->getLastUnpaidCart($userId);	
+			
+			if($cart_data->session_id != $session_id){				
+				//update cart session id with current
+				$query = new Rb_Query();
+				$query->update('#__paycart_cart')
+					  ->set('session_id = "'.$session_id.'"')
+					  ->where('cart_id = '.$cart_data->cart_id)
+					  ->dbloadQuery()
+					  ->execute();	
+			}
+		}else{
+			// get cart data
+			$cart_data = PaycartFactory::getModel('cart')
+								->loadRecords( Array( 'session_id' => $session_id,
+												  	  'status' => Paycart::STATUS_CART_DRAFTED,
+													  'is_locked'=> 0,
+													  'buyer_id'=> 0 )
+											  );
+			
+			$data = array_reverse($cart_data, true);
+			$cart_data = array_shift($data);
+		}	
+							  
 		// if cart doesn't exist and new cart is not requested then don't create new cart 
 		// and return false
 		if(empty($cart_data) && !$requireNew){
 			return false;
-		}					
-		
-		if (empty($cart_data)) {
-			$cart = $this->_createNew();
 		}
-		else {
-			$data = array_shift($cart_data);
-			$cart = PaycartCart::getInstance($data->cart_id, $data);
+		
+		if(empty($cart_data)){
+			$cart = $this->_createNew();
+		}else{
+			$cart = PaycartCart::getInstance($cart_data->cart_id, $cart_data);
 		}
 		
 		self::$cached_cart = $cart;
@@ -67,6 +86,22 @@ class PaycartHelperCart extends PaycartHelper
 		}
 		
 		return self::$cached_cart;
+	}
+	
+	function getLastUnpaidCart($userId)
+	{
+		$cart_data = PaycartFactory::getModel('cart')
+							->loadRecords( Array( 'status' => Paycart::STATUS_CART_DRAFTED,
+												  'is_approved'=> 0,
+												  'is_locked' => 0,
+												  'buyer_id'  => $userId
+							 ));
+		if(!empty($cart_data)){	
+			$cart_data = array_reverse($cart_data, true);						  
+			return array_shift($cart_data);
+		}
+		
+		return array();		
 	}
 	
    /**

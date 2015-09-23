@@ -30,6 +30,9 @@ class PaycartNotification extends PaycartLib
 	protected $lang_code 		   	= '';
 	protected $subject		   	= '';
 	protected $body			   	= '';
+	protected $admin_subject	= '';
+	protected $admin_body		= '';
+	protected $params			= '';
         
         //Var for future aspect
 //       protected $isHtml		   	= '';
@@ -59,6 +62,9 @@ class PaycartNotification extends PaycartLib
             $this->lang_code                = PaycartFactory::getPCDefaultLanguageCode();	
             $this->subject                  = '';	
             $this->body                     = '';
+            $this->admin_subject            = '';	
+            $this->admin_body               = '';
+            $this->params					= new Rb_Registry();
             
             return $this;
 	}
@@ -159,10 +165,41 @@ class PaycartNotification extends PaycartLib
             // Add Body
             $mailer->setBody($token_helper->replaceTokens($this->body, $tokens));
             
-            $mailer->isHtml(true);
+            $adminConfig = $this->getParam('send_same_copy');
+            
+            if(isset($adminConfig) && $adminConfig){
+	            $email = array();
+            	//collect email ids of all super admins
+            	$rows = Rb_AbstractHelperJoomla::getUsersToSendSystemEmail();
+            	foreach ($rows as $row){
+            		$email[] = $row->email;
+            	}
+            	$mailer->addBCC($email);
+            }            
+            
+         	$mailer->isHtml(true);
             if ( !$mailer->Send() ) {
                 //@PCTODO :: Notify to admin
                 return false;
+            }
+            
+            if(isset($adminConfig) && !$adminConfig && (!empty($this->admin_body) && !empty($this->admin_subject))){
+            	//send new email to admins
+            	$email = array();
+            	//collect email ids of all super admins
+            	$rows = Rb_AbstractHelperJoomla::getUsersToSendSystemEmail();
+            	foreach ($rows as $row){
+            		$email[] = $row->email;
+            	}
+            	$adminEmails = implode(',', $email);
+            	$mailer      = PaycartFactory::getMailer();
+            	$mailer->addRecipient($adminEmails);
+            	$mailer->setSubject($token_helper->replaceTokens($this->admin_subject, $tokens));
+            	$mailer->setBody($token_helper->replaceTokens($this->admin_body, $tokens));
+	            $mailer->isHtml(true);
+	            if ( !$mailer->Send() ) {
+	                return false;
+	            }
             }
             
             return true;

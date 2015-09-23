@@ -759,7 +759,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product_index` (
 -- Dumping data for table `#__paycart_notification`
 --
 
-INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `event_name`, `to`, `cc`, `bcc`, `media`) VALUES
+INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `event_name`, `to`, `cc`, `bcc`, `media`,`params`) VALUES
 (1, 0, 'onpaycartcartafterlocked', '[[buyer_email]]', '', '', '{}'),
 (2, 1, 'onpaycartcartafterapproved', '[[buyer_email]]', '', '', '{}'),
 (3, 1, 'onpaycartcartafterpaid', '[[buyer_email]]', '', '', '{}'),
@@ -774,7 +774,7 @@ INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `e
 -- Dumping data for table `#__paycart_notification_lang`
 --
 
-INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `notification_id`, `lang_code`, `subject`, `body`) VALUES
+INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `notification_id`, `lang_code`, `subject`, `body`,`admin_subject`,`admin_body`) VALUES
 (1, 1, 'en-GB', 'Order Confirmation ', 'Thank you for placing your order with [[store_name]]\r\n\r\nThis email is just let you know your recent order.\r\n\r\n[[products_detail]]\r\n\r\n\r\n'),
 (2, 2, 'en-GB', 'Order Approved Successfully', 'Your order is successfully approved. \r\n\r\n[[products_detail]]'),
 (3, 3, 'en-GB', 'Order successfully Paid', 'Your payment is successfully received by [[store_name]]\r\n\r\n[[products_detail]]'),

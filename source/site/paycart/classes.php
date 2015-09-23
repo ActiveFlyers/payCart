@@ -104,6 +104,7 @@ if(defined("_JEXEC")===false) die();
   'paycartevent' => 'site/paycart/base/event.php',
   'paycartfactory' => 'site/paycart/base/factory.php',
   'paycartformfieldamount' => 'site/paycart/html/fields/amount.php',
+  'paycartformfieldtimer' => 'site/paycart/html/fields/timer.php',
   'paycartformfieldapplyon' => 'site/paycart/html/fields/applyon.php',
   'paycartformfieldattributetype' => 'site/paycart/html/fields/attributetype.php',
   'paycartformfieldcartstatus' => 'site/paycart/html/fields/cartstatus.php',

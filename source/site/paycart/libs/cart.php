@@ -206,6 +206,11 @@ class PaycartCart extends PaycartLib
 	{
 		return $this->currency;
 	}
+
+	public function getPaymentDate()
+	{
+		return $this->payment_date;
+	}
 	
 	public function getReversalFor()
 	{
@@ -1041,7 +1046,7 @@ class PaycartCart extends PaycartLib
 	{
 		$buyer = $this->getParam('buyer', new stdClass());
 
-		/* @var PaycartHelperBuyer */
+		/* @var $buyer_helper PaycartHelperBuyer */
 		$buyer_helper = PaycartFactory::getHelper('buyer');
 		
 		//check user already exist or not

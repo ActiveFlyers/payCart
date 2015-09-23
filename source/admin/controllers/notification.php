@@ -18,18 +18,9 @@ defined('_JEXEC') or die( 'Restricted access' );
  */
 class PaycartAdminControllerNotification extends PaycartController 
 {
-    /**
-     * Ajax task invoke on update template 
-     */
-    public function save()
-    {
-		// call parent save
-        parent::save() ;
-        
-		// disable redirection 
-        $this->setRedirect( '');  
-        
-        return false;
-    }
+	function getTemplate()
+	{
+		return true;
+	}
 	
 }
