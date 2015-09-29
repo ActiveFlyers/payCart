@@ -31,67 +31,104 @@ echo $this->loadTemplate('js');
 			</div>
 			<div class="span9">
 				<div class ='pc-account span12 clearfix' >
-				<table class="table table-hover">
-					<thead>					
-						<tr>
-							<th width="10%">#</th>
-							<th><?php echo JText::_('COM_PAYCART_ORDERS');?> <span class="badge"><?php echo $total_orders;?></span></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php $counter = $limitstart+1;?>
+						<div class="all-orders">
+							<h2 class="page-header"><?php echo JText::_('COM_PAYCART_ORDERS');?> <sup><span class="badge"><?php echo $total_orders;?></span></sup></h2>	
+						</div>					
 						<?php foreach($carts as $cart_id => $cart): ?>
-							<tr class="pc-account-orders" data-pc-cart-url="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$cart_id);?>">
-								<td><?php echo $counter++;?></td>
-								<td> 
-									<div>
-										<h3 class="clearfix">
-											<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$cart_id);?>"><?php echo JText::_('COM_PAYCART_ORDER_ID');?> : <?php echo $cart->cart_id;?></a>
-											<?php if($cart->status === Paycart::STATUS_CART_PAID):?>
-												<span class="label label-success pull-right"><i class="fa fa-check-circle"></i> <?php echo JText::_('COM_PAYCART_CART_STATUS_PAID');?></span>
-											<?php endif;?>
-										</h3>
-									</div>
-									<div>
-										<h4>
-											<?php echo JText::_('COM_PAYCART_AMOUNT');?> : <?php echo $formatter->amount($cart_total[$cart->cart_id]);?>	
-											
-											<?php 		
-											$downloadUrl = JRoute::_('index.php?option=com_paycart&view=pdfdownload&task=sitedownload&action=sitePdfDownload&cart_id='.$cart_id);
-											if(Rb_HelperPlugin::getStatus('pdfdownload','paycart')):?>
-												<span class="pull-right" onclick="rb.url.redirect('<?php echo $downloadUrl; ?>');  event.stopPropagation(); ">
-													 <i class="fa fa-1x fa-download"></i>
-												</span>
-											<?php endif;?>										
-										</h4>										
-									</div>
-									<div><?php echo JText::_('COM_PAYCART_CREATED_DATE');?> : <?php echo $formatter->date(new Rb_Date($cart->created_date));?></div>
-									
-									<?php if($cart->isShippableProductExist):?>
-										<div><?php echo JText::_('COM_PAYCART_DELIVERY_STATUS');?> :
-											<?php if($cart->is_delivered) :?>
-													<span class="label label-success"><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></span>
-													<?php echo strtolower(JText::_('COM_PAYCART_ON'));?>
-													<?php echo $formatter->date(new Rb_Date($cart->delivered_date));?>
-											<?php else :?>
-													<span class="label label-warning"><?php echo JText::_('COM_PAYCART_CART_STATUS_PENDING');?></span>												
-											<?php endif;?>
+							<?php 
+								$params = json_decode($cart->params);	
+								$products = get_object_vars($params->products);
+							?>
+							<div class="order-items-wraper accordion" id="accordion-order<?php echo $cart_id;?>">
+								<div class="accordion-group">
+									<div class="accordion-header well-small">
+										<div class="accordion-toggle">
+											<div class="row-fluid"  data-toggle="collapse" data-parent="#accordion-order<?php echo $cart_id;?>" data-target="#order_<?php echo $cart_id?>">
+												<div class="span6">
+													<div class="row-fluid">
+														<div class="span8">
+															<h3 class="order-item-title font500 clearfix">
+																<span class="pull-left"><?php echo JText::_('COM_PAYCART_ORDER_ID');?> : <?php echo $cart->cart_id;?></span>  
+																<span class="muted pull-left"><small>[<?php echo count($products);?> <?php echo JText::_('COM_PAYCART_ITEM');?>(s)]</small></span>
+															</h3>
+															<span class="muted"><?php echo JText::_('COM_PAYCART_ORDER_PLACED_ON');?> : <?php echo $formatter->date(new Rb_Date($cart->created_date));?></span>
+														</div>
+														<div class="span4">
+															<h4 class="font500"><?php echo JText::_('COM_PAYCART_TOTAL');?> <?php echo JText::_('COM_PAYCART_AMOUNT');?> </h4> 
+															<span class="muted"><?php echo $formatter->amount($invoices[$cart->invoice_id]['total']);?></span>
+														</div>
+													</div>
+												</div>
+												<div class="span6">
+													<div class="pull-right" style="margin-right:20px">
+														<h4 class="font500">
+															<a class="pull-right view-order-details" href="<?php echo JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$cart_id);?>"><?php echo JText::_('COM_PAYCART_VIEW_ORDER_DETAILS');?> <i class="fa fa-angle-double-right"></i></a>
+														</h4>
+													</div>
+												</div>
+											</div>
 										</div>
-									<?php endif;?>
-								</td>
-							</tr>
-						<?php endforeach;?>
-					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="2">
-								<div class="center">
-									<?php echo $pagination->getListFooter(); ?>
-								</div>								
-							</td>
-						</tr>
-					</tfoot>
-				</table>
+									</div>
+									<div class="order-items-content">
+										<div id="order_<?php echo $cart_id?>" class="accordion-body collapse in">
+										<?php
+															
+										
+										foreach($products as $product_id => $product) :
+											$product_instance = PaycartProduct::getInstance($product_id);
+											$product_price = $product_instance->getPrice();
+											$product_quantity = $product_instance->getQuantitySold();
+											$image = $product_instance->getCoverMedia();
+										?>
+											
+											<div class="accordion-inner">
+												<div class="clearfix">
+													<?php if($cart->isShippableProductExist):?>
+															<?php if($cart->is_delivered) :?>
+																	<h4 class="font500"><?php echo JText::_('COM_PAYCART_DELIVERY_STATUS');?> : <span class="label label-success"><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?></span></h4>
+																	<h4 class="font500"><?php echo JText::_('COM_PAYCART_CART_STATUS_DELIVERED');?> <?php echo strtolower(JText::_('COM_PAYCART_ON'));?>: <?php echo $formatter->date(new Rb_Date($cart->delivered_date));?></h4>
+															<?php else :?>
+																	<h4 class="font500"><?php echo JText::_('COM_PAYCART_DELIVERY_STATUS');?> : <span class="label label-warning"><?php echo JText::_('COM_PAYCART_CART_STATUS_PENDING');?></span></h4>												
+															<?php endif;?>
+													<?php endif;?>									
+												</div>
+												
+												<div class="row-fluid">
+													<div class="span2">
+														<a href="<?php echo JRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$product_id);?>" class="thumbnail">
+															<img src="<?php echo !empty($image) ? $image['thumbnail'] : '';?>" 
+																title="<?php echo !empty($image) ? $image['title'] : '';?>" 
+																alt="<?php echo !empty($image) ? $image['title'] : '';?>" />
+														</a>
+													</div>
+													<div class="span10">
+														<h4 class="font500"><a href="<?php echo JRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$product_id);?>"><?php echo $product_instance->getTitle();?></a></h4>
+														<h5 class="ordered-item-details"><span class="muted"><?php echo JText::_('COM_PAYCART_QTY');?> : <?php echo $product_quantity;?></span></h5>
+														<h5 class="ordered-item-details"><span class="muted"><?php echo JText::_('COM_PAYCART_PRICE');?> : </span><span class="text-error"><?php echo $formatter->amount($product_price);?></span></h5>
+													</div>
+												</div>
+											</div>
+										
+										<?php endforeach;?>
+											
+										<?php 
+										//Invoice Link	
+										$downloadUrl = JRoute::_('index.php?option=com_paycart&view=pdfdownload&task=sitedownload&action=sitePdfDownload&cart_id='.$cart_id);
+										if(Rb_HelperPlugin::getStatus('pdfdownload','paycart')):?>
+											<div class="clearfix well-small">
+													<span class="pull-right btn-link view-order-details" onclick="rb.url.redirect('<?php echo $downloadUrl; ?>');  event.stopPropagation(); ">
+														 <i class="fa fa-1x fa-file-pdf-o"></i> <?php echo JText::_('COM_PAYCART_INVOICE');?>
+													</span>
+											</div>
+										<?php endif;?>											
+										</div>
+									</div>
+								</div>
+							</div>
+							<?php endforeach;?>
+							<div class="center">
+								<?php echo $pagination->getListFooter(); ?>
+							</div>
 				</div>				
 			</div>
 		</div>      	

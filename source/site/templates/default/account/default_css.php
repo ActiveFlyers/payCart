@@ -19,10 +19,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
     margin-top: 0;
 }
 
-.pc-account-orders{
-	cursor: pointer;
-}
-
 .pc-account-order-details{
 	border : 1px solid #E5E5E5;
 	padding: 10px;
@@ -90,5 +86,37 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 }
 .shipment-row .dwn-icon{font-size: 16px;color: #333;}
 
+.all-orders {
+    font-weight: 600;
+    font-size: 18px;
+}
+.accordion-group {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+.accordion-header.well-small {
+    color: #333;
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+.font500 {
+    font-weight: 500;
+}
+.order-item-title > span {
+    margin-right: 6px;
+}
+.order-items-content .well-small {
+    border-top: 1px solid #eee;
+}
+.view-order-details {
+	color: #333;
+}
+a.thumbnail:hover{
+	text-decoration:none;
+	border-color: #ddd;
+}
 </style>
 <?php 
