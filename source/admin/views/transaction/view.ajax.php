@@ -1,11 +1,11 @@
 <?php
 
 /**
-* @copyright	Copyright (C) 2009 - 2015 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
+* @copyright	Copyright (C) 2009 - 2013 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
 * @license		GNU/GPL, see LICENSE.php
 * @package 		PAYCART
 * @contact		support+paycart@readybytes.in
-* @author 		Garima agal
+* @author 		mManishTrivedi
 */
 
 // no direct access
@@ -33,8 +33,10 @@ class PaycartAdminAjaxViewTransaction extends PaycartAdminBaseViewTransaction
 	// Confirm refund request
 	public function _confirmRefund($invoice_id)
 	{
-		$this->_setAjaxWinTitle(JText::_('COM_PAYCART_INVOICE_REFUND_WINDOW_TITLE'));
-		$this->_setAjaxWinBody(JText::_('COM_PAYCART_INVOICE_REFUND_CONFIRM_MESSAGE'));
+		$this->_setAjaxWinTitle(JText::_('COM_PAYCART_ADMIN_INVOICE_REFUND_WINDOW_TITLE'));
+		
+		$html =  Rb_HelperTemplate::renderLayout('paycart_spinner','',PAYCART_LAYOUTS_PATH);
+		$this->_setAjaxWinBody($html.JText::_('COM_PAYCART_ADMIN_INVOICE_REFUND_CONFIRM_MESSAGE'));
 	
 		$this->_addAjaxWinAction(JText::_('COM_PAYCART_CONFIRM'), 'paycart.admin.transaction.refund.request('.$invoice_id.');', 'btn btn-success', 'id="paycart-invoice-refund-confirm-button"');
 		$this->_addAjaxWinAction(JText::_('COM_PAYCART_CLOSE'), 'rb.ui.dialog.close();', 'btn');
@@ -49,11 +51,8 @@ class PaycartAdminAjaxViewTransaction extends PaycartAdminBaseViewTransaction
 	{
 		$records = Rb_EcommerceAPI::invoice_get(Array('invoice_id' => $invoice_id ,'object_type' => 'PaycartCart' ));
 		if($records['status'] == PaycartHelperInvoice::STATUS_INVOICE_REFUNDED){
-			$this->_setAjaxWinTitle(JText::_('COM_PAYCART_INVOICE_REFUND_WINDOW_TITLE'));
-			$this->_setAjaxWinBody("Refund already processed");
-			
+			$this->_setAjaxWinBody(JText::_("COM_PAYCART_ADMIN_INVOICE_REFUND_NOT_SUPPORTED"));
 			$this->_addAjaxWinAction('close', 'rb.ui.dialog.close(); window.location.reload();', 'btn');
-			$this->_setAjaxWinAction();	
 			
 			$ajax = Rb_Factory::getAjaxResponse();
 			$ajax->sendResponse();

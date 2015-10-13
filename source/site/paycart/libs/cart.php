@@ -578,9 +578,11 @@ class PaycartCart extends PaycartLib
          */
         public function markRefunded()
         { 
+        	if(Paycart::STATUS_CART_CANCELLED != $this->status){
+        		$this->markCancel();
+        	}
             $this->is_refunded     = 1;
             $this->refunded_date   = Rb_Date::getInstance();
-   
             return $this;
         }
         

@@ -92,10 +92,14 @@ class PaycartAdminHtmlViewTransaction extends PaycartAdminBaseViewTransaction
 		
 		// Show or hide refund button
 		$refundable 		= false;
+		$isRefundDone		= false;
 		if($transaction['payment_status'] == 'payment_complete'){ 
 			if($invoiceData['status'] != Rb_EcommerceInvoice::STATUS_REFUNDED){
 				$processor		= Rb_EcommerceAPI::get_processor_instance($invoiceData['processor_type']);
 				$refundable 	= $processor->supportForRefund();
+			}
+			else {
+				$isRefundDone		= true;	
 			}
 		}
 		
@@ -103,7 +107,8 @@ class PaycartAdminHtmlViewTransaction extends PaycartAdminBaseViewTransaction
 		$this->assign('cart', 		$cart);	
 		$this->assign('buyer', 		$buyer);	
 		$this->assign('statusList',	Rb_EcommerceAPI::response_get_status_list());
-		$this->assign('refundable', $refundable);
+		$this->assign('refundable', 	$refundable);
+		$this->assign('isRefundDone', 	$isRefundDone);
 		
 		return true;	
 	}

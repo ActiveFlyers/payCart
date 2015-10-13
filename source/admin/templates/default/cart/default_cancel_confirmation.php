@@ -15,12 +15,12 @@ echo Rb_HelperTemplate::renderLayout('paycart_spinner','',PAYCART_LAYOUTS_PATH);
 
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	<h3 id="myModalLabel"><?php echo JText::_('Confirmation');?></h3>
+	<h3 id="myModalLabel"><?php echo JText::_('COM_PAYCART_ADMIN_ORDER_CANCEL');?></h3>
 </div>
 
 <div class="modal-body">
 	<div>
-		<?php echo JText::_("Are you sure you want to Cancel Cart???")?>
+		<?php echo JText::_("COM_PAYCART_ADMIN_ORDER_CANCEL_CONFIRMATION")?>
 	</div>
 	<p>&nbsp;</p>
 </div>
