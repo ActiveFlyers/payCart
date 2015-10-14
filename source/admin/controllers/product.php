@@ -483,6 +483,8 @@ class PaycartAdminControllerProduct extends PaycartController
 					 'alias',
 					 'productcategory_id',
 					 'type',
+					 'published',
+    				 'visible',
 					 'price',
 					 'retail_price',
 					 'cost_price',
