@@ -54,7 +54,7 @@ JHtml::_('behavior.formvalidation');
 			    <div class="pc-panel pc-panel-default">
 			      <div class="pc-panel-heading">
 			        <h4 class="pc-panel-title">
-			          <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><h3><?php echo JText::_("COM_PAYCART_IMPORT_STEP_ONE");?></h3></a>
+			          <a data-toggle="collapse" data-parent="#accordion" href="#pc-import-upload-file"><h3><?php echo JText::_("COM_PAYCART_IMPORT_STEP_ONE");?></h3></a>
 			        </h4>
 			      </div>
 			      <div id="pc-import-upload-file" class="panel-collapse collapse in">
@@ -87,10 +87,15 @@ JHtml::_('behavior.formvalidation');
 			      </div>
 			      <div id="collapse2" class="panel-collapse collapse">
 			        <div class="pc-panel-body">
-			        	<div class="span3">
-		        			<label><?php echo JText::_("COM_PAYCART_ADMIN_IMPORT_MAP_FIELDS");?></label>
+			        	<div class="span4">
+			        		<div class="row-fluid">
+				        		<ul>
+				        			<li><label><?php echo JText::sprintf("COM_PAYCART_ADMIN_IMPORT_HELP_MESSAGE" , "product_id" , "product_lang_id");?></label></li>			        		
+				        			<li><label><?php echo JText::_("COM_PAYCART_ADMIN_IMPORT_MAP_FIELDS");?></label></li>
+				        		</ul>
+			        		</div>
 		        		</div>
-	        			<div class="span9">
+	        			<div class="span8">
 		        			<div class="control-group">							
 								<a href="#" class="btn btn-success btn-large" onClick="paycart.admin.product.mapImportedFields()">
 									<?php echo Rb_Text::_('COM_PAYCART_ADMIN_PRODUCT_IMPORT_TITLE');?>

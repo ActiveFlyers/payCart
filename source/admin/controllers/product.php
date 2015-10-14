@@ -454,11 +454,12 @@ class PaycartAdminControllerProduct extends PaycartController
 	// function to finally import csv data
 	public function importCSV()
 	{
-		$start			 = JRequest::getVar('remaining', 0, 'int');
+		$start			 = JRequest::getVar('start', 0, 'int');
+		$total			 = JRequest::getVar('total', 0, 'int');
 		$imported_data   = JRequest::getVar('imported_data' , array());
 		$unimported_data = JRequest::getVar('unimported_data' , array());
 		$helper			 = PaycartFactory::getInstance('ImportFromCSV' , 'helper');
-		$helper->importCSV($start , 'product' , $unimported_data);
+		$helper->importCSV($start , $total , 'product' , $unimported_data , $imported_data);
 	}
 	
 	// function to export data as csv
@@ -466,10 +467,11 @@ class PaycartAdminControllerProduct extends PaycartController
 	{
 		$model			= $this->getModel();
 		$start			= JRequest::getVar('start', 0, 'int');
+		$filename		= JRequest::getVar('filename');
 		$export_fields	= $this->getFields();
 		
 		$helper	= PaycartFactory::getInstance('ExportToCSV' , 'helper');
-		$helper->exportToCSV('product' , $start , $model , $export_fields);
+		$helper->exportToCSV('product' , $start , $model , $export_fields , $filename);
 	}
 	
 	// function to set the export fields
@@ -481,8 +483,6 @@ class PaycartAdminControllerProduct extends PaycartController
 					 'alias',
 					 'productcategory_id',
 					 'type',
-					 'published',
-					 'visible',
 					 'price',
 					 'retail_price',
 					 'cost_price',
@@ -494,8 +494,12 @@ class PaycartAdminControllerProduct extends PaycartController
 					 'metadata_title',
 					 'metadata_keywords',
 					 'metadata_description',
-					 'description',
 					 'lang_code',
 					 'product_lang_id');
+	}
+	
+	public function download()
+	{
+		return true;
 	}
 }

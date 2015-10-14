@@ -24,7 +24,7 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		if($this->getTask() == 'edit' || $this->getTask() == 'new'){
 			$this->_adminEditToolbar();
 		}
-		else if($this->getTask() == 'import'){
+		else if($this->getTask() == 'import' || $this->getTask() == 'download'){
 			$this->_adminImportToolbar();
 		}
 		else{
@@ -44,8 +44,9 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		Rb_HelperToolbar::publish('visible',JText::_('COM_PAYCART_ADMIN_VISIBLE'));
 		Rb_HelperToolbar::unpublish('invisible',JText::_('COM_PAYCART_ADMIN_INVISIBLE'));
 		Rb_HelperToolbar::custom( 'copy', 'copy.png', 'copy_f2.png', 'COM_PAYCART_ADMIN_TOOLBAR_COPY', true );
-		Rb_HelperToolbar::custom('export' , 'download.png' , null ,'COM_PAYCART_ADMIN_EXPORT' , false);
 		Rb_HelperToolbar::custom('import' , 'upload.png' , null ,'COM_PAYCART_ADMIN_IMPORT' , false);
+		Rb_HelperToolbar::custom('export' , 'download.png' , null ,'COM_PAYCART_ADMIN_EXPORT' , false);
+		Rb_HelperToolbar::custom('download' , 'download.png' , null ,'COM_PAYCART_ADMIN_DOWNLOAD' , false);
 	}
 	
 	protected function _adminEditToolbar()
@@ -150,6 +151,30 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		
 		$summary	= PaycartFactory::getConfig()->get('product_import_summary');
 		$this->assign('summary' , $summary);
+		return true;
+	}
+	
+	// separate screen for downloaded files is provided so that user can access his last 15 exported files
+	// also, it is not possible to provide force download, as we're not able to change the task due to exit.
+	public function download($tpl = null)
+	{
+		$this->setTpl('download');
+		$this->setTask('download');
+		
+		$files		= array();
+		$paths		= array();
+		$file_names	=  array_diff(scandir(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product'), array('..', '.'));
+		foreach ($file_names as $file_name){
+		  $time = filemtime(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product/'.$file_name);
+		  $files[$time] = $file_name;
+		}
+		if($files){
+			krsort($files);
+		}
+		foreach($files as $time => $file){
+			$paths[$file] = JUri::root().PAYCART_SITE_PATH_CSV_IMPEXP.'product/'.$file;
+		}		
+		$this->assign('paths' , $paths);
 		return true;
 	}
 }

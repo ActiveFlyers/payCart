@@ -30,12 +30,12 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		$type	  		= $uploaded_file['type'];
 		
 		$mimes = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv','application/csv');
-//		if(!in_array($type , $mimes))
-//		{		
-//			$app = JFactory::getApplication();
-//			$app->enqueueMessage(JText::_('COM_PAYCART_INVALID_FILE_UPLOAD'), 'error');
-//			$app->redirect('index.php?option=com_paycart&view=product&task=import');
-//		}
+		if(!in_array($type , $mimes))
+		{		
+			$app = JFactory::getApplication();
+			$app->enqueueMessage(JText::_('COM_PAYCART_INVALID_FILE_UPLOAD'), 'error');
+			$app->redirect('index.php?option=com_paycart&view=product&task=import');
+		}
 		
 		$csv_folder 	= PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.$entity;
 
@@ -244,7 +244,8 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		else
 		{
 			$count = $db->setQuery("SELECT COUNT(*) FROM `#__paycart_{$entity}_temp`")->loadResult();
-			$response->remaining	= $count;
+			$response->start		= 0;
+			$response->total		= $count;
 			$response->action 		= 'startImport';
 			$response->next	  		= true;
 		}
@@ -332,14 +333,14 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 	 * 
 	 * @return	null
 	 */
-	public function importCSV($start , $entity , $unimported_data , $imported_data)
+	public function importCSV($start , $total , $entity , $unimported_data , $imported_data)
 	{
 		$ajax 	  	 = PaycartFactory::getAjaxResponse();
 		$response 	 = new stdClass();
 		
 		$limit	= 20;
 		$db		= JFactory::getDbo();
-		$query	= "SELECT * FROM `#__paycart_{$entity}_temp` LIMIT {$limit}";
+		$query	= "SELECT * FROM `#__paycart_{$entity}_temp` LIMIT {$start} , {$limit}";
 		$data	= $db->setQuery($query)->loadAssocList();
 		
 		foreach ($data as $row) 
@@ -355,12 +356,12 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 			}			
 		}
 		
-		$count = $db->setQuery("SELECT COUNT(*) FROM `#__paycart_{$entity}_temp`")->loadResult();
 		$start = $start + $limit;
 		
 		if($start<$total)
 		{
 			$response->start			= $start;
+			$response->total			= $total;
 			$response->action 		 	= 'startImport';
 			$response->imported_data 	= $imported_data;
 			$response->unimported_data	= $unimported_data;
@@ -376,7 +377,7 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 	    	
 			//prepare the summary of import
 			$summary	= "<div class='span6'><table style='font-weight:bold' class='table table-striped table-bordered table-hover'>";
-			$summary   .= JText::sprintf("COM_PAYCART_TOTAL_PROCESSED_RECORDS" , $count);
+			$summary   .= JText::sprintf("COM_PAYCART_TOTAL_PROCESSED_RECORDS" , $total);
 			$summary   .= JText::sprintf("COM_PAYCART_SUCCESSFULLY_IMPORTED_RECORDS" , count($imported_data));			  
 			$summary   .= JText::sprintf("COM_PAYCART_FAILED_IMPORTED_RECORDS" , count($unimported_data));
 			$summary   .= "</table></div><div class='span12'>";			
@@ -482,10 +483,6 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 			unset($fields[$entity.'_id']);
 			$entity_model->save($fields);		
 		}
-		
-//		// Delete that row from temporary table
-//		$query	= "DELETE FROM `#__paycart_{$entity}_temp` WHERE `{$entity}_id` = '{$fields[$entity.'_id']}'";
-//		$db->setQuery($query)->execute();
 	}
 	
 	/** 

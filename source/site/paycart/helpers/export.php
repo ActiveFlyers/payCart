@@ -24,7 +24,7 @@ class PaycartHelperExportToCSV extends PaycartHelper
 	 * 
 	 * @return	null
 	 */
-	public function exportToCSV($entity , $start , $model , $export_fields=null)
+	public function exportToCSV($entity , $start , $model , $export_fields=null , $filename)
 	{		
 		//If user wants to export limited products only, then set the limit and total of records accordingly
 		$cid		 = JRequest::getVar('cid' , null);
@@ -40,22 +40,17 @@ class PaycartHelperExportToCSV extends PaycartHelper
 		$csv_fields  = $this->getCsvFields($start , $limit, $entity, $model , $export_fields);
 		
 		//Creating a CSV File
- 		$CSVFileName = $this->createCSV($start, $csv_fields , $entity , $export_fields);
+ 		$filename 	 = $this->createCSV($start, $csv_fields , $entity , $export_fields , $filename);
 		
 		$start 		 = $start + $limit;
 		
 		if($start<$total)
-		{ 
-			if(($total - $start) > $limit){
-				//Warning the user for not refreshing the page as it may restart the export process again
-				JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_PLEASE_DO_NOT_REFRESH') , 'warning');
-			}else{
-				//Warning the user for not refreshing the page as it may restart the export process again
-				JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_CSV_EXPORT_SUCCESSFUL'));
-			}
-			
+		{ 			
+			//Warning the user for not refreshing the page as it may restart the export process again
+			JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_PLEASE_DO_NOT_REFRESH') , 'warning');
+						
 			//Redirecting to get the next records
-			$url = PaycartRoute::_('index.php?option=com_paycart&view='.$entity.'&task=export&start='.$start);
+			$url = PaycartRoute::_('index.php?option=com_paycart&view='.$entity.'&task=export&start='.$start.'&filename='.$filename);
 			?>
 			<script>
 				window.onload = function()
@@ -67,8 +62,9 @@ class PaycartHelperExportToCSV extends PaycartHelper
 		}
 		else
 		{
-			//Force to download after redirecting the user
-			$this->downloadCSV($CSVFileName);
+			$url = PaycartRoute::_('index.php?option=com_paycart&view='.$entity.'&task=download');
+			JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_CSV_EXPORT_SUCCESSFUL')."<a href='{$url}'> Click to download CSV Files.</a>");
+			JFactory::getApplication()->redirect(PaycartRoute::_('index.php?option=com_paycart&view='.$entity.'&task=display'));
 		}
 	}
 	
@@ -82,7 +78,7 @@ class PaycartHelperExportToCSV extends PaycartHelper
 	 * 
 	 * @return	string $CSVFileName
 	 */
-	public function createCSV($start, $csv_fields , $entity , $export_fields)
+	public function createCSV($start, $csv_fields , $entity , $export_fields , $filename)
 	{
 		$csv_folder = PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.$entity;
 		
@@ -93,9 +89,21 @@ class PaycartHelperExportToCSV extends PaycartHelper
 			}
 		}
 		
-		$date = & JFactory::getDate();
+		// delete the oldest file if count is greater than 15
+		$file_names	=  array_diff(scandir(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product'), array('..', '.'));
+		if(count($file_names) >= 15){
+			foreach ($file_names as $file_name)
+			{
+			  $time = filemtime(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product/'.$file_name);
+			  $files[$time] = $file_name;
+			}
+			krsort($files);
+			unlink(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product/'.end($files));
+		}
 		
-		$filename = $entity.'_'.$date->format('Y-m-d');
+		$date = JFactory::getDate();
+		
+		$filename = $filename ? $filename : $entity.'_'.$date->format('Y-m-d_H:i:s');
 		$CSVFileName = $csv_folder.'/'.$filename.'.csv';
 		
 		$fp = fopen($CSVFileName, 'a') or die("can't open file");		
@@ -112,7 +120,7 @@ class PaycartHelperExportToCSV extends PaycartHelper
 		}
 		fclose($fp);
 		
-		return $CSVFileName;
+		return $filename;
 	}
 	
 	/** 
@@ -227,38 +235,6 @@ class PaycartHelperExportToCSV extends PaycartHelper
 		}
 		    
 		return $csv_fields;
-	}
-	 
-	/** 
-	 * downloadCSV Function
-	 * @desc	Function to download csv
-	 * @params	string $CSVFileName
-	 * 
-	 * @return	null
-	 */
-	public function downloadCSV($CSVFileName)
-	{
-		$fileName = JFile::getName($CSVFileName);
-				
-		if(file_exists($CSVFileName))
-		{			
-			if(!headers_sent()){
-			header("Content-type: text/csv");
-			header("Content-Disposition: attachment; filename= $fileName");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			}
-		
-			readfile("$CSVFileName");
-		
-			//delete file
-			if (file_exists($CSVFileName))
-			{
-				unlink($CSVFileName);
-			}			
-			
-			exit;
-		}
 	}
 	
 	/** 
