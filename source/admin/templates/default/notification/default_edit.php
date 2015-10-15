@@ -127,13 +127,13 @@ echo $this->loadTemplate('js');
                 		  		<div class="accordion-inner">  
                                 	<?php $field = $form->getField('admin_subject') ?>					
                                 	<div class="control-group">
-                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> <span class="muted">( <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_BODY_USE_HTML');?> ) </span></div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 	</div>
                             
                                		 <?php $field = $form->getField('admin_body') ?>					
                                 	<div class="control-group">
-                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> <span class="muted">( <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_BODY_USE_HTML');?> ) </span></div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                		</div>
                         	</div>

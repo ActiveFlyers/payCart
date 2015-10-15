@@ -762,7 +762,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_product_index` (
 -- Dumping data for table `#__paycart_notification`
 --
 
-INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `event_name`, `to`, `cc`, `bcc`, `media`,`params`) VALUES
+INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `event_name`, `to`, `cc`, `bcc`, `media`) VALUES
 (1, 0, 'onpaycartcartafterlocked', '[[buyer_email]]', '', '', '{}'),
 (2, 1, 'onpaycartcartafterapproved', '[[buyer_email]]', '', '', '{}'),
 (3, 1, 'onpaycartcartafterpaid', '[[buyer_email]]', '', '', '{}'),

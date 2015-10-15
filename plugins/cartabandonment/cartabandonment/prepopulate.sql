@@ -1,10 +1,11 @@
 CREATE TABLE IF NOT EXISTS `#__paycart_cartabandonment` (
 			  `cartabandonment_id`	       INT NOT NULL AUTO_INCREMENT,
+			  `title` varchar(255) ,
 		 	  `published` tinyint(1),
 			  `to` varchar(255) NULL,
 		          `cc` varchar(255) NULL,
 			  `bcc` varchar(255) NULL,
-			  `when_to_email`              timestamp NULL,
+			  `when_to_email`              varchar(20) NULL,
 			  `params`                 TEXT,
 			   PRIMARY KEY (`cartabandonment_id`)
 			)
@@ -33,8 +34,8 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cartabandonment_logs` (
 
 INSERT INTO `#__paycart_cartabandonment` (`cartabandonment_id`, `title`, `published`, `to`, `cc`, `bcc`, `when_to_email`, `params`) VALUES
 (1, '1st reminder', 1, '[[buyer_email]]', '', '', '000000010000', NULL),
-(2, '2nd reminder', 1, '[[buyer_name]]', '', '', '000000010000', NULL),
-(3, '3rd reminder', 1, '[[buyer_email]]', '', '', '000018010000', NULL);
+(2, '2nd reminder', 1, '[[buyer_name]]', '', '', '000003000000', NULL),
+(3, '3rd reminder', 1, '[[buyer_email]]', '', '', '000015000000', NULL);
 
 INSERT INTO `#__paycart_cartabandonment_lang` (`cartabandonment_lang_id`, `cartabandonment_id`, `lang_code`, `subject`, `body`) VALUES
 (1, 1, 'en-GB', 'You left something in your cart at [[store_name]]', '<table style="max-width: 600px; border-left: solid 1px #e6e6e6; border-right: solid 1px #e6e6e6; border-bottom: 1px solid #e6e6e6;" width="100%" cellspacing="0" cellpadding="0">\r\n<tbody>\r\n<tr>\r\n<td style="width: 10px; background-color: #f9f9f9; border-top: solid 1px #e6e6e6;" bgcolor="#F9F9F9" width="10"> </td>\r\n<td style="background-color: #f9f9f9; border-top: solid 1px #e6e6e6;" align="left" bgcolor="#00436d"><img style="border: none;" src="[[company_logo]]" alt="[[store_name]]" height="30" border="0" /></td>\r\n<td style="background-color: #f9f9f9; padding: 0; margin: 0; border-top: solid 1px #e6e6e6;" align="right" valign="middle" bgcolor="#F9F9F9" height="50">[[buyer_orders]] | [[buyer_account]] | [[store_url]]</td>\r\n<td style="width: 10px; background-color: #f9f9f9; border-top: solid 1px #e6e6e6;" bgcolor="#F9F9F9" width="10"> </td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table style="max-width: 600px; border-left: solid 1px #e6e6e6; border-right: solid 1px #e6e6e6;" width="100%" cellspacing="0" cellpadding="0">\r\n<tbody>\r\n<tr>\r\n<td style="font-size: 21px; color: #000000; font-weight: normal;" align="center" height="65"><span style="line-height: 15.808px;">Don''t miss out on the items. Why Wait?</span></td>\r\n</tr>\r\n<tr>\r\n<td style="color: #2c2c2c; display: block; line-height: 20px; font-weight: 300; margin: 0 auto; clear: both; border-bottom: 1px solid #e6e6e6; background-color: #f9f9f9; padding: 20px;" align="left" valign="top" bgcolor="#F9F9F9">\r\n<p style="padding: 0; margin: 0; font-size: 13px; font-weight: bold;">Hi [[buyer_name]],</p>\r\n<br />\r\n<p style="padding: 0; margin: 0; color: #565656; font-size: 13px;">We noticed that you didn''t complete your order during your last visit on [[store_name]]. Just in case you were interrupted, we have saved your cart for you.</p>\r\n<p style="padding: 0; margin: 0; color: #565656; font-size: 13px;"> </p>\r\n<p style="text-align: center; padding: 0; margin: 0;" align="center"><a style="width: 200px; margin: 0px auto; background: linear-gradient(to bottom,#007fb8 1%,#6ebad5 3%,#007fb8 7%,#007fb8 100%); background-color: #007fb8; text-align: center; border: #004b91 solid 1px; padding: 8px 0; text-decoration: none; border-radius: 2px; display: block; color: #fff; font-size: 13px;" href="[[current_cart]]" target="_blank"><span style="color: #ffffff; font-size: 13px; background-color: #007fb8;">Complete Order Now</span></a></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<table style="border-left: 1px solid #e6e6e6; border-right: 1px solid #e6e6e6; max-width: 600px;" width="100%" cellspacing="0" cellpadding="0">\r\n<tbody>\r\n<tr>\r\n<td style="font-size: 14px; color: #5d5d5d; font-weight: normal; padding: 15px;" height="40"><span style="font-size: 16px; color: #000000; font-weight: normal;">ORDER DETAILS</span></td>\r\n</tr>\r\n<tr>\r\n<td style="font-size: 14px; color: #5d5d5d; font-weight: normal;">[[products_name]]</td>\r\n</tr>\r\n</tbody>\r\n</table>'),

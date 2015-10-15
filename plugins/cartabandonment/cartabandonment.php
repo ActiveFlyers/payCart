@@ -24,7 +24,7 @@ class plgPaycartcartabandonment extends Rb_Plugin
 		Rb_HelperLoader::addAutoLoadFile($dir.'/model.php', 'PaycartModelCartabandonment');
 		Rb_HelperLoader::addAutoLoadFile($dir.'/table.php', 'PaycartTableCartabandonment');
 		Rb_HelperLoader::addAutoLoadFile($dir.'/view/view.html.php', 'PaycartAdminHtmlViewCartabandonment');
-		
+		Rb_HelperLoader::addAutoLoadFile($dir.'/lib.php', 'PaycartCartabandonment');
 		Rb_HelperLoader::addAutoLoadFile($dir.'/controller.php', 'PaycartadminControllerCartabandonment');
         return true;
 	}
@@ -38,7 +38,7 @@ class plgPaycartcartabandonment extends Rb_Plugin
 									);
 							
 		$menu = PaycartFactory::getHelper('adminmenu');
-		$menu->addMenu($adminMenu, 'apps');
+		$menu->addMenu($adminMenu, 'Apps');
 	}
 		
 	public function onPaycartCron()
