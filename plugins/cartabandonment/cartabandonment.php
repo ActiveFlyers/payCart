@@ -24,9 +24,6 @@ class plgPaycartcartabandonment extends Rb_Plugin
 		Rb_HelperLoader::addAutoLoadFile($dir.'/model.php', 'PaycartModelCartabandonment');
 		Rb_HelperLoader::addAutoLoadFile($dir.'/table.php', 'PaycartTableCartabandonment');
 		Rb_HelperLoader::addAutoLoadFile($dir.'/view/view.html.php', 'PaycartAdminHtmlViewCartabandonment');
-		Rb_HelperLoader::addAutoLoadFile($dir.'/view/view.ajax.php', 'PaycartAdminAjaxViewCartabandonment');
-		
-		Rb_HelperLoader::addAutoLoadFile($dir.'/lib.php', 'PaycartCartabandonment');
 		
 		Rb_HelperLoader::addAutoLoadFile($dir.'/controller.php', 'PaycartadminControllerCartabandonment');
         return true;
@@ -41,7 +38,7 @@ class plgPaycartcartabandonment extends Rb_Plugin
 									);
 							
 		$menu = PaycartFactory::getHelper('adminmenu');
-		$menu->addMenu($adminMenu, 'settings');
+		$menu->addMenu($adminMenu, 'apps');
 	}
 		
 	public function onPaycartCron()
@@ -168,7 +165,7 @@ class plgPaycartcartabandonment extends Rb_Plugin
 				         `params` <> '{}'
 				         	   AND
 				         `cart_id` NOT IN (SELECT `cart_id` FROM `#__paycart_cartabandonment_logs` where `cartabandonment_id` = ".$cartabandonment_id.")
-				    	 GROUP BY `buyer_id` limit 0,5
+				    	 GROUP BY `buyer_id`
 				    ) as tmp on
 		        	c.`cart_id` = tmp.maxid";
 		

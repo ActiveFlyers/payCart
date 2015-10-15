@@ -86,18 +86,22 @@ echo $this->loadTemplate('js');
 							<legend><?php echo JText::_('COM_PAYCART_ACCOUNT_PAYMENT_DETAILS');?></legend>
 							<div class="row-fluid">
 								<div class="span6">
-									<div><?php echo JText::_('COM_PAYCART_PAYMENT_METHOD');?> : <?php echo $cart->params['payment_gateway']['title'];?></div>
-									<div><?php echo JText::_('COM_PAYCART_STATUS');?> :
-										<span class="heading pc-uppercase">
-										<?php if($invoice->status == PaycartHelperInvoice::STATUS_INVOICE_PAID): ?>
-											<span class="text-success"><?php echo $invoiceStatusList[$invoice->status];?></span>
-										<?php elseif($invoice->status == PaycartHelperInvoice::STATUS_INVOICE_INPROCESS):?>
-											<span class="text-warning"><?php echo $invoiceStatusList[$invoice->status];?></span>
-										<?php else:?>
-											<span class="text-error"><?php echo $invoiceStatusList[$invoice->status];?></span>
-										<?php endif;?>
-										</span>
-									</div>
+									<?php if(isset($cart->params['payment_gateway'])):?>
+										<div><?php echo JText::_('COM_PAYCART_PAYMENT_METHOD');?> : <?php echo $cart->params['payment_gateway']['title'];?></div>
+										<div><?php echo JText::_('COM_PAYCART_STATUS');?> :
+											<span class="heading pc-uppercase">
+											<?php if($invoice->status == PaycartHelperInvoice::STATUS_INVOICE_PAID): ?>
+												<span class="text-success"><?php echo $invoiceStatusList[$invoice->status];?></span>
+											<?php elseif($invoice->status == PaycartHelperInvoice::STATUS_INVOICE_INPROCESS):?>
+												<span class="text-warning"><?php echo $invoiceStatusList[$invoice->status];?></span>
+											<?php else:?>
+												<span class="text-error"><?php echo $invoiceStatusList[$invoice->status];?></span>
+											<?php endif;?>
+											</span>
+										</div>
+									<?php else:?>
+										<div><?php echo JText::_('COM_PAYCART_NOT_AVAILABLE');?></div>
+									<?php endif;?>
 								</div>
 								<br class="visible-xs-block visible-phone" />
 								<div class="span6">
@@ -142,9 +146,9 @@ echo $this->loadTemplate('js');
 			</div>
 		</div>
 		
+	<div class="pc-account-order-productdetails">
 		<?php if(!empty($digitalProducts)):?>
 		<div class="row-fluid">
-			<div class="pc-account-order-productdetails">
 				<div class="pc-account-order-productdetails-header well well-small muted">
 					<div class="row-fluid">
 						<div class="span6">
@@ -215,7 +219,7 @@ echo $this->loadTemplate('js');
 															</p>
 														<?php endforeach;?>
 													<?php else:?>
-														<?php echo JText::_('COM_PAYCART_DOWNLOADS_NOT_AVAILABLE')?>
+														<?php echo JText::_('COM_PAYCART_NOT_AVAILABLE')?>
 													<?php endif;?>
 													</td>
 													
@@ -255,12 +259,10 @@ echo $this->loadTemplate('js');
 						</div>
 				</div>			
 			</div>
-		</div>
 		<?php endif;?>
 			
 		<?php if(!empty($productShipments)):?>
 		<div class="row-fluid">
-			<div class="pc-account-order-productdetails">
 				<div class="pc-account-order-productdetails-header well well-small muted">
 					<div class="row-fluid">
 						<div class="span6">
@@ -439,55 +441,56 @@ echo $this->loadTemplate('js');
 					</div>
 				</div>
 			</div>
-		</div>
 		<?php endif;?>
+		<div class="row-fluid">
+				<div class="span6 pull-right">
+					<table class="table">
+						<thead>
+							<tr>
+								<td><?php echo JText::_('COM_PAYCART_SUBTOTAL')?> :</td>
+								<td><span class="pull-right"><?php echo $formatter->amount($cart->subtotal);?></span></td>
+							</tr>								
+							<?php if(!empty($cart->shipping)):?>
+								<tr>
+									<td><?php echo JText::_('COM_PAYCART_SHIPPING')?> :</td>
+									<td><span class="pull-right"><?php echo $formatter->amount($cart->shipping);?></span></td>
+								</tr>
+							<?php endif;?>
+							<?php if(!empty($cart->promotion)):?>
+								<tr>
+									<td><?php echo JText::_('COM_PAYCART_PROMOTION_DISCOUNT');?> :</td>
+									<td><span class="pull-right"><?php echo $formatter->amount($cart->promotion);?></span></td>
+								</tr>
+							<?php endif;?>
+							<?php if(!empty($cart->duties)):?>
+								<tr>
+									<td><?php echo JText::_('COM_PAYCART_TAX');?> :</td>
+									<td>
+										<span class="pull-right"><?php echo $formatter->amount($cart->duties);?></span>
+										<br><small class="pull-right">(<?php echo JText::_("COM_PAYCART_CART_TAX_ON_TAX_DESC")?>)</small>
+									</td>
+								</tr>
+							<?php endif;?>
+							<tr>
+								<td><span class="heading"><?php echo JText::_('COM_PAYCART_TOTAL');?> :</span></td>
+								<td><span class="pull-right heading"><?php echo $formatter->amount($cart->total);?></span></td>
+							</tr>
+						</thead>
+					</table>
+				</div>
+		</div>
 		
 		<div class="row-fluid">
-			<div class="span6">
-				<?php 			    
-				$position = 'pc-order-pdf-action';
-			    if(isset($plugin_result) && isset($plugin_result[$position])):?>
-					<div class=<?php echo $position;?>>
-					<?php echo $plugin_result[$position]; ?>
-					</div>
-			    <?php endif;?>
-			</div>
-			<div class="span6">
-				<table class="table">
-					<thead>
-						<tr>
-							<td><?php echo JText::_('COM_PAYCART_SUBTOTAL')?> :</td>
-							<td><span class="pull-right"><?php echo $formatter->amount($cart->subtotal);?></span></td>
-						</tr>								
-						<?php if(!empty($cart->shipping)):?>
-							<tr>
-								<td><?php echo JText::_('COM_PAYCART_SHIPPING')?> :</td>
-								<td><span class="pull-right"><?php echo $formatter->amount($cart->shipping);?></span></td>
-							</tr>
-						<?php endif;?>
-						<?php if(!empty($cart->promotion)):?>
-							<tr>
-								<td><?php echo JText::_('COM_PAYCART_PROMOTION_DISCOUNT');?> :</td>
-								<td><span class="pull-right"><?php echo $formatter->amount($cart->promotion);?></span></td>
-							</tr>
-						<?php endif;?>
-						<?php if(!empty($cart->duties)):?>
-							<tr>
-								<td><?php echo JText::_('COM_PAYCART_TAX');?> :</td>
-								<td>
-									<span class="pull-right"><?php echo $formatter->amount($cart->duties);?></span>
-									<br><small class="pull-right">(<?php echo JText::_("COM_PAYCART_CART_TAX_ON_TAX_DESC")?>)</small>
-								</td>
-							</tr>
-						<?php endif;?>
-						<tr>
-							<td><span class="heading"><?php echo JText::_('COM_PAYCART_TOTAL');?> :</span></td>
-							<td><span class="pull-right heading"><?php echo $formatter->amount($cart->total);?></span></td>
-						</tr>
-					</thead>
-				</table>
-			</div>
+			<?php 			    
+			$position = 'pc-order-pdf-action';
+		    if(isset($plugin_result) && isset($plugin_result[$position])):?>
+		    	<hr>
+				<div class=<?php echo $position;?> >
+				<?php echo $plugin_result[$position]; ?>
+				</div>
+		    <?php endif;?>
 		</div>
 	</div>
+    </div>
 </div>
 <?php 

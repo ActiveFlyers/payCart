@@ -32,7 +32,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 <p style="padding: 0; margin: 0; font-size: 13px; font-weight: bold;">Hi [[buyer_name]],</p>
 <br>
 <p style="padding: 0; margin: 0; color: #565656; font-size: 13px;">Greeting from [[store_name]]!</p><br>
-<p style="padding: 0; margin: 0; color: #565656; font-size: 13px;">We have successfully delievered one or more items in your order no. [[order_id]].</p>
+<p style="padding: 0; margin: 0; color: #565656; font-size: 13px;">We have successfully delivered one or more items in your order no. [[order_id]].</p>
 </td>
 </tr>
 </tbody>

@@ -68,7 +68,7 @@ echo $this->loadTemplate('js');
 
                                 <?php $field = $form->getField('body') ?>					
                                 <div class="control-group">
-                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> <span class="muted">( <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_BODY_USE_HTML');?> ) </span></div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?></div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 </div>
 
@@ -80,7 +80,7 @@ echo $this->loadTemplate('js');
                         </div>
                         
                       <div class="span5 pc-notification-tokenscontrol-group">
-                            <div class="control-label"><h3><?php echo JText::_('COM_PAYCART_ADMIN_TOKEN_LIST'); ?> </h3></div>
+                            <div class="control-label"><h3><?php echo JText::_('COM_PAYCART_ADMIN_TOKEN_LIST'); ?><small> (<?php echo JText::_('COM_PAYCART_ADMIN_SELECT_TOKEN_MESSAGE')?>)</small> </h3></div>
                             <div class="controls ">
                                   <ul class="unstyled">
                                    <?php   

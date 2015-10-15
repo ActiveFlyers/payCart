@@ -56,10 +56,10 @@ echo $this->loadTemplate('js');
 			   <div class="row-fluid">
 			   	  <div class="span6">
 			   	  <?php foreach ($form->getFieldset('params') as $field):?>
-						<h5 class="pull-right">
+						<h4 class="pull-right">
 						    <input type='hidden' value='0' name='paycart_notification_form[params][send_same_copy]'/>						    
 							<?php echo $field->input.' '.JText::_('COM_PAYCART_ADMIN_NOTIFICATION_SEND_SAME_COPY')?>
-						</h5>
+						</h4>
 				  <?php endforeach;?>
 				  </div>
 				  
@@ -69,7 +69,8 @@ echo $this->loadTemplate('js');
 					<div class="accordion-group">
 					    <div class="accordion-heading">
 					      <a class="accordion-toggle" data-toggle="collapse" data-parent="#notificationAccordion" href="#collapseCustomer">
-					        <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_CUSTOMER_CONFIGURATION')?>
+					        <strong><?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_CUSTOMER_CONFIGURATION')?></strong>
+					        <span class="pull-right"><i class="fa fa-chevron-down"></i></span>
 					      </a>
 				    	</div>
                 		<div id="collapseCustomer" class="accordion-body collapse in"> 
@@ -99,13 +100,16 @@ echo $this->loadTemplate('js');
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 </div>
 
-								<div>
-									<input type="checkbox" name="paycart_notification_template" value="" data-pc-selector="notification_template"/>
-									<?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_USE_DEFAULT_EMAIL_TEMPLATE')?>
-								</div>
                                 <?php $field = $form->getField('body') ?>					
                                 <div class="control-group">
-                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> <span class="muted">( <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_BODY_USE_HTML');?> ) </span></div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?>                                        	
+                                        </div>
+                                        <div class="well well-small">
+												<a href="javascript:void(0);" data-pc-selector="notification_template">
+														<i class="fa fa-hand-o-up fa-2x"></i>
+														<?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_USE_DEFAULT_EMAIL_TEMPLATE')?>
+												</a>
+										</div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 </div>
                           </div>
@@ -115,7 +119,8 @@ echo $this->loadTemplate('js');
                        <div class="accordion-group" data-pc-selector="admin-notification-config">
 					    	<div class="accordion-heading">
 					      		<a class="accordion-toggle" data-toggle="collapse" data-parent="#notificationAccordion" href="#collapseAdmin">
-					       		 <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_ADMIN_CONFIGURATION')?>
+					       			 <strong><?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_ADMIN_CONFIGURATION')?></strong>
+					       			 <span class="pull-right"><i class="fa fa-chevron-up"></i></span>
 					      		</a>
 				    		</div>
                 			<div id="collapseAdmin" class="accordion-body collapse"> 
@@ -141,7 +146,7 @@ echo $this->loadTemplate('js');
               </div>
               <div class="span6 pc-notification-tokens">
                       <div class="offset1 control-group">
-                            <div class="control-label"><h3><?php echo JText::_('COM_PAYCART_ADMIN_TOKEN_LIST'); ?> </h3></div>
+                            <div class="control-label"><h3><?php echo JText::_('COM_PAYCART_ADMIN_TOKEN_LIST'); ?> <small> (<?php echo JText::_('COM_PAYCART_ADMIN_SELECT_TOKEN_MESSAGE')?>)</small> </h3></div>
                             <div class="controls ">
                                   <ul class="unstyled">
                                    <?php   

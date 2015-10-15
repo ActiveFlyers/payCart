@@ -36,13 +36,19 @@ var inFocus = false;
 	});
 
 	//copy its template html to body
-	$('[data-pc-selector="notification_template"]').on('change',function(){
-		if($(this).prop( "checked")){
+	$('[data-pc-selector="notification_template"]').on('click',function(){
 			var id = $('[name="paycart_notification_form[notification_id]"]').val();
-			var iframeId = $(this).parent().next('div').find('iframe').attr('id');
+			var iframeId = $(this).parent().parent().find('iframe').attr('id');
 			var link = 'index.php?option=com_paycart&view=notification&task=getTemplate&notification_id='+id+'&iframeId='+iframeId;
 			paycart.ajax.go(link);
-		}
+	});
+
+	$('div.accordion-body').on('shown', function () {
+		$(this).parent("div").find(".fa-chevron-up").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+	});
+	
+	$('div.accordion-body').on('hidden', function () {
+		$(this).parent("div").find(".fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-up")
 	});
 	
  });
