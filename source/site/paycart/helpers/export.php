@@ -101,7 +101,10 @@ class PaycartHelperExportToCSV extends PaycartHelper
 			unlink(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product/'.end($files));
 		}
 		
-		$date = JFactory::getDate();
+		// Get the date & time as per timezone
+		$date 	= new DateTime();
+		$config = JFactory::getConfig();
+		$date->setTimezone(new DateTimeZone($config->get('offset')));
 		
 		$filename = $filename ? $filename : $entity.'_'.$date->format('Y-m-d_H:i:s');
 		$CSVFileName = $csv_folder.'/'.$filename.'.csv';

@@ -59,6 +59,7 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 	protected function _adminImportToolbar()
 	{
 		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::cancel();
 	}
 	
 	/**

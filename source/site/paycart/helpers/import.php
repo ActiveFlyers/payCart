@@ -173,16 +173,12 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		
 		while($count<20 && !$end_of_file && ($data = fgetcsv($file, "\n")))
 		{
-			//first element does not have double qoutes
-			$format_string		  = explode(';', $data[0] , 2);
-			$formatted_data		  = $format_string[0].'";'.$format_string[1];
-			
-			$columns			  = array();
-			$columns  			  = explode('";"', $formatted_data);
-						
-			//remove '";' from the last element
-			$length				  = count($columns);
-			$columns[$length - 1] = str_replace('";', '', $columns[$length - 1]);
+			$columns		  = explode(";" , $data[0]);
+			//first element doesn't have double qoutes
+			for($i = 1; $i < count($columns) ; $i++){
+				$columns[$i] = ltrim($columns[$i] , '"');
+				$columns[$i] = rtrim($columns[$i] , '"');
+			}
 			
 			//don't save in table if fetching the records for the first time as we get headers
 			//but create a temporary table here itself

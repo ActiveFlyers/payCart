@@ -32,7 +32,9 @@ define('PAYCART_PATH_CORE_FORM',			PAYCART_PATH_CORE.'/form');
 define('PAYCART_PATH_CORE_IMAGES',  		'images/cart');
 define('PAYCART_PATH_MEDIA_DIGITAL_TEASER', JPATH_ROOT.'/media/com_paycart/digital/teaser/');
 define('PAYCART_PATH_MEDIA_DIGITAL_MAIN',   JPATH_ROOT.'/media/com_paycart/digital/main/');
-define('PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP',  	JPATH_ROOT.'/media/com_paycart/csv_impexp/');
+define('PAYCART_SITE_PATH_CSV_IMPEXP' , 	'/media/com_paycart/csv_impexp/');
+define('PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP', JPATH_ROOT.PAYCART_SITE_PATH_CSV_IMPEXP);
+
 
 
 // front-end
