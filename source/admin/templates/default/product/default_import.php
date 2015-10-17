@@ -60,11 +60,15 @@ JHtml::_('behavior.formvalidation');
 			      <div id="pc-import-upload-file" class="panel-collapse collapse in">
 			        <div class="pc-panel-body">
 			        	<div class="row-fluid">
+			        		<div class="row-fluid">
+								<?php $entity = 'product';?>
+								<span class="text-muted"><?php echo JText::_("COM_PAYCART_IMPORT_NEW_RECORDS_WARNING");?></span><br/>
+							</div>	
 			        		<div class="span3">
 			        			<ul>
 			        				<li><label><?php echo JText::_("COM_PAYCART_ADMIN_IMPORT_UPLOAD_CSV");?></label></li>
 			        				<li><label><?php echo JText::sprintf("COM_PAYCART_ADMIN_IMPORT_HELP_MESSAGE_ONE" , "product_id");?></label></li>
-			        				<li><label><?php echo JText::sprintf("COM_PAYCART_ADMIN_IMPORT_HELP_MESSAGE_TWO" , "product_lang_	id");?></label></li>
+			        				<?php echo JText::sprintf("COM_PAYCART_ADMIN_IMPORT_HELP_MESSAGE_TWO" , "product" , "product");?>
 			        			</ul>
 			        		</div>
 		        			<div class="span9">

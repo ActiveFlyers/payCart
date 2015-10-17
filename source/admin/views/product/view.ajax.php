@@ -80,6 +80,9 @@ class PaycartAdminAjaxViewProduct extends PaycartAdminBaseViewProduct
 		$options['-- Select --'] = '<option value=""> -- Select --</option>';
 		foreach($fields['entity_fields'] as $field)
 		{
+			if($field == "variation_of"){
+				continue;
+			}
 			$options[$field] 	 = '<option value="'.$field.'">'.$field.'</option>';	
 		}
 		

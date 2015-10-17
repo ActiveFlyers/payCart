@@ -479,12 +479,6 @@ class PaycartAdminControllerProduct extends PaycartController
 	{
 		return array('product_id',
 					 'title',
-					 'sku',
-					 'alias',
-					 'productcategory_id',
-					 'type',
-					 'published',
-    				 'visible',
 					 'price',
 					 'retail_price',
 					 'cost_price',
@@ -493,11 +487,16 @@ class PaycartAdminControllerProduct extends PaycartController
 					 'height',
 					 'length',
 					 'width',
+					 'sku',
+					 'alias',
+					 'productcategory_id',
+					 'type',
+					 'published',
+    				 'visible',
 					 'metadata_title',
 					 'metadata_keywords',
 					 'metadata_description',
-					 'lang_code',
-					 'product_lang_id');
+					 );
 	}
 	
 	public function download()

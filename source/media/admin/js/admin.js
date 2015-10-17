@@ -165,7 +165,7 @@ paycart.admin.product =
 			
 			if(response.action == 'startImport'){				
 				var url	  = 'index.php?option=com_paycart&view=product&task=importCsv';
-				paycart.ajax.go(url, {'start' : response.start,'spinner_selector' : '#paycart-ajax-spinner','imported_data' : response.imported_data,'unimported_data' : response.unimported_data});
+				paycart.ajax.go(url, {'start' : response.start,'total' : response.total,'spinner_selector' : '#paycart-ajax-spinner','imported_data' : response.imported_data,'unimported_data' : response.unimported_data});
 			}
 			else{
 				var url	  = 'index.php?option=com_paycart&view=product&task=importCsvToTempTable';
