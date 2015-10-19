@@ -399,4 +399,108 @@ class PaycartAdminControllerProduct extends PaycartController
 		$ajax->sendResponse();
 	}
 	
+	public function import($tpl = null)
+	{		
+		return true;
+	}
+	
+	// function to initialize import task and validate and save csv file
+	public function initImport()
+	{
+		$file_position	= JRequest::getVar('file_position');
+		
+		// validate and save CSV file
+		$helper		= PaycartFactory::getInstance('ImportFromCSV' , 'helper');
+		$filename	= $helper->validateSaveCSV('product');
+		
+		$_SESSION['filename'] = $filename;
+	}
+	
+	public function mapImportedCsvFields()
+	{
+		return true;
+	}
+	
+	// function to dump csv data into a temporary table
+	public function importCsvToTempTable()
+	{
+		$filename		= $_SESSION['filename'];
+		$file_position	= JRequest::getVar('file_position');
+		$mapped_fields  = JRequest::getVar('mapped_fields' , array());
+		$config_form	= JRequest::getVar('paycart_config_form');
+		$language		= $config_form['localization_default_language'];
+		if(!empty($language)){
+			PaycartFactory::setPCCurrentLanguageCode($language);
+		}
+		
+		if(empty($mapped_fields))
+		{
+			$csv_headers	= $_SESSION['csv_headers'];
+
+			foreach ($csv_headers as $csv_header)
+			{
+				$data		= JRequest::getVar($csv_header);
+				if(!empty($data))
+				{
+					$mapped_fields[$csv_header]	= $data;
+				}
+			}
+		}
+				
+		$helper		= PaycartFactory::getInstance('ImportFromCSV' , 'helper');
+		$helper->importCsvToTempTable($mapped_fields , 'product' , $filename , $file_position);
+	}
+	
+	// function to finally import csv data
+	public function importCSV()
+	{
+		$start			 = JRequest::getVar('start', 0, 'int');
+		$total			 = JRequest::getVar('total', 0, 'int');
+		$imported_data   = JRequest::getVar('imported_data' , array());
+		$unimported_data = JRequest::getVar('unimported_data' , array());
+		$helper			 = PaycartFactory::getInstance('ImportFromCSV' , 'helper');
+		$helper->importCSV($start , $total , 'product' , $unimported_data , $imported_data);
+	}
+	
+	// function to export data as csv
+	public function export($tpl = null)
+	{
+		$model			= $this->getModel();
+		$start			= JRequest::getVar('start', 0, 'int');
+		$filename		= JRequest::getVar('filename');
+		$export_fields	= $this->getFields();
+		
+		$helper	= PaycartFactory::getInstance('ExportToCSV' , 'helper');
+		$helper->exportToCSV('product' , $start , $model , $export_fields , $filename);
+	}
+	
+	// function to set the export fields
+	public function getFields()
+	{
+		return array('product_id',
+					 'title',
+					 'price',
+					 'retail_price',
+					 'cost_price',
+					 'quantity',
+					 'weight',
+					 'height',
+					 'length',
+					 'width',
+					 'sku',
+					 'alias',
+					 'productcategory_id',
+					 'type',
+					 'published',
+    				 'visible',
+					 'metadata_title',
+					 'metadata_keywords',
+					 'metadata_description',
+					 );
+	}
+	
+	public function download()
+	{
+		return true;
+	}
 }

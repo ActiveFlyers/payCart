@@ -121,6 +121,62 @@ paycart.admin.product =
 			var productId = $('#paycart_product_form_product_id').val();
 			var data  = {'image_id': imageId, 'product_id':productId};
 			paycart.ajax.go(link,data);
+		},
+		
+		initImport : function()
+		{
+			document.getElementById('adminForm').target = 'pc-import-iframe'; //'pc-import-iframe' is the name of the iframe
+			document.getElementById('adminForm').submit();
+
+			alert('CSV File uploaded successfully!');
+			//disable step1 and enable step2
+			$("#pc-import-upload-csv-file").find('#pc-import-upload-file').removeClass("in");
+			$("#pc-import-map-and-import").find('#collapse2').addClass("in");
+		},
+				
+		mapImportedFields : function()
+		{
+			// call the function to display the language in which data will be imported
+			// also ask the user to map the headers of csv with paycart's entity's fields
+			var link = 'index.php?option=com_paycart&view=product&task=mapImportedCsvFields';
+			paycart.url.modal(link , null);
+			return false;
+		},
+		
+		doImport : function()
+		{
+			var url	  = 'index.php?option=com_paycart&view=product&task=importCsvToTempTable';
+			var data  = $('.pc-import-map-fields').serializeArray();
+			paycart.ajax.go(url , data);
+		},
+		
+		doImportSuccess : function(data){
+			var response = $.parseJSON(data);
+			if(!response.next){
+				//close the modal window
+				$('#rbWindowContent').modal('hide');				
+				alert('Congrats! Data Imported Successfully');
+				
+				$("#pc-import-map-and-import").find('#collapse2').removeClass("in");
+				$("#pc-imported-data-summary").find('#pc-imported-data-summary-body').html(response.summary);				
+				$("#pc-imported-data-summary").find('#collapse3').addClass("in");
+				return false;
+			}
+			
+			if(response.action == 'startImport'){				
+				var url	  = 'index.php?option=com_paycart&view=product&task=importCsv';
+				paycart.ajax.go(url, {'start' : response.start,'total' : response.total,'spinner_selector' : '#paycart-ajax-spinner','imported_data' : response.imported_data,'unimported_data' : response.unimported_data});
+			}
+			else{
+				var url	  = 'index.php?option=com_paycart&view=product&task=importCsvToTempTable';
+				paycart.ajax.go(url, {'mapped_fields' : response.mapped_fields,'spinner_selector' : '#paycart-ajax-spinner','file_position' : response.file_position});
+			}			
+		},
+		
+		importerror : function(data){
+			var response = $.parseJSON(data);
+			$('[data-pc-selector="import-error"]').append(response.error_message);
+			$('[data-pc-selector="import-error"]').show();
 		}
 	};
 

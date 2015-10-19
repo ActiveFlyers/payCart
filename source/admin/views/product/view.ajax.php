@@ -61,4 +61,47 @@ class PaycartAdminAjaxViewProduct extends PaycartAdminBaseViewProduct
 		$this->setTpl('edit_digital');
 		return true;
 	}
+	
+	function mapImportedCsvFields()
+	{
+		$filename	= $_SESSION['filename'];
+		
+		$modelform  = PaycartFactory::getInstance('config', 'Modelform');
+		$form		= $modelform->getForm();
+		
+		//get the current language code
+		$currentLanguage 	= PaycartFactory::getPCCurrentLanguageCode();
+		
+		//get the csv headers and entity's fields
+		$helper				= PaycartFactory::getInstance('ImportFromCSV' , 'helper');
+		$fields				= $helper->getCsvMapping('product' , $filename);
+		
+		$options			     = array();
+		$options['-- Select --'] = '<option value=""> -- Select --</option>';
+		foreach($fields['entity_fields'] as $field)
+		{
+			if($field == "variation_of"){
+				continue;
+			}
+			$options[$field] 	 = '<option value="'.$field.'">'.$field.'</option>';	
+		}
+		
+		//bind the fields with template
+		$this->assign('csv_headers' , 		 $fields['csv_headers']);
+		$this->assign('options' , 	 		 $options);
+		$this->assign('current_language' ,   $currentLanguage);
+		$this->assign('form',				 $form);
+				
+		$html = $this->loadTemplate('mapFields');
+		
+		$this->_setAjaxWinHeight('auto');
+		$this->_setAjaxWinWidth('auto');
+		$this->_setAjaxWinBody($html); 
+		$this->_setAjaxWinTitle(JText::_('COM_PAYCART_ADMIN_PRODUCT_IMPORT_TITLE'));
+		$this->_addAjaxWinAction(JText::_('COM_PAYCART_ADMIN_PRODUCT_TOOLBAR_IMPORT'), "paycart.admin.product.doImport()", 'btn btn-success');
+		$this->_setAjaxWinAction();
+		
+		$ajax = Rb_Factory::getAjaxResponse();
+		$ajax->sendResponse();
+	}
 }

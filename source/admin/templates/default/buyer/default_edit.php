@@ -33,7 +33,7 @@ PaycartHtml::_('behavior.formvalidation');
 	<?php echo PaycartHtml::_('bootstrap.startTabSet', 'buyer', array('active' => 'details')); ?>
 	<!--	 Account Details Tab		-->
 	<?php echo PaycartHtml::_('bootstrap.addTab', 'buyer', 'details', Rb_Text::_('COM_PAYCART_ADMIN_BUYER', true)); ?>
-	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validatec-form-validate" enctype="multipart/form-data">
+	<form action="<?php echo $uri; ?>" method="post" name="adminForm" id="adminForm" class="pc-form-validate" enctype="multipart/form-data">
 			<div class="row-fluid">
 				<div class="span3">
 					<h2><?php echo JText::_('COM_PAYCART_ADMIN_BUYER_DETAILS_HEADER');?></h2>
