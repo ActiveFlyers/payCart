@@ -1,6 +1,6 @@
 INSERT INTO `#__paycart_notification` (`notification_id`, `published`, `event_name`, `to`, `cc`, `bcc`, `media`) VALUES
-(9, 0, 'onPaycartCartAfterCancel', '[[buyer_email]]', '', '', '{}'),
-(10, 0, 'onPaycartCartAfterRefund', '[[buyer_email]]', '', '', '{}');
+(9, 0, 'onpaycartcartaftercancel', '[[buyer_email]]', '', '', '{}'),
+(10, 0, 'onpaycartcartafterrefund', '[[buyer_email]]', '', '', '{}');
 
 
 INSERT INTO `#__paycart_notification_lang` (`notification_id`, `lang_code`, `subject`, `body`) VALUES

@@ -39,7 +39,7 @@ class PaycartAdminAjaxViewTransaction extends PaycartAdminBaseViewTransaction
 		$this->_setAjaxWinBody($html.JText::_('COM_PAYCART_ADMIN_INVOICE_REFUND_CONFIRM_MESSAGE'));
 	
 		$this->_addAjaxWinAction(JText::_('COM_PAYCART_CONFIRM'), 'paycart.admin.transaction.refund.request('.$invoice_id.');', 'btn btn-success', 'id="paycart-invoice-refund-confirm-button"');
-		$this->_addAjaxWinAction(JText::_('COM_PAYCART_CLOSE'), 'rb.ui.dialog.close();', 'btn');
+		$this->_addAjaxWinAction(JText::_('COM_PAYCART_ADMIN_CLOSE'), 'rb.ui.dialog.close();', 'btn');
 		$this->_setAjaxWinAction();		
 	
 		$ajax = Rb_Factory::getAjaxResponse();
@@ -71,10 +71,10 @@ class PaycartAdminAjaxViewTransaction extends PaycartAdminBaseViewTransaction
 			$msg .= "<br/><div class='alert alert-error'>".$response->get('message')."</div>";
 		}
 		
-		$cart = PaycartCart::getInstance($records['object_id']);
-		if($response->get('payment_status') == 'payment_refund'){
-			$cart->markRefunded()->save();
-		}
+//		$cart = PaycartCart::getInstance($records['object_id']);
+//		if($response->get('payment_status') == 'payment_refund'){
+//			$cart->markRefunded()->save();
+//		}
 		
 		$this->_setAjaxWinTitle(JText::_('COM_PAYCART_ADMIN_INVOICE_REFUND_WINDOW_TITLE'));
 		$this->_setAjaxWinBody($msg);

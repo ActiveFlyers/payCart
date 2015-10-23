@@ -158,7 +158,7 @@ $showMediaGallery = false;
                     
                     <div class="span6 help-block ">                 
                         	<button class="pc-btn-buynow btn btn-block btn-large btn-primary" style="<?php echo $isExistInCart ?'display:block':'display:none';?>" onClick='rb.url.redirect("<?php echo PaycartRoute::_('index.php?option=com_paycart&view=cart&task=checkout'); ?>"); return false;'>
-                            		<?php echo JText::_("Checkout");?>
+                            		<?php echo JText::_("COM_PAYCART_PRODUCT_CHECKOUT");?>
                             </button>
                  
                       

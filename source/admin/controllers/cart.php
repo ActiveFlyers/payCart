@@ -228,22 +228,17 @@ class PaycartAdminControllerCart extends PaycartController
 		return false;
 	}
 	
-	public function cancelCart()
+	public function cancel()
 	{
+		$cart_id	= $this->input->get('cart_id');
+		if(!$cart_id){
+			//need to check it properly.
+			return false;
+		}
+		$confirmed 	= $this->input->getBool('confirmed', 0);
+		$this->getView()->assign('confirmed', $confirmed);
+		$this->getView()->assign('cart_id', $cart_id);
 		return true;
 	}
-	
-	public function initiateCancel()
-		{
-			$cart_id 	= $this->input->get('cart_id',	0);
-			
-			if(!$cart_id){
-				//need to check it properly.
-				return false;
-			}
-			
-			
-			return true;
-		}
 	
 }

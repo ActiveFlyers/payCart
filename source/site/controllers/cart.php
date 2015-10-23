@@ -753,11 +753,6 @@ class PaycartSiteControllerCart extends PaycartController
 		return false;
 	}
 	
-	public function addToCart()
-	{
-		$this->_addProduct();
-		return true;
-	}
 	
 	/**
 	 * Ajaxified task to add product

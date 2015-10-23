@@ -81,7 +81,25 @@ defined('_JEXEC') OR die();
 	                                 echo $buyer_username.' ('.$record->buyer_id.') ';
     					  ?>
 					</td>
-					<td><?php echo $record->status;?></td>
+					<?php echo $class = "";?>	
+					<?php switch ($record->status):
+									
+							case Paycart::STATUS_CART_PAID:
+								$class = "label-success";
+								break;
+							
+							case Paycart::STATUS_CART_CANCELLED:
+								$class = "label-info";
+								break;
+							
+							case Paycart::STATUS_CART_DRAFTED:
+								$class = "label-warning";
+								break;
+					?>
+					<?php endswitch;?>
+					
+					
+					<td><span class="label <?php echo $class;?>"><?php echo $record->status;?></span></td>
 					<td>
 						<?php if($record->invoice_serial === '0'){
 							  		echo JText::_('COM_PAYCART_ADMIN_NOT_APPLICABLE');
@@ -101,7 +119,7 @@ defined('_JEXEC') OR die();
 					</td>
 					<td class="hidden-phone"><?php echo $record->locked_date;?></td>
 					<td class="hidden-phone">
-					<?php if($record->status != 'cancelled'):?>
+					<?php if($record->status == 'paid' || $record->status == 'cancelled'):?>
 						<?php echo $record->paid_date;?>
 						<?php else: 
 							echo "-";
@@ -118,11 +136,12 @@ defined('_JEXEC') OR die();
 					</td>
 					
 						<td>
-						<?php if($record->is_refunded):?>
-							<i class="fa fa-times-circle text-error"></i>
-						<?php elseif($record->status == 'cancelled'):?>
-								<i class="fa fa-check-circle text-success"></i>
-								<?php //echo PaycartHtml::_("rb_html.boolean.grid", $record, 'is_refunded', $cbCount, 'icon-16-allow.png', 'icon-16-notice-note.png', '', $langPrefix='COM_PAYCART');?>
+						<?php if($record->status == 'cancelled'):?>
+							<?php if(!$record->is_refunded):?>
+								<i class="fa fa-times-circle text-error"></i>
+							<?php else:?>
+								<i class="fa fa-check-circle text-success"></i>	
+							<?php endif;?>
 						<?php else :
 								echo "-";
 								

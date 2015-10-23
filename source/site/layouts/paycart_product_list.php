@@ -36,7 +36,6 @@ defined('_JEXEC') or die();
 	
 	<div class="pc-product-outer thumbnail<?php echo isset($displayData->pagination_start)? 'pc-next-'.$displayData->pagination_start:''?>" >
 		<div class='pc-product '>
-			<?php echo $product_id;?>
 			<?php $media = $product->media;?>      
 			<?php $url   = PaycartRoute::_('index.php?option=com_paycart&view=product&task=display&product_id='.$product->product_id);?>
 			<a class="pc-clickable" href="<?php echo $url;?>">
@@ -65,15 +64,15 @@ defined('_JEXEC') or die();
 						<span class="pc-discount label label-important"><?php echo '- '.$percentage.'%';?></span>
 					<?php endif;?>
 			</h4>
-			<?php $url = 'index.php?option=com_paycart&view=cart&task=addToCart&product_id='.$product->product_id; ?>
+			<?php $url = 'index.php?option=com_paycart&view=cart&task=addProduct&product_id='.$product->product_id; ?>
 			<div class="pc-add-to-cart hidden-phone" >
 				<?php if(!in_array($product->product_id, $displayData->currentCartProducts)):?>
 					<input type="button" class="btn" data-pc-selector="<?php echo $product->product_id; ?>" onclick="rb.ajax.go('<?php echo $url; ?>'); return false;" style="text-transform: uppercase; " value="<?php echo JText::_("COM_PAYCART_CART_ADD_TO_CART"); ?>">
 					<a href="#" data-pc-selector="showCheckoutBtn<?php echo $product->product_id; ?>" onclick="rb.url.redirect(&quot;index.php?option=com_paycart&view=cart&quot;); return false;"  style="display:none"><?php echo JText::_("COM_PAYCART_CART_VIEW_CART"); ?></a>
 				<?php else :?>
-					<input type="button" class="btn btn-success" style="text-transform: uppercase; " value="✔ Added">
+					<input type="button" class="btn btn-success" style="text-transform: uppercase; " value="<?php echo JText::_("COM_PAYCART_CART_PRODUCT_ADDED"); ?>">
 					<a href="#" onclick="rb.url.redirect(&quot;index.php?option=com_paycart&view=cart&task=checkout&quot;); return false;" style="display:block">
-		            <?php echo JText::_("COM_PAYCART_CART_VIEW_CART"); ?></a>
+		                            		<?php echo JText::_("COM_PAYCART_CART_VIEW_CART"); ?></a>
 					
 				<?php endif;?>
 			</div>
@@ -81,39 +80,5 @@ defined('_JEXEC') or die();
 	</div>
 <?php endforeach;?>
 
-
-
-<style>
- .pc-product-outer .pc-add-to-cart{
-    visibility:hidden;
-    opacity:0;
-  	-webkit-transition: visibility 0.2s linear, opacity 0.2s linear;
-  	-moz-transition: visibility 0.2s linear, opacity 0.2s linear;
-  	-o-transition: visibility 0.2s linear, opacity 0.2s linear;
-}
-
- .pc-product-outer:hover {
-    border: 1px solid transparent;
-    box-shadow: 0 0 6px -3px #000;
-}
-
-.pc-product-outer:hover .pc-add-to-cart{
-     visibility:visible;
-     opacity:1;
-     transition:all 0.2s ease-in-out 0s
-}
-
-.pc-add-to-cart {
-    color:#999; 
-    -webkit-transition-property:color; 
-    -webkit-transition-duration: 1s, 1s; 
-    -webkit-transition-timing-function: linear, ease-in;
-}
-
-.pc-add-to-cart:hover {
-    color: #333;
-}
-
-</style>
 
 <?php 

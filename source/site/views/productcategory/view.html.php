@@ -48,10 +48,14 @@ class PaycartSiteHtmlViewProductcategory extends PaycartSiteBaseViewProductcateg
 		// 1. If products are not there in the current category
 		// 2. If root category is selected and searching is not being taking place 
 		//    then show productcategory layout  
-		$currentCart = PaycartFactory::getHelper('cart')->getCurrentCart(true);
-		$currentCartProducts = $currentCart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		$currentCart = PaycartFactory::getHelper('cart')->getCurrentCart();
 		
-		$this->assign('currentCartProducts', $currentCartProducts);
+		$currentCartProducts = array();
+		if($currentCart instanceof PaycartCart ){
+			$currentCartProducts = $currentCart->getCartparticulars(Paycart::CART_PARTICULAR_TYPE_PRODUCT);
+		}
+		
+		$this->assign('currentCartProducts', array_keys($currentCartProducts));
 		if((count($products) == 0 ||($categoryId == Paycart::PRODUCTCATEGORY_ROOT_ID)) && empty($searchWord)){	
 			$result    = new stdClass();
 			$formatter = PaycartFactory::getHelper('format');

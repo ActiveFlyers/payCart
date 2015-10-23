@@ -23,16 +23,7 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		$this->_renderOptions = array('domObject'=>'pc-cart-products','domProperty'=>'innerHTML');
 		return true;
 	}
-	
-	/**
-	 * add product to cart
-	 */
-	public function addProduct()
-	{
-		// @PCTODO :: Convey error from controller and  handle here 
 
-		return false;
-	}
 	
 	public function login()
 	{
@@ -411,7 +402,10 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 		return $steps;
 	}
 	
-	public function addToCart()
+	/**
+	 * add product to cart
+	 */
+	public function addProduct()
 	{		$product_id = $this->input->get('product_id');
 			$ajax = PaycartFactory::getAjaxResponse();
 			$ajax->addScriptCall('$("[data-pc-selector='.$product_id.']").attr("value", "✔ Added");');
@@ -419,17 +413,6 @@ class PaycartSiteAjaxViewCart extends PaycartSiteBaseViewCart
 			$ajax->addScriptCall('$("[data-pc-selector='.$product_id.']").attr("onclick", "");');
 			
 			$ajax->addScriptCall('$("[data-pc-selector=showCheckoutBtn'.$product_id.']").css("display", "block");');
-//			$ajax->addScriptCall('$("[data-pc-selector= showCheckoutBtn]").attr("onclick", "rb.url.redirect(/"index.php?option=com_paycart&view=cart&task=checkout/")");');
-		
-			
-//			onclick="rb.url.redirect(&quot;index.php?option=com_paycart&view=cart&task=checkout&quot;); return false;"
-//			$('#bla').after('<div id="space"></div>');
-			
-	
-			
-										
-//			$ajax->addScriptCall('setTimeout(function() {
-//									$("[data-pc-selector='.$product_id.']").attr("value","Add to cart") }, 900);');
 			$ajax->sendResponse();
 	}
 }

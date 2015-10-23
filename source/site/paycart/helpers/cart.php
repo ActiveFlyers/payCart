@@ -476,8 +476,8 @@ class PaycartHelperCart extends PaycartHelper
 	
 	
  	/**
-     * Check if any shippable product exist in cart or not
-     * @return Boolean true/false
+     * create an array having product id of physcial and digital product
+     * @return get an array
      */
 	function arrangeProductByType($cartId)
 	{

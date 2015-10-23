@@ -191,6 +191,7 @@ CREATE TABLE IF NOT EXISTS `#__paycart_cart` (
   `paid_date` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'Payment Completion date.',
   `cancelled_date` datetime DEFAULT '0000-00-00 00:00:00',
   `delivered_date` datetime DEFAULT '0000-00-00 00:00:00',
+  `refunded_date` datetime DEFAULT '0000-00-00 00:00:00',
   `note` varchar(255) DEFAULT '' ,
   `params` text COMMENT 'Products and their quantiy store here initial',
   PRIMARY KEY (`cart_id`),
@@ -770,8 +771,8 @@ INSERT IGNORE INTO `#__paycart_notification` (`notification_id`, `published`, `e
 (6, 1, 'onpaycartshipmentafterdelivered', '[[buyer_email]]', '', '', '{}'),
 (7, 1, 'onorderurlrequest', '[[buyer_email]]', '', '', '{}'),
 (8, 0, 'onpaycartshipmentafterfailed', '[[buyer_email]]', '', '', '{}'),
-(9, 0, 'onPaycartCartAfterCancel', '[[buyer_email]]', '', '', '{}'),
-(10,0, 'onPaycartCartAfterRefund', '[[buyer_email]]', '', '', '{}');
+(9, 0, 'onpaycartcartaftercancel', '[[buyer_email]]', '', '', '{}'),
+(10,0, 'onpaycartcartafterrefund', '[[buyer_email]]', '', '', '{}');
 
 --
 -- Dumping data for table `#__paycart_notification_lang`
@@ -786,8 +787,8 @@ INSERT IGNORE INTO `#__paycart_notification_lang` (`notification_lang_id`, `noti
 (6, 6, 'en-GB', '', ''),
 (7, 7, 'en-GB', 'Order Details Request of your order (id : [[order_id]])', 'Hello [[buyer_name]], \r\n\r\nYou have requested for the order detail url of your order [[order_id]]. This email contains the order detail url from which you can track your order. \r\n\r\n[[order_url]]\r\n\r\nPlease save or bookmark this url for further tracking. Still you can request this url again anytime at our website.'),
 (8, 8, 'en-GB', 'Shipment Failed', '[[products]]'),
-(9, 9, 'en-GB', 'Request Order Cancel', '[[products]]'),
-(10,10, 'en-GB', 'Cancellation Processed', '[[products]]');
+(9, 9, 'en-GB', 'Request Order Cancel', ''),
+(10,10, 'en-GB', 'Cancellation Processed', '');
 
 
 
@@ -809,6 +810,7 @@ INSERT IGNORE INTO `#__paycart_config` (`key`, `value`) VALUES
 ('cron_frequency','1800'),
 ('cron_run_automatic','1'),
 ('invoice_serial_prefix', 'order'),
+('invoice_serial_number_format','[[number]]'),
 ('localization_currency', 'USD'),
 ('localization_currency_format', 'symbol'),
 ('localization_currency_position', 'before'),

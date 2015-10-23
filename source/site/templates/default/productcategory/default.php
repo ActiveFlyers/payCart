@@ -14,6 +14,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 //load required javascripts
 Rb_Html::script(PAYCART_PATH_CORE_MEDIA.'/salvattore.js');
 echo $this->loadTemplate('js');
+//echo $this->loadTemplate('css');
 
 ?>
 
@@ -26,8 +27,9 @@ echo $this->loadTemplate('js');
 	<div class="row-fluid"><h2 class=" span12 page-header"><?php echo JText::_("COM_PAYCART_PRODUCTS");?></h2></div>
 	<?php $data = new stdclass();?>
 	<?php $data->products = $products;?>
-	<?php $data->currentCartProducts = array_keys($currentCartProducts);?>
-	<div class='pc-products-wrapper row-fluid clearfix'>	
+	<?php $data->currentCartProducts = $currentCartProducts;?>
+	<div class='pc-products-wrapper row-fluid clearfix'>
+	
 		<div id="pc-products" class ='pc-products' data-columns>
 			<?php echo JLayoutHelper::render('paycart_product_list', $data);?>
 		</div>

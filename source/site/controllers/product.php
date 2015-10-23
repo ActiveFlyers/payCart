@@ -60,13 +60,4 @@ class PaycartSiteControllerProduct extends PaycartController
 		$helper = PaycartFactory::getHelper('media');
 		$helper->download($media, false);		
 	}
-	
-	public function addToCart()
-	{
-		$productId = $this->input->get('product_id',0,'INT');
-		$quantity  = $this->input->get('quantity',1,'INT');
-		
-		return PaycartFactory::getHelper('cart')->addProduct($productId, $quantity);
-			return true;
-	}
 }

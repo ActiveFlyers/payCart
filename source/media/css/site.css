@@ -255,3 +255,33 @@ Products Display
 .pc-discount.label-important{
 	background-color : #fc2400;
 }
+
+ .pc-product-outer .pc-add-to-cart{
+    visibility:hidden;
+    opacity:0;
+  	-webkit-transition: visibility 0.2s linear, opacity 0.2s linear;
+  	-moz-transition: visibility 0.2s linear, opacity 0.2s linear;
+  	-o-transition: visibility 0.2s linear, opacity 0.2s linear;
+}
+
+ .pc-product-outer:hover {
+    border: 1px solid transparent;
+    box-shadow: 0 0 6px -3px #000;
+}
+
+.pc-product-outer:hover .pc-add-to-cart{
+     visibility:visible;
+     opacity:1;
+     transition:all 0.2s ease-in-out 0s
+}
+
+.pc-add-to-cart {
+    color:#999; 
+    -webkit-transition-property:color; 
+    -webkit-transition-duration: 1s, 1s; 
+    -webkit-transition-timing-function: linear, ease-in;
+}
+
+.pc-add-to-cart:hover {
+    color: #333;
+}
