@@ -64,7 +64,7 @@ class PaycartAdminAjaxViewProduct extends PaycartAdminBaseViewProduct
 	
 	function mapImportedCsvFields()
 	{
-		$filename	= $_SESSION['filename'];
+		$filename	= JFactory::getSession()->get('filename');
 		
 		$modelform  = PaycartFactory::getInstance('config', 'Modelform');
 		$form		= $modelform->getForm();
@@ -73,7 +73,7 @@ class PaycartAdminAjaxViewProduct extends PaycartAdminBaseViewProduct
 		$currentLanguage 	= PaycartFactory::getPCCurrentLanguageCode();
 		
 		//get the csv headers and entity's fields
-		$helper				= PaycartFactory::getInstance('ImportFromCSV' , 'helper');
+		$helper				= PaycartFactory::getHelper('import');
 		$fields				= $helper->getCsvMapping('product' , $filename);
 		
 		$options			     = array();

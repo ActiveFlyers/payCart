@@ -11,11 +11,11 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 /** 
- * ExportToCSV Helper
+ * Export Helper
  * @since 1.0.10
  * @author Neelam soni
  */
-class PaycartHelperExportToCSV extends PaycartHelper
+class PaycartHelperExport extends PaycartHelper
 {
 	/** 
 	 * exportToCSV Function
@@ -27,18 +27,22 @@ class PaycartHelperExportToCSV extends PaycartHelper
 	public function exportToCSV($entity , $start , $model , $export_fields=null , $filename)
 	{		
 		//If user wants to export limited products only, then set the limit and total of records accordingly
-		$cid		 = JRequest::getVar('cid' , null);
+		$cid		 = JFactory::getApplication()->input->get('cid' , null);
 		if(!empty($cid)){
 			$limit	 = $total = count($cid);			
 		}else{
-			$limit	 = 20;		
+			$limit	 = Paycart::LIMIT_IMPORT_EXPORT;
 			$model   = PaycartFactory::getInstance($entity, 'model');
 			$total	 = $model->getTotal();
 		}
 
 		//Fetching the csv fields
-		$csv_fields  = $this->getCsvFields($start , $limit, $entity, $model , $export_fields);
+		$csv_fields  = $this->getCsvData($start , $limit, $entity, $model , $export_fields);
 		
+		if(!count($csv_fields)){
+			JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_ADMIN_NO_PRODUCTS_TO_EXPORT') , 'error');
+			JFactory::getApplication()->redirect(PaycartRoute::_('index.php?option=com_paycart&view='.$entity.'&task=display'));
+		}
 		//Creating a CSV File
  		$filename 	 = $this->createCSV($start, $csv_fields , $entity , $export_fields , $filename);
 		
@@ -47,7 +51,7 @@ class PaycartHelperExportToCSV extends PaycartHelper
 		if($start<$total)
 		{ 			
 			//Warning the user for not refreshing the page as it may restart the export process again
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_PLEASE_DO_NOT_REFRESH') , 'warning');
+			JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_ADMIN_PLEASE_DO_NOT_REFRESH') , 'warning');
 						
 			//Redirecting to get the next records
 			$url = PaycartRoute::_('index.php?option=com_paycart&view='.$entity.'&task=export&start='.$start.'&filename='.$filename);
@@ -62,8 +66,16 @@ class PaycartHelperExportToCSV extends PaycartHelper
 		}
 		else
 		{
+			//reset model limit and limit start
+			$model->setState('limit' , JFactory::getSession()->get('limit'));
+       		$model->setState('limitstart' , JFactory::getSession()->get('limitstart'));
+       		
+       		//clear session
+       		JFactory::getSession()->clear('limit');
+			JFactory::getSession()->clear('limitstart');
+			
 			$url = PaycartRoute::_('index.php?option=com_paycart&view='.$entity.'&task=download');
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_CSV_EXPORT_SUCCESSFUL')."<a href='{$url}'> Click to download CSV Files.</a>");
+			JFactory::getApplication()->enqueueMessage(JText::_('COM_PAYCART_ADMIN_CSV_EXPORT_SUCCESSFUL')."<a href='{$url}'> Click to download CSV Files.</a>");
 			JFactory::getApplication()->redirect(PaycartRoute::_('index.php?option=com_paycart&view='.$entity.'&task=display'));
 		}
 	}
@@ -80,7 +92,7 @@ class PaycartHelperExportToCSV extends PaycartHelper
 	 */
 	public function createCSV($start, $csv_fields , $entity , $export_fields , $filename)
 	{
-		$csv_folder = PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.$entity;
+		$csv_folder = PAYCART_FILE_PATH_CSV_IMPEXP.$entity;
 		
 		// Create a folder to store csv exported files if it doesn't exists
 		if(!JFolder::exists($csv_folder)){
@@ -90,19 +102,19 @@ class PaycartHelperExportToCSV extends PaycartHelper
 		}
 		
 		// delete the oldest file if count is greater than 15
-		$file_names	=  array_diff(scandir(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product'), array('..', '.'));
+		$file_names	=  array_diff(scandir(PAYCART_FILE_PATH_CSV_IMPEXP.'product'), array('..', '.'));
 		if(count($file_names) >= 15){
 			foreach ($file_names as $file_name)
 			{
-			  $time = filemtime(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product/'.$file_name);
+			  $time = filemtime(PAYCART_FILE_PATH_CSV_IMPEXP.'product/'.$file_name);
 			  $files[$time] = $file_name;
 			}
 			krsort($files);
-			unlink(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product/'.end($files));
+			unlink(PAYCART_FILE_PATH_CSV_IMPEXP.'product/'.end($files));
 		}
 		
 		// Get the date & time as per timezone
-		$date 	= new DateTime();
+		$date 	= new Rb_Date();
 		$config = JFactory::getConfig();
 		$date->setTimezone(new DateTimeZone($config->get('offset')));
 		
@@ -135,8 +147,7 @@ class PaycartHelperExportToCSV extends PaycartHelper
 	 * @return	array $csv_fields
 	 */
 	public function getCsvHeader($entity , $export_fields=null)
-	{
-		
+	{		
 		// Check if a language table is maintained for that product
 		$prefix 		 = JFactory::getApplication()->getCfg('dbprefix');
 		$langTableExists = $this->langTableExists($entity , $prefix);
@@ -176,7 +187,7 @@ class PaycartHelperExportToCSV extends PaycartHelper
 	}
 	
 	/** 
-	 * getCsvFields Function
+	 * getCsvData Function
 	 * @desc	Function to get CSV Fileds
 	 * @params	int $start
 	 * 			int $limit
@@ -186,8 +197,11 @@ class PaycartHelperExportToCSV extends PaycartHelper
 	 * 
 	 * @return	array $csv_fields
 	 */
-	public function getCsvFields($start , $limit , $entity , $model , $export_fields=null)
+	public function getCsvData($start , $limit , $entity , $model , $export_fields=null)
 	{		
+		JFactory::getSession()->set('model_limit', $model->getState('limit'));
+		JFactory::getSession()->set('model_limitstart', $model->getState('limitstart'));
+		
 		$model->setState('limit' , $limit);
        	$model->setState('limitstart' , $start);
        	
@@ -195,9 +209,9 @@ class PaycartHelperExportToCSV extends PaycartHelper
 
 		// Fetching the records	from database if user has not selected any particular record
 		$entities	= array();
-		$cid		= JRequest::getVar('cid');
+		$cid		= JFactory::getApplication()->input->get('cid', array(), 'array');
 		if(!empty($cid))
-		{
+		{ 
 			// It means user want to import selected records only
 			foreach ($cid as $id)
 			{
@@ -210,7 +224,6 @@ class PaycartHelperExportToCSV extends PaycartHelper
 			$entities	= $model->loadRecords();
 			$entities	= array_values(json_decode(json_encode($entities), true));
 		}
-		
 		
 		$count	   	= count($entities);		
 		$csv_fields = array();
@@ -226,7 +239,8 @@ class PaycartHelperExportToCSV extends PaycartHelper
 			   	{
 			   		$record = $entities[$k];
 			   		$field	= $record[$export_fields[$j]];
-			   		$csv_fields[] .= '"'.$field.'"'.';';
+			   		$separator = ($j < $field_count-1) ? ";" : '';
+			   		$csv_fields[] .= '"'.$field.'"'.$separator;
 			   	}		
 			}
 			else
@@ -235,8 +249,7 @@ class PaycartHelperExportToCSV extends PaycartHelper
 				$record 		= array_values(json_decode(json_encode($entities[$k]), true));
 				$csv_fields[]   = '"'. implode('";"' , $record). '"';
 			}		  	
-		}
-		    
+		}		    
 		return $csv_fields;
 	}
 	

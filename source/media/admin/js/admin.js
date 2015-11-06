@@ -125,10 +125,9 @@ paycart.admin.product =
 		
 		initImport : function()
 		{
-			document.getElementById('adminForm').target = 'pc-import-iframe'; //'pc-import-iframe' is the name of the iframe
-			document.getElementById('adminForm').submit();
-
+			$('#adminForm').submit();
 			alert('CSV File uploaded successfully!');
+			
 			//disable step1 and enable step2
 			$("#pc-import-upload-csv-file").find('#pc-import-upload-file').removeClass("in");
 			$("#pc-import-map-and-import").find('#collapse2').addClass("in");
@@ -169,7 +168,7 @@ paycart.admin.product =
 			}
 			else{
 				var url	  = 'index.php?option=com_paycart&view=product&task=importCsvToTempTable';
-				paycart.ajax.go(url, {'mapped_fields' : response.mapped_fields,'spinner_selector' : '#paycart-ajax-spinner','file_position' : response.file_position});
+				paycart.ajax.go(url, {'mapped_fields' : response.mapped_fields,'unimported_data' : response.unimported_data,'spinner_selector' : '#paycart-ajax-spinner','file_position' : response.file_position});
 			}			
 		},
 		
