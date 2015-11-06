@@ -115,6 +115,8 @@ class Paycart
 	const SORTING_OPTION_PRICE_HIGH   = 'price_high';
 	
 	const LIMIT_COUNTRY_IMPORT	= 5;
+	
+	const LIMIT_IMPORT_EXPORT	= 20;
 	/**
 	 * 
 	 * Return All available shipment status

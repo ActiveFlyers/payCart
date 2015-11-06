@@ -321,4 +321,33 @@ class PaycartHelperProduct extends PaycartHelper
 		return $result;
 	}
 	
+	public function getMandatoryFields()
+	{
+		return array('product_id' , 'title');
+	}
+	
+	// function to set the export fields
+	public function getExportFields()
+	{
+		return array('product_id',
+					 'title',
+					 'alias',
+					 'price',
+					 'retail_price',
+					 'cost_price',
+					 'quantity',
+					 'weight',
+					 'height',
+					 'length',
+					 'width',
+					 'sku',
+					 'productcategory_id',
+					 'type',
+					 'published',
+    				 'visible',
+					 'metadata_title',
+					 'metadata_keywords',
+					 'metadata_description',
+					 );
+	}
 }

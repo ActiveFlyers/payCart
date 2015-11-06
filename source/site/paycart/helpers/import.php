@@ -15,7 +15,7 @@ defined('_JEXEC') or die( 'Restricted access' );
  * @since 1.0.10
  * @author Neelam soni
  */
-class PaycartHelperImportFromCSV extends PaycartHelper
+class PaycartHelperImport extends PaycartHelper
 {
 	/** 
 	 * validateSaveCSV Function
@@ -33,20 +33,20 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		if(!in_array($type , $mimes))
 		{		
 			$app = JFactory::getApplication();
-			$app->enqueueMessage(JText::_('COM_PAYCART_INVALID_FILE_UPLOAD'), 'error');
+			$app->enqueueMessage(JText::_('COM_PAYCART_ADMIN_INVALID_FILE_UPLOAD'), 'error');
 			$app->redirect('index.php?option=com_paycart&view=product&task=import');
 		}
 		
-		$csv_folder 	= PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.$entity;
+		$csv_folder 	= PAYCART_FILE_PATH_CSV_IMPEXP.$entity;
 
 		// Create a folder to store csv imported files if it doesn't exist
 		if(!JFolder::exists($csv_folder)){
-			if(!JFolder::create($csv_folder)){
+			if(!JFolder::create($csv_folder , 0755)){
 				throw new Exception(JText::sprintf('COM_PAYCART_ADMIN_EXCEPTION_PERMISSION_DENIED', $csv_folder));
 			}
 		}
 		
-		$date 			= & JFactory::getDate();		
+		$date 			= new Rb_Date();		
 		$filename 		= $entity.'_'.$date->format('Y-m-d');
 		$CSVFileName 	= $csv_folder.'/'.$filename.'.csv';
 		
@@ -75,7 +75,7 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 	{
 		//1. Get CSV Headers
 		
-		$csv_folder 	= PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.$entity;
+		$csv_folder 	= PAYCART_FILE_PATH_CSV_IMPEXP.$entity;
 		$CSVFileName 	= $csv_folder.'/'.$filename;
 		
 		$file 			= fopen($CSVFileName,"r");
@@ -90,14 +90,14 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		$csv_headers[count($csv_headers) - 1] = str_replace('"', '', end($csv_headers));
 		
 		//storing the csv_headers in session
-		$_SESSION["csv_headers"] = $csv_headers;
+		JFactory::getSession()->set("csv_headers", $csv_headers);
 
 
 		//2. Fetch column headings from Paycart entity
 		
 		//check if a language table is maintained for that product
 		$prefix 		 = JFactory::getApplication()->getCfg('dbprefix');
-		$langTableExists = PaycartHelperExportToCSV::langTableExists($entity , $prefix);
+		$langTableExists = PaycartHelperExport::langTableExists($entity , $prefix);
 		
 		$db				 = JFactory::getDbo();
 	    $query  		 = " SHOW FIELDS FROM `#__paycart_$entity` ";
@@ -123,7 +123,7 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 	    }
 		
 	    //storing the entity_fields in session
-	    $_SESSION["entity_fields"] = $entity_fields;
+	    JFactory::getSession()->set("entity_fields", $entity_fields);
 	    
 	    
 	    //3. Return the csv_headers and entity_fields
@@ -141,23 +141,34 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 	 * 
 	 * @return	null
 	 */
-	public function importCsvToTempTable($mapped_fields , $entity , $filename , $file_position = null)
+	public function importCsvToTempTable($mapped_fields , $entity , $filename , $file_position = null , $unimported_data)
 	{
 		$ajax 	  	 = PaycartFactory::getAjaxResponse();
 		$response 	 = new stdClass();
+		$db			 = JFactory::getDbo();
 		
-		$CSVFileName = PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.$entity.'/'.$filename;
+		$CSVFileName = PAYCART_FILE_PATH_CSV_IMPEXP.$entity.'/'.$filename;
 		$file 		 = fopen($CSVFileName,"r");
 		
 		//fetch csv_headers from Session so that we can map the csv data in array accordingly
-		$csv_headers = $_SESSION['csv_headers'];
+		$csv_headers = JFactory::getSession()->get('csv_headers');
 			
 		//if users skip mapping and asks to import directly
 		if(empty($mapped_fields))
 		{
 			$validate_headers = $this->validateHeaders($entity , $csv_headers);
 			if(!$validate_headers){
-				$response->error_message = JText::_("COM_PAYCART_CSV_HEADERS_MISMATCH");
+				$response->error_message = JText::_("COM_PAYCART_ADMIN_CSV_HEADERS_MISMATCH");
+				$ajax->addScriptCall('paycart.admin.product.importerror' , json_encode($response));
+				$ajax->sendResponse($response);
+			}
+		}
+		
+		// check if the mandatory fields are present in the csv
+		$manadatory_fields	= PaycartFactory::getHelper($entity)->getMandatoryFields();
+		foreach ($manadatory_fields as $field){
+			if(!in_array($field, $mapped_fields)){
+				$response->error_message = JText::_("COM_PAYCART_ADMIN_CSV_MANDATORY_HEADERS_DOES_NOT_EXIST");
 				$ajax->addScriptCall('paycart.admin.product.importerror' , json_encode($response));
 				$ajax->sendResponse($response);
 			}
@@ -171,13 +182,18 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		$end_of_file = feof($file);
 		$count		 = 0;
 		
-		while($count<20 && !$end_of_file && ($data = fgetcsv($file, "\n")))
-		{
+		while($count<Paycart::LIMIT_IMPORT_EXPORT && !$end_of_file && ($data = fgetcsv($file, "\n")))
+		{			
 			$columns		  = explode(";" , $data[0]);
 			//first element doesn't have double qoutes
 			for($i = 1; $i < count($columns) ; $i++){
 				$columns[$i] = ltrim($columns[$i] , '"');
 				$columns[$i] = rtrim($columns[$i] , '"');
+			}
+			
+			if(count($columns) != count($csv_headers)){
+				$unimported_data[] = $columns;
+				continue;
 			}
 			
 			//don't save in table if fetching the records for the first time as we get headers
@@ -202,26 +218,27 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 			}
 			
 			//saving data in temporary table
-			$db		= JFactory::getDbo();
-			$num	= 1;
-			$query  = "INSERT INTO `#__paycart_{$entity}_temp` VALUES (";
-			foreach ($csv_data as $data)
-			{
-				$query .= "'{$data}'";
-				if($num<count($csv_data))
-					$query .= ", ";
-				$num++;
-			}
-			$query	.= ")";
-			try
-			{
-				$db->setQuery($query)->execute();
-			}
-			catch (Exception $e)
-			{
-				$response->error_message = $e->getMessage();
-				$ajax->addScriptCall('paycart.admin.product.importerror' , json_encode($response));
-				$ajax->sendResponse();
+			if(count($csv_data)){
+				$num	= 1;
+				$query  = "INSERT INTO `#__paycart_{$entity}_temp` VALUES (";
+				foreach ($csv_data as $data)
+				{
+					$query .= "'{$data}'";
+					if($num<count($csv_data))
+						$query .= ", ";
+					$num++;
+				}
+				$query	.= ")";
+				try
+				{
+					$db->setQuery($query)->execute();
+				}
+				catch (Exception $e)
+				{
+					$response->error_message = $e->getMessage();
+					$ajax->addScriptCall('paycart.admin.product.importerror' , json_encode($response));
+					$ajax->sendResponse();
+				}	
 			}
 			
 			$end_of_file = feof($file);
@@ -232,18 +249,20 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		
 		if($data = fgetcsv($file, "\n") && !$end_of_file)
 		{
-			$response->file_position = $file_position;
-			$response->next			 = true;
-			$response->mapped_fields = $mapped_fields;
-			$response->action		 = 'doImport';
+			$response->file_position 		= $file_position;
+			$response->next			 		= true;
+			$response->mapped_fields 		= $mapped_fields;
+			$response->unimported_data		= $unimported_data;
+			$response->action		 		= 'doImport';
 		}
 		else
 		{
 			$count = $db->setQuery("SELECT COUNT(*) FROM `#__paycart_{$entity}_temp`")->loadResult();
-			$response->start		= 0;
-			$response->total		= $count;
-			$response->action 		= 'startImport';
-			$response->next	  		= true;
+			$response->start				= 0;
+			$response->total				= $count;
+			$response->unimported_data		= $unimported_data;
+			$response->action 				= 'startImport';
+			$response->next	  				= true;
 		}
 		// set call back function
 		$ajax->addScriptCall('paycart.admin.product.doImportSuccess', json_encode($response));
@@ -260,7 +279,7 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 	 */
 	public function createTempTable($mapped_fields , $entity)
 	{
-		$csv_headers	= $_SESSION['csv_headers']; 
+		$csv_headers	= JFactory::getSession()->get('csv_headers'); 
 		$db 			= JFactory::getDbo();
 		$query			= "DESC `#__paycart_{$entity}`";
 		$db->setQuery($query);
@@ -268,7 +287,7 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		
 		//check if a language table is maintained for that product
 		$prefix 		 = JFactory::getApplication()->getCfg('dbprefix');
-		$langTableExists = PaycartHelperExportToCSV::langTableExists($entity , $prefix);
+		$langTableExists = PaycartHelperExport::langTableExists($entity , $prefix);
 		if($langTableExists)
 		{
 			$query		 	= "DESC `#__paycart_{$entity}_lang`";
@@ -290,8 +309,8 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		
 		foreach($structures as $structure)
 		{
-			if(!empty($mapped_fields) && !in_array($structure['Field'], array_keys($mapped_fields))
-			 	|| (!in_array($structure['Field'], $csv_headers)))
+			if(!empty($mapped_fields) && !in_array($structure['Field'], array_values($mapped_fields))
+			 	&& (!in_array($structure['Field'], $csv_headers)))
 			{
 				continue;			
 			}
@@ -334,7 +353,7 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		$ajax 	  	 = PaycartFactory::getAjaxResponse();
 		$response 	 = new stdClass();
 		
-		$limit	= 20;
+		$limit	= Paycart::LIMIT_IMPORT_EXPORT;
 		$db		= JFactory::getDbo();
 		$query	= "SELECT * FROM `#__paycart_{$entity}_temp` LIMIT {$start} , {$limit}";
 		$data	= $db->setQuery($query)->loadAssocList();
@@ -373,14 +392,14 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 	    	
 			//prepare the summary of import
 			$summary	= "<div class='span6'><table style='font-weight:bold' class='table table-striped table-bordered table-hover'>";
-			$summary   .= JText::sprintf("COM_PAYCART_TOTAL_PROCESSED_RECORDS" , $total);
-			$summary   .= JText::sprintf("COM_PAYCART_SUCCESSFULLY_IMPORTED_RECORDS" , count($imported_data));			  
-			$summary   .= JText::sprintf("COM_PAYCART_FAILED_IMPORTED_RECORDS" , count($unimported_data));
+			$summary   .= JText::sprintf("COM_PAYCART_ADMIN_TOTAL_PROCESSED_RECORDS" , $total);
+			$summary   .= JText::sprintf("COM_PAYCART_ADMIN_SUCCESSFULLY_IMPORTED_RECORDS" , count($imported_data));			  
+			$summary   .= JText::sprintf("COM_PAYCART_ADMIN_FAILED_IMPORTED_RECORDS" , count($unimported_data));
 			$summary   .= "</table></div><div class='span12'>";			
-			$summary   .= "<hr/>".JText::_("COM_PAYCART_DATA_IMPORT_FAILED");
+			$summary   .= "<hr/>".JText::_("COM_PAYCART_ADMIN_DATA_IMPORT_FAILED");
 			if(empty($unimported_data))
 			{
-				$summary .= JText::_("COM_PAYCART_ALL_RECORDS_IMPORTED_SUCCESSFULLY");
+				$summary .= JText::_("COM_PAYCART_ADMIN_ALL_RECORDS_IMPORTED_SUCCESSFULLY");
 			}
 			else
 			{
@@ -399,10 +418,10 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 				}
 				$summary .= "</table>";
 			}		
-			$summary   .= "<hr/>".JText::_("COM_PAYCART_DATA_IMPORTED_SUCCESSFULLY");
+			$summary   .= "<hr/>".JText::_("COM_PAYCART_ADMIN_DATA_IMPORTED_SUCCESSFULLY");
 			if(empty($imported_data))
 			{
-				$summary .= JText::_("COM_PAYCART_NO_RECORDS_IMPORTED_SUCCESSFULLY");
+				$summary .= JText::_("COM_PAYCART_ADMIN_NO_RECORDS_IMPORTED_SUCCESSFULLY");
 			}
 			else
 			{
@@ -426,12 +445,16 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 			PaycartFactory::saveConfig(array('product_import_summary' => $summary));
 			
 			//delete file
-			$CSVFileName = PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.$entity.'/'.$_SESSION['filename'];
+			$CSVFileName = PAYCART_FILE_PATH_CSV_IMPEXP.$entity.'/'.JFactory::getSession()->get('filename');;
 			if (file_exists($CSVFileName))
 			{
 				unlink($CSVFileName);
 			}
 		}
+		// clear session
+		JFactory::getSession()->clear('filename');
+		JFactory::getSession()->clear('entity_fields');
+		JFactory::getSession()->clear('csv_headers');
 		
 		// set call back function
 		$ajax->addScriptCall('paycart.admin.product.doImportSuccess', json_encode($response));
@@ -452,12 +475,17 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		$db 	= JFactory::getDbo();		
 		$update = false;
 		
+		$manadatory_fields	= PaycartFactory::getHelper($entity)->getMandatoryFields();
+		foreach ($manadatory_fields as $field){
+			if($field != $entity.'_id' && !$fields[$field]){
+				$fields[$field] = JText::_("COM_PAYCART_ADMIN_CSV_UPDATE_THE_DATA");
+			}
+		}
+		
 		// Get the product_lang_id
 		if(!empty($fields[$entity.'_id']))
 		{
-			$code	= PaycartFactory::getPCCurrentLanguageCode();
-			$query	= "SELECT `{$entity}_lang_id` FROM `#__paycart_{$entity}_lang` WHERE `{$entity}_id` = {$fields[$entity.'_id']} AND `lang_code` LIKE '{$code}'";
-			$fields[$entity.'_lang_id'] = $db->setQuery($query)->loadResult();
+			$fields[$entity.'_lang_id'] = $this->getLangId($entity , $fields[$entity.'_id']);
 		}
 		// Check if the data already exists
 		$query = " SELECT `{$entity}_id` FROM `#__paycart_{$entity}` WHERE `{$entity}_id` = {$fields[$entity.'_id']} ";
@@ -477,8 +505,22 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 		else
 		{
 			unset($fields[$entity.'_id']);
-			$entity_model->save($fields);		
+			$id	= $entity_model->save($fields);
+			if($id && $entity == 'product'){
+				$fields['variation_of']		= $id;
+				$fields['product_id']		= $id;
+				$fields[$entity.'_lang_id'] = $fields[$entity.'_lang_id'] = $this->getLangId($entity , $id);				
+				$entity_model->save($fields , $id);
+			}		
 		}
+	}
+	
+	public function getLangId($entity , $id)
+	{
+		$db 	= JFactory::getDbo();
+		$code	= PaycartFactory::getPCCurrentLanguageCode();
+		$query	= "SELECT `{$entity}_lang_id` FROM `#__paycart_{$entity}_lang` WHERE `{$entity}_id` = {$id} AND `lang_code` LIKE '{$code}'";
+		return $db->setQuery($query)->loadResult();
 	}
 	
 	/** 
@@ -491,7 +533,7 @@ class PaycartHelperImportFromCSV extends PaycartHelper
 	 */
 	public function validateHeaders($entity , $columns)
 	{
-		$fields 	= $_SESSION['entity_fields'];
+		$fields 	= JFactory::getSession()->get('entity_fields');
 	    
 	    foreach($columns as $column)
 	    {

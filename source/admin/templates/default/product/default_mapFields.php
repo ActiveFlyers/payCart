@@ -20,14 +20,14 @@ echo Rb_HelperTemplate::renderLayout('paycart_spinner','',PAYCART_LAYOUTS_PATH);
 	<form class="pc-import-map-fields form-horizontal" method="post">
 		
 		<div class="row-fluid">
-			<span class="text-info"><h4><?php echo JText::_("COM_PAYCART_IMPORT_VERIFY_LANGUAGE");?></h4></span>
+			<span class="text-info"><h4><?php echo JText::_("COM_PAYCART_ADMIN_IMPORT_VERIFY_LANGUAGE");?></h4></span>
 		</div>
 		
 		<div class="row-fluid">
-			<p><?php echo JText::sprintf("COM_PAYCART_IMPORT_CURRENT_LANGUAGE" , $current_language);?></p>
+			<p><?php echo JText::sprintf("COM_PAYCART_ADMIN_IMPORT_CURRENT_LANGUAGE" , $current_language);?></p>
 			<?php $field = $form->getField('localization_default_language') ?>
 			<div class="control-group">
-				<div class="control-label text-error"><?php echo JText::_("COM_PAYCART_IMPORT_DATA_IN_LANGUAGE")?> </div>
+				<div class="control-label text-error"><?php echo JText::_("COM_PAYCART_ADMIN_IMPORT_DATA_IN_LANGUAGE")?> </div>
 				<div class="controls">
 					<?php echo $field->input; ?>
 				</div>
@@ -36,7 +36,7 @@ echo Rb_HelperTemplate::renderLayout('paycart_spinner','',PAYCART_LAYOUTS_PATH);
 		</div>
 		
 		<div class="row-fluid">
-			<span class="text-info"><h4><?php echo JText::_("COM_PAYCART_IMPORT_MAP_CSV_FIELDS");?></h4></span>
+			<span class="text-info"><h4><?php echo JText::_("COM_PAYCART_ADMIN_IMPORT_MAP_CSV_FIELDS");?></h4></span>
 		</div>
 		<div class="row-fluid">
 			<?php 

@@ -164,9 +164,9 @@ class PaycartAdminHtmlViewProduct extends PaycartAdminBaseViewProduct
 		
 		$files		= array();
 		$paths		= array();
-		$file_names	=  array_diff(scandir(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product'), array('..', '.'));
+		$file_names	=  array_diff(scandir(PAYCART_FILE_PATH_CSV_IMPEXP.'product'), array('..', '.'));
 		foreach ($file_names as $file_name){
-		  $time = filemtime(PAYCART_ATTRIBUTE_PATH_CSV_IMPEXP.'product/'.$file_name);
+		  $time = filemtime(PAYCART_FILE_PATH_CSV_IMPEXP.'product/'.$file_name);
 		  $files[$time] = $file_name;
 		}
 		if($files){

@@ -407,13 +407,11 @@ class PaycartAdminControllerProduct extends PaycartController
 	// function to initialize import task and validate and save csv file
 	public function initImport()
 	{
-		$file_position	= JRequest::getVar('file_position');
-		
 		// validate and save CSV file
-		$helper		= PaycartFactory::getInstance('ImportFromCSV' , 'helper');
+		$helper		= PaycartFactory::getHelper('import');
 		$filename	= $helper->validateSaveCSV('product');
 		
-		$_SESSION['filename'] = $filename;
+		JFactory::getSession()->set('filename', $filename);
 	}
 	
 	public function mapImportedCsvFields()
@@ -424,18 +422,19 @@ class PaycartAdminControllerProduct extends PaycartController
 	// function to dump csv data into a temporary table
 	public function importCsvToTempTable()
 	{
-		$filename		= $_SESSION['filename'];
-		$file_position	= JRequest::getVar('file_position');
-		$mapped_fields  = JRequest::getVar('mapped_fields' , array());
-		$config_form	= JRequest::getVar('paycart_config_form');
-		$language		= $config_form['localization_default_language'];
+		$filename			= JFactory::getSession()->get('filename');
+		$file_position		= $this->input->get('file_position', '', 'int');
+		$mapped_fields  	= $this->input->get('mapped_fields', array(), 'array');
+		$unimported_data    = $this->input->get('unimported_data', array(), 'array');
+		$config_form		= $this->input->get('paycart_config_form' , array(), 'array');
+		$language			= $config_form['localization_default_language'];
 		if(!empty($language)){
 			PaycartFactory::setPCCurrentLanguageCode($language);
 		}
 		
 		if(empty($mapped_fields))
 		{
-			$csv_headers	= $_SESSION['csv_headers'];
+			$csv_headers	= JFactory::getSession()->get('csv_headers');
 
 			foreach ($csv_headers as $csv_header)
 			{
@@ -447,18 +446,18 @@ class PaycartAdminControllerProduct extends PaycartController
 			}
 		}
 				
-		$helper		= PaycartFactory::getInstance('ImportFromCSV' , 'helper');
-		$helper->importCsvToTempTable($mapped_fields , 'product' , $filename , $file_position);
+		$helper		= PaycartFactory::getHelper('import');
+		$helper->importCsvToTempTable($mapped_fields , 'product' , $filename , $file_position , $unimported_data);
 	}
 	
 	// function to finally import csv data
 	public function importCSV()
 	{
-		$start			 = JRequest::getVar('start', 0, 'int');
-		$total			 = JRequest::getVar('total', 0, 'int');
-		$imported_data   = JRequest::getVar('imported_data' , array());
-		$unimported_data = JRequest::getVar('unimported_data' , array());
-		$helper			 = PaycartFactory::getInstance('ImportFromCSV' , 'helper');
+		$start			 = $this->input->get('start', 0, 'int');
+		$total			 = $this->input->get('total', 0, 'int');
+		$imported_data   = $this->input->get('imported_data' , array(), 'array');
+		$unimported_data = $this->input->get('unimported_data' , array(), 'array');
+		$helper			 = PaycartFactory::getHelper('import');
 		$helper->importCSV($start , $total , 'product' , $unimported_data , $imported_data);
 	}
 	
@@ -466,37 +465,12 @@ class PaycartAdminControllerProduct extends PaycartController
 	public function export($tpl = null)
 	{
 		$model			= $this->getModel();
-		$start			= JRequest::getVar('start', 0, 'int');
-		$filename		= JRequest::getVar('filename');
-		$export_fields	= $this->getFields();
+		$start			= $this->input->get('start', 0, 'int');
+		$filename		= $this->input->get('filename', null, 'string');
+		$export_fields	= PaycartFactory::getHelper('product')->getExportFields();
 		
-		$helper	= PaycartFactory::getInstance('ExportToCSV' , 'helper');
+		$helper	= PaycartFactory::getHelper('export');
 		$helper->exportToCSV('product' , $start , $model , $export_fields , $filename);
-	}
-	
-	// function to set the export fields
-	public function getFields()
-	{
-		return array('product_id',
-					 'title',
-					 'price',
-					 'retail_price',
-					 'cost_price',
-					 'quantity',
-					 'weight',
-					 'height',
-					 'length',
-					 'width',
-					 'sku',
-					 'alias',
-					 'productcategory_id',
-					 'type',
-					 'published',
-    				 'visible',
-					 'metadata_title',
-					 'metadata_keywords',
-					 'metadata_description',
-					 );
 	}
 	
 	public function download()
