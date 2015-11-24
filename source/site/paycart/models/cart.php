@@ -137,6 +137,36 @@ class PaycartModelCart extends PaycartModel
     		$query->where("$tblAlias`$key` $op '$val'");
     	}
     }
+    
+    function loadLastPaidCart($userId)
+    {
+    	$query  = new Rb_Query();
+    	
+    	return $query->select('*')
+    		            ->from($this->getTable()->get('_tbl'))
+    		            ->where('status = "'.Paycart::STATUS_CART_PAID.'"')
+    		            ->where('buyer_id = '.$userId)
+    		            ->order('cart_id DESC')
+    		            ->limit('1')
+    		            ->dbLoadQuery()
+    		            ->loadObject();    
+    }
+    
+	function loadLastUnpaidCart($userId)
+    {
+    	$query  = new Rb_Query();
+    	
+    	return $query->select('*')
+    		            ->from($this->getTable()->get('_tbl'))
+    		            ->where('status = "'.Paycart::STATUS_CART_DRAFTED.'"')
+    		            ->where('is_locked = 0')
+    		            ->where('is_approved = 0')
+    		            ->where('buyer_id = '.$userId)
+    		            ->order('cart_id DESC')
+    		            ->limit('1')
+    		            ->dbLoadQuery()
+    		            ->loadObject();    	   
+    }
 }
 
 class PaycartModelformCart extends PaycartModelform { }

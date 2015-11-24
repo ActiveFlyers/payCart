@@ -47,7 +47,8 @@ $shippingCharge		   = $displayData->shipping_charge;
 				<strong><?php echo $product->getTitle();?></strong>
 				<small>
 				       <?php 
-						 echo !empty($product->getSKU())?JText::_('COM_PAYCART_SKU').' - '.$product->getSKU():'';	 
+				         $sku = $product->getSKU();
+						 echo !empty($sku)?JText::_('COM_PAYCART_SKU').' - '.$sku:'';	 
 				       ?>
 			 	</small>
 			 </td>
@@ -109,3 +110,4 @@ $shippingCharge		   = $displayData->shipping_charge;
 		</tr>
 	</tbody>
 </table>
+<?php 

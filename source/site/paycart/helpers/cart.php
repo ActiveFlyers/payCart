@@ -18,6 +18,18 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 class PaycartHelperCart extends PaycartHelper
 {	
 	static protected $cached_cart = null;
+	protected $buyer_id = 0;
+	
+	function __construct()
+	{
+		$this->buyer_id = PaycartFactory::getUser()->id;
+	}
+	
+	function setBuyerId($id)
+	{
+		$this->buyer_id = $id;
+		return $this;
+	}
 	
 	/**
 	* Invoke to get current cart whcih is mapped with current session id
@@ -37,14 +49,14 @@ class PaycartHelperCart extends PaycartHelper
 		
 		// get current session id
 		$session_id = PaycartFactory::getSession()->getId();
-		$userId     = PaycartFactory::getUser()->id;
+		$userId     = !(PaycartFactory::getUser()->id)?$this->buyer_id:PaycartFactory::getUser()->id;
 		$cart_data  = array();
 		
 		if($userId){			
 			//if user is logged-in then get collect his last unpaid/unlocked cart
 			$cart_data = $this->getLastUnpaidCart($userId);	
 			
-			if($cart_data->session_id != $session_id){				
+			if($cart_data && $cart_data->session_id != $session_id){				
 				//update cart session id with current
 				$query = new Rb_Query();
 				$query->update('#__paycart_cart')
@@ -90,18 +102,18 @@ class PaycartHelperCart extends PaycartHelper
 	
 	function getLastUnpaidCart($userId)
 	{
-		$cart_data = PaycartFactory::getModel('cart')
-							->loadRecords( Array( 'status' => Paycart::STATUS_CART_DRAFTED,
-												  'is_approved'=> 0,
-												  'is_locked' => 0,
-												  'buyer_id'  => $userId
-							 ));
-		if(!empty($cart_data)){	
-			$cart_data = array_reverse($cart_data, true);						  
-			return array_shift($cart_data);
+		$last_paid   = PaycartFactory::getModel('cart')->loadLastPaidCart($userId);		
+		$last_unpaid = PaycartFactory::getModel('cart')->loadLastUnpaidCart($userId);
+
+		if($last_paid && $last_unpaid && $last_paid->cart_id < $last_unpaid->cart_id){
+			return $last_unpaid;
 		}
 		
-		return array();		
+		if($last_unpaid && !$last_paid){					  
+			return $last_unpaid;
+		}
+		
+		return false;		
 	}
 	
    /**
@@ -138,6 +150,11 @@ class PaycartHelperCart extends PaycartHelper
 		$session_id =	PaycartFactory::getSession()->getId();
 		$cart		= 	PaycartCart::getInstance();
 		
+		//if user is logged-in then attach userid
+		$userId     = PaycartFactory::getUser()->id;
+		if($userId){
+			$cart->setBuyer($userId);
+		}
 		$cart->setSessionId($session_id);
 		return $cart->save();
 	}

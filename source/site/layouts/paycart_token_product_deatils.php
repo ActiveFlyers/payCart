@@ -73,7 +73,8 @@ if (count($product_particulars) <= 0 ) {
 			<small>
 			       <?php 
 			       	 $product = PaycartProduct::getInstance($particular->particular_id); 
-					 echo !empty($product->getSKU())?JText::_('COM_PAYCART_SKU').' - '.$product->getSKU():'';	 
+			       	 $sku = $product->getSKU();
+					 echo !empty($sku)?JText::_('COM_PAYCART_SKU').' - '.$sku:'';	 
 			       ?>
 		 	</small>
 		</td>

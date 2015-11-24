@@ -104,12 +104,15 @@ echo $this->loadTemplate('js');
                                 <div class="control-group">
                                         <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?>                                        	
                                         </div>
-                                        <div class="well well-small">
-												<a href="javascript:void(0);" data-pc-selector="notification_template">
-														<i class="fa fa-hand-o-up fa-2x"></i>
-														<?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_USE_DEFAULT_EMAIL_TEMPLATE')?>
-												</a>
-										</div>
+                                        <?php $eventName = $form->getField('event_name')?>
+                                        <?php if(!($eventName->value == 'onpaycartcartafterlocked' || $eventName->value == 'onorderurlrequest')):?>
+	                                        <div class="well well-small">
+													<a href="javascript:void(0);" data-pc-selector="notification_template">
+															<i class="fa fa-hand-o-up fa-2x"></i>
+															<?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_USE_DEFAULT_EMAIL_TEMPLATE')?>
+													</a>
+											</div>
+										<?php endif;?>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 </div>
                           </div>
@@ -127,13 +130,13 @@ echo $this->loadTemplate('js');
                 		  		<div class="accordion-inner">  
                                 	<?php $field = $form->getField('admin_subject') ?>					
                                 	<div class="control-group">
-                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> <span class="muted">( <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_BODY_USE_HTML');?> ) </span></div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                 	</div>
                             
                                		 <?php $field = $form->getField('admin_body') ?>					
                                 	<div class="control-group">
-                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> </div>
+                                        <div class="control-label"><?php echo $flag; ?><?php echo $field->label; ?> <span class="muted">( <?php echo JText::_('COM_PAYCART_ADMIN_NOTIFICATION_BODY_USE_HTML');?> ) </span></div>
                                         <div class="controls"><?php echo $field->input; ?></div>
                                		</div>
                         	</div>

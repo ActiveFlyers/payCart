@@ -64,7 +64,7 @@ class PaycartHelperJevent extends JEvent
 		
 		/*  @var $cart_helper PaycartHelpercart */
 		$cart_helper = PaycartFactory::getHelper('cart');
-		
+		$cart_helper->setBuyerId($id);
 		$cart = $cart_helper->getCurrentCart();
 		
 		// if cart is not exist
