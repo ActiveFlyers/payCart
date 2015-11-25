@@ -1619,7 +1619,9 @@ class PaycartCart extends PaycartLib
 	public function getOrderUrl($external = false)
 	{
 		if($external){
-			return JUri::root().'index.php?option=com_paycart&view=account&task=order&order_id='.$this->getId().'&key='.$this->secure_key;
+			$prefix = JUri::getInstance(Juri::base())->toString(array('scheme', 'host', 'port'));
+			return $prefix.PaycartRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$this->getId().'&key='.$this->secure_key,null,0);
+		//	return JUri::root().'index.php?option=com_paycart&view=account&task=order&order_id='.$this->getId().'&key='.$this->secure_key;
 		}
 		return JRoute::_('index.php?option=com_paycart&view=account&task=order&order_id='.$this->getId().'&key='.$this->secure_key);
 	}

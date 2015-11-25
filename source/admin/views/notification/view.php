@@ -21,5 +21,13 @@ class PaycartAdminBaseViewNotification extends PaycartView
         Rb_HelperToolbar::publish();
 		Rb_HelperToolbar::unpublish();
     }
+    
+	protected function _adminEditToolbar()
+    {
+        Rb_HelperToolbar::apply();
+		Rb_HelperToolbar::save();
+		Rb_HelperToolbar::divider();
+		Rb_HelperToolbar::cancel();
+    }
 	
 }
